@@ -11,10 +11,13 @@ to valid Wikimedia Enterprise credentials.
 
 from __future__ import annotations
 
+import io
 import logging
 import os
+import random
 import re
 import sys
+import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -39,41 +42,102 @@ EMBEDDING_DIM: int = 1024
 
 OUTPUT_PARQUET_PATH: Path = Path(__file__).resolve().parent / "source_a_embeddings.parquet"
 
-TEST_COUNTIES: list[str] = [
-    "Allegheny County, Pennsylvania",
-    "Loudoun County, Virginia",
-    "Orange County, California",
-    "Capitol Planning Region, Connecticut",
-    "Western Connecticut Planning Region, Connecticut",
-    "Fairfield County, Connecticut",
-    "Orleans Parish, Louisiana",
-    "North Slope Borough, Alaska",
-    "Yukon-Koyukuk Census Area, Alaska",
-    "Baltimore City, Maryland",
-    "Baltimore County, Maryland",
-    "St. Louis City, Missouri",
-    "St. Louis County, Missouri",
-    "Carson City, Nevada",
-    "Richmond City, Virginia",
-    "San Francisco County, California",
-    "Philadelphia County, Pennsylvania",
-    "Denver County, Colorado",
-    "Broomfield County, Colorado",
-    "Doña Ana County, New Mexico",
-    "Coös County, New Hampshire",
-    "O'Brien County, Iowa",
-    "Prince George's County, Maryland",
-    "DeKalb County, Indiana",
-    "Miami-Dade County, Florida",
-    "Oglala Lakota County, South Dakota",
-    "Kusilvak Census Area, Alaska",
-    "Chugach Census Area, Alaska",
-    "Copper River Census Area, Alaska",
-    "District of Columbia",
-    "Kalawao County, Hawaii",
-    "Loving County, Texas",
-    "Los Angeles County, California",
-]
+logger = logging.getLogger(__name__)
+
+GAZETTEER_URL: str = (
+    "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/"
+    "2024_Gazetteer/2024_Gaz_counties_national.zip"
+)
+COUNTY_CROSSWALK_CACHE_PATH: Path = (
+    Path(__file__).resolve().parent / "county_crosswalk.parquet"
+)
+
+# USPS state/territory abbreviation -> full name, as used in the Census
+# Gazetteer counties file.
+_STATE_NAMES: dict[str, str] = {
+    "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas",
+    "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware",
+    "FL": "Florida", "GA": "Georgia", "HI": "Hawaii", "ID": "Idaho",
+    "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas",
+    "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland",
+    "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi",
+    "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada",
+    "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York",
+    "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma",
+    "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina",
+    "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah",
+    "VT": "Vermont", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia",
+    "WI": "Wisconsin", "WY": "Wyoming", "PR": "Puerto Rico",
+}
+
+
+def _build_county_display_name(name: str, usps: str) -> str:
+    """Construct a county display name matching Wikipedia article-title conventions.
+
+    Args:
+        name: Census Gazetteer `NAME` field, e.g. "Richmond city".
+        usps: Two-letter USPS state/territory abbreviation.
+
+    Returns:
+        Display name, e.g. "Richmond City, Virginia".
+    """
+    if usps == "DC":
+        return "District of Columbia"
+    if usps == "PR":
+        return f"{name.removesuffix(' Municipio')}, Puerto Rico"
+    if name.endswith(" city"):
+        name = f"{name[: -len(' city')]} City"
+    return f"{name}, {_STATE_NAMES[usps]}"
+
+
+def fetch_county_crosswalk(cache_path: Path) -> pd.DataFrame:
+    """Load the full county name/FIPS crosswalk, downloading and caching on first use.
+
+    Args:
+        cache_path: Local Parquet cache path.
+
+    Returns:
+        DataFrame with columns `county_name`, `fips_code` covering all US
+        counties, county-equivalents, and Puerto Rico municipios.
+    """
+    if cache_path.exists():
+        return pd.read_parquet(cache_path)
+
+    logger.info("Downloading Census Gazetteer counties file...")
+    response = requests.get(GAZETTEER_URL, timeout=REQUEST_TIMEOUT_SECONDS)
+    response.raise_for_status()
+
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        (member_name,) = archive.namelist()
+        with archive.open(member_name) as f:
+            gaz = pd.read_csv(f, sep="\t", encoding="utf-8", dtype={"GEOID": str})
+
+    gaz.columns = gaz.columns.str.strip()
+    crosswalk = pd.DataFrame(
+        {
+            "county_name": [
+                _build_county_display_name(n, u)
+                for n, u in zip(gaz["NAME"], gaz["USPS"])
+            ],
+            "fips_code": gaz["GEOID"].str.strip(),
+        }
+    )
+
+    crosswalk.to_parquet(cache_path, engine="pyarrow", index=False)
+    logger.info("Cached county crosswalk to %s", cache_path)
+    return crosswalk
+
+
+_COUNTY_CROSSWALK_DF = fetch_county_crosswalk(COUNTY_CROSSWALK_CACHE_PATH)
+ALL_COUNTIES: list[str] = _COUNTY_CROSSWALK_DF["county_name"].tolist()
+
+# Exploratory sample size for a partial ingestion run: enough counties spread
+# across every state for the PCA visualization to show real regional
+# structure, without paying the cost of all ~3,222 counties. Fixed seed for
+# reproducibility between runs.
+SAMPLE_SIZE: int = 300
+SAMPLE_SEED: int = 42
+SAMPLE_COUNTIES: list[str] = random.Random(SAMPLE_SEED).sample(ALL_COUNTIES, SAMPLE_SIZE)
 
 # Independent cities and consolidated city-counties without a
 # "[County] County, [State]" article structure, plus other names whose
@@ -92,44 +156,14 @@ INDEPENDENT_CITY_ARTICLE_LOOKUP: dict[str, str] = {
     "Broomfield County, Colorado": "Broomfield, Colorado",
     "District of Columbia": "Washington, D.C.",
     "Yukon-Koyukuk Census Area, Alaska": "Yukon–Koyukuk Census Area, Alaska",
+    "Coos County, New Hampshire": "Coös County, New Hampshire",
 }
 
-# FIPS crosswalk for the counties in TEST_COUNTIES. Not a general solution --
-# a full Census Bureau crosswalk is pending a later ingestion stage.
-FIPS_CROSSWALK: dict[str, str] = {
-    "Capitol Planning Region, Connecticut": "09110",
-    "Western Connecticut Planning Region, Connecticut": "09190",
-    "Fairfield County, Connecticut": "09001",
-    "Orleans Parish, Louisiana": "22071",
-    "North Slope Borough, Alaska": "02185",
-    "Yukon-Koyukuk Census Area, Alaska": "02290",
-    "Baltimore City, Maryland": "24510",
-    "Baltimore County, Maryland": "24005",
-    "St. Louis City, Missouri": "29510",
-    "St. Louis County, Missouri": "29189",
-    "Carson City, Nevada": "32510",
-    "Richmond City, Virginia": "51760",
-    "San Francisco County, California": "06075",
-    "Philadelphia County, Pennsylvania": "42101",
-    "Denver County, Colorado": "08031",
-    "Broomfield County, Colorado": "08014",
-    "Doña Ana County, New Mexico": "35013",
-    "Coös County, New Hampshire": "33007",
-    "O'Brien County, Iowa": "19141",
-    "Prince George's County, Maryland": "24033",
-    "DeKalb County, Indiana": "18033",
-    "Miami-Dade County, Florida": "12086",
-    "Oglala Lakota County, South Dakota": "46102",
-    "Kusilvak Census Area, Alaska": "02158",
-    "Chugach Census Area, Alaska": "02063",
-    "Copper River Census Area, Alaska": "02066",
-    "District of Columbia": "11001",
-    "Kalawao County, Hawaii": "15005",
-    "Loving County, Texas": "48301",
-    "Los Angeles County, California": "06037",
-}
-
-logger = logging.getLogger(__name__)
+# Full FIPS crosswalk derived from the Census Gazetteer counties file (see
+# fetch_county_crosswalk), covering every county in ALL_COUNTIES.
+FIPS_CROSSWALK: dict[str, str] = dict(
+    zip(_COUNTY_CROSSWALK_DF["county_name"], _COUNTY_CROSSWALK_DF["fips_code"])
+)
 
 
 def configure_logging() -> None:
@@ -278,6 +312,28 @@ class WikimediaEnterpriseClient:
 _WIKI_LINK_PATTERN = re.compile(r"\[\[([^\]|]+\|)?([^\]]+)\]\]")
 _CITATION_BRACKET_PATTERN = re.compile(r"\[\d+\]")
 _WHITESPACE_PATTERN = re.compile(r"\s+")
+_LEADING_PUNCTUATION_PATTERN = re.compile(r"^[\s,;:.]+")
+
+# Generic connective phrasing shared near-verbatim by nearly every US county
+# lead ("X is a county ... in the U.S. state of Y", "As of the 2020 census,
+# the population was N", "The county seat is Z"). These clauses carry no
+# distinguishing content themselves -- only the county-specific values inside
+# them do -- so they are stripped while leaving those values (population
+# figures, seat names, etc.) in place.
+_OPENING_TOPIC_SENTENCE_PATTERN = re.compile(
+    r"is (?:a|one of the \d+ counties?|a U\.S\. county|a parish)\b"
+    r"[^.]*?(?:U\.S\. )?(?:state|Commonwealth) of",
+    re.IGNORECASE,
+)
+_CENSUS_CLAUSE_PATTERN = re.compile(
+    r"(?:As of(?: the)? \d{4}(?: United States)?|According to the \d{4}"
+    r"|At the \d{4}(?: United States)?) [Cc]ensus\s*,?",
+    re.IGNORECASE,
+)
+_COUNTY_SEAT_CLAUSE_PATTERN = re.compile(
+    r"\b(?:Its|The) (?:county|parish) seat(?: and (?:largest|most populous) city)? is\b",
+    re.IGNORECASE,
+)
 
 
 def extract_article_html(article_json: dict[str, Any]) -> str:
@@ -355,6 +411,65 @@ def clean_intro_text(article_html: str) -> str:
     if not text:
         raise EmptyIntroError("Cleaned introduction text is empty.")
     return text
+
+
+def strip_self_reference(text: str, county_name: str) -> str:
+    """Remove mentions of a county's own name and state name from its intro text.
+
+    Wikipedia leads for US counties are heavily templated ("X County is a
+    county ... in the U.S. state of Y ...") and are preceded by short-description
+    and category breadcrumb text that repeats the state name (e.g. "County in
+    Washington, United States County in Washington"). Left in, these shared
+    proper nouns dominate embedding similarity between any two counties that
+    happen to share a name token (e.g. "Washington County" and any county
+    located in Washington state), independent of the counties' actual content.
+
+    Args:
+        text: Cleaned intro text, as returned by clean_intro_text.
+        county_name: County display name, e.g. "Benton County, Washington".
+
+    Returns:
+        Text with the county's short name and state name removed, and any
+        leading breadcrumb/hatnote text preceding the first mention of the
+        county's own name dropped.
+    """
+    short_name, _, state_name = county_name.rpartition(", ")
+
+    short_name_pattern = re.compile(re.escape(short_name), re.IGNORECASE)
+    match = short_name_pattern.search(text)
+    if match:
+        text = text[match.start() :]
+    text = short_name_pattern.sub("", text)
+
+    if state_name:
+        state_name_pattern = re.compile(r"\b" + re.escape(state_name) + r"\b", re.IGNORECASE)
+        text = state_name_pattern.sub("", text)
+
+    text = _LEADING_PUNCTUATION_PATTERN.sub("", text)
+    return _WHITESPACE_PATTERN.sub(" ", text).strip()
+
+
+def strip_boilerplate_phrasing(text: str) -> str:
+    """Remove generic templated connective clauses shared across county leads.
+
+    Targets the near-universal "is a county ... in the U.S. state of",
+    "As of the 2020 census, the population was", and "The county seat is"
+    clauses, which contribute identical tokens to almost every county's intro
+    regardless of content and would otherwise dominate embedding similarity
+    for short articles. The county-specific values these clauses introduce
+    (population figures, seat names) are left in place.
+
+    Args:
+        text: Intro text, typically already passed through strip_self_reference.
+
+    Returns:
+        Text with the templated connective clauses removed.
+    """
+    text = _OPENING_TOPIC_SENTENCE_PATTERN.sub("", text)
+    text = _CENSUS_CLAUSE_PATTERN.sub("", text)
+    text = _COUNTY_SEAT_CLAUSE_PATTERN.sub("", text)
+    text = _LEADING_PUNCTUATION_PATTERN.sub("", text)
+    return _WHITESPACE_PATTERN.sub(" ", text).strip()
 
 
 # --------------------------------------------------------------------------
@@ -435,9 +550,7 @@ class IngestionSummary:
 def get_fips_code(county_name: str) -> str | None:
     """Look up the FIPS code for a county from FIPS_CROSSWALK.
 
-    FIPS_CROSSWALK only covers the counties in TEST_COUNTIES; a full Census
-    Bureau crosswalk is pending a later ingestion stage. Returns None for any
-    county_name not present in the crosswalk.
+    Returns None for any county_name not present in the crosswalk.
 
     Args:
         county_name: County display name.
@@ -477,8 +590,10 @@ def process_county(
     article_json = client.get_article(article_name)
     article_html = extract_article_html(article_json)
     intro_text = clean_intro_text(article_html)
+    embedding_text = strip_self_reference(intro_text, county_name)
+    embedding_text = strip_boilerplate_phrasing(embedding_text)
 
-    raw_vector = embedder.encode(intro_text)
+    raw_vector = embedder.encode(embedding_text)
     normalized_vector = embedder.l2_normalize(raw_vector)
 
     return CountyIngestionResult(
@@ -572,7 +687,7 @@ def export_to_parquet(df: pd.DataFrame, output_path: Path) -> None:
 
 
 def main() -> None:
-    """Run the Source A ingestion pipeline over the test county list."""
+    """Run the Source A ingestion pipeline over a sample of US counties."""
     configure_logging()
 
     username = os.environ.get("WIKIMEDIA_USERNAME")
@@ -591,7 +706,7 @@ def main() -> None:
     embedder = BgeM3EmbeddingGenerator(device="cpu")
 
     try:
-        results, summary = run_pipeline(TEST_COUNTIES, client, embedder)
+        results, summary = run_pipeline(SAMPLE_COUNTIES, client, embedder)
     except WikimediaAuthError as exc:
         logger.error("Authentication rejected mid-run; aborting: %s", exc)
         sys.exit(1)
