@@ -43,14 +43,90 @@ TEST_COUNTIES: list[str] = [
     "Allegheny County, Pennsylvania",
     "Loudoun County, Virginia",
     "Orange County, California",
+    "Capitol Planning Region, Connecticut",
+    "Western Connecticut Planning Region, Connecticut",
+    "Fairfield County, Connecticut",
+    "Orleans Parish, Louisiana",
+    "North Slope Borough, Alaska",
+    "Yukon-Koyukuk Census Area, Alaska",
+    "Baltimore City, Maryland",
+    "Baltimore County, Maryland",
+    "St. Louis City, Missouri",
+    "St. Louis County, Missouri",
+    "Carson City, Nevada",
+    "Richmond City, Virginia",
+    "San Francisco County, California",
+    "Philadelphia County, Pennsylvania",
+    "Denver County, Colorado",
+    "Broomfield County, Colorado",
+    "Doña Ana County, New Mexico",
+    "Coös County, New Hampshire",
+    "O'Brien County, Iowa",
+    "Prince George's County, Maryland",
+    "DeKalb County, Indiana",
+    "Miami-Dade County, Florida",
+    "Oglala Lakota County, South Dakota",
+    "Kusilvak Census Area, Alaska",
+    "Chugach Census Area, Alaska",
+    "Copper River Census Area, Alaska",
+    "District of Columbia",
+    "Kalawao County, Hawaii",
+    "Loving County, Texas",
+    "Los Angeles County, California",
 ]
 
-# Independent cities without a "[County] County, [State]" article structure.
+# Independent cities and consolidated city-counties without a
+# "[County] County, [State]" article structure, plus other names whose
+# Wikipedia article title diverges from the county_name identifier.
 # Not a general solution -- extend manually as new edge cases surface.
 INDEPENDENT_CITY_ARTICLE_LOOKUP: dict[str, str] = {
     "St. Louis, Missouri": "St. Louis",
+    "St. Louis City, Missouri": "St. Louis",
     "Baltimore, Maryland": "Baltimore",
+    "Baltimore City, Maryland": "Baltimore",
     "Carson City, Nevada": "Carson City, Nevada",
+    "Richmond City, Virginia": "Richmond, Virginia",
+    "San Francisco County, California": "San Francisco",
+    "Philadelphia County, Pennsylvania": "Philadelphia",
+    "Denver County, Colorado": "Denver",
+    "Broomfield County, Colorado": "Broomfield, Colorado",
+    "District of Columbia": "Washington, D.C.",
+    "Yukon-Koyukuk Census Area, Alaska": "Yukon–Koyukuk Census Area, Alaska",
+}
+
+# FIPS crosswalk for the counties in TEST_COUNTIES. Not a general solution --
+# a full Census Bureau crosswalk is pending a later ingestion stage.
+FIPS_CROSSWALK: dict[str, str] = {
+    "Capitol Planning Region, Connecticut": "09110",
+    "Western Connecticut Planning Region, Connecticut": "09190",
+    "Fairfield County, Connecticut": "09001",
+    "Orleans Parish, Louisiana": "22071",
+    "North Slope Borough, Alaska": "02185",
+    "Yukon-Koyukuk Census Area, Alaska": "02290",
+    "Baltimore City, Maryland": "24510",
+    "Baltimore County, Maryland": "24005",
+    "St. Louis City, Missouri": "29510",
+    "St. Louis County, Missouri": "29189",
+    "Carson City, Nevada": "32510",
+    "Richmond City, Virginia": "51760",
+    "San Francisco County, California": "06075",
+    "Philadelphia County, Pennsylvania": "42101",
+    "Denver County, Colorado": "08031",
+    "Broomfield County, Colorado": "08014",
+    "Doña Ana County, New Mexico": "35013",
+    "Coös County, New Hampshire": "33007",
+    "O'Brien County, Iowa": "19141",
+    "Prince George's County, Maryland": "24033",
+    "DeKalb County, Indiana": "18033",
+    "Miami-Dade County, Florida": "12086",
+    "Oglala Lakota County, South Dakota": "46102",
+    "Kusilvak Census Area, Alaska": "02158",
+    "Chugach Census Area, Alaska": "02063",
+    "Copper River Census Area, Alaska": "02066",
+    "District of Columbia": "11001",
+    "Kalawao County, Hawaii": "15005",
+    "Loving County, Texas": "48301",
+    "Los Angeles County, California": "06037",
 }
 
 logger = logging.getLogger(__name__)
@@ -356,20 +432,20 @@ class IngestionSummary:
     failed: dict[str, str]
 
 
-def get_placeholder_fips(county_name: str) -> str | None:
-    """Return a placeholder FIPS code for a county.
+def get_fips_code(county_name: str) -> str | None:
+    """Look up the FIPS code for a county from FIPS_CROSSWALK.
 
-    This is a stub pending a real Census Bureau FIPS crosswalk in a later
-    ingestion stage; it always returns None. The column is retained in the
-    output schema for stability across the eventual multi-source (A-F) join.
+    FIPS_CROSSWALK only covers the counties in TEST_COUNTIES; a full Census
+    Bureau crosswalk is pending a later ingestion stage. Returns None for any
+    county_name not present in the crosswalk.
 
     Args:
         county_name: County display name.
 
     Returns:
-        None (placeholder).
+        FIPS code, or None if not in the crosswalk.
     """
-    return None
+    return FIPS_CROSSWALK.get(county_name)
 
 
 # --------------------------------------------------------------------------
@@ -407,7 +483,7 @@ def process_county(
 
     return CountyIngestionResult(
         county_name=county_name,
-        fips_code=get_placeholder_fips(county_name),
+        fips_code=get_fips_code(county_name),
         raw_intro_text=intro_text,
         embedding=normalized_vector.tolist(),
     )
