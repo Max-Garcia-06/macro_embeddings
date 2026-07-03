@@ -191,14 +191,24 @@ def build_scatter(pairs_df: pd.DataFrame, surprising_df: pd.DataFrame) -> go.Fig
     trend_x = np.array([pairs_df["distance_km"].min(), pairs_df["distance_km"].max()])
     trend_y = slope * trend_x + intercept
 
+    # Pre-bin server-side (np.histogram2d) rather than passing the raw
+    # per-pair arrays to go.Histogram2d: with millions of county pairs,
+    # embedding the raw arrays in the exported HTML balloons file size by
+    # two orders of magnitude for no visual benefit -- the chart only ever
+    # renders a binned density grid.
+    counts, x_edges, y_edges = np.histogram2d(
+        pairs_df["distance_km"], pairs_df["similarity"], bins=60
+    )
+    x_centers = (x_edges[:-1] + x_edges[1:]) / 2
+    y_centers = (y_edges[:-1] + y_edges[1:]) / 2
+
     fig = go.Figure()
     fig.add_trace(
-        go.Histogram2d(
-            x=pairs_df["distance_km"],
-            y=pairs_df["similarity"],
+        go.Heatmap(
+            x=x_centers,
+            y=y_centers,
+            z=counts.T,
             colorscale=DENSITY_COLORSCALE,
-            nbinsx=60,
-            nbinsy=60,
             colorbar=dict(title="Pair count"),
             name="All county pairs",
         )
