@@ -198,6 +198,31 @@ INDEPENDENT_CITY_ARTICLE_LOOKUP: dict[str, str] = {
     "Waynesboro City, Virginia": "Waynesboro, Virginia",
     "Williamsburg City, Virginia": "Williamsburg, Virginia",
     "Winchester City, Virginia": "Winchester, Virginia",
+    # Remaining 19 Census-Gazetteer-name-vs-Wikipedia-title mismatches (see
+    # analysis-output/source-a-findings.md section 7): Alaska boroughs/census
+    # areas use "City and Borough"/"Municipality" in the Gazetteer but a
+    # bare place name on Wikipedia (or an en dash "–" instead of a
+    # hyphen); NYC's 5 boroughs are indexed by borough name, not "County";
+    # the rest are single-word-vs-two-word or diacritic spelling mismatches.
+    "Anchorage Municipality, Alaska": "Anchorage, Alaska",
+    "Hoonah-Angoon Census Area, Alaska": "Hoonah–Angoon Census Area, Alaska",
+    "Juneau City and Borough, Alaska": "Juneau, Alaska",
+    "Prince of Wales-Hyder Census Area, Alaska": "Prince of Wales–Hyder Census Area, Alaska",
+    "Sitka City and Borough, Alaska": "Sitka, Alaska",
+    "Skagway Municipality, Alaska": "Skagway, Alaska",
+    "Wrangell City and Borough, Alaska": "Wrangell, Alaska",
+    "Yakutat City and Borough, Alaska": "Yakutat, Alaska",
+    "Hawaii County, Hawaii": "Hawaiʻi County, Hawaii",
+    "De Witt County, Illinois": "DeWitt County, Illinois",
+    "Larue County, Kentucky": "LaRue County, Kentucky",
+    "De Soto Parish, Louisiana": "DeSoto Parish, Louisiana",
+    "Nantucket County, Massachusetts": "Nantucket",
+    "Bronx County, New York": "The Bronx",
+    "Kings County, New York": "Brooklyn",
+    "New York County, New York": "Manhattan",
+    "Queens County, New York": "Queens",
+    "Richmond County, New York": "Staten Island",
+    "Le Flore County, Oklahoma": "LeFlore County, Oklahoma",
 }
 
 # Full FIPS crosswalk derived from the Census Gazetteer counties file (see
