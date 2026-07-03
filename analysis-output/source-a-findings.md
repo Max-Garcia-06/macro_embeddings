@@ -116,12 +116,31 @@ is unsupported, though correlation against real economic variables
    pairwise distance (1,618 km vs. 1,455 km), cluster 1 is ~11% *tighter*
    (1,292 km) — opposite directions, not a coherent regional split.
 
-4. **Notable outlier pairs**: a handful of far-apart county pairs are
-   unusually similar in text, e.g. Lincoln County, KS ↔ Lincoln County, OR
-   (similarity 0.845 at 2,207 km — likely driven by sharing a county name,
-   which produces near-identical opening-sentence boilerplate) — consistent
-   with finding #1 (geography matters a little on average; individual pairs
-   can still be highly similar regardless of distance).
+4. **Notable outlier pairs**: the five most similar pairs among all
+   top-quartile-distance pairs (≥75th percentile, ≥~1,940 km apart; full
+   ranked list in `source_a_similarity_pairs.csv`):
+
+   | Rank | Pair | Similarity | Distance (km) | Why similar despite distance |
+   |---|---|---|---|---|
+   | 1 | Lincoln County, KS ↔ Lincoln County, OR | 0.845 | 2,207 | Shared name *and* shared namesake (Abraham Lincoln) — both articles use near-identical templated phrasing ("named for/after Abraham Lincoln, 16th president of the United States"). |
+   | 2 | Montgomery County, AL ↔ Stutsman County, ND | 0.833 | 1,967 | No name in common; both follow the same "county seat is X ... county comprises/included in the X metropolitan/micropolitan area" infobox-style sentence almost verbatim. |
+   | 3 | Stutsman County, ND ↔ Williamsburg County, SC | 0.833 | 2,194 | Both are short, minimally-elaborated articles (population + county seat + founding year, no distinguishing detail) — they converge because there is little content to differentiate them, not because of shared subject matter. |
+   | 4 | Franklin County, ME ↔ Franklin County, NE | 0.826 | 2,384 | Same mechanism as #1: shared name and shared namesake (Benjamin Franklin) reproduces the same "named for Benjamin Franklin" sentence in both articles. |
+   | 5 | Stutsman County, ND ↔ Providence County, RI | 0.826 | 2,234 | Same mechanism as #3 — Stutsman's terse, template-only intro sits close to the corpus's generic-boilerplate centroid, so it reads as "similar" to several otherwise-unrelated counties. |
+
+   Two distinct, both surface-level, mechanisms produce these matches:
+   (a) **shared eponym** — two counties named after the same historical
+   figure reuse the same "named for X" sentence almost verbatim (#1, #4);
+   (b) **generic-boilerplate convergence** — a short, unelaborated article
+   (Stutsman County, ND appears in 3 of the top 5) sits close to the
+   corpus's templated-boilerplate centroid and reads as similar to any
+   other equally generic article, regardless of subject (#2, #3, #5).
+   Neither mechanism reflects real economic or geographic kinship — both
+   are consistent with finding #1 (geography matters a little on average;
+   individual pairs can still be highly similar for reasons unrelated to
+   distance) and reinforce the report's broader theme that the corpus is
+   dominated by generic formation/demographic boilerplate rather than
+   distinctive content (§10).
 
 5. **Cross-seed K-means stability**: re-running K-means at k=2 across 5
    seeds (42, 7, 123, 2024, 99) on the full corpus gives silhouette
