@@ -44,7 +44,12 @@ sampling noise. A separate prototype found that embedding more article text
 (additional sections, or an Economy-only section) does not improve
 differentiation between counties. The dataset's Virginia independent-city
 coverage gap (37 cities) has been backfilled; 19 unrelated ingestion
-failures remain open.
+failures remain open. Checked against `E_macro_extendedProposal.pdf`'s
+justification for Source A (§10): the proposal expects intro text to carry
+distinctive economic-transition narrative; unsupervised analysis instead
+finds generic formation/demographic boilerplate with only the weak
+geographic echo above — that specific claim is unsupported, though
+correlation against real economic variables (Source E/B) is still untested.
 
 ## 2. Data & Setup
 
@@ -58,17 +63,22 @@ failures remain open.
   `analyze_source_a_clusters.py` (K-means + Mantel test),
   `analyze_source_a_cluster_stability.py` (cross-seed stability +
   cluster-coherence permutation test, new).
-- **Important artifact-staleness note**: only the clustering/Mantel
-  pipeline (`analyze_source_a_clusters.py`) and the new stability script
-  were re-run against the backfilled 3,125-row parquet. `stats.json`, the
-  three saved figures, `source_a_map.html`, and
+- **Important artifact-staleness note**: the clustering/Mantel pipeline
+  (`analyze_source_a_clusters.py`), the stability script, and (as of
+  2026-07-02) `visualize_source_a.py` have been re-run against the
+  backfilled 3,125-row parquet. `stats.json`, the three saved figures
+  (including `figure-02-pc1-distribution.png`), `source_a_map.html`'s
+  extreme-county labels, and
   `source_a_similarity.html`/`source_a_similarity_pairs.csv` still reflect
   the **pre-backfill** snapshot (n=3,088 / n=2,793) and were not
-  regenerated — regenerating them was out of scope for this pass. Do not
-  read PCA or similarity-pairs numbers as including the 37 backfilled
+  regenerated — only the PC1 explained-variance number itself was
+  recomputed (see §3.2). Do not read the PC1 histogram, its labeled extreme
+  counties, or similarity-pairs numbers as including the 37 backfilled
   Virginia cities.
-- **Units of analysis**: individual county. PCA ran on n=3,088 (pre-backfill
-  snapshot). Clustering/Mantel now run on n=2,830 (post-backfill: 2,793 +
+- **Units of analysis**: individual county. PCA explained-variance ratio
+  now recomputed on n=3,125 (post-backfill, all matched to centroids); the
+  manual extreme-county text reading in §3.2 still reflects the n=3,088
+  pre-backfill run. Clustering/Mantel run on n=2,830 (post-backfill: 2,793 +
   37 Virginia cities, after dropping 294 "stub" counties with <100 characters
   of real content and 1 non-50-state entry). Pairwise similarity/distance is
   treated as non-independent — inference is via Mantel permutation, not a
@@ -88,12 +98,16 @@ failures remain open.
    ones; geography is not a dominant driver, and this conclusion does not
    change with fuller Virginia coverage.
 
-2. **PCA**: PC1 explains only 4.9% of total variance (n=3,088, pre-backfill
-   snapshot). A manual read of the 3 highest- and 3 lowest-loading counties
+2. **PCA**: PC1 explains only 4.9% of total variance pre-backfill (n=3,088)
+   and **4.8% post-backfill** (n=3,125, all 3,125 counties matched to
+   centroids; rerun of `visualize_source_a.py` on 2026-07-02) — the
+   backfill does not change this conclusion. A manual read of the 3
+   highest- and 3 lowest-loading counties from the pre-backfill run
    (Elliott County, KY / Wise County, VA / Kent County, TX high;
    Miami County, IN / Clay County, IN / Floyd County, GA low) found no
    shared theme — both tails read as generic formation/population
-   boilerplate. **No thematic label is assigned to PC1.**
+   boilerplate. That manual check has not been redone against the
+   post-backfill extremes. **No thematic label is assigned to PC1.**
 
 3. **Clustering (K-means, silhouette-selected k)**: k=2 selected across
    k=2..12, but every k's silhouette score is low (max ≈0.034-0.036 across
@@ -222,14 +236,21 @@ the §3.6 permutation test).
   - Status: round-0's two open gaps (seed stability, coherence
     significance) are now both resolved — see §3.5–3.6.
 
-- **Claim**: PC1 of the Source A embeddings explains a small (4.9%) share of
-  total embedding variance; no thematic label should be attached to it.
-  - Evidence: `pca.explained_variance_ratio_[0]=0.0485`, n=3,088; manual
-    6-county tail inspection found no shared theme.
+- **Claim**: PC1 of the Source A embeddings explains a small share of
+  total embedding variance (4.9% pre-backfill, 4.8% post-backfill); no
+  thematic label should be attached to it.
+  - Evidence: `pca.explained_variance_ratio_[0]=0.0485`, n=3,088
+    (pre-backfill); recomputed as 0.048, n=3,125, all matched to centroids
+    (post-backfill, 2026-07-02 rerun of `visualize_source_a.py`). Manual
+    6-county tail inspection (pre-backfill extremes only) found no shared
+    theme.
   - Allowed wording: "PC1 explains a small share of the embedding's variance
-    (4.9%)"; naming the specific extreme counties is fine.
+    (~4.8-4.9%, stable across the Virginia backfill)"; naming the specific
+    extreme counties from the pre-backfill run is fine.
   - Forbidden wording: any semantic label for what PC1 "represents."
-  - Status: unresolved, unchanged — PC1 was not recomputed post-backfill.
+  - Status: **variance-ratio number confirmed stable post-backfill**; the
+    manual thematic tail-check has not been rerun on the post-backfill
+    extremes (open item, low priority given the ratio itself barely moved).
 
 - **Claim**: Expanding embedded text beyond the Wikipedia lead section does
   not improve county differentiation.
@@ -253,14 +274,21 @@ the §3.6 permutation test).
    Gazetteer-name-vs-Wikipedia-title mismatches, not yet mapped in
    `INDEPENDENT_CITY_ARTICLE_LOOKUP`. Out of scope for this pass.
 2. **Artifact staleness**: `stats.json`, the three figures, and the
-   similarity/PCA HTML artifacts still reflect the pre-backfill snapshot
-   (see §2). Regenerate via `generate_source_a_insights.py` if a fully
-   consistent post-backfill snapshot is needed.
-3. **PC1 has no established meaning** — only 4.9% of variance, no thematic
-   pattern found in a small manual check.
-4. **Population mismatch between analyses**: PCA runs on the pre-backfill
-   3,088-county snapshot; clustering/Mantel now run on 2,830 post-backfill
-   counties — not directly comparable county-for-county.
+   similarity HTML artifacts still reflect the pre-backfill snapshot
+   (see §2); `source_a_map.html` was regenerated post-backfill on
+   2026-07-02 but its extreme-county labels still come from the current
+   PC1 computation, not a re-verified manual read. Regenerate via
+   `generate_source_a_insights.py` if a fully consistent post-backfill
+   snapshot is needed.
+3. **PC1 has no established meaning** — 4.9% of variance pre-backfill,
+   4.8% post-backfill (n=3,125, 2026-07-02 rerun); no thematic pattern
+   found in a small manual check of the pre-backfill extremes, not yet
+   redone on post-backfill extremes.
+4. **Population mismatch between analyses**: PC1's manual thematic check
+   still reflects the pre-backfill 3,088-county snapshot (its
+   variance-ratio number is now post-backfill); clustering/Mantel run on
+   2,830 post-backfill counties — none of the three are directly
+   comparable county-for-county.
 5. **No alternative clustering method tried** (e.g. hierarchical, DBSCAN) as
    a robustness check on the K-means finding.
 
@@ -283,13 +311,19 @@ the §3.6 permutation test).
    the weak-but-real geography signal, the now-resolved clustering-stability
    question, and the remaining coverage gaps are the facts most likely to
    matter for that planning.
+6. **Before using Source A in E_macro as the proposal describes**, test
+   embedding distance against real economic variables (Source E's
+   capital-gains/W-2 ratio, Source B's industry location quotients) once
+   those sources are ingested — see §10. That correlation, not geographic
+   correlation, is the proposal's actual claim, and it is still untested.
 
 ## 9. Artifact and Reproducibility Index
 
 - Ingestion: `ingest_source_a.py` (includes `INDEPENDENT_CITY_ARTICLE_LOOKUP`
   with all 37 Virginia independent cities), `backfill_virginia_cities.py`
   (Virginia-only re-ingestion + parquet merge).
-- EDA / analysis: `visualize_source_a.py` (PCA), `analyze_source_a_similarity.py`
+- EDA / analysis: `visualize_source_a.py` (PCA, **post-backfill**, rerun
+  2026-07-02 against the 3,125-row parquet), `analyze_source_a_similarity.py`
   (pairwise similarity/distance), `analyze_source_a_clusters.py` (K-means +
   Mantel test), `analyze_source_a_cluster_stability.py` (cross-seed
   stability + cluster-coherence permutation test).
@@ -301,12 +335,79 @@ the §3.6 permutation test).
 - Figures: `analysis-output/figures/figure-01-similarity-vs-distance.png`,
   `figure-02-pc1-distribution.png`, `figure-03-cluster-coherence.png`,
   `figures/source-a-numeric-summary.md` (all pre-backfill).
-- Companion artifacts: `source_a_map.html` (pre-backfill), `source_a_similarity.html`
-  / `source_a_similarity_pairs.csv` (pre-backfill), `source_a_clusters.html`
-  / `source_a_cluster_summary.csv` (**post-backfill**, refreshed by this
-  round's `analyze_source_a_clusters.py` run).
+- Companion artifacts: `source_a_map.html` (**post-backfill**, refreshed
+  2026-07-02 by `visualize_source_a.py`; PC1 = 4.8%, 3,125/3,125 counties
+  matched), `source_a_similarity.html` / `source_a_similarity_pairs.csv`
+  (pre-backfill), `source_a_clusters.html` / `source_a_cluster_summary.csv`
+  (**post-backfill**, refreshed by this round's
+  `analyze_source_a_clusters.py` run).
 - Ingestion log: `ingest_run.log` (untracked).
 - Reproduction: `uv run --env-file .env backfill_virginia_cities.py`, then
   `uv run analyze_source_a_clusters.py` and
   `uv run analyze_source_a_cluster_stability.py`. All seeded
   (`RANDOM_SEED=42` throughout; stability seeds 42/7/123/2024/99).
+
+## 10. Proposal Alignment Assessment (E_macro Extended Proposal, 2026-07-03)
+
+**Question**: does Source A, as specified in `E_macro_extendedProposal.pdf`
+(Wikipedia intro-text embeddings via `bge-m3`, providing "narrative
+identity" / qualitative context for the Capital Flow pillar alongside
+Source E), deliver on that role?
+
+**Proposal's claim**: intro text contains distinctive economic-transition
+language (e.g. "former rust-belt manufacturing center currently
+transitioning to a health-tech hub") that gives immediate semantic
+separation between counties, breaking symmetries invisible to numeric or
+visual data.
+
+**Assessment against §3–4 findings**:
+- If economic-narrative language of the kind the proposal describes were
+  common and distinguishing, it should surface as structure in PCA or
+  clustering. It doesn't: PC1 explains only 4.8–4.9% of variance with no
+  thematic label (§3.2), and K-means finds no cleanly separated structure
+  (silhouette ≤0.035, §3.3) beyond the weak geographic effect.
+- The manual tail-read of PC1's extreme counties (§3.2) found "generic
+  formation/population boilerplate" — not economic-transition narrative —
+  on both ends.
+- §4's negative result reinforces this: embedding more article text made
+  counties *more* similar, consistent with Wikipedia county articles being
+  dominated by templated incorporation/geography/demographics prose rather
+  than distinctive economic narrative.
+- **Not tested**: correlation between Source A embedding distance and
+  actual economic variables (Source E's capital-gains/W-2 ratio, Source B's
+  industry location quotients). No economic ground truth is in-repo yet
+  (§2), so this is an open gap, not a resolved negative.
+
+**Verdict**: Source A's specific mechanism in the proposal — that intro
+text carries salient economic-transition language usable as narrative
+context for Capital Flow — is not supported by the unsupervised analysis.
+The corpus instead reads as generic boilerplate with a very small
+geographic echo. This does not mean Source A should be scrapped (the
+geographic signal is real, and correlation with actual economic labels is
+untested), but it should not be treated as validated for the proposal's
+stated role. Before using Source A in E_macro:
+1. Test embedding distance against real economic variables (Source E
+   ratio, Source B location quotients) once those sources are ingested —
+   the proposal's actual claim is economic correlation, not geographic
+   correlation, and that's still untested.
+2. If that correlation is also weak, consider targeted extraction
+   (sentences containing transition/industry keywords) rather than
+   whole-intro embedding, since naive full-text expansion already failed
+   (§4).
+
+**Claim candidate**:
+- **Claim**: Source A's raw intro-text embeddings do not show the
+  distinctive economic-transition signal the E_macro proposal's Source A
+  justification assumes; the corpus is dominated by generic
+  county-formation boilerplate.
+  - Evidence: PC1 4.8–4.9% variance, no theme (§3.2); K-means silhouette
+    ≤0.035 (§3.3); section-expansion negative result (§4).
+  - Allowed wording: "unsupervised analysis finds no evidence of the
+    distinctive economic-narrative signal the proposal's Source A
+    justification describes; the corpus reads as generic boilerplate with
+    a weak geographic echo."
+  - Forbidden wording: "Source A has no economic signal" — untested
+    against real economic variables; only claims about *self-organizing /
+    unsupervised* structure are supported here.
+  - Status: open — correlation against Source E/B ground truth not yet
+    run.
