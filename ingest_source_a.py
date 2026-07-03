@@ -113,6 +113,7 @@ def fetch_county_crosswalk(cache_path: Path) -> pd.DataFrame:
             gaz = pd.read_csv(f, sep="\t", encoding="utf-8", dtype={"GEOID": str})
 
     gaz.columns = gaz.columns.str.strip()
+    gaz = gaz[gaz["USPS"] != "PR"].reset_index(drop=True)
     crosswalk = pd.DataFrame(
         {
             "county_name": [
@@ -706,7 +707,7 @@ def main() -> None:
     embedder = BgeM3EmbeddingGenerator(device="cpu")
 
     try:
-        results, summary = run_pipeline(SAMPLE_COUNTIES, client, embedder)
+        results, summary = run_pipeline(ALL_COUNTIES, client, embedder)
     except WikimediaAuthError as exc:
         logger.error("Authentication rejected mid-run; aborting: %s", exc)
         sys.exit(1)
