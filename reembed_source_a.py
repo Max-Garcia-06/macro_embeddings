@@ -6,6 +6,8 @@ source_a_embeddings_{variant}.parquet including the embedding_text column so
 the exact embedded text is auditable.
 
 Variants:
+  raw: no cleaning -- embeds raw_intro_text unchanged. Used to reconstruct
+      the true pre-cleaning baseline for gate comparisons.
   v2: strip_self_reference + strip_boilerplate_phrasing (incl. the new
       eponym / metro-area / formation patterns), with empty-text fallback.
   v3: v2, then drop sentences whose masked template appears in >=5% of
@@ -40,16 +42,19 @@ def build_embedding_texts(df: pd.DataFrame, variant: str) -> list[str]:
 
     Args:
         df: DataFrame with county_name and raw_intro_text columns.
-        variant: "v2" (regex cleaning) or "v3" (v2 + frequency filter).
+        variant: "raw" (no cleaning), "v2" (regex cleaning), or "v3" (v2 +
+            frequency filter).
 
     Returns:
         One non-empty text per row, in row order.
 
     Raises:
-        ValueError: If variant is not "v2" or "v3".
+        ValueError: If variant is not one of the supported names.
     """
-    if variant not in ("v2", "v3"):
+    if variant not in ("raw", "v2", "v3"):
         raise ValueError(f"Unknown variant: {variant!r}")
+    if variant == "raw":
+        return df["raw_intro_text"].tolist()
     texts = [
         clean_for_embedding(raw, name)
         for name, raw in zip(df["county_name"], df["raw_intro_text"])
@@ -65,7 +70,7 @@ def main() -> None:
     """Re-embed the full corpus for one cleaning variant."""
     configure_logging()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--variant", choices=["v2", "v3"], required=True)
+    parser.add_argument("--variant", choices=["raw", "v2", "v3"], required=True)
     args = parser.parse_args()
 
     df = pd.read_parquet(INPUT_PARQUET_PATH)
