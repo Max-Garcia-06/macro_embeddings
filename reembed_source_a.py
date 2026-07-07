@@ -1,0 +1,92 @@
+"""Offline re-embedding of Source A from stored intro texts.
+
+Reads raw_intro_text from source_a_embeddings.parquet (no Wikimedia API
+access), applies a cleaning variant, re-embeds with BAAI/bge-m3, and writes
+source_a_embeddings_{variant}.parquet including the embedding_text column so
+the exact embedded text is auditable.
+
+Variants:
+  v2: strip_self_reference + strip_boilerplate_phrasing (incl. the new
+      eponym / metro-area / formation patterns), with empty-text fallback.
+  v3: v2, then drop sentences whose masked template appears in >=5% of
+      counties (boilerplate_frequency).
+"""
+
+from __future__ import annotations
+
+import argparse
+import logging
+from pathlib import Path
+
+import pandas as pd
+
+from boilerplate_frequency import (
+    DEFAULT_MIN_COUNTY_FRACTION,
+    drop_common_sentences,
+    find_common_templates,
+)
+from ingest_source_a import BgeM3EmbeddingGenerator, configure_logging
+from text_cleaning import clean_for_embedding
+
+INPUT_PARQUET_PATH: Path = Path(__file__).resolve().parent / "source_a_embeddings.parquet"
+OUTPUT_TEMPLATE: str = "source_a_embeddings_{variant}.parquet"
+LOG_EVERY: int = 250
+
+logger = logging.getLogger(__name__)
+
+
+def build_embedding_texts(df: pd.DataFrame, variant: str) -> list[str]:
+    """Produce the per-county text to embed for a cleaning variant.
+
+    Args:
+        df: DataFrame with county_name and raw_intro_text columns.
+        variant: "v2" (regex cleaning) or "v3" (v2 + frequency filter).
+
+    Returns:
+        One non-empty text per row, in row order.
+
+    Raises:
+        ValueError: If variant is not "v2" or "v3".
+    """
+    if variant not in ("v2", "v3"):
+        raise ValueError(f"Unknown variant: {variant!r}")
+    texts = [
+        clean_for_embedding(raw, name)
+        for name, raw in zip(df["county_name"], df["raw_intro_text"])
+    ]
+    if variant == "v3":
+        templates = find_common_templates(texts, DEFAULT_MIN_COUNTY_FRACTION)
+        logger.info("Frequency filter: %d common templates found", len(templates))
+        texts = [drop_common_sentences(t, templates) for t in texts]
+    return texts
+
+
+def main() -> None:
+    """Re-embed the full corpus for one cleaning variant."""
+    configure_logging()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--variant", choices=["v2", "v3"], required=True)
+    args = parser.parse_args()
+
+    df = pd.read_parquet(INPUT_PARQUET_PATH)
+    logger.info("Loaded %d counties from %s", len(df), INPUT_PARQUET_PATH)
+    texts = build_embedding_texts(df, args.variant)
+
+    embedder = BgeM3EmbeddingGenerator(device="cpu")
+    embeddings: list[list[float]] = []
+    for i, text in enumerate(texts):
+        if i % LOG_EVERY == 0:
+            logger.info("Embedding %d/%d", i, len(texts))
+        vector = embedder.l2_normalize(embedder.encode(text))
+        embeddings.append(vector.tolist())
+
+    out = df[["county_name", "fips_code", "raw_intro_text"]].copy()
+    out["embedding_text"] = texts
+    out["embedding"] = embeddings
+    output_path = Path(__file__).resolve().parent / OUTPUT_TEMPLATE.format(variant=args.variant)
+    out.to_parquet(output_path, engine="pyarrow", index=False)
+    logger.info("Wrote %d rows to %s", len(out), output_path)
+
+
+if __name__ == "__main__":
+    main()
