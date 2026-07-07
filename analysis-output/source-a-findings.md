@@ -2,7 +2,7 @@
 type: results-report
 date: 2026-07-03
 experiment_line: source-a
-round: 3
+round: 4
 purpose: consolidated-findings
 status: active
 supersedes:
@@ -486,3 +486,177 @@ remains an inference, not a measured result.
   comparison becomes worth running, it would need to reuse the same
   40-county sample and Mantel/pairwise-similarity protocol from §4 to be
   comparable to existing results.
+
+## 12. Round 4 — Targeted Boilerplate Stripping (2026-07-07)
+
+**Question**: §10-11 diagnosed the corpus as dominated by generic
+formation/demographic boilerplate rather than distinctive
+economic-transition narrative, and §3.4 identified two concrete
+surface-level mechanisms driving false high-similarity pairs (shared-eponym
+templated sentences; short, template-only articles converging on a generic
+centroid). Could targeted stripping of that boilerplate measurably reduce
+those mechanisms without destroying the corpus's one confirmed real
+signal (the weak negative Mantel correlation)?
+
+**Method**: two candidate cleaning variants, both layered on top of the
+existing Task-1/2 `strip_self_reference` → `strip_boilerplate_phrasing`
+pipeline, then re-embedded with the same `BAAI/bge-m3` model from the
+stored `raw_intro_text` (no Wikimedia API calls):
+- **v2**: three targeted regex families for the exact mechanisms behind
+  §3.4's top-5 far-but-similar pairs — eponym clauses ("named for/after
+  X"), metro/micropolitan-area sentences, and formation connectives.
+- **v3**: v2's regex families plus a corpus-frequency sentence filter that
+  drops any sentence whose number/proper-noun-masked "template" appears in
+  ≥5% of counties.
+
+**Pre-registered Decision Gate** (plan top-level, applied without
+modification): a candidate variant passes iff, on the fixed analysis
+county set:
+1. `tracked_pair_mean` (mean cosine similarity of the 5 tracked boilerplate
+   pairs from §3.4) drops by **≥ 0.03** vs. baseline;
+2. `pairwise_similarity_std` is **≥ baseline**;
+3. Mantel `r < 0` with `p < 0.05`.
+
+If both variants pass, adopt the one with the lower `tracked_pair_mean`
+(tiebreak: higher `pairwise_similarity_std`). If neither passes, keep the
+baseline and record the negative result.
+
+**Evaluation harness**: `evaluate_source_a_variants.py`, run once over all
+three parquets (baseline, v2, v3) against a single fixed analysis set —
+**2,275 counties**, after the harness's own `drop_stub_counties` filter
+(now running against the *stronger* post-Task-1/2/3-stripped text, hence
+lower than the 2,849 cited in §2/§3 — an expected consequence of more
+aggressive de-boilerplating creating more near-empty stubs, not a
+regression) plus the 50-states filter and centroid match. Full output:
+`analysis-output/variant-eval.json`.
+
+**Results** (all seven `REPORT_METRICS`, n=2,275 for every row):
+
+| Metric | Baseline | v2 | v3 |
+|---|---|---|---|
+| tracked_pair_mean | 0.82926 | 0.79366 | 0.75410 |
+| pairwise_similarity_mean | 0.55147 | 0.55236 | 0.51554 |
+| pairwise_similarity_std | 0.06251 | 0.06684 | 0.08830 |
+| mantel_r | -0.12171 | -0.09215 | -0.04999 |
+| mantel_p | 0.002 | 0.002 | 0.002 |
+| silhouette_k2 | 0.02889 | 0.02827 | 0.03797 |
+| n_counties | 2,275 | 2,275 | 2,275 |
+
+The Decision Gate's Mantel criterion only requires `r < 0` with `p < 0.05` —
+it does not require preserving the correlation's magnitude. v3's `mantel_r`
+(−0.04999) is about 41% of baseline's magnitude (−0.12171), a roughly 59%
+reduction in the strength of the corpus's one confirmed geography↔similarity
+signal. Both variants clear the gate's floor, but this magnitude loss is a
+real cost of adoption, not merely "preservation" of the signal.
+
+**Gate check**:
+
+| Candidate | tracked_pair_mean drop | ≥0.03? | std ≥ baseline? | mantel r<0, p<0.05? | Passes? |
+|---|---|---|---|---|---|
+| v2 | 0.82926 − 0.79366 = 0.03560 | yes | yes (0.06684 ≥ 0.06251) | yes (−0.09215, p=0.002) | **yes** |
+| v3 | 0.82926 − 0.75410 = 0.07516 | yes | yes (0.08830 ≥ 0.06251) | yes (−0.04999, p=0.002) | **yes** |
+
+Both variants pass. Tiebreak (lower `tracked_pair_mean` wins): v3
+(0.75410) < v2 (0.79366) → **v3 adopted**.
+
+**v3's aggregate std improvement masks a worse single worst-case outlier.**
+Per each variant's `top_far_similar_pairs` in `variant-eval.json`,
+baseline's most extreme far-apart-but-similar pair is Montgomery County,
+Alabama | Stutsman County, North Dakota at 0.8327 (~1967 km apart) — the
+same pair already tracked above. Under v3, the single worst far-similar
+pair is Allamakee County, Iowa | Clatsop County, Oregon at **0.9607**
+(~2557 km apart), exceeding baseline's worst case by a wide margin even
+though the aggregate `pairwise_similarity_std` improved (0.0625→0.0883).
+This is the expected flip side of aggressive stripping: very short
+residual text after stripping converges harder toward a generic centroid,
+producing occasional near-duplicate pairs that are both farther apart
+geographically and more similar in embedding space than anything in the
+baseline.
+
+**Tracked-pair count is 4, not 5.** `TRACKED_BOILERPLATE_PAIRS` in
+`evaluate_source_a_variants.py` enumerates all 5 pairs from §3.4's outlier
+table, including the #1-ranked pair, "Lincoln County, Kansas | Lincoln
+County, Oregon". That pair is absent from `tracked_pair_similarity` in
+**all three** parquet results, baseline included — one of the two counties
+fell out of the fixed 2,275-county analysis set because it failed the
+(now-stronger) stub-content filter, not because of an evaluation-harness
+bug. The remaining 4 tracked pairs, baseline → v3:
+
+| Pair | Baseline | v3 | Δ |
+|---|---|---|---|
+| Montgomery County, AL ↔ Stutsman County, ND | 0.8327 | 0.8308 | −0.0019 |
+| Stutsman County, ND ↔ Williamsburg County, SC | 0.8325 | 0.7500 | −0.0826 |
+| Franklin County, ME ↔ Franklin County, NE | 0.8263 | 0.6029 | −0.2233 |
+| Stutsman County, ND ↔ Providence County, RI | 0.8255 | 0.8327 | +0.0071 |
+
+Three of the four mechanisms tracked in §3.4 show sizable drops under v3 —
+most notably the shared-eponym "Franklin/Franklin" pair (−0.22) and the
+generic-boilerplate "Stutsman/Williamsburg" pair (−0.08), both directly
+targeted by the v2/v3 regex families and frequency filter. The
+Montgomery/Stutsman pair barely moved (−0.002), and Stutsman/Providence
+*increased* slightly (+0.007) — consistent with Stutsman County's article
+being short enough that stripping its templated sentences removes a large
+fraction of its remaining content, pushing it toward the corpus's
+post-stripping generic centroid from a different direction. This is the
+same "short, minimally-elaborated article" failure mode described in
+§3.4(b); it is not resolved by this round's variants and should be flagged
+as an open item rather than absorbed into the aggregate `tracked_pair_mean`
+drop.
+
+**Decision**: **v3 adopted** as the new baseline
+(`source_a_embeddings.parquet` overwritten with the former
+`source_a_embeddings_v3.parquet`; git history retains the prior baseline).
+All §9 artifacts were regenerated against the new baseline:
+
+| Script | Regenerated artifact(s) | Analysis n it reports | Exit |
+|---|---|---|---|
+| `visualize_source_a.py` | `source_a_map.html`, PC1 stats | 3,144 matched to centroids; PC1 explains **7.0%** of variance (up from 4.8% pre-stripping) | 0 |
+| `analyze_source_a_similarity.py` | `source_a_similarity.html`, `source_a_similarity_pairs.csv` | drops 868 stub counties (own pipeline, no 50-states filter applied) → **2,276** | 0 |
+| `analyze_source_a_clusters.py` | `source_a_clusters.html`, `source_a_cluster_summary.csv` | drops 868 stub + 1 non-50-state → **2,275** (matches the harness); silhouette-selected **k=3** (previously k=2), silhouette 0.0408; Mantel r=−0.0500, p=0.002 | 0 |
+| `analyze_source_a_cluster_stability.py` | stdout only (no persisted artifact) | 2,275; k=3 cross-seed silhouette mean=0.0387, std=0.0023; pairwise ARI mean=0.9924 (range 0.9870–0.9987, 5 seeds) | 0 |
+| `generate_source_a_insights.py` | `analysis-output/stats.json`, `analysis-output/figures/*` | 2,275 for clustering/Mantel; 3,144 for PC1 | 0 |
+| `nbconvert --execute` on `source_a_key_findings.ipynb` | `analysis-output/source_a_key_findings.ipynb` | re-executed against the new baseline; no separate n computed | 0 |
+
+Two things worth calling out explicitly rather than silently absorbing:
+- **The 2,275 vs. 2,276 counts are not the same n.**
+  `analyze_source_a_similarity.py` never applies the 50-states filter, so
+  it retains one extra county (2,276) relative to
+  `analyze_source_a_clusters.py`, `analyze_source_a_cluster_stability.py`,
+  and `generate_source_a_insights.py`, which all apply it and land on
+  2,275 — matching the harness's independently-implemented
+  `build_analysis_frame`. That the two separately-implemented pipelines
+  (harness vs. repo analysis scripts) agree on 2,275 once both filters are
+  applied was verified against actual script output, not assumed.
+- **K-means now selects k=3, not k=2.** With v3 embeddings, silhouette
+  peaks at k=3 (0.0408) rather than k=2 (0.0405 — close, but k=3 now
+  wins). This changes §3.3/§3.5/§3.6's k=2-specific narrative (cluster
+  sizes, ARI, permutation-test structure) for the new baseline; those
+  sections are not rewritten here (out of scope for this round), but any
+  future work citing "the k=2 split" should re-check against the current
+  baseline's k=3 selection.
+
+**Claim candidates**:
+- **Claim**: targeted boilerplate stripping (v3: eponym/metro-area/
+  formation regex families + ≥5%-frequency sentence-template filter)
+  measurably reduced the surface-level false-similarity mechanisms
+  documented in §3.4, while preserving the corpus's negative
+  geography↔similarity signal.
+  - Evidence: `tracked_pair_mean` drop of 0.075 (0.82926→0.75410, gate
+    threshold 0.03), `pairwise_similarity_std` increase (0.0625→0.0883),
+    Mantel r remains negative and significant (−0.050, p=0.002, n=2,275)
+    — all measured against the pre-registered gate in
+    `analysis-output/variant-eval.json`.
+  - Allowed wording: "de-boilerplating (v3) reduced tracked
+    false-similarity-pair similarity by ~0.075 and increased pairwise
+    similarity dispersion, while the geography↔similarity Mantel signal
+    remained negative and significant"; "3 of the 4 evaluable tracked
+    pairs (the eponym and generic-boilerplate mechanisms) showed the
+    expected reduction."
+  - Forbidden wording: any claim that de-boilerplating validates Source A
+    for the E_macro proposal's economic-narrative role (§10) — that still
+    requires the untested Source E/B correlation check; also forbidden:
+    describing this as fixing "all" false-similarity mechanisms — the
+    Stutsman/Providence pair moved in the wrong direction, and no claim
+    should paper over that.
+  - Status: resolved for this round's specific gate criteria; the
+    proposal-alignment question from §10 remains open.
