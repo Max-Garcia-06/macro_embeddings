@@ -1,6 +1,7 @@
 """Tests for text_cleaning: characterization of existing behavior + new patterns."""
 
 from text_cleaning import (
+    clean_for_embedding,
     clean_intro_text,
     strip_boilerplate_phrasing,
     strip_self_reference,
@@ -76,3 +77,22 @@ class TestNewBoilerplatePatterns:
         assert "established" not in out
         assert "1838" in out
         assert "Benjamin Franklin" not in out
+
+
+class TestCleanForEmbedding:
+    def test_applies_both_strip_stages(self) -> None:
+        out = clean_for_embedding(LINCOLN_KS_INTRO, "Lincoln County, Kansas")
+        assert "Lincoln County" not in out
+        assert "Abraham Lincoln" not in out
+        assert "2,939" in out
+
+    def test_falls_back_when_stripping_empties_text(self) -> None:
+        # Text that is *entirely* boilerplate: full stripping leaves nothing.
+        text = "Foo County is a county located in the U.S. state of Kansas ."
+        out = clean_for_embedding(text, "Foo County, Kansas")
+        assert out != ""
+
+    def test_falls_back_to_raw_when_everything_empties(self) -> None:
+        # County name == entire text: self-reference stripping empties it too.
+        out = clean_for_embedding("Foo County", "Foo County, Kansas")
+        assert out == "Foo County"

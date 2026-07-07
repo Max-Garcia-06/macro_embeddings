@@ -184,3 +184,27 @@ def strip_boilerplate_phrasing(text: str) -> str:
     text = _FORMATION_CONNECTIVE_PATTERN.sub("", text)
     text = _LEADING_PUNCTUATION_PATTERN.sub("", text)
     return _WHITESPACE_PATTERN.sub(" ", text).strip()
+
+
+def clean_for_embedding(raw_intro_text: str, county_name: str) -> str:
+    """Run the full offline cleaning pipeline with an empty-result fallback.
+
+    Applies strip_self_reference then strip_boilerplate_phrasing. If the
+    stronger stripping empties the text (possible for stub articles that are
+    entirely boilerplate), falls back to the self-reference-stripped text,
+    then to the raw text, so no county is ever embedded from an empty string.
+
+    Args:
+        raw_intro_text: Stored intro text, as in the parquet's raw_intro_text.
+        county_name: County display name, e.g. "Lincoln County, Kansas".
+
+    Returns:
+        Non-empty text to embed (assuming raw_intro_text is non-empty).
+    """
+    dereferenced = strip_self_reference(raw_intro_text, county_name)
+    stripped = strip_boilerplate_phrasing(dereferenced)
+    if stripped:
+        return stripped
+    if dereferenced:
+        return dereferenced
+    return raw_intro_text
