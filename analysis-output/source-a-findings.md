@@ -542,6 +542,13 @@ regression) plus the 50-states filter and centroid match. Full output:
 | silhouette_k2 | 0.02889 | 0.02827 | 0.03797 |
 | n_counties | 2,275 | 2,275 | 2,275 |
 
+The Decision Gate's Mantel criterion only requires `r < 0` with `p < 0.05` —
+it does not require preserving the correlation's magnitude. v3's `mantel_r`
+(−0.04999) is about 41% of baseline's magnitude (−0.12171), a roughly 59%
+reduction in the strength of the corpus's one confirmed geography↔similarity
+signal. Both variants clear the gate's floor, but this magnitude loss is a
+real cost of adoption, not merely "preservation" of the signal.
+
 **Gate check**:
 
 | Candidate | tracked_pair_mean drop | ≥0.03? | std ≥ baseline? | mantel r<0, p<0.05? | Passes? |
@@ -551,6 +558,20 @@ regression) plus the 50-states filter and centroid match. Full output:
 
 Both variants pass. Tiebreak (lower `tracked_pair_mean` wins): v3
 (0.75410) < v2 (0.79366) → **v3 adopted**.
+
+**v3's aggregate std improvement masks a worse single worst-case outlier.**
+Per each variant's `top_far_similar_pairs` in `variant-eval.json`,
+baseline's most extreme far-apart-but-similar pair is Montgomery County,
+Alabama | Stutsman County, North Dakota at 0.8327 (~1967 km apart) — the
+same pair already tracked above. Under v3, the single worst far-similar
+pair is Allamakee County, Iowa | Clatsop County, Oregon at **0.9607**
+(~2557 km apart), exceeding baseline's worst case by a wide margin even
+though the aggregate `pairwise_similarity_std` improved (0.0625→0.0883).
+This is the expected flip side of aggressive stripping: very short
+residual text after stripping converges harder toward a generic centroid,
+producing occasional near-duplicate pairs that are both farther apart
+geographically and more similar in embedding space than anything in the
+baseline.
 
 **Tracked-pair count is 4, not 5.** `TRACKED_BOILERPLATE_PAIRS` in
 `evaluate_source_a_variants.py` enumerates all 5 pairs from §3.4's outlier
