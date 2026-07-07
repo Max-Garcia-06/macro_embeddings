@@ -40,6 +40,32 @@ _COUNTY_SEAT_CLAUSE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+# Shared-eponym clauses ("named for/after Abraham Lincoln, 16th president
+# ...") reproduce near-identical sentences in every county named for the same
+# figure and were the top mechanism behind far-apart-but-similar pairs
+# (analysis-output/source-a-findings.md section 3.4). The eponym's name is
+# removed along with the clause: the shared name token is what creates the
+# false similarity.
+_EPONYM_CLAUSE_PATTERN = re.compile(
+    r"(?:(?:The (?:county|parish)|It) (?:was|is) )?"
+    r"named (?:for|after|in honor of)\b[^.]*\.?",
+    re.IGNORECASE,
+)
+# Metro/micropolitan-area sentences follow one near-verbatim template
+# ("X comprises / is included in the Y (metropolitan|micropolitan)
+# (statistical) area"); the whole sentence is dropped.
+_METRO_AREA_SENTENCE_PATTERN = re.compile(
+    r"[^.]*\b(?:metropolitan|micropolitan|combined) (?:statistical )?area\b[^.]*\.?",
+    re.IGNORECASE,
+)
+# Formation connective ("The county was established on/in") is shared across
+# nearly all counties; the county-specific date it introduces is kept.
+_FORMATION_CONNECTIVE_PATTERN = re.compile(
+    r"\b(?:The (?:county|parish)|It) was "
+    r"(?:formed|established|created|organized|founded)(?: (?:on|in))?\b",
+    re.IGNORECASE,
+)
+
 
 def isolate_lead_section(article_html: str) -> str:
     """Isolate the lead/introductory section of an article, dropping later sections.
@@ -137,11 +163,12 @@ def strip_boilerplate_phrasing(text: str) -> str:
     """Remove generic templated connective clauses shared across county leads.
 
     Targets the near-universal "is a county ... in the U.S. state of",
-    "As of the 2020 census, the population was", and "The county seat is"
-    clauses, which contribute identical tokens to almost every county's intro
-    regardless of content and would otherwise dominate embedding similarity
-    for short articles. The county-specific values these clauses introduce
-    (population figures, seat names) are left in place.
+    "As of the 2020 census, the population was", "The county seat is",
+    "named for/after", "metropolitan/micropolitan area", and "was
+    established on/in" clauses, which contribute identical tokens to almost
+    every county's intro regardless of content and would otherwise dominate
+    embedding similarity for short articles. The county-specific values these
+    clauses introduce (population figures, seat names, dates) are left in place.
 
     Args:
         text: Intro text, typically already passed through strip_self_reference.
@@ -152,5 +179,8 @@ def strip_boilerplate_phrasing(text: str) -> str:
     text = _OPENING_TOPIC_SENTENCE_PATTERN.sub("", text)
     text = _CENSUS_CLAUSE_PATTERN.sub("", text)
     text = _COUNTY_SEAT_CLAUSE_PATTERN.sub("", text)
+    text = _METRO_AREA_SENTENCE_PATTERN.sub("", text)
+    text = _EPONYM_CLAUSE_PATTERN.sub("", text)
+    text = _FORMATION_CONNECTIVE_PATTERN.sub("", text)
     text = _LEADING_PUNCTUATION_PATTERN.sub("", text)
     return _WHITESPACE_PATTERN.sub(" ", text).strip()

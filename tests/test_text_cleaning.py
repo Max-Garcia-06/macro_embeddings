@@ -39,3 +39,40 @@ class TestExistingBehavior:
     def test_clean_intro_text_returns_empty_string_when_no_content(self) -> None:
         html = '<section data-mw-section-id="0"><table><tr><td>x</td></tr></table></section>'
         assert clean_intro_text(html) == ""
+
+
+class TestNewBoilerplatePatterns:
+    def test_eponym_clause_removed_including_name(self) -> None:
+        text = (
+            "The county was named after Abraham Lincoln , the 16th president "
+            "of the United States."
+        )
+        out = strip_boilerplate_phrasing(text)
+        assert "Abraham Lincoln" not in out
+        assert "named" not in out
+
+    def test_eponym_clause_removed_is_named_for_variant(self) -> None:
+        text = "The county is named for Abraham Lincoln , 16th president of the United States ."
+        out = strip_boilerplate_phrasing(text)
+        assert "Abraham Lincoln" not in out
+
+    def test_metro_area_sentence_removed_entirely(self) -> None:
+        text = (
+            "comprises the Jamestown micropolitan statistical area . "
+            "The population was 21,593."
+        )
+        out = strip_boilerplate_phrasing(text)
+        assert "micropolitan" not in out
+        assert "Jamestown" not in out
+        assert "21,593" in out
+
+    def test_metropolitan_area_sentence_removed(self) -> None:
+        text = "is included in the Montgomery metropolitan area ."
+        assert strip_boilerplate_phrasing(text) == ""
+
+    def test_formation_connective_removed_date_kept(self) -> None:
+        text = "The county was established on May 9, 1838, and named for Benjamin Franklin ."
+        out = strip_boilerplate_phrasing(text)
+        assert "established" not in out
+        assert "1838" in out
+        assert "Benjamin Franklin" not in out
