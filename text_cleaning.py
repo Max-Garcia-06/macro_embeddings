@@ -7,9 +7,12 @@ crosswalk load). No network access, no model loading.
 
 from __future__ import annotations
 
+import logging
 import re
 
 from bs4 import BeautifulSoup
+
+logger = logging.getLogger(__name__)
 
 _WIKI_LINK_PATTERN = re.compile(r"\[\[([^\]|]+\|)?([^\]]+)\]\]")
 _CITATION_BRACKET_PATTERN = re.compile(r"\[\d+\]")
