@@ -16,8 +16,10 @@ only invoked when review_dropped_sentences is actually called.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
+from pathlib import Path
 
 import requests
 
@@ -126,3 +128,106 @@ class GemmaClient:
         )
         response.raise_for_status()
         return response.json()["response"]
+
+
+DEFAULT_CACHE_PATH: Path = (
+    Path(__file__).resolve().parent / "analysis-output" / "llm_review_cache.jsonl"
+)
+
+
+def cache_key(kept_text: str, sentence: str) -> str:
+    """Build a stable cache key for one (kept_text, dropped_sentence) pair.
+
+    Args:
+        kept_text: The county's kept (v3) text, used as review context.
+        sentence: The specific dropped sentence being judged.
+
+    Returns:
+        A hex-digest cache key.
+    """
+    digest = hashlib.sha256()
+    digest.update(kept_text.encode("utf-8"))
+    digest.update(b"\x00")
+    digest.update(sentence.encode("utf-8"))
+    return digest.hexdigest()
+
+
+def load_cache(cache_path: Path) -> dict[str, bool]:
+    """Load all cached verdicts from a JSONL cache file.
+
+    Args:
+        cache_path: Path to the cache file; need not exist yet.
+
+    Returns:
+        Mapping of cache_key -> verdict. Empty if the file doesn't exist.
+    """
+    if not cache_path.exists():
+        return {}
+    cache: dict[str, bool] = {}
+    for line in cache_path.read_text().splitlines():
+        if not line.strip():
+            continue
+        entry = json.loads(line)
+        cache[entry["key"]] = entry["verdict"]
+    return cache
+
+
+def append_cache_entry(cache_path: Path, key: str, verdict: bool) -> None:
+    """Append one verdict to the JSONL cache file, creating it if needed.
+
+    Args:
+        cache_path: Path to the cache file.
+        key: Cache key, as produced by cache_key.
+        verdict: True (restore) or False (leave dropped).
+    """
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    with cache_path.open("a") as f:
+        f.write(json.dumps({"key": key, "verdict": verdict}) + "\n")
+
+
+def review_dropped_sentences(
+    kept_text: str,
+    dropped_sentences: list[str],
+    client: GemmaClient,
+    cache_path: Path = DEFAULT_CACHE_PATH,
+) -> list[str]:
+    """Ask Gemma which of a county's dropped sentences to restore.
+
+    Looks up each (kept_text, sentence) pair in the on-disk cache first;
+    only calls the client for cache misses, in a single batched call
+    covering all misses for this county. On any client or parse failure,
+    logs a warning and treats every uncached sentence as "leave dropped"
+    (the county falls back to plain v3 behavior) rather than raising.
+
+    Args:
+        kept_text: The county's v3 (frequency-filtered) kept text.
+        dropped_sentences: Sentences the frequency filter would drop for
+            this county, in original wording and order.
+        client: GemmaClient (or compatible test double) to query on a
+            cache miss.
+        cache_path: JSONL verdict cache path.
+
+    Returns:
+        The subset of dropped_sentences to restore, in original order.
+    """
+    if not dropped_sentences:
+        return []
+
+    cache = load_cache(cache_path)
+    keys = [cache_key(kept_text, s) for s in dropped_sentences]
+    uncached_indices = [i for i, k in enumerate(keys) if k not in cache]
+
+    if uncached_indices:
+        uncached_sentences = [dropped_sentences[i] for i in uncached_indices]
+        try:
+            prompt = build_review_prompt(kept_text, uncached_sentences)
+            raw = client.generate(prompt)
+            verdicts = parse_review_response(raw, len(uncached_sentences))
+        except (requests.RequestException, ValueError) as exc:
+            logger.warning("Gemma review failed (%s); leaving drops as-is", exc)
+            verdicts = [False] * len(uncached_sentences)
+        for idx, verdict in zip(uncached_indices, verdicts):
+            cache[keys[idx]] = verdict
+            append_cache_entry(cache_path, keys[idx], verdict)
+
+    return [s for s, k in zip(dropped_sentences, keys) if cache[k]]

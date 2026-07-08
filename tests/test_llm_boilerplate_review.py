@@ -2,6 +2,7 @@
 the Gemma client, caching, and review orchestration."""
 
 import json
+from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
@@ -10,8 +11,12 @@ from llm_boilerplate_review import (
     DEFAULT_GEMMA_MODEL,
     DEFAULT_OLLAMA_HOST,
     GemmaClient,
+    append_cache_entry,
     build_review_prompt,
+    cache_key,
+    load_cache,
     parse_review_response,
+    review_dropped_sentences,
 )
 
 
@@ -76,3 +81,74 @@ class TestGemmaClient:
         client = GemmaClient()
         with pytest.raises(requests.RequestException):
             client.generate("some prompt")
+
+
+class FakeGemmaClient:
+    """Test double: returns a canned response or raises a canned exception."""
+
+    def __init__(self, response: str | Exception) -> None:
+        self.response = response
+        self.calls: list[str] = []
+
+    def generate(self, prompt: str) -> str:
+        self.calls.append(prompt)
+        if isinstance(self.response, Exception):
+            raise self.response
+        return self.response
+
+
+class TestCache:
+    def test_cache_key_is_stable_and_input_sensitive(self) -> None:
+        a = cache_key("kept", "dropped")
+        b = cache_key("kept", "dropped")
+        c = cache_key("kept", "different")
+        assert a == b
+        assert a != c
+
+    def test_load_cache_empty_when_missing(self, tmp_path: Path) -> None:
+        assert load_cache(tmp_path / "missing.jsonl") == {}
+
+    def test_append_then_load_round_trips(self, tmp_path: Path) -> None:
+        cache_path = tmp_path / "cache.jsonl"
+        append_cache_entry(cache_path, "abc", True)
+        append_cache_entry(cache_path, "def", False)
+        assert load_cache(cache_path) == {"abc": True, "def": False}
+
+
+class TestReviewDroppedSentences:
+    def test_returns_empty_list_for_no_dropped_sentences(self, tmp_path: Path) -> None:
+        client = FakeGemmaClient(response="{}")
+        out = review_dropped_sentences("kept text", [], client, tmp_path / "cache.jsonl")
+        assert out == []
+        assert client.calls == []
+
+    def test_restores_sentence_gemma_marks_true(self, tmp_path: Path) -> None:
+        client = FakeGemmaClient(response='{"0": true, "1": false}')
+        out = review_dropped_sentences(
+            "kept text", ["restore me.", "leave me dropped."], client, tmp_path / "cache.jsonl"
+        )
+        assert out == ["restore me."]
+
+    def test_falls_back_to_empty_on_malformed_response(self, tmp_path: Path) -> None:
+        client = FakeGemmaClient(response="not json")
+        out = review_dropped_sentences(
+            "kept text", ["some sentence."], client, tmp_path / "cache.jsonl"
+        )
+        assert out == []
+
+    def test_falls_back_to_empty_on_transport_failure(self, tmp_path: Path) -> None:
+        import requests
+
+        client = FakeGemmaClient(response=requests.RequestException("network down"))
+        out = review_dropped_sentences(
+            "kept text", ["some sentence."], client, tmp_path / "cache.jsonl"
+        )
+        assert out == []
+
+    def test_cached_verdict_skips_a_second_client_call(self, tmp_path: Path) -> None:
+        cache_path = tmp_path / "cache.jsonl"
+        client = FakeGemmaClient(response='{"0": true}')
+        first = review_dropped_sentences("kept text", ["restore me."], client, cache_path)
+        second = review_dropped_sentences("kept text", ["restore me."], client, cache_path)
+        assert first == second == ["restore me."]
+        assert len(client.calls) == 1
