@@ -2,10 +2,17 @@
 the Gemma client, caching, and review orchestration."""
 
 import json
+from unittest.mock import Mock, patch
 
 import pytest
 
-from llm_boilerplate_review import build_review_prompt, parse_review_response
+from llm_boilerplate_review import (
+    DEFAULT_GEMMA_MODEL,
+    DEFAULT_OLLAMA_HOST,
+    GemmaClient,
+    build_review_prompt,
+    parse_review_response,
+)
 
 
 class TestBuildReviewPrompt:
@@ -41,3 +48,31 @@ class TestParseReviewResponse:
     def test_raises_on_non_object_json(self) -> None:
         with pytest.raises(ValueError):
             parse_review_response("[true, false]", 2)
+
+
+class TestGemmaClient:
+    @patch("llm_boilerplate_review.requests.post")
+    def test_generate_posts_pinned_temperature_and_model(self, mock_post: Mock) -> None:
+        mock_post.return_value = Mock(json=lambda: {"response": '{"0": true}'})
+        mock_post.return_value.raise_for_status = lambda: None
+
+        client = GemmaClient()
+        result = client.generate("some prompt")
+
+        assert result == '{"0": true}'
+        _, kwargs = mock_post.call_args
+        assert kwargs["json"]["model"] == DEFAULT_GEMMA_MODEL
+        assert kwargs["json"]["prompt"] == "some prompt"
+        assert kwargs["json"]["options"]["temperature"] == 0
+        assert mock_post.call_args[0][0] == f"{DEFAULT_OLLAMA_HOST}/api/generate"
+
+    @patch("llm_boilerplate_review.requests.post")
+    def test_generate_raises_on_http_error(self, mock_post: Mock) -> None:
+        import requests
+
+        mock_post.return_value = Mock()
+        mock_post.return_value.raise_for_status.side_effect = requests.HTTPError("500")
+
+        client = GemmaClient()
+        with pytest.raises(requests.RequestException):
+            client.generate("some prompt")

@@ -19,6 +19,8 @@ from __future__ import annotations
 import json
 import logging
 
+import requests
+
 logger = logging.getLogger(__name__)
 
 
@@ -86,3 +88,41 @@ def parse_review_response(raw: str, n_sentences: int) -> list[bool]:
             )
         verdicts.append(value)
     return verdicts
+
+
+DEFAULT_GEMMA_MODEL: str = "gemma2:9b"
+DEFAULT_OLLAMA_HOST: str = "http://localhost:11434"
+REQUEST_TIMEOUT_SECONDS: int = 120
+
+
+class GemmaClient:
+    """Thin wrapper around a local Ollama /api/generate call, pinned for determinism."""
+
+    def __init__(self, model: str = DEFAULT_GEMMA_MODEL, host: str = DEFAULT_OLLAMA_HOST) -> None:
+        self.model = model
+        self.host = host
+
+    def generate(self, prompt: str) -> str:
+        """Send a prompt to the local Gemma model and return its raw text response.
+
+        Args:
+            prompt: Full prompt text.
+
+        Returns:
+            The model's raw response string.
+
+        Raises:
+            requests.RequestException: On any transport or HTTP-status failure.
+        """
+        response = requests.post(
+            f"{self.host}/api/generate",
+            json={
+                "model": self.model,
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": 0},
+            },
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+        return response.json()["response"]
