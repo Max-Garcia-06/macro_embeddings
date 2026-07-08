@@ -1,94 +1,52 @@
 {
-  "generated": "2026-07-07",
-  "baseline": "source_a_embeddings.parquet",
+  "generated": "2026-07-08",
+  "baseline": "source_a_embeddings_raw.parquet",
   "seed": 42,
   "n_permutations": 499,
   "results": {
+    "source_a_embeddings_raw.parquet": {
+      "n_counties": 2275,
+      "pairwise_similarity_mean": 0.5076851580589891,
+      "pairwise_similarity_std": 0.059907276475077716,
+      "mantel_r": -0.2891655491993567,
+      "mantel_p": 0.002,
+      "silhouette_k2": 0.02192833532308916,
+      "tracked_pair_similarity": {
+        "Montgomery County, Alabama | Stutsman County, North Dakota": 0.5712116381950908,
+        "Stutsman County, North Dakota | Williamsburg County, South Carolina": 0.5821619128351347,
+        "Franklin County, Maine | Franklin County, Nebraska": 0.7451331094441773,
+        "Stutsman County, North Dakota | Providence County, Rhode Island": 0.528326556810963
+      },
+      "tracked_pair_mean": 0.6067083043213415,
+      "top_far_similar_pairs": [
+        {
+          "pair": "Grant County, Oklahoma | Grant County, Oregon",
+          "similarity": 0.7967623023039576,
+          "distance_km": 1977.5682891713764
+        },
+        {
+          "pair": "Franklin County, Maine | Franklin County, Mississippi",
+          "similarity": 0.7876995415838255,
+          "distance_km": 2323.3322614415983
+        },
+        {
+          "pair": "Adams County, Washington | Adams County, Wisconsin",
+          "similarity": 0.7859528812968448,
+          "distance_km": 2252.9650284781424
+        },
+        {
+          "pair": "Franklin County, Illinois | Franklin County, Washington",
+          "similarity": 0.7854984063342062,
+          "distance_km": 2624.0247879498415
+        },
+        {
+          "pair": "Orange County, California | Orange County, Florida",
+          "similarity": 0.7778430906575073,
+          "distance_km": 3499.880882477699
+        }
+      ]
+    },
     "source_a_embeddings.parquet": {
-      "n_counties": 2275,
-      "pairwise_similarity_mean": 0.5514658163004017,
-      "pairwise_similarity_std": 0.06250534764107873,
-      "mantel_r": -0.12171163375900752,
-      "mantel_p": 0.002,
-      "silhouette_k2": 0.028892002624548933,
-      "tracked_pair_similarity": {
-        "Montgomery County, Alabama | Stutsman County, North Dakota": 0.8327328721464251,
-        "Stutsman County, North Dakota | Williamsburg County, South Carolina": 0.8325155655769089,
-        "Franklin County, Maine | Franklin County, Nebraska": 0.8262559025143876,
-        "Stutsman County, North Dakota | Providence County, Rhode Island": 0.825526779663095
-      },
-      "tracked_pair_mean": 0.8292577799752041,
-      "top_far_similar_pairs": [
-        {
-          "pair": "Montgomery County, Alabama | Stutsman County, North Dakota",
-          "similarity": 0.8327328721464251,
-          "distance_km": 1966.9412182610652
-        },
-        {
-          "pair": "Stutsman County, North Dakota | Williamsburg County, South Carolina",
-          "similarity": 0.8325155655769089,
-          "distance_km": 2194.488263063668
-        },
-        {
-          "pair": "Franklin County, Maine | Franklin County, Nebraska",
-          "similarity": 0.8262559025143876,
-          "distance_km": 2384.071228524231
-        },
-        {
-          "pair": "Stutsman County, North Dakota | Providence County, Rhode Island",
-          "similarity": 0.825526779663095,
-          "distance_km": 2234.44321491887
-        },
-        {
-          "pair": "Olmsted County, Minnesota | Multnomah County, Oregon",
-          "similarity": 0.824683700957221,
-          "distance_km": 2361.085849871307
-        }
-      ]
-    },
-    "source_a_embeddings_v2.parquet": {
-      "n_counties": 2275,
-      "pairwise_similarity_mean": 0.5524365675307332,
-      "pairwise_similarity_std": 0.06683625320164023,
-      "mantel_r": -0.09214614629058977,
-      "mantel_p": 0.002,
-      "silhouette_k2": 0.028336537530407987,
-      "tracked_pair_similarity": {
-        "Montgomery County, Alabama | Stutsman County, North Dakota": 0.8308140059574941,
-        "Stutsman County, North Dakota | Williamsburg County, South Carolina": 0.8377089621618478,
-        "Franklin County, Maine | Franklin County, Nebraska": 0.6739828632539462,
-        "Stutsman County, North Dakota | Providence County, Rhode Island": 0.8321488203599382
-      },
-      "tracked_pair_mean": 0.7936636629333066,
-      "top_far_similar_pairs": [
-        {
-          "pair": "Franklin County, Massachusetts | Multnomah County, Oregon",
-          "similarity": 0.8521685000613723,
-          "distance_km": 3930.2818048726162
-        },
-        {
-          "pair": "Yellowstone County, Montana | Harris County, Texas",
-          "similarity": 0.8443788121147158,
-          "distance_km": 2109.2867207568597
-        },
-        {
-          "pair": "Franklin County, Massachusetts | Yellowstone County, Montana",
-          "similarity": 0.8422367254625225,
-          "distance_km": 2841.9708526837408
-        },
-        {
-          "pair": "Montgomery County, Alabama | Stark County, North Dakota",
-          "similarity": 0.8413932578475851,
-          "distance_km": 2143.7149441157
-        },
-        {
-          "pair": "Kent County, Delaware | Multnomah County, Oregon",
-          "similarity": 0.8406789760790835,
-          "distance_km": 3866.4654866953056
-        }
-      ]
-    },
-    "source_a_embeddings_v3.parquet": {
       "n_counties": 2275,
       "pairwise_similarity_mean": 0.5155226236743061,
       "pairwise_similarity_std": 0.08829762601868055,
@@ -127,6 +85,48 @@
           "pair": "Wibaux County, Montana | Graham County, North Carolina",
           "similarity": 0.8475595513379228,
           "distance_km": 2133.2524681986356
+        }
+      ]
+    },
+    "source_a_embeddings_v4.parquet": {
+      "n_counties": 2275,
+      "pairwise_similarity_mean": 0.5249983073381507,
+      "pairwise_similarity_std": 0.08335769608259211,
+      "mantel_r": -0.06543743575414109,
+      "mantel_p": 0.002,
+      "silhouette_k2": 0.04481847623398115,
+      "tracked_pair_similarity": {
+        "Montgomery County, Alabama | Stutsman County, North Dakota": 0.8308140059574941,
+        "Stutsman County, North Dakota | Williamsburg County, South Carolina": 0.7499592396167387,
+        "Franklin County, Maine | Franklin County, Nebraska": 0.6029474642065606,
+        "Stutsman County, North Dakota | Providence County, Rhode Island": 0.8326767400432652
+      },
+      "tracked_pair_mean": 0.7540993624560146,
+      "top_far_similar_pairs": [
+        {
+          "pair": "Hendry County, Florida | Finney County, Kansas",
+          "similarity": 0.872705249440825,
+          "distance_km": 2234.5364541431873
+        },
+        {
+          "pair": "Montgomery County, Ohio | Sweetwater County, Wyoming",
+          "similarity": 0.8681033215678244,
+          "distance_km": 2076.0403762697592
+        },
+        {
+          "pair": "Franklin County, Massachusetts | Multnomah County, Oregon",
+          "similarity": 0.8521685000613723,
+          "distance_km": 3930.2818048726162
+        },
+        {
+          "pair": "Wibaux County, Montana | Graham County, North Carolina",
+          "similarity": 0.8475595513379228,
+          "distance_km": 2133.2524681986356
+        },
+        {
+          "pair": "Hamilton County, Ohio | Sweetwater County, Wyoming",
+          "similarity": 0.8449451993621493,
+          "distance_km": 2070.6192216999393
         }
       ]
     }
