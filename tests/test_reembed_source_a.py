@@ -77,3 +77,80 @@ def test_v4_skips_frequency_filter_when_result_too_short() -> None:
     assert "faraway explorers" in texts[1]
     assert rural_unique in texts[1]
     assert len(texts[1]) == 104
+
+
+class FakeGemmaClient:
+    def __init__(self, response: str | Exception) -> None:
+        self.response = response
+
+    def generate(self, prompt: str) -> str:
+        if isinstance(self.response, Exception):
+            raise self.response
+        return self.response
+
+
+def test_v5_matches_v3_when_no_sentences_dropped(tmp_path) -> None:
+    df = pd.DataFrame(
+        {
+            "county_name": ["Millbrook County, Astoria", "Thistle County, Astoria"],
+            "raw_intro_text": [
+                "The county maintains one of the state's oldest grain elevators.",
+                "Farming is common in this part of the state.",
+            ],
+        }
+    )
+    v3_texts = build_embedding_texts(df, "v3")
+    v5_texts = build_embedding_texts(
+        df, "v5", gemma_client=FakeGemmaClient(response="{}"), cache_path=tmp_path / "cache.jsonl"
+    )
+    assert v5_texts == v3_texts
+
+
+def test_v5_restores_sentence_gemma_marks_non_boilerplate(tmp_path) -> None:
+    common_sentence = (
+        "Many local histories mention faraway explorers visiting "
+        "centuries ago for trade."
+    )
+    unique_a = "The county maintains one of the state's oldest grain elevators."
+    unique_b = "Farming is common here."
+    df = pd.DataFrame(
+        {
+            "county_name": ["Millbrook County, Astoria", "Thistle County, Astoria"],
+            "raw_intro_text": [f"{common_sentence} {unique_a}", f"{common_sentence} {unique_b}"],
+        }
+    )
+    # Confirm the frequency filter does drop the common sentence under v3.
+    v3_texts = build_embedding_texts(df, "v3")
+    assert common_sentence not in v3_texts[0]
+
+    client = FakeGemmaClient(response='{"0": true}')
+    v5_texts = build_embedding_texts(
+        df, "v5", gemma_client=client, cache_path=tmp_path / "cache.jsonl"
+    )
+
+    # Restored, and in original order (common sentence first, as in raw text).
+    assert v5_texts[0] == f"{common_sentence} {unique_a}"
+    assert v5_texts[1] == f"{common_sentence} {unique_b}"
+
+
+def test_v5_falls_back_to_v3_when_gemma_call_fails(tmp_path) -> None:
+    common_sentence = (
+        "Many local histories mention faraway explorers visiting "
+        "centuries ago for trade."
+    )
+    unique_a = "The county maintains one of the state's oldest grain elevators."
+    unique_b = "Farming is common here."
+    df = pd.DataFrame(
+        {
+            "county_name": ["Millbrook County, Astoria", "Thistle County, Astoria"],
+            "raw_intro_text": [f"{common_sentence} {unique_a}", f"{common_sentence} {unique_b}"],
+        }
+    )
+    v3_texts = build_embedding_texts(df, "v3")
+    v5_texts = build_embedding_texts(
+        df,
+        "v5",
+        gemma_client=FakeGemmaClient(response="not json"),
+        cache_path=tmp_path / "cache.jsonl",
+    )
+    assert v5_texts == v3_texts
