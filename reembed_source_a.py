@@ -12,6 +12,11 @@ Variants:
       eponym / metro-area / formation patterns), with empty-text fallback.
   v3: v2, then drop sentences whose masked template appears in >=5% of
       counties (boilerplate_frequency).
+  v4: v2, then drop sentences whose masked template appears in >=5% of
+      counties, UNLESS doing so would leave a county's text below
+      MIN_CONTENT_LENGTH -- in that case the v2 text is kept unfiltered for
+      that county (see analysis-output/source-a-findings.md section 12's
+      rural-county over-stripping finding).
 """
 
 from __future__ import annotations
@@ -22,6 +27,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from analyze_source_a_similarity import MIN_CONTENT_LENGTH
 from boilerplate_frequency import (
     DEFAULT_MIN_COUNTY_FRACTION,
     drop_common_sentences,
@@ -42,8 +48,9 @@ def build_embedding_texts(df: pd.DataFrame, variant: str) -> list[str]:
 
     Args:
         df: DataFrame with county_name and raw_intro_text columns.
-        variant: "raw" (no cleaning), "v2" (regex cleaning), or "v3" (v2 +
-            frequency filter).
+        variant: "raw" (no cleaning), "v2" (regex cleaning), "v3" (v2 +
+            frequency filter), or "v4" (v2 + outcome-gated frequency
+            filter, protecting short/rural counties from over-stripping).
 
     Returns:
         One non-empty text per row, in row order.
@@ -51,7 +58,7 @@ def build_embedding_texts(df: pd.DataFrame, variant: str) -> list[str]:
     Raises:
         ValueError: If variant is not one of the supported names.
     """
-    if variant not in ("raw", "v2", "v3"):
+    if variant not in ("raw", "v2", "v3", "v4"):
         raise ValueError(f"Unknown variant: {variant!r}")
     if variant == "raw":
         return df["raw_intro_text"].tolist()
@@ -59,10 +66,17 @@ def build_embedding_texts(df: pd.DataFrame, variant: str) -> list[str]:
         clean_for_embedding(raw, name)
         for name, raw in zip(df["county_name"], df["raw_intro_text"])
     ]
-    if variant == "v3":
+    if variant in ("v3", "v4"):
         templates = find_common_templates(texts, DEFAULT_MIN_COUNTY_FRACTION)
         logger.info("Frequency filter: %d common templates found", len(templates))
-        texts = [drop_common_sentences(t, templates) for t in texts]
+        filtered = [drop_common_sentences(t, templates) for t in texts]
+        if variant == "v3":
+            texts = filtered
+        else:
+            texts = [
+                candidate if len(candidate) >= MIN_CONTENT_LENGTH else original
+                for original, candidate in zip(texts, filtered)
+            ]
     return texts
 
 
@@ -70,7 +84,7 @@ def main() -> None:
     """Re-embed the full corpus for one cleaning variant."""
     configure_logging()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--variant", choices=["raw", "v2", "v3"], required=True)
+    parser.add_argument("--variant", choices=["raw", "v2", "v3", "v4"], required=True)
     args = parser.parse_args()
 
     df = pd.read_parquet(INPUT_PARQUET_PATH)
