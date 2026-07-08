@@ -660,3 +660,129 @@ Two things worth calling out explicitly rather than silently absorbing:
     should paper over that.
   - Status: resolved for this round's specific gate criteria; the
     proposal-alignment question from §10 remains open.
+
+## 13. Round 5 — Rural-County Boilerplate-Filter Protection (2026-07-08)
+
+**Question**: §12 documented that v3's corpus-frequency filter, while
+passing its adoption gate, introduced a worse-than-baseline worst-case
+outlier (0.9607 vs. baseline's 0.8327) by over-stripping short/rural
+articles — most visibly Stutsman County, ND's tracked pairs, which barely
+moved or moved the wrong direction. Could an outcome-gated version of the
+same filter fix this without giving up v3's tracked-pair and dispersion
+gains?
+
+**Method**: a `v4` variant, implemented in `reembed_source_a.py`'s
+`build_embedding_texts`. For each county, v3's regex + corpus-frequency
+sentence filter is applied as before, but the filtered result is only
+used if it still clears the existing `MIN_CONTENT_LENGTH` (100-char) stub-
+content bar (imported from `analyze_source_a_similarity.py`); otherwise
+that county keeps its unfiltered v2 (regex-only) text. Evaluated via
+`evaluate_source_a_variants.py` against a freshly reconstructed `raw`
+(no-cleaning) parquet and the current v3 baseline, n=2,275 counties for
+every row.
+
+**Methodology caveat — the `raw` parquet here is not this experiment
+line's historical baseline, and should not be treated as one.** The `raw`
+parquet built for this round embeds fully unprocessed `raw_intro_text`:
+literal, unstripped Wikipedia intro text, including each county's own name
+and state name spelled out, plus leading breadcrumb/hatnote content. Its
+much stronger Mantel correlation (r=−0.2892, roughly 2.4× the magnitude of
+v3's −0.0500) is very likely an artifact of literal state-name token
+overlap between same-state counties — `bge-m3` will score two texts that
+both contain the literal token "Texas" as more similar on that basis alone
+— not evidence of a stronger genuine narrative signal. This is exactly the
+failure mode `strip_self_reference` (in `text_cleaning.py`) was built to
+prevent in the first place (§1). The actual historical baseline used by
+every prior gate in this experiment line (§4, §12) already had self-
+reference and boilerplate-clause stripping applied at ingestion time; it
+was never literal raw HTML/text. Any future reuse of a zero-cleaning
+reconstruction like this round's `raw` parquet as a stand-in for "the
+original baseline" would silently launder this token-overlap artifact into
+whatever comparison uses it — this section exists to flag that risk before
+it happens, not after.
+
+**Results** (all rows n=2,275):
+
+| Metric | raw (zero-cleaning) | v3 (baseline) | v4 (candidate) |
+|---|---|---|---|
+| tracked_pair_mean | 0.6067 | 0.7541 | 0.7541 (identical to v3) |
+| pairwise_similarity_std | 0.0599 | 0.0883 | 0.0834 |
+| mantel_r | −0.2892 | −0.0500 | −0.0654 |
+| mantel_p | 0.002 | 0.002 | 0.002 |
+| worst top_far_similar_pairs entry | 0.7968 (Grant County, OK ↔ Grant County, OR) | 0.9607 (Allamakee, IA ↔ Clatsop, OR) | 0.8727 (Hendry, FL ↔ Finney, KS) |
+| Stutsman ND ↔ Providence RI tracked pair | 0.5283 | 0.8327 | 0.8327 (identical to v3) |
+
+Per the methodology caveat above, `raw` is excluded from the gate check
+below — it is a useful sanity check on the token-overlap risk, but it is
+not the baseline the pre-registered gate was written against. The gate
+check instead compares v4 to the real historical baseline already
+published in §12 (`tracked_pair_mean`=0.82926, `pairwise_similarity_std`=
+0.06251, `mantel_r`=−0.12171, Stutsman/Providence=0.8255, worst-case pair
+Montgomery AL ↔ Stutsman ND=0.8327) — none of those figures are
+recomputed here.
+
+**Gate check** (v4 vs. the real historical baseline from §12):
+
+| # | Criterion | v4 value | Real baseline reference | Result |
+|---|---|---|---|---|
+| 1 | tracked_pair_mean drop ≥0.03 vs. real baseline | 0.7541 | 0.82926 − 0.03 = 0.79926 | PASS (0.7541 ≤ 0.79926; drop = 0.07516) |
+| 2 | pairwise_similarity_std ≥ real baseline | 0.0834 | 0.06251 | PASS |
+| 3 | mantel r<0, p<0.05 | −0.0654, p=0.002 | — | PASS |
+| 4 | v4's worst top-far-similar pair ≤ v3's worst (0.9607) | 0.8727 | 0.9607 | PASS — this was the round's primary goal, and it worked: the dramatic tail-outlier regression from §12 is fixed |
+| 5 | Stutsman/Providence must not increase vs. real baseline (0.8255) | 0.8327 | 0.8255 | FAIL — identical to v3, no improvement; v4's outcome gate (keyed on `MIN_CONTENT_LENGTH`=100) never triggers for this specific pair because neither county's filtered text drops below that floor |
+
+4 of 5 criteria pass; criterion 5 fails. Per this experiment line's
+pre-registered rule ("if any criterion fails → reject"), the gate is not
+satisfied.
+
+**Decision**: **v4 rejected** — baseline remains v3
+(`source_a_embeddings.parquet` unchanged). The round's primary motivating
+goal, the worst-case tail outlier flagged in §12, was fixed
+(0.9607→0.8727), and that gain is real. But v4 does not clear the strict
+pre-registered gate: the specific Stutsman/Providence pair that motivated
+this round in the first place did not move, because that pair's filtered
+text never drops below the 100-char outcome-gate floor in the first place
+— the mechanism simply doesn't engage for it. Per gate discipline, a
+partial fix is not an adopted fix; §12's rural/short-county over-stripping
+regression remains an open, undismissed limitation of the current (v3)
+baseline.
+
+**Next Actions**:
+1. The outcome gate's `MIN_CONTENT_LENGTH`=100 floor was reused from the
+   pre-existing stub-content filter rather than derived for this purpose.
+   A future attempt should raise the floor to a value specifically chosen
+   to catch the Stutsman/Providence pair (and verify it against the other
+   three tracked pairs so it doesn't just trade one over-stripping failure
+   for another).
+2. If a zero-cleaning `raw`-style reconstruction is ever rebuilt for a
+   future round, it must carry the caveat above — it is not equivalent to
+   "the original baseline" and its Mantel/similarity numbers should not be
+   quoted without noting the literal state-name token-overlap confound.
+
+**Claim candidates**:
+- **Claim**: an outcome-gated version of v3's frequency filter (v4) fixes
+  v3's worst-case tail-outlier regression documented in §12 without
+  regressing v3's tracked-pair or dispersion gains, but does not clear this
+  experiment line's pre-registered adoption gate because it leaves one of
+  the four tracked boilerplate pairs (Stutsman/Providence) unchanged.
+  - Evidence: worst `top_far_similar_pairs` entry improves from 0.9607
+    (v3) to 0.8727 (v4), while `tracked_pair_mean` (0.7541) and
+    `pairwise_similarity_std` (0.0834) both still clear the gate's
+    thresholds against the real §12 baseline; Stutsman/Providence
+    similarity is 0.8327 under both v3 and v4, unchanged, versus 0.8255 at
+    the real baseline — all measured in
+    `analysis-output/variant-eval.json`.
+  - Allowed wording: "an outcome-gated variant (v4) fixed the single
+    worst-case far-but-similar pair identified in the prior round, but was
+    rejected under the pre-registered gate because it left one tracked
+    boilerplate pair unimproved"; "the current baseline (v3) still carries
+    an unresolved short/rural-county over-stripping risk for at least one
+    tracked pair."
+  - Forbidden wording: any claim that v4 was adopted, partially adopted,
+    or represents the new baseline — it was rejected in full, and
+    `source_a_embeddings.parquet` is unchanged; also forbidden: citing this
+    round's `raw` parquet's Mantel r (−0.2892) as a "true baseline" number
+    without the token-overlap caveat above.
+  - Status: resolved for this round's specific gate criteria; a follow-up
+    attempt with a purpose-tuned outcome-gate floor (Next Actions #1)
+    remains open.
