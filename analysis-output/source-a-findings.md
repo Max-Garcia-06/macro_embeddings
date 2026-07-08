@@ -686,7 +686,7 @@ line's historical baseline, and should not be treated as one.** The `raw`
 parquet built for this round embeds fully unprocessed `raw_intro_text`:
 literal, unstripped Wikipedia intro text, including each county's own name
 and state name spelled out, plus leading breadcrumb/hatnote content. Its
-much stronger Mantel correlation (r=−0.2892, roughly 2.4× the magnitude of
+much stronger Mantel correlation (r=−0.2892, roughly 5.8× the magnitude of
 v3's −0.0500) is very likely an artifact of literal state-name token
 overlap between same-state counties — `bge-m3` will score two texts that
 both contain the literal token "Texas" as more similar on that basis alone
