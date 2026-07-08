@@ -99,3 +99,22 @@ def drop_common_sentences(text: str, common_templates: set[str]) -> str:
     if not kept:
         return text
     return " ".join(kept)
+
+
+def find_dropped_sentences(text: str, common_templates: set[str]) -> list[str]:
+    """Find the sentences drop_common_sentences would remove from text.
+
+    The complement of drop_common_sentences: instead of the kept text, this
+    returns the sentences (original wording, original order) whose masked
+    template is common. Used to build the candidate list an LLM reviewer
+    checks for wrongly-dropped county-specific content.
+
+    Args:
+        text: Cleaned intro text.
+        common_templates: Output of find_common_templates.
+
+    Returns:
+        Sentences whose masked template is in common_templates, in their
+        original order and wording.
+    """
+    return [s for s in split_sentences(text) if mask_sentence_template(s) in common_templates]

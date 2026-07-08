@@ -3,6 +3,7 @@
 from boilerplate_frequency import (
     drop_common_sentences,
     find_common_templates,
+    find_dropped_sentences,
     mask_sentence_template,
     split_sentences,
 )
@@ -57,3 +58,27 @@ def test_drop_common_sentences_falls_back_when_all_dropped() -> None:
     text = "the population was 2,939."
     templates = {mask_sentence_template(text)}
     assert drop_common_sentences(text, templates) == text
+
+
+def test_find_dropped_sentences_returns_the_common_ones() -> None:
+    templates = {mask_sentence_template("the population was 100.")}
+    out = find_dropped_sentences(
+        "the population was 2,939. It hosts the state's only alligator farm.",
+        templates,
+    )
+    assert out == ["the population was 2,939."]
+
+
+def test_find_dropped_sentences_empty_when_nothing_common() -> None:
+    templates = {mask_sentence_template("the population was 100.")}
+    out = find_dropped_sentences("It hosts the state's only alligator farm.", templates)
+    assert out == []
+
+
+def test_find_dropped_sentences_is_the_complement_of_drop_common_sentences() -> None:
+    text = "the population was 2,939. It hosts the state's only alligator farm."
+    templates = {mask_sentence_template("the population was 100.")}
+    kept = drop_common_sentences(text, templates)
+    dropped = find_dropped_sentences(text, templates)
+    assert set(split_sentences(kept)) | set(dropped) == set(split_sentences(text))
+    assert set(split_sentences(kept)) & set(dropped) == set()
