@@ -225,9 +225,13 @@ def review_dropped_sentences(
             verdicts = parse_review_response(raw, len(uncached_sentences))
         except (requests.RequestException, ValueError) as exc:
             logger.warning("Gemma review failed (%s); leaving drops as-is", exc)
-            verdicts = [False] * len(uncached_sentences)
-        for idx, verdict in zip(uncached_indices, verdicts):
-            cache[keys[idx]] = verdict
-            append_cache_entry(cache_path, keys[idx], verdict)
+            verdicts = None
+        if verdicts is not None:
+            for idx, verdict in zip(uncached_indices, verdicts):
+                cache[keys[idx]] = verdict
+                append_cache_entry(cache_path, keys[idx], verdict)
+        else:
+            for idx in uncached_indices:
+                cache[keys[idx]] = False
 
     return [s for s, k in zip(dropped_sentences, keys) if cache[k]]

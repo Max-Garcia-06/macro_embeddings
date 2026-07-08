@@ -152,3 +152,19 @@ class TestReviewDroppedSentences:
         second = review_dropped_sentences("kept text", ["restore me."], client, cache_path)
         assert first == second == ["restore me."]
         assert len(client.calls) == 1
+
+    def test_failed_verdict_is_not_persisted_to_cache_file(self, tmp_path: Path) -> None:
+        cache_path = tmp_path / "cache.jsonl"
+        failing_client = FakeGemmaClient(response="not json")
+        review_dropped_sentences("kept text", ["some sentence."], failing_client, cache_path)
+        assert load_cache(cache_path) == {}
+
+    def test_retries_gemma_after_a_previous_failure(self, tmp_path: Path) -> None:
+        cache_path = tmp_path / "cache.jsonl"
+        failing_client = FakeGemmaClient(response="not json")
+        review_dropped_sentences("kept text", ["some sentence."], failing_client, cache_path)
+
+        working_client = FakeGemmaClient(response='{"0": true}')
+        out = review_dropped_sentences("kept text", ["some sentence."], working_client, cache_path)
+        assert out == ["some sentence."]
+        assert len(working_client.calls) == 1
