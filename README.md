@@ -10,13 +10,13 @@ Source A of a planned multi-source ("A-F") macro/geo embedding dataset: Wikipedi
 2. Fetches the full article for each of the ~3,222 US counties, county-equivalents, and Puerto Rico municipios in `ALL_COUNTIES` (derived from the Census Gazetteer counties file, cached in `county_crosswalk.parquet`).
 3. Isolates the **lead/introductory section** only (drops infobox, later sections, and citation markers) — Wikimedia Enterprise returns a full HTML document whose body is split into `<section data-mw-section-id="N">` blocks per MediaWiki's Parsoid model; section `0` is the lead.
 4. Embeds the cleaned intro text with `BAAI/bge-m3` (1024-dim) via `sentence-transformers`, running on **CPU** (MPS/GPU auto-selection caused severe per-call slowdowns on this model for short inputs).
-5. L2-normalizes each embedding and writes the results to `source_a_embeddings.parquet`.
+5. L2-normalizes each embedding and writes the results to `data/source_a_embeddings.parquet`.
 
 Per-county failures (article not found, empty intro) are logged and skipped rather than aborting the run; only an authentication failure stops the whole pipeline.
 
 ## Output
 
-`source_a_embeddings.parquet` with columns:
+`data/source_a_embeddings.parquet` with columns:
 
 | column | type | notes |
 |---|---|---|
@@ -43,7 +43,7 @@ WIKIMEDIA_PASSWORD=...
 ## Running
 
 ```bash
-uv run --env-file .env ingest_source_a.py
+uv run --env-file .env scripts/ingest_source_a.py
 ```
 
 First run downloads the `bge-m3` model (~2.2GB) from Hugging Face and caches it locally; subsequent runs reuse the cache.
