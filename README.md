@@ -47,3 +47,26 @@ uv run --env-file .env scripts/ingest_source_a.py
 ```
 
 First run downloads the `bge-m3` model (~2.2GB) from Hugging Face and caches it locally; subsequent runs reuse the cache.
+
+## Source C: FRED Time-Series Slope Derivatives
+
+`ingest_source_c.py` pulls county-level annual unemployment rate and real GDP series from the **FRED API** and computes the rolling 3-year first derivative (Δy/Δt) of each, rather than storing raw levels — this is the "Economic Velocity" pillar of `E_macro`.
+
+Both series are FIPS-derivable and pulled at **annual** frequency:
+
+- Unemployment rate: `LAUCN{FIPS}0000000003A`
+- Real GDP (chained 2017 $): `REALGDPALL{FIPS}`
+
+FRED's monthly county unemployment series use ad-hoc state/county-abbreviation codes that aren't derivable from a FIPS code, so the annual series is used instead for both — this also means there's no seasonal component to remove before differencing. Requests are rate-limited to ~100/min. GDP series coverage is not universal (a small number of independent cities have no GDP series); those counties get a partial row with unemployment data only, rather than being dropped.
+
+Add a FRED API key to `.env`:
+
+```
+FRED_API_KEY=...
+```
+
+```bash
+uv run --env-file .env scripts/ingest_source_c.py
+```
+
+Output: `data/source_c_fred.parquet` with columns `county_name`, `fips_code`, `unemployment_velocity`, `unemployment_rate_latest`, `unemployment_latest_year`, `gdp_velocity`, `gdp_latest`, `gdp_latest_year`.

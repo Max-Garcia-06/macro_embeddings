@@ -1,0 +1,65 @@
+county_name,fips_code,state,is_independent_city
+"Chugach Census Area, Alaska",02063,Alaska,False
+"Copper River Census Area, Alaska",02066,Alaska,False
+"Capitol Planning Region, Connecticut",09110,Connecticut,False
+"Greater Bridgeport Planning Region, Connecticut",09120,Connecticut,False
+"Lower Connecticut River Valley Planning Region, Connecticut",09130,Connecticut,False
+"Naugatuck Valley Planning Region, Connecticut",09140,Connecticut,False
+"Northeastern Connecticut Planning Region, Connecticut",09150,Connecticut,False
+"Northwest Hills Planning Region, Connecticut",09160,Connecticut,False
+"South Central Connecticut Planning Region, Connecticut",09170,Connecticut,False
+"Southeastern Connecticut Planning Region, Connecticut",09180,Connecticut,False
+"Western Connecticut Planning Region, Connecticut",09190,Connecticut,False
+"Kalawao County, Hawaii",15005,Hawaii,False
+"Maui County, Hawaii",15009,Hawaii,False
+"Albemarle County, Virginia",51003,Virginia,False
+"Alleghany County, Virginia",51005,Virginia,False
+"Augusta County, Virginia",51015,Virginia,False
+"Campbell County, Virginia",51031,Virginia,False
+"Carroll County, Virginia",51035,Virginia,False
+"Dinwiddie County, Virginia",51053,Virginia,False
+"Fairfax County, Virginia",51059,Virginia,False
+"Frederick County, Virginia",51069,Virginia,False
+"Greensville County, Virginia",51081,Virginia,False
+"Henry County, Virginia",51089,Virginia,False
+"James City County, Virginia",51095,Virginia,False
+"Montgomery County, Virginia",51121,Virginia,False
+"Pittsylvania County, Virginia",51143,Virginia,False
+"Prince George County, Virginia",51149,Virginia,False
+"Prince William County, Virginia",51153,Virginia,False
+"Roanoke County, Virginia",51161,Virginia,False
+"Rockbridge County, Virginia",51163,Virginia,False
+"Rockingham County, Virginia",51165,Virginia,False
+"Southampton County, Virginia",51175,Virginia,False
+"Spotsylvania County, Virginia",51177,Virginia,False
+"Washington County, Virginia",51191,Virginia,False
+"Wise County, Virginia",51195,Virginia,False
+"York County, Virginia",51199,Virginia,False
+"Bristol City, Virginia",51520,Virginia,True
+"Buena Vista City, Virginia",51530,Virginia,True
+"Charlottesville City, Virginia",51540,Virginia,True
+"Colonial Heights City, Virginia",51570,Virginia,True
+"Covington City, Virginia",51580,Virginia,True
+"Danville City, Virginia",51590,Virginia,True
+"Emporia City, Virginia",51595,Virginia,True
+"Fairfax City, Virginia",51600,Virginia,True
+"Falls Church City, Virginia",51610,Virginia,True
+"Franklin City, Virginia",51620,Virginia,True
+"Fredericksburg City, Virginia",51630,Virginia,True
+"Galax City, Virginia",51640,Virginia,True
+"Harrisonburg City, Virginia",51660,Virginia,True
+"Hopewell City, Virginia",51670,Virginia,True
+"Lexington City, Virginia",51678,Virginia,True
+"Lynchburg City, Virginia",51680,Virginia,True
+"Manassas City, Virginia",51683,Virginia,True
+"Manassas Park City, Virginia",51685,Virginia,True
+"Martinsville City, Virginia",51690,Virginia,True
+"Norton City, Virginia",51720,Virginia,True
+"Petersburg City, Virginia",51730,Virginia,True
+"Poquoson City, Virginia",51735,Virginia,True
+"Radford City, Virginia",51750,Virginia,True
+"Salem City, Virginia",51775,Virginia,True
+"Staunton City, Virginia",51790,Virginia,True
+"Waynesboro City, Virginia",51820,Virginia,True
+"Williamsburg City, Virginia",51830,Virginia,True
+"Winchester City, Virginia",51840,Virginia,True

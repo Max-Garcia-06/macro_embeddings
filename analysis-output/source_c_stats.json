@@ -1,0 +1,22 @@
+{
+  "total_counties": 3144,
+  "missing_gdp_count": 64,
+  "missing_gdp_rate": 0.020356234096692113,
+  "missing_gdp_is_independent_city_rate": 0.4375,
+  "missing_by_state": {
+    "Virginia": 51,
+    "Connecticut": 9,
+    "Alaska": 2,
+    "Hawaii": 2
+  },
+  "quadrant_n_counties": 3080,
+  "quadrant_counts": {
+    "Growing but Loosening": 1966,
+    "Decelerating & Loosening": 541,
+    "Accelerating & Tightening": 465,
+    "Slowing but Tightening": 108
+  },
+  "velocity_correlation": 0.009370531179030186,
+  "corpus_mean_pairwise_km": 1430.8733910233852,
+  "top_diverging_pair_economic_distance": 21.799371926417315
+}
