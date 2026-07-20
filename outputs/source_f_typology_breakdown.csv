@@ -1,0 +1,3145 @@
+county_name,fips_code,metro_2023,dependence_label,distress_count
+"Autauga County, Alabama",01001,True,None (nonspecialized),0
+"Baldwin County, Alabama",01003,True,Recreation,1
+"Barbour County, Alabama",01005,False,Manufacturing,5
+"Bibb County, Alabama",01007,True,None (nonspecialized),2
+"Blount County, Alabama",01009,True,None (nonspecialized),0
+"Bullock County, Alabama",01011,False,Manufacturing,4
+"Butler County, Alabama",01013,False,Manufacturing,2
+"Calhoun County, Alabama",01015,True,None (nonspecialized),0
+"Chambers County, Alabama",01017,False,Manufacturing,0
+"Cherokee County, Alabama",01019,False,None (nonspecialized),0
+"Chilton County, Alabama",01021,True,Manufacturing,1
+"Choctaw County, Alabama",01023,False,Manufacturing,2
+"Clarke County, Alabama",01025,False,Manufacturing,4
+"Clay County, Alabama",01027,False,Manufacturing,0
+"Cleburne County, Alabama",01029,False,None (nonspecialized),0
+"Coffee County, Alabama",01031,False,None (nonspecialized),0
+"Colbert County, Alabama",01033,True,Manufacturing,0
+"Conecuh County, Alabama",01035,False,None (nonspecialized),2
+"Coosa County, Alabama",01037,False,Manufacturing,2
+"Covington County, Alabama",01039,False,None (nonspecialized),0
+"Crenshaw County, Alabama",01041,False,Manufacturing,1
+"Cullman County, Alabama",01043,False,Manufacturing,0
+"Dale County, Alabama",01045,False,Manufacturing,1
+"Dallas County, Alabama",01047,False,Manufacturing,3
+"DeKalb County, Alabama",01049,False,Manufacturing,0
+"Elmore County, Alabama",01051,True,None (nonspecialized),0
+"Escambia County, Alabama",01053,False,None (nonspecialized),4
+"Etowah County, Alabama",01055,True,None (nonspecialized),0
+"Fayette County, Alabama",01057,False,Manufacturing,1
+"Franklin County, Alabama",01059,False,Manufacturing,0
+"Geneva County, Alabama",01061,True,None (nonspecialized),0
+"Greene County, Alabama",01063,True,Manufacturing,3
+"Hale County, Alabama",01065,True,None (nonspecialized),3
+"Henry County, Alabama",01067,True,None (nonspecialized),0
+"Houston County, Alabama",01069,True,None (nonspecialized),0
+"Jackson County, Alabama",01071,False,Manufacturing,1
+"Jefferson County, Alabama",01073,True,None (nonspecialized),1
+"Lamar County, Alabama",01075,False,Manufacturing,1
+"Lauderdale County, Alabama",01077,True,None (nonspecialized),0
+"Lawrence County, Alabama",01079,True,None (nonspecialized),1
+"Lee County, Alabama",01081,True,None (nonspecialized),2
+"Limestone County, Alabama",01083,True,None (nonspecialized),1
+"Lowndes County, Alabama",01085,True,Manufacturing,4
+"Macon County, Alabama",01087,True,Government,2
+"Madison County, Alabama",01089,True,None (nonspecialized),0
+"Marengo County, Alabama",01091,False,Manufacturing,2
+"Marion County, Alabama",01093,False,Manufacturing,1
+"Marshall County, Alabama",01095,False,Manufacturing,0
+"Mobile County, Alabama",01097,True,None (nonspecialized),1
+"Monroe County, Alabama",01099,False,Manufacturing,4
+"Montgomery County, Alabama",01101,True,Government,1
+"Morgan County, Alabama",01103,True,Manufacturing,0
+"Perry County, Alabama",01105,False,None (nonspecialized),4
+"Pickens County, Alabama",01107,True,None (nonspecialized),3
+"Pike County, Alabama",01109,False,Manufacturing,2
+"Randolph County, Alabama",01111,False,None (nonspecialized),0
+"Russell County, Alabama",01113,True,Manufacturing,1
+"St. Clair County, Alabama",01115,True,None (nonspecialized),0
+"Shelby County, Alabama",01117,True,None (nonspecialized),0
+"Sumter County, Alabama",01119,False,Government,2
+"Talladega County, Alabama",01121,False,Manufacturing,0
+"Tallapoosa County, Alabama",01123,False,None (nonspecialized),0
+"Tuscaloosa County, Alabama",01125,True,Manufacturing,2
+"Walker County, Alabama",01127,True,None (nonspecialized),1
+"Washington County, Alabama",01129,False,Manufacturing,1
+"Wilcox County, Alabama",01131,False,Manufacturing,5
+"Winston County, Alabama",01133,False,Manufacturing,2
+"Aleutians East Borough, Alaska",02013,False,Manufacturing,1
+"Aleutians West Census Area, Alaska",02016,False,Manufacturing,1
+"Anchorage Municipality, Alaska",02020,True,None (nonspecialized),1
+"Bethel Census Area, Alaska",02050,False,None (nonspecialized),3
+"Bristol Bay Borough, Alaska",02060,False,Manufacturing,1
+"Chugach Census Area, Alaska",02063,False,None (nonspecialized),0
+"Copper River Census Area, Alaska",02066,False,Recreation,0
+"Denali Borough, Alaska",02068,False,Recreation,2
+"Dillingham Census Area, Alaska",02070,False,None (nonspecialized),1
+"Fairbanks North Star Borough, Alaska",02090,True,Government,1
+"Haines Borough, Alaska",02100,False,Recreation,1
+"Hoonah-Angoon Census Area, Alaska",02105,False,Recreation,0
+"Juneau City and Borough, Alaska",02110,False,Government,0
+"Kenai Peninsula Borough, Alaska",02122,False,Recreation,1
+"Ketchikan Gateway Borough, Alaska",02130,False,None (nonspecialized),1
+"Kodiak Island Borough, Alaska",02150,False,None (nonspecialized),2
+"Kusilvak Census Area, Alaska",02158,False,None (nonspecialized),4
+"Lake and Peninsula Borough, Alaska",02164,False,Recreation,2
+"Matanuska-Susitna Borough, Alaska",02170,True,None (nonspecialized),1
+"Nome Census Area, Alaska",02180,False,None (nonspecialized),1
+"North Slope Borough, Alaska",02185,False,Mining,1
+"Northwest Arctic Borough, Alaska",02188,False,Mining,2
+"Petersburg Borough, Alaska",02195,False,None (nonspecialized),0
+"Prince of Wales-Hyder Census Area, Alaska",02198,False,None (nonspecialized),0
+"Sitka City and Borough, Alaska",02220,False,None (nonspecialized),1
+"Skagway Municipality, Alaska",02230,False,Recreation,0
+"Southeast Fairbanks Census Area, Alaska",02240,False,Mining,1
+"Wrangell City and Borough, Alaska",02275,False,None (nonspecialized),0
+"Yakutat City and Borough, Alaska",02282,False,Recreation,0
+"Yukon-Koyukuk Census Area, Alaska",02290,False,None (nonspecialized),3
+"Apache County, Arizona",04001,False,Government,3
+"Cochise County, Arizona",04003,True,Government,0
+"Coconino County, Arizona",04005,True,Recreation,1
+"Gila County, Arizona",04007,False,None (nonspecialized),2
+"Graham County, Arizona",04009,False,None (nonspecialized),1
+"Greenlee County, Arizona",04011,False,Mining,0
+"La Paz County, Arizona",04012,False,Recreation,1
+"Maricopa County, Arizona",04013,True,None (nonspecialized),1
+"Mohave County, Arizona",04015,True,Recreation,1
+"Navajo County, Arizona",04017,False,Recreation,3
+"Pima County, Arizona",04019,True,None (nonspecialized),1
+"Pinal County, Arizona",04021,True,None (nonspecialized),1
+"Santa Cruz County, Arizona",04023,False,None (nonspecialized),2
+"Yavapai County, Arizona",04025,True,Recreation,2
+"Yuma County, Arizona",04027,True,None (nonspecialized),1
+"Arkansas County, Arkansas",05001,False,Manufacturing,1
+"Ashley County, Arkansas",05003,False,Manufacturing,2
+"Baxter County, Arkansas",05005,False,None (nonspecialized),1
+"Benton County, Arkansas",05007,True,None (nonspecialized),1
+"Boone County, Arkansas",05009,False,None (nonspecialized),0
+"Bradley County, Arkansas",05011,False,Manufacturing,2
+"Calhoun County, Arkansas",05013,False,Manufacturing,3
+"Carroll County, Arkansas",05015,False,Manufacturing,0
+"Chicot County, Arkansas",05017,False,Farming,4
+"Clark County, Arkansas",05019,False,None (nonspecialized),1
+"Clay County, Arkansas",05021,False,Farming,1
+"Cleburne County, Arkansas",05023,False,None (nonspecialized),1
+"Cleveland County, Arkansas",05025,False,Farming,0
+"Columbia County, Arkansas",05027,False,Manufacturing,2
+"Conway County, Arkansas",05029,False,None (nonspecialized),0
+"Craighead County, Arkansas",05031,True,None (nonspecialized),0
+"Crawford County, Arkansas",05033,True,Manufacturing,0
+"Crittenden County, Arkansas",05035,True,None (nonspecialized),1
+"Cross County, Arkansas",05037,False,None (nonspecialized),2
+"Dallas County, Arkansas",05039,False,Manufacturing,1
+"Desha County, Arkansas",05041,False,Manufacturing,3
+"Drew County, Arkansas",05043,False,None (nonspecialized),1
+"Faulkner County, Arkansas",05045,True,None (nonspecialized),1
+"Franklin County, Arkansas",05047,False,Manufacturing,0
+"Fulton County, Arkansas",05049,False,None (nonspecialized),1
+"Garland County, Arkansas",05051,True,None (nonspecialized),1
+"Grant County, Arkansas",05053,True,Manufacturing,0
+"Greene County, Arkansas",05055,False,Manufacturing,0
+"Hempstead County, Arkansas",05057,False,Manufacturing,2
+"Hot Spring County, Arkansas",05059,False,Manufacturing,1
+"Howard County, Arkansas",05061,False,Manufacturing,1
+"Independence County, Arkansas",05063,False,Manufacturing,0
+"Izard County, Arkansas",05065,False,None (nonspecialized),1
+"Jackson County, Arkansas",05067,False,Manufacturing,2
+"Jefferson County, Arkansas",05069,False,Government,1
+"Johnson County, Arkansas",05071,False,Manufacturing,2
+"Lafayette County, Arkansas",05073,False,Farming,3
+"Lawrence County, Arkansas",05075,False,None (nonspecialized),1
+"Lee County, Arkansas",05077,False,Farming,5
+"Lincoln County, Arkansas",05079,False,Government,3
+"Little River County, Arkansas",05081,True,Manufacturing,1
+"Logan County, Arkansas",05083,False,Manufacturing,1
+"Lonoke County, Arkansas",05085,True,None (nonspecialized),0
+"Madison County, Arkansas",05087,True,Manufacturing,1
+"Marion County, Arkansas",05089,False,Manufacturing,1
+"Miller County, Arkansas",05091,True,Manufacturing,0
+"Mississippi County, Arkansas",05093,False,Manufacturing,2
+"Monroe County, Arkansas",05095,False,None (nonspecialized),3
+"Montgomery County, Arkansas",05097,False,None (nonspecialized),0
+"Nevada County, Arkansas",05099,False,Manufacturing,5
+"Newton County, Arkansas",05101,False,None (nonspecialized),1
+"Ouachita County, Arkansas",05103,False,None (nonspecialized),1
+"Perry County, Arkansas",05105,True,None (nonspecialized),0
+"Phillips County, Arkansas",05107,False,None (nonspecialized),3
+"Pike County, Arkansas",05109,False,None (nonspecialized),1
+"Poinsett County, Arkansas",05111,True,None (nonspecialized),3
+"Polk County, Arkansas",05113,False,Manufacturing,0
+"Pope County, Arkansas",05115,False,None (nonspecialized),0
+"Prairie County, Arkansas",05117,False,Farming,1
+"Pulaski County, Arkansas",05119,True,None (nonspecialized),1
+"Randolph County, Arkansas",05121,False,Manufacturing,0
+"St. Francis County, Arkansas",05123,False,Government,5
+"Saline County, Arkansas",05125,True,None (nonspecialized),0
+"Scott County, Arkansas",05127,False,Manufacturing,0
+"Searcy County, Arkansas",05129,False,None (nonspecialized),2
+"Sebastian County, Arkansas",05131,True,None (nonspecialized),0
+"Sevier County, Arkansas",05133,False,Manufacturing,1
+"Sharp County, Arkansas",05135,False,None (nonspecialized),1
+"Stone County, Arkansas",05137,False,None (nonspecialized),2
+"Union County, Arkansas",05139,False,Manufacturing,1
+"Van Buren County, Arkansas",05141,False,None (nonspecialized),1
+"Washington County, Arkansas",05143,True,None (nonspecialized),0
+"White County, Arkansas",05145,False,None (nonspecialized),0
+"Woodruff County, Arkansas",05147,False,Farming,3
+"Yell County, Arkansas",05149,False,Manufacturing,1
+"Alameda County, California",06001,True,None (nonspecialized),1
+"Alpine County, California",06003,False,Recreation,0
+"Amador County, California",06005,False,None (nonspecialized),1
+"Butte County, California",06007,True,None (nonspecialized),1
+"Calaveras County, California",06009,False,Recreation,1
+"Colusa County, California",06011,False,Farming,1
+"Contra Costa County, California",06013,True,None (nonspecialized),1
+"Del Norte County, California",06015,False,Government,2
+"El Dorado County, California",06017,True,Recreation,1
+"Fresno County, California",06019,True,None (nonspecialized),2
+"Glenn County, California",06021,False,Farming,1
+"Humboldt County, California",06023,False,None (nonspecialized),1
+"Imperial County, California",06025,True,None (nonspecialized),3
+"Inyo County, California",06027,False,Recreation,1
+"Kern County, California",06029,True,None (nonspecialized),1
+"Kings County, California",06031,True,None (nonspecialized),2
+"Lake County, California",06033,False,None (nonspecialized),1
+"Lassen County, California",06035,False,Government,2
+"Los Angeles County, California",06037,True,None (nonspecialized),1
+"Madera County, California",06039,True,None (nonspecialized),1
+"Marin County, California",06041,True,None (nonspecialized),1
+"Mariposa County, California",06043,False,Recreation,1
+"Mendocino County, California",06045,False,None (nonspecialized),1
+"Merced County, California",06047,True,None (nonspecialized),1
+"Modoc County, California",06049,False,Farming,0
+"Mono County, California",06051,False,Recreation,1
+"Monterey County, California",06053,True,None (nonspecialized),1
+"Napa County, California",06055,True,Manufacturing,1
+"Nevada County, California",06057,False,Recreation,1
+"Orange County, California",06059,True,None (nonspecialized),1
+"Placer County, California",06061,True,Recreation,1
+"Plumas County, California",06063,False,Recreation,1
+"Riverside County, California",06065,True,None (nonspecialized),1
+"Sacramento County, California",06067,True,Government,1
+"San Benito County, California",06069,True,None (nonspecialized),1
+"San Bernardino County, California",06071,True,None (nonspecialized),1
+"San Diego County, California",06073,True,None (nonspecialized),1
+"San Francisco County, California",06075,True,None (nonspecialized),1
+"San Joaquin County, California",06077,True,None (nonspecialized),1
+"San Luis Obispo County, California",06079,True,Recreation,1
+"San Mateo County, California",06081,True,None (nonspecialized),1
+"Santa Barbara County, California",06083,True,None (nonspecialized),1
+"Santa Clara County, California",06085,True,Manufacturing,1
+"Santa Cruz County, California",06087,True,None (nonspecialized),1
+"Shasta County, California",06089,True,None (nonspecialized),1
+"Sierra County, California",06091,False,Recreation,2
+"Siskiyou County, California",06093,False,None (nonspecialized),1
+"Solano County, California",06095,True,None (nonspecialized),1
+"Sonoma County, California",06097,True,None (nonspecialized),1
+"Stanislaus County, California",06099,True,None (nonspecialized),1
+"Sutter County, California",06101,True,None (nonspecialized),1
+"Tehama County, California",06103,False,None (nonspecialized),1
+"Trinity County, California",06105,False,None (nonspecialized),4
+"Tulare County, California",06107,True,None (nonspecialized),1
+"Tuolumne County, California",06109,False,Recreation,1
+"Ventura County, California",06111,True,None (nonspecialized),1
+"Yolo County, California",06113,True,Government,1
+"Yuba County, California",06115,True,None (nonspecialized),1
+"Adams County, Colorado",08001,True,None (nonspecialized),1
+"Alamosa County, Colorado",08003,False,None (nonspecialized),1
+"Arapahoe County, Colorado",08005,True,None (nonspecialized),1
+"Archuleta County, Colorado",08007,False,Recreation,2
+"Baca County, Colorado",08009,False,Farming,1
+"Bent County, Colorado",08011,False,Farming,3
+"Boulder County, Colorado",08013,True,None (nonspecialized),1
+"Broomfield County, Colorado",08014,True,None (nonspecialized),0
+"Chaffee County, Colorado",08015,False,Recreation,1
+"Cheyenne County, Colorado",08017,False,Farming,1
+"Clear Creek County, Colorado",08019,True,Recreation,1
+"Conejos County, Colorado",08021,False,Farming,1
+"Costilla County, Colorado",08023,False,None (nonspecialized),4
+"Crowley County, Colorado",08025,False,Government,2
+"Custer County, Colorado",08027,False,Recreation,1
+"Delta County, Colorado",08029,False,None (nonspecialized),2
+"Denver County, Colorado",08031,True,None (nonspecialized),1
+"Dolores County, Colorado",08033,False,Farming,1
+"Douglas County, Colorado",08035,True,None (nonspecialized),0
+"Eagle County, Colorado",08037,False,Recreation,1
+"Elbert County, Colorado",08039,True,None (nonspecialized),0
+"El Paso County, Colorado",08041,True,None (nonspecialized),1
+"Fremont County, Colorado",08043,False,Government,1
+"Garfield County, Colorado",08045,False,None (nonspecialized),1
+"Gilpin County, Colorado",08047,True,Recreation,1
+"Grand County, Colorado",08049,False,Recreation,1
+"Gunnison County, Colorado",08051,False,Recreation,1
+"Hinsdale County, Colorado",08053,False,Recreation,1
+"Huerfano County, Colorado",08055,False,Recreation,1
+"Jackson County, Colorado",08057,False,Recreation,1
+"Jefferson County, Colorado",08059,True,None (nonspecialized),0
+"Kiowa County, Colorado",08061,False,Farming,0
+"Kit Carson County, Colorado",08063,False,Farming,0
+"Lake County, Colorado",08065,False,Recreation,0
+"La Plata County, Colorado",08067,False,Recreation,1
+"Larimer County, Colorado",08069,True,None (nonspecialized),1
+"Las Animas County, Colorado",08071,False,None (nonspecialized),1
+"Lincoln County, Colorado",08073,False,Government,1
+"Logan County, Colorado",08075,False,None (nonspecialized),0
+"Mesa County, Colorado",08077,True,None (nonspecialized),1
+"Mineral County, Colorado",08079,False,Recreation,2
+"Moffat County, Colorado",08081,False,None (nonspecialized),1
+"Montezuma County, Colorado",08083,False,None (nonspecialized),0
+"Montrose County, Colorado",08085,False,None (nonspecialized),1
+"Morgan County, Colorado",08087,False,Manufacturing,1
+"Otero County, Colorado",08089,False,None (nonspecialized),2
+"Ouray County, Colorado",08091,False,Recreation,1
+"Park County, Colorado",08093,True,Recreation,0
+"Phillips County, Colorado",08095,False,None (nonspecialized),0
+"Pitkin County, Colorado",08097,False,Recreation,1
+"Prowers County, Colorado",08099,False,None (nonspecialized),2
+"Pueblo County, Colorado",08101,True,None (nonspecialized),1
+"Rio Blanco County, Colorado",08103,False,Mining,0
+"Rio Grande County, Colorado",08105,False,None (nonspecialized),1
+"Routt County, Colorado",08107,False,Recreation,1
+"Saguache County, Colorado",08109,False,Farming,1
+"San Juan County, Colorado",08111,False,Recreation,1
+"San Miguel County, Colorado",08113,False,Recreation,1
+"Sedgwick County, Colorado",08115,False,Farming,1
+"Summit County, Colorado",08117,False,Recreation,1
+"Teller County, Colorado",08119,True,Recreation,1
+"Washington County, Colorado",08121,False,Farming,0
+"Weld County, Colorado",08123,True,None (nonspecialized),1
+"Yuma County, Colorado",08125,False,Farming,0
+"Capitol Planning Region, Connecticut",09110,True,Not classified,1
+"Greater Bridgeport Planning Region, Connecticut",09120,True,Not classified,1
+"Lower Connecticut River Valley Planning Region, Connecticut",09130,True,Not classified,1
+"Naugatuck Valley Planning Region, Connecticut",09140,True,Not classified,1
+"Northeastern Connecticut Planning Region, Connecticut",09150,False,Not classified,0
+"Northwest Hills Planning Region, Connecticut",09160,False,Not classified,1
+"South Central Connecticut Planning Region, Connecticut",09170,True,Not classified,1
+"Southeastern Connecticut Planning Region, Connecticut",09180,True,Not classified,1
+"Western Connecticut Planning Region, Connecticut",09190,True,Not classified,1
+"Kent County, Delaware",10001,True,Government,2
+"New Castle County, Delaware",10003,True,None (nonspecialized),0
+"Sussex County, Delaware",10005,False,Recreation,1
+District of Columbia,11001,True,Government,1
+"Alachua County, Florida",12001,True,Government,2
+"Baker County, Florida",12003,True,Government,0
+"Bay County, Florida",12005,True,Recreation,1
+"Bradford County, Florida",12007,False,None (nonspecialized),3
+"Brevard County, Florida",12009,True,None (nonspecialized),1
+"Broward County, Florida",12011,True,None (nonspecialized),1
+"Calhoun County, Florida",12013,False,None (nonspecialized),2
+"Charlotte County, Florida",12015,True,Recreation,2
+"Citrus County, Florida",12017,True,None (nonspecialized),1
+"Clay County, Florida",12019,True,None (nonspecialized),0
+"Collier County, Florida",12021,True,Recreation,2
+"Columbia County, Florida",12023,False,None (nonspecialized),0
+"DeSoto County, Florida",12027,False,None (nonspecialized),2
+"Dixie County, Florida",12029,False,Manufacturing,2
+"Duval County, Florida",12031,True,None (nonspecialized),1
+"Escambia County, Florida",12033,True,None (nonspecialized),1
+"Flagler County, Florida",12035,True,None (nonspecialized),1
+"Franklin County, Florida",12037,False,Recreation,3
+"Gadsden County, Florida",12039,True,Farming,1
+"Gilchrist County, Florida",12041,True,None (nonspecialized),1
+"Glades County, Florida",12043,False,None (nonspecialized),2
+"Gulf County, Florida",12045,False,Recreation,1
+"Hamilton County, Florida",12047,False,Manufacturing,3
+"Hardee County, Florida",12049,False,None (nonspecialized),4
+"Hendry County, Florida",12051,False,None (nonspecialized),2
+"Hernando County, Florida",12053,True,None (nonspecialized),1
+"Highlands County, Florida",12055,True,None (nonspecialized),1
+"Hillsborough County, Florida",12057,True,None (nonspecialized),1
+"Holmes County, Florida",12059,False,None (nonspecialized),1
+"Indian River County, Florida",12061,True,None (nonspecialized),1
+"Jackson County, Florida",12063,False,Government,1
+"Jefferson County, Florida",12065,True,None (nonspecialized),0
+"Lafayette County, Florida",12067,False,None (nonspecialized),2
+"Lake County, Florida",12069,True,None (nonspecialized),2
+"Lee County, Florida",12071,True,Recreation,2
+"Leon County, Florida",12073,True,Government,1
+"Levy County, Florida",12075,True,None (nonspecialized),1
+"Liberty County, Florida",12077,False,None (nonspecialized),2
+"Madison County, Florida",12079,False,None (nonspecialized),2
+"Manatee County, Florida",12081,True,Recreation,2
+"Marion County, Florida",12083,True,None (nonspecialized),1
+"Martin County, Florida",12085,True,Recreation,2
+"Miami-Dade County, Florida",12086,True,None (nonspecialized),1
+"Monroe County, Florida",12087,False,Recreation,1
+"Nassau County, Florida",12089,True,Recreation,1
+"Okaloosa County, Florida",12091,True,None (nonspecialized),1
+"Okeechobee County, Florida",12093,False,None (nonspecialized),0
+"Orange County, Florida",12095,True,None (nonspecialized),1
+"Osceola County, Florida",12097,True,Recreation,2
+"Palm Beach County, Florida",12099,True,None (nonspecialized),2
+"Pasco County, Florida",12101,True,None (nonspecialized),2
+"Pinellas County, Florida",12103,True,None (nonspecialized),2
+"Polk County, Florida",12105,True,None (nonspecialized),2
+"Putnam County, Florida",12107,False,None (nonspecialized),2
+"St. Johns County, Florida",12109,True,None (nonspecialized),1
+"St. Lucie County, Florida",12111,True,None (nonspecialized),2
+"Santa Rosa County, Florida",12113,True,None (nonspecialized),1
+"Sarasota County, Florida",12115,True,Recreation,2
+"Seminole County, Florida",12117,True,None (nonspecialized),1
+"Sumter County, Florida",12119,True,None (nonspecialized),2
+"Suwannee County, Florida",12121,False,None (nonspecialized),1
+"Taylor County, Florida",12123,False,Manufacturing,2
+"Union County, Florida",12125,False,Government,2
+"Volusia County, Florida",12127,True,None (nonspecialized),2
+"Wakulla County, Florida",12129,True,None (nonspecialized),0
+"Walton County, Florida",12131,True,Recreation,2
+"Washington County, Florida",12133,True,None (nonspecialized),2
+"Appling County, Georgia",13001,False,None (nonspecialized),1
+"Atkinson County, Georgia",13003,False,Manufacturing,2
+"Bacon County, Georgia",13005,False,None (nonspecialized),2
+"Baker County, Georgia",13007,False,Farming,3
+"Baldwin County, Georgia",13009,False,Government,0
+"Banks County, Georgia",13011,False,None (nonspecialized),0
+"Barrow County, Georgia",13013,True,None (nonspecialized),0
+"Bartow County, Georgia",13015,True,Manufacturing,0
+"Ben Hill County, Georgia",13017,False,Manufacturing,2
+"Berrien County, Georgia",13019,False,Manufacturing,0
+"Bibb County, Georgia",13021,True,None (nonspecialized),1
+"Bleckley County, Georgia",13023,False,None (nonspecialized),0
+"Brantley County, Georgia",13025,True,None (nonspecialized),2
+"Brooks County, Georgia",13027,True,None (nonspecialized),2
+"Bryan County, Georgia",13029,True,None (nonspecialized),0
+"Bulloch County, Georgia",13031,False,None (nonspecialized),2
+"Burke County, Georgia",13033,True,None (nonspecialized),0
+"Butts County, Georgia",13035,True,None (nonspecialized),1
+"Calhoun County, Georgia",13037,False,Farming,3
+"Camden County, Georgia",13039,False,Government,0
+"Candler County, Georgia",13043,False,None (nonspecialized),0
+"Carroll County, Georgia",13045,True,Manufacturing,0
+"Catoosa County, Georgia",13047,True,None (nonspecialized),0
+"Charlton County, Georgia",13049,False,None (nonspecialized),3
+"Chatham County, Georgia",13051,True,None (nonspecialized),1
+"Chattahoochee County, Georgia",13053,True,None (nonspecialized),2
+"Chattooga County, Georgia",13055,False,Manufacturing,2
+"Cherokee County, Georgia",13057,True,None (nonspecialized),1
+"Clarke County, Georgia",13059,True,Government,3
+"Clay County, Georgia",13061,False,None (nonspecialized),2
+"Clayton County, Georgia",13063,True,None (nonspecialized),1
+"Clinch County, Georgia",13065,False,Manufacturing,4
+"Cobb County, Georgia",13067,True,None (nonspecialized),0
+"Coffee County, Georgia",13069,False,Manufacturing,1
+"Colquitt County, Georgia",13071,False,Manufacturing,1
+"Columbia County, Georgia",13073,True,None (nonspecialized),0
+"Cook County, Georgia",13075,False,None (nonspecialized),2
+"Coweta County, Georgia",13077,True,None (nonspecialized),0
+"Crawford County, Georgia",13079,True,Farming,0
+"Crisp County, Georgia",13081,False,None (nonspecialized),2
+"Dade County, Georgia",13083,True,Manufacturing,0
+"Dawson County, Georgia",13085,True,Recreation,1
+"Decatur County, Georgia",13087,False,None (nonspecialized),2
+"DeKalb County, Georgia",13089,True,None (nonspecialized),1
+"Dodge County, Georgia",13091,False,None (nonspecialized),0
+"Dooly County, Georgia",13093,False,Manufacturing,3
+"Dougherty County, Georgia",13095,True,None (nonspecialized),3
+"Douglas County, Georgia",13097,True,None (nonspecialized),1
+"Early County, Georgia",13099,False,Manufacturing,4
+"Echols County, Georgia",13101,True,None (nonspecialized),1
+"Effingham County, Georgia",13103,True,None (nonspecialized),0
+"Elbert County, Georgia",13105,False,Manufacturing,1
+"Emanuel County, Georgia",13107,False,Manufacturing,2
+"Evans County, Georgia",13109,False,Manufacturing,1
+"Fannin County, Georgia",13111,False,Recreation,2
+"Fayette County, Georgia",13113,True,None (nonspecialized),0
+"Floyd County, Georgia",13115,True,None (nonspecialized),1
+"Forsyth County, Georgia",13117,True,None (nonspecialized),0
+"Franklin County, Georgia",13119,False,None (nonspecialized),0
+"Fulton County, Georgia",13121,True,None (nonspecialized),1
+"Gilmer County, Georgia",13123,False,Recreation,1
+"Glascock County, Georgia",13125,False,None (nonspecialized),1
+"Glynn County, Georgia",13127,True,Recreation,1
+"Gordon County, Georgia",13129,False,Manufacturing,0
+"Grady County, Georgia",13131,False,None (nonspecialized),1
+"Greene County, Georgia",13133,False,Recreation,1
+"Gwinnett County, Georgia",13135,True,None (nonspecialized),1
+"Habersham County, Georgia",13137,False,Manufacturing,0
+"Hall County, Georgia",13139,True,Manufacturing,1
+"Hancock County, Georgia",13141,False,Manufacturing,5
+"Haralson County, Georgia",13143,True,Manufacturing,0
+"Harris County, Georgia",13145,True,None (nonspecialized),0
+"Hart County, Georgia",13147,False,Manufacturing,0
+"Heard County, Georgia",13149,True,Manufacturing,1
+"Henry County, Georgia",13151,True,None (nonspecialized),1
+"Houston County, Georgia",13153,True,Government,0
+"Irwin County, Georgia",13155,False,None (nonspecialized),0
+"Jackson County, Georgia",13157,False,Manufacturing,1
+"Jasper County, Georgia",13159,True,None (nonspecialized),0
+"Jeff Davis County, Georgia",13161,False,Manufacturing,1
+"Jefferson County, Georgia",13163,False,Manufacturing,2
+"Jenkins County, Georgia",13165,False,None (nonspecialized),3
+"Johnson County, Georgia",13167,False,None (nonspecialized),2
+"Jones County, Georgia",13169,True,None (nonspecialized),0
+"Lamar County, Georgia",13171,False,Manufacturing,0
+"Lanier County, Georgia",13173,True,None (nonspecialized),2
+"Laurens County, Georgia",13175,False,None (nonspecialized),1
+"Lee County, Georgia",13177,True,None (nonspecialized),0
+"Liberty County, Georgia",13179,True,None (nonspecialized),2
+"Lincoln County, Georgia",13181,True,None (nonspecialized),1
+"Long County, Georgia",13183,True,None (nonspecialized),1
+"Lowndes County, Georgia",13185,True,None (nonspecialized),1
+"Lumpkin County, Georgia",13187,True,Government,0
+"McDuffie County, Georgia",13189,True,Manufacturing,0
+"McIntosh County, Georgia",13191,True,Recreation,0
+"Macon County, Georgia",13193,False,Manufacturing,4
+"Madison County, Georgia",13195,True,None (nonspecialized),0
+"Marion County, Georgia",13197,True,None (nonspecialized),1
+"Meriwether County, Georgia",13199,True,None (nonspecialized),2
+"Miller County, Georgia",13201,False,None (nonspecialized),1
+"Mitchell County, Georgia",13205,False,Manufacturing,4
+"Monroe County, Georgia",13207,True,None (nonspecialized),0
+"Montgomery County, Georgia",13209,False,None (nonspecialized),0
+"Morgan County, Georgia",13211,True,Manufacturing,0
+"Murray County, Georgia",13213,True,Manufacturing,0
+"Muscogee County, Georgia",13215,True,None (nonspecialized),1
+"Newton County, Georgia",13217,True,None (nonspecialized),1
+"Oconee County, Georgia",13219,True,None (nonspecialized),0
+"Oglethorpe County, Georgia",13221,True,Farming,0
+"Paulding County, Georgia",13223,True,None (nonspecialized),0
+"Peach County, Georgia",13225,True,Manufacturing,0
+"Pickens County, Georgia",13227,True,None (nonspecialized),1
+"Pierce County, Georgia",13229,False,None (nonspecialized),0
+"Pike County, Georgia",13231,True,None (nonspecialized),0
+"Polk County, Georgia",13233,False,Manufacturing,2
+"Pulaski County, Georgia",13235,False,None (nonspecialized),2
+"Putnam County, Georgia",13237,False,Recreation,1
+"Quitman County, Georgia",13239,False,Manufacturing,4
+"Rabun County, Georgia",13241,False,Recreation,1
+"Randolph County, Georgia",13243,False,None (nonspecialized),3
+"Richmond County, Georgia",13245,True,Government,1
+"Rockdale County, Georgia",13247,True,None (nonspecialized),1
+"Schley County, Georgia",13249,False,Manufacturing,1
+"Screven County, Georgia",13251,False,Manufacturing,1
+"Seminole County, Georgia",13253,False,None (nonspecialized),2
+"Spalding County, Georgia",13255,True,None (nonspecialized),1
+"Stephens County, Georgia",13257,False,Manufacturing,0
+"Stewart County, Georgia",13259,True,None (nonspecialized),3
+"Sumter County, Georgia",13261,False,None (nonspecialized),3
+"Talbot County, Georgia",13263,True,None (nonspecialized),1
+"Taliaferro County, Georgia",13265,False,Farming,2
+"Tattnall County, Georgia",13267,False,None (nonspecialized),3
+"Taylor County, Georgia",13269,False,None (nonspecialized),3
+"Telfair County, Georgia",13271,False,None (nonspecialized),3
+"Terrell County, Georgia",13273,True,None (nonspecialized),2
+"Thomas County, Georgia",13275,False,None (nonspecialized),0
+"Tift County, Georgia",13277,False,None (nonspecialized),0
+"Toombs County, Georgia",13279,False,None (nonspecialized),2
+"Towns County, Georgia",13281,False,Recreation,2
+"Treutlen County, Georgia",13283,False,None (nonspecialized),2
+"Troup County, Georgia",13285,False,Manufacturing,1
+"Turner County, Georgia",13287,False,None (nonspecialized),2
+"Twiggs County, Georgia",13289,True,None (nonspecialized),2
+"Union County, Georgia",13291,False,Recreation,1
+"Upson County, Georgia",13293,False,None (nonspecialized),0
+"Walker County, Georgia",13295,True,Manufacturing,0
+"Walton County, Georgia",13297,True,None (nonspecialized),0
+"Ware County, Georgia",13299,False,None (nonspecialized),1
+"Warren County, Georgia",13301,False,Manufacturing,3
+"Washington County, Georgia",13303,False,None (nonspecialized),1
+"Wayne County, Georgia",13305,False,None (nonspecialized),1
+"Webster County, Georgia",13307,False,Manufacturing,1
+"Wheeler County, Georgia",13309,False,None (nonspecialized),3
+"White County, Georgia",13311,False,Recreation,0
+"Whitfield County, Georgia",13313,True,Manufacturing,1
+"Wilcox County, Georgia",13315,False,Farming,3
+"Wilkes County, Georgia",13317,False,Farming,2
+"Wilkinson County, Georgia",13319,False,Mining,1
+"Worth County, Georgia",13321,True,None (nonspecialized),1
+"Hawaii County, Hawaii",15001,False,None (nonspecialized),1
+"Honolulu County, Hawaii",15003,True,None (nonspecialized),1
+"Kalawao County, Hawaii",15005,True,Recreation,1
+"Kauai County, Hawaii",15007,False,Recreation,1
+"Maui County, Hawaii",15009,True,Recreation,1
+"Ada County, Idaho",16001,True,None (nonspecialized),1
+"Adams County, Idaho",16003,False,Recreation,1
+"Bannock County, Idaho",16005,True,None (nonspecialized),0
+"Bear Lake County, Idaho",16007,False,Recreation,0
+"Benewah County, Idaho",16009,False,None (nonspecialized),2
+"Bingham County, Idaho",16011,False,None (nonspecialized),0
+"Blaine County, Idaho",16013,False,Recreation,1
+"Boise County, Idaho",16015,True,Recreation,1
+"Bonner County, Idaho",16017,False,Recreation,2
+"Bonneville County, Idaho",16019,True,None (nonspecialized),0
+"Boundary County, Idaho",16021,False,None (nonspecialized),1
+"Butte County, Idaho",16023,True,None (nonspecialized),1
+"Camas County, Idaho",16025,False,Farming,0
+"Canyon County, Idaho",16027,True,None (nonspecialized),1
+"Caribou County, Idaho",16029,False,Manufacturing,0
+"Cassia County, Idaho",16031,False,Farming,0
+"Clark County, Idaho",16033,False,Farming,3
+"Clearwater County, Idaho",16035,False,None (nonspecialized),2
+"Custer County, Idaho",16037,False,Recreation,0
+"Elmore County, Idaho",16039,False,None (nonspecialized),2
+"Franklin County, Idaho",16041,True,None (nonspecialized),1
+"Fremont County, Idaho",16043,False,Recreation,0
+"Gem County, Idaho",16045,True,None (nonspecialized),1
+"Gooding County, Idaho",16047,False,Farming,0
+"Idaho County, Idaho",16049,False,None (nonspecialized),1
+"Jefferson County, Idaho",16051,True,None (nonspecialized),0
+"Jerome County, Idaho",16053,True,Farming,0
+"Kootenai County, Idaho",16055,True,Recreation,2
+"Latah County, Idaho",16057,False,Government,1
+"Lemhi County, Idaho",16059,False,None (nonspecialized),2
+"Lewis County, Idaho",16061,False,None (nonspecialized),0
+"Lincoln County, Idaho",16063,False,Farming,0
+"Madison County, Idaho",16065,False,None (nonspecialized),2
+"Minidoka County, Idaho",16067,False,None (nonspecialized),0
+"Nez Perce County, Idaho",16069,True,Manufacturing,0
+"Oneida County, Idaho",16071,False,Farming,0
+"Owyhee County, Idaho",16073,True,Farming,1
+"Payette County, Idaho",16075,False,None (nonspecialized),1
+"Power County, Idaho",16077,False,Manufacturing,0
+"Shoshone County, Idaho",16079,False,None (nonspecialized),1
+"Teton County, Idaho",16081,False,Recreation,2
+"Twin Falls County, Idaho",16083,True,None (nonspecialized),1
+"Valley County, Idaho",16085,False,Recreation,2
+"Washington County, Idaho",16087,False,Manufacturing,2
+"Adams County, Illinois",17001,False,None (nonspecialized),1
+"Alexander County, Illinois",17003,True,None (nonspecialized),3
+"Bond County, Illinois",17005,True,Manufacturing,1
+"Boone County, Illinois",17007,True,Manufacturing,0
+"Brown County, Illinois",17009,False,None (nonspecialized),3
+"Bureau County, Illinois",17011,False,None (nonspecialized),1
+"Calhoun County, Illinois",17013,True,Farming,0
+"Carroll County, Illinois",17015,False,None (nonspecialized),0
+"Cass County, Illinois",17017,False,Manufacturing,1
+"Champaign County, Illinois",17019,True,Government,1
+"Christian County, Illinois",17021,False,None (nonspecialized),1
+"Clark County, Illinois",17023,False,Manufacturing,1
+"Clay County, Illinois",17025,False,Manufacturing,1
+"Clinton County, Illinois",17027,True,None (nonspecialized),0
+"Coles County, Illinois",17029,False,None (nonspecialized),0
+"Cook County, Illinois",17031,True,None (nonspecialized),1
+"Crawford County, Illinois",17033,False,Manufacturing,1
+"Cumberland County, Illinois",17035,False,Farming,1
+"DeKalb County, Illinois",17037,True,None (nonspecialized),1
+"De Witt County, Illinois",17039,False,None (nonspecialized),1
+"Douglas County, Illinois",17041,False,Manufacturing,0
+"DuPage County, Illinois",17043,True,None (nonspecialized),0
+"Edgar County, Illinois",17045,False,Manufacturing,1
+"Edwards County, Illinois",17047,False,Manufacturing,1
+"Effingham County, Illinois",17049,False,None (nonspecialized),0
+"Fayette County, Illinois",17051,False,None (nonspecialized),0
+"Ford County, Illinois",17053,True,None (nonspecialized),1
+"Franklin County, Illinois",17055,False,None (nonspecialized),0
+"Fulton County, Illinois",17057,False,None (nonspecialized),1
+"Gallatin County, Illinois",17059,False,Farming,1
+"Greene County, Illinois",17061,False,Farming,1
+"Grundy County, Illinois",17063,True,None (nonspecialized),0
+"Hamilton County, Illinois",17065,False,Farming,1
+"Hancock County, Illinois",17067,False,Farming,1
+"Hardin County, Illinois",17069,False,None (nonspecialized),2
+"Henderson County, Illinois",17071,False,Farming,1
+"Henry County, Illinois",17073,True,None (nonspecialized),1
+"Iroquois County, Illinois",17075,False,Farming,1
+"Jackson County, Illinois",17077,False,Government,2
+"Jasper County, Illinois",17079,False,Farming,1
+"Jefferson County, Illinois",17081,False,Manufacturing,1
+"Jersey County, Illinois",17083,True,None (nonspecialized),0
+"Jo Daviess County, Illinois",17085,False,Recreation,0
+"Johnson County, Illinois",17087,False,Government,1
+"Kane County, Illinois",17089,True,None (nonspecialized),1
+"Kankakee County, Illinois",17091,True,Manufacturing,1
+"Kendall County, Illinois",17093,True,None (nonspecialized),0
+"Knox County, Illinois",17095,False,None (nonspecialized),1
+"Lake County, Illinois",17097,True,Manufacturing,1
+"LaSalle County, Illinois",17099,False,None (nonspecialized),0
+"Lawrence County, Illinois",17101,False,Manufacturing,1
+"Lee County, Illinois",17103,False,Manufacturing,1
+"Livingston County, Illinois",17105,False,Manufacturing,1
+"Logan County, Illinois",17107,False,None (nonspecialized),1
+"McDonough County, Illinois",17109,False,Government,2
+"McHenry County, Illinois",17111,True,None (nonspecialized),0
+"McLean County, Illinois",17113,True,None (nonspecialized),0
+"Macon County, Illinois",17115,True,Manufacturing,1
+"Macoupin County, Illinois",17117,True,None (nonspecialized),1
+"Madison County, Illinois",17119,True,None (nonspecialized),0
+"Marion County, Illinois",17121,False,Manufacturing,1
+"Marshall County, Illinois",17123,True,Manufacturing,1
+"Mason County, Illinois",17125,False,Farming,1
+"Massac County, Illinois",17127,True,None (nonspecialized),0
+"Menard County, Illinois",17129,True,None (nonspecialized),0
+"Mercer County, Illinois",17131,True,Farming,1
+"Monroe County, Illinois",17133,True,None (nonspecialized),0
+"Montgomery County, Illinois",17135,False,None (nonspecialized),1
+"Morgan County, Illinois",17137,False,Manufacturing,1
+"Moultrie County, Illinois",17139,False,Manufacturing,0
+"Ogle County, Illinois",17141,False,None (nonspecialized),0
+"Peoria County, Illinois",17143,True,Manufacturing,0
+"Perry County, Illinois",17145,False,None (nonspecialized),2
+"Piatt County, Illinois",17147,True,None (nonspecialized),0
+"Pike County, Illinois",17149,False,Farming,1
+"Pope County, Illinois",17151,False,None (nonspecialized),2
+"Pulaski County, Illinois",17153,False,None (nonspecialized),1
+"Putnam County, Illinois",17155,False,Manufacturing,1
+"Randolph County, Illinois",17157,False,Manufacturing,1
+"Richland County, Illinois",17159,False,None (nonspecialized),0
+"Rock Island County, Illinois",17161,True,None (nonspecialized),1
+"St. Clair County, Illinois",17163,True,None (nonspecialized),0
+"Saline County, Illinois",17165,False,None (nonspecialized),1
+"Sangamon County, Illinois",17167,True,None (nonspecialized),0
+"Schuyler County, Illinois",17169,False,Farming,0
+"Scott County, Illinois",17171,False,Farming,1
+"Shelby County, Illinois",17173,False,Farming,1
+"Stark County, Illinois",17175,True,Farming,1
+"Stephenson County, Illinois",17177,False,Manufacturing,1
+"Tazewell County, Illinois",17179,True,None (nonspecialized),0
+"Union County, Illinois",17181,False,None (nonspecialized),1
+"Vermilion County, Illinois",17183,False,Manufacturing,1
+"Wabash County, Illinois",17185,False,None (nonspecialized),1
+"Warren County, Illinois",17187,False,Manufacturing,1
+"Washington County, Illinois",17189,False,Manufacturing,1
+"Wayne County, Illinois",17191,False,Farming,1
+"White County, Illinois",17193,False,None (nonspecialized),1
+"Whiteside County, Illinois",17195,False,Manufacturing,1
+"Will County, Illinois",17197,True,None (nonspecialized),0
+"Williamson County, Illinois",17199,False,None (nonspecialized),0
+"Winnebago County, Illinois",17201,True,Manufacturing,0
+"Woodford County, Illinois",17203,True,None (nonspecialized),0
+"Adams County, Indiana",18001,False,Manufacturing,0
+"Allen County, Indiana",18003,True,None (nonspecialized),0
+"Bartholomew County, Indiana",18005,True,Manufacturing,0
+"Benton County, Indiana",18007,True,Farming,1
+"Blackford County, Indiana",18009,False,Manufacturing,1
+"Boone County, Indiana",18011,True,None (nonspecialized),0
+"Brown County, Indiana",18013,True,Recreation,0
+"Carroll County, Indiana",18015,True,Manufacturing,0
+"Cass County, Indiana",18017,False,Manufacturing,1
+"Clark County, Indiana",18019,True,None (nonspecialized),0
+"Clay County, Indiana",18021,True,Manufacturing,0
+"Clinton County, Indiana",18023,False,Manufacturing,1
+"Crawford County, Indiana",18025,False,None (nonspecialized),2
+"Daviess County, Indiana",18027,False,Manufacturing,0
+"Dearborn County, Indiana",18029,True,None (nonspecialized),0
+"Decatur County, Indiana",18031,False,Manufacturing,0
+"DeKalb County, Indiana",18033,False,Manufacturing,0
+"Delaware County, Indiana",18035,True,None (nonspecialized),1
+"Dubois County, Indiana",18037,False,Manufacturing,0
+"Elkhart County, Indiana",18039,True,Manufacturing,0
+"Fayette County, Indiana",18041,False,Manufacturing,1
+"Floyd County, Indiana",18043,True,Manufacturing,0
+"Fountain County, Indiana",18045,False,Manufacturing,1
+"Franklin County, Indiana",18047,True,None (nonspecialized),0
+"Fulton County, Indiana",18049,False,Manufacturing,0
+"Gibson County, Indiana",18051,False,Manufacturing,0
+"Grant County, Indiana",18053,False,Manufacturing,1
+"Greene County, Indiana",18055,False,None (nonspecialized),0
+"Hamilton County, Indiana",18057,True,None (nonspecialized),0
+"Hancock County, Indiana",18059,True,Manufacturing,0
+"Harrison County, Indiana",18061,True,None (nonspecialized),0
+"Hendricks County, Indiana",18063,True,None (nonspecialized),0
+"Henry County, Indiana",18065,False,Manufacturing,0
+"Howard County, Indiana",18067,True,Manufacturing,0
+"Huntington County, Indiana",18069,False,Manufacturing,1
+"Jackson County, Indiana",18071,False,Manufacturing,0
+"Jasper County, Indiana",18073,True,None (nonspecialized),0
+"Jay County, Indiana",18075,False,Manufacturing,1
+"Jefferson County, Indiana",18077,False,Manufacturing,0
+"Jennings County, Indiana",18079,False,Manufacturing,0
+"Johnson County, Indiana",18081,True,None (nonspecialized),0
+"Knox County, Indiana",18083,False,None (nonspecialized),1
+"Kosciusko County, Indiana",18085,False,Manufacturing,0
+"LaGrange County, Indiana",18087,False,Manufacturing,1
+"Lake County, Indiana",18089,True,None (nonspecialized),0
+"LaPorte County, Indiana",18091,True,Manufacturing,0
+"Lawrence County, Indiana",18093,False,Manufacturing,0
+"Madison County, Indiana",18095,True,None (nonspecialized),1
+"Marion County, Indiana",18097,True,None (nonspecialized),1
+"Marshall County, Indiana",18099,False,Manufacturing,0
+"Martin County, Indiana",18101,False,Government,1
+"Miami County, Indiana",18103,False,None (nonspecialized),0
+"Monroe County, Indiana",18105,True,Government,1
+"Montgomery County, Indiana",18107,False,Manufacturing,0
+"Morgan County, Indiana",18109,True,None (nonspecialized),0
+"Newton County, Indiana",18111,True,None (nonspecialized),2
+"Noble County, Indiana",18113,False,Manufacturing,0
+"Ohio County, Indiana",18115,True,Recreation,0
+"Orange County, Indiana",18117,False,Recreation,0
+"Owen County, Indiana",18119,True,Manufacturing,1
+"Parke County, Indiana",18121,False,None (nonspecialized),0
+"Perry County, Indiana",18123,False,Manufacturing,0
+"Pike County, Indiana",18125,False,None (nonspecialized),0
+"Porter County, Indiana",18127,True,None (nonspecialized),0
+"Posey County, Indiana",18129,True,Manufacturing,1
+"Pulaski County, Indiana",18131,False,Manufacturing,1
+"Putnam County, Indiana",18133,False,None (nonspecialized),0
+"Randolph County, Indiana",18135,False,Manufacturing,1
+"Ripley County, Indiana",18137,False,None (nonspecialized),0
+"Rush County, Indiana",18139,False,Manufacturing,1
+"St. Joseph County, Indiana",18141,True,None (nonspecialized),0
+"Scott County, Indiana",18143,False,Manufacturing,1
+"Shelby County, Indiana",18145,True,Manufacturing,0
+"Spencer County, Indiana",18147,False,Manufacturing,0
+"Starke County, Indiana",18149,False,None (nonspecialized),0
+"Steuben County, Indiana",18151,False,Manufacturing,0
+"Sullivan County, Indiana",18153,True,None (nonspecialized),1
+"Switzerland County, Indiana",18155,False,Recreation,1
+"Tippecanoe County, Indiana",18157,True,Manufacturing,1
+"Tipton County, Indiana",18159,True,Manufacturing,1
+"Union County, Indiana",18161,False,None (nonspecialized),0
+"Vanderburgh County, Indiana",18163,True,None (nonspecialized),0
+"Vermillion County, Indiana",18165,True,None (nonspecialized),1
+"Vigo County, Indiana",18167,True,None (nonspecialized),1
+"Wabash County, Indiana",18169,False,Manufacturing,1
+"Warren County, Indiana",18171,True,Manufacturing,0
+"Warrick County, Indiana",18173,True,None (nonspecialized),0
+"Washington County, Indiana",18175,True,Manufacturing,0
+"Wayne County, Indiana",18177,False,Manufacturing,1
+"Wells County, Indiana",18179,True,Manufacturing,0
+"White County, Indiana",18181,False,Manufacturing,0
+"Whitley County, Indiana",18183,True,Manufacturing,0
+"Adair County, Iowa",19001,False,Farming,1
+"Adams County, Iowa",19003,False,Farming,1
+"Allamakee County, Iowa",19005,False,Farming,1
+"Appanoose County, Iowa",19007,False,Manufacturing,1
+"Audubon County, Iowa",19009,False,Farming,1
+"Benton County, Iowa",19011,True,Manufacturing,0
+"Black Hawk County, Iowa",19013,True,Manufacturing,0
+"Boone County, Iowa",19015,True,None (nonspecialized),0
+"Bremer County, Iowa",19017,True,None (nonspecialized),0
+"Buchanan County, Iowa",19019,False,Manufacturing,1
+"Buena Vista County, Iowa",19021,False,Manufacturing,0
+"Butler County, Iowa",19023,False,Farming,1
+"Calhoun County, Iowa",19025,False,Farming,0
+"Carroll County, Iowa",19027,False,None (nonspecialized),1
+"Cass County, Iowa",19029,False,None (nonspecialized),1
+"Cedar County, Iowa",19031,False,None (nonspecialized),0
+"Cerro Gordo County, Iowa",19033,False,None (nonspecialized),1
+"Cherokee County, Iowa",19035,False,Manufacturing,1
+"Chickasaw County, Iowa",19037,False,Manufacturing,1
+"Clarke County, Iowa",19039,False,Manufacturing,0
+"Clay County, Iowa",19041,False,None (nonspecialized),1
+"Clayton County, Iowa",19043,False,Farming,1
+"Clinton County, Iowa",19045,False,Manufacturing,1
+"Crawford County, Iowa",19047,False,Manufacturing,0
+"Dallas County, Iowa",19049,True,None (nonspecialized),1
+"Davis County, Iowa",19051,False,None (nonspecialized),0
+"Decatur County, Iowa",19053,False,None (nonspecialized),1
+"Delaware County, Iowa",19055,False,Manufacturing,1
+"Des Moines County, Iowa",19057,False,Manufacturing,1
+"Dickinson County, Iowa",19059,False,Recreation,0
+"Dubuque County, Iowa",19061,True,Manufacturing,0
+"Emmet County, Iowa",19063,False,None (nonspecialized),1
+"Fayette County, Iowa",19065,False,None (nonspecialized),1
+"Floyd County, Iowa",19067,False,Manufacturing,1
+"Franklin County, Iowa",19069,False,Farming,1
+"Fremont County, Iowa",19071,False,Manufacturing,1
+"Greene County, Iowa",19073,False,Manufacturing,1
+"Grundy County, Iowa",19075,True,None (nonspecialized),0
+"Guthrie County, Iowa",19077,True,Farming,1
+"Hamilton County, Iowa",19079,False,Farming,1
+"Hancock County, Iowa",19081,False,Manufacturing,1
+"Hardin County, Iowa",19083,False,None (nonspecialized),1
+"Harrison County, Iowa",19085,True,None (nonspecialized),1
+"Henry County, Iowa",19087,False,Manufacturing,0
+"Howard County, Iowa",19089,False,Manufacturing,1
+"Humboldt County, Iowa",19091,False,Manufacturing,1
+"Ida County, Iowa",19093,False,Manufacturing,1
+"Iowa County, Iowa",19095,False,Manufacturing,0
+"Jackson County, Iowa",19097,False,None (nonspecialized),1
+"Jasper County, Iowa",19099,True,None (nonspecialized),0
+"Jefferson County, Iowa",19101,False,None (nonspecialized),0
+"Johnson County, Iowa",19103,True,Government,1
+"Jones County, Iowa",19105,True,None (nonspecialized),0
+"Keokuk County, Iowa",19107,False,Farming,1
+"Kossuth County, Iowa",19109,False,Farming,1
+"Lee County, Iowa",19111,False,Manufacturing,1
+"Linn County, Iowa",19113,True,None (nonspecialized),0
+"Louisa County, Iowa",19115,False,Manufacturing,1
+"Lucas County, Iowa",19117,False,None (nonspecialized),1
+"Lyon County, Iowa",19119,False,Farming,0
+"Madison County, Iowa",19121,True,None (nonspecialized),0
+"Mahaska County, Iowa",19123,False,Manufacturing,0
+"Marion County, Iowa",19125,False,Manufacturing,0
+"Marshall County, Iowa",19127,False,Manufacturing,0
+"Mills County, Iowa",19129,True,None (nonspecialized),0
+"Mitchell County, Iowa",19131,False,Manufacturing,1
+"Monona County, Iowa",19133,False,Farming,1
+"Monroe County, Iowa",19135,False,Manufacturing,1
+"Montgomery County, Iowa",19137,False,None (nonspecialized),1
+"Muscatine County, Iowa",19139,False,Manufacturing,0
+"O'Brien County, Iowa",19141,False,None (nonspecialized),1
+"Osceola County, Iowa",19143,False,Farming,1
+"Page County, Iowa",19145,False,None (nonspecialized),1
+"Palo Alto County, Iowa",19147,False,Farming,1
+"Plymouth County, Iowa",19149,False,Manufacturing,0
+"Pocahontas County, Iowa",19151,False,Farming,1
+"Polk County, Iowa",19153,True,None (nonspecialized),0
+"Pottawattamie County, Iowa",19155,True,None (nonspecialized),0
+"Poweshiek County, Iowa",19157,False,None (nonspecialized),0
+"Ringgold County, Iowa",19159,False,Farming,1
+"Sac County, Iowa",19161,False,Farming,1
+"Scott County, Iowa",19163,True,None (nonspecialized),0
+"Shelby County, Iowa",19165,False,None (nonspecialized),1
+"Sioux County, Iowa",19167,False,Manufacturing,0
+"Story County, Iowa",19169,True,Government,1
+"Tama County, Iowa",19171,False,Manufacturing,1
+"Taylor County, Iowa",19173,False,Farming,1
+"Union County, Iowa",19175,False,Manufacturing,0
+"Van Buren County, Iowa",19177,False,Manufacturing,1
+"Wapello County, Iowa",19179,False,Manufacturing,1
+"Warren County, Iowa",19181,True,None (nonspecialized),0
+"Washington County, Iowa",19183,True,None (nonspecialized),0
+"Wayne County, Iowa",19185,False,Manufacturing,0
+"Webster County, Iowa",19187,False,None (nonspecialized),1
+"Winnebago County, Iowa",19189,False,None (nonspecialized),1
+"Winneshiek County, Iowa",19191,False,None (nonspecialized),1
+"Woodbury County, Iowa",19193,True,None (nonspecialized),0
+"Worth County, Iowa",19195,False,Farming,1
+"Wright County, Iowa",19197,False,Manufacturing,1
+"Allen County, Kansas",20001,False,Manufacturing,1
+"Anderson County, Kansas",20003,False,None (nonspecialized),1
+"Atchison County, Kansas",20005,False,None (nonspecialized),0
+"Barber County, Kansas",20007,False,Mining,1
+"Barton County, Kansas",20009,False,None (nonspecialized),1
+"Bourbon County, Kansas",20011,False,Manufacturing,1
+"Brown County, Kansas",20013,False,Manufacturing,1
+"Butler County, Kansas",20015,True,None (nonspecialized),0
+"Chase County, Kansas",20017,False,None (nonspecialized),1
+"Chautauqua County, Kansas",20019,False,None (nonspecialized),1
+"Cherokee County, Kansas",20021,True,Manufacturing,1
+"Cheyenne County, Kansas",20023,False,Farming,1
+"Clark County, Kansas",20025,False,Farming,1
+"Clay County, Kansas",20027,False,None (nonspecialized),2
+"Cloud County, Kansas",20029,False,None (nonspecialized),1
+"Coffey County, Kansas",20031,False,None (nonspecialized),1
+"Comanche County, Kansas",20033,False,None (nonspecialized),1
+"Cowley County, Kansas",20035,False,Manufacturing,0
+"Crawford County, Kansas",20037,False,None (nonspecialized),0
+"Decatur County, Kansas",20039,False,Farming,1
+"Dickinson County, Kansas",20041,False,Manufacturing,0
+"Doniphan County, Kansas",20043,True,None (nonspecialized),1
+"Douglas County, Kansas",20045,True,Government,1
+"Edwards County, Kansas",20047,False,Farming,1
+"Elk County, Kansas",20049,False,None (nonspecialized),1
+"Ellis County, Kansas",20051,False,None (nonspecialized),1
+"Ellsworth County, Kansas",20053,False,None (nonspecialized),2
+"Finney County, Kansas",20055,False,Manufacturing,1
+"Ford County, Kansas",20057,False,Manufacturing,0
+"Franklin County, Kansas",20059,False,None (nonspecialized),0
+"Geary County, Kansas",20061,True,None (nonspecialized),2
+"Gove County, Kansas",20063,False,None (nonspecialized),0
+"Graham County, Kansas",20065,False,Farming,1
+"Grant County, Kansas",20067,False,None (nonspecialized),1
+"Gray County, Kansas",20069,False,Farming,0
+"Greeley County, Kansas",20071,False,Farming,0
+"Greenwood County, Kansas",20073,False,None (nonspecialized),1
+"Hamilton County, Kansas",20075,False,Farming,1
+"Harper County, Kansas",20077,False,Manufacturing,1
+"Harvey County, Kansas",20079,True,Manufacturing,0
+"Haskell County, Kansas",20081,False,Farming,1
+"Hodgeman County, Kansas",20083,False,Farming,1
+"Jackson County, Kansas",20085,True,None (nonspecialized),0
+"Jefferson County, Kansas",20087,True,None (nonspecialized),0
+"Jewell County, Kansas",20089,False,Farming,1
+"Johnson County, Kansas",20091,True,None (nonspecialized),0
+"Kearny County, Kansas",20093,False,Farming,1
+"Kingman County, Kansas",20095,False,None (nonspecialized),1
+"Kiowa County, Kansas",20097,False,Farming,1
+"Labette County, Kansas",20099,False,Manufacturing,1
+"Lane County, Kansas",20101,False,Farming,1
+"Leavenworth County, Kansas",20103,True,Government,0
+"Lincoln County, Kansas",20105,False,Farming,1
+"Linn County, Kansas",20107,True,None (nonspecialized),0
+"Logan County, Kansas",20109,False,None (nonspecialized),0
+"Lyon County, Kansas",20111,False,Manufacturing,1
+"McPherson County, Kansas",20113,False,Manufacturing,0
+"Marion County, Kansas",20115,False,None (nonspecialized),1
+"Marshall County, Kansas",20117,False,Manufacturing,1
+"Meade County, Kansas",20119,False,Farming,1
+"Miami County, Kansas",20121,True,None (nonspecialized),0
+"Mitchell County, Kansas",20123,False,None (nonspecialized),1
+"Montgomery County, Kansas",20125,False,Manufacturing,1
+"Morris County, Kansas",20127,False,None (nonspecialized),1
+"Morton County, Kansas",20129,False,Farming,1
+"Nemaha County, Kansas",20131,False,Manufacturing,0
+"Neosho County, Kansas",20133,False,Manufacturing,1
+"Ness County, Kansas",20135,False,Mining,1
+"Norton County, Kansas",20137,False,None (nonspecialized),2
+"Osage County, Kansas",20139,True,None (nonspecialized),1
+"Osborne County, Kansas",20141,False,None (nonspecialized),1
+"Ottawa County, Kansas",20143,False,Farming,1
+"Pawnee County, Kansas",20145,False,Government,2
+"Phillips County, Kansas",20147,False,None (nonspecialized),1
+"Pottawatomie County, Kansas",20149,True,Manufacturing,0
+"Pratt County, Kansas",20151,False,None (nonspecialized),0
+"Rawlins County, Kansas",20153,False,Farming,0
+"Reno County, Kansas",20155,False,None (nonspecialized),1
+"Republic County, Kansas",20157,False,Farming,1
+"Rice County, Kansas",20159,False,None (nonspecialized),1
+"Riley County, Kansas",20161,True,Government,2
+"Rooks County, Kansas",20163,False,None (nonspecialized),1
+"Rush County, Kansas",20165,False,Farming,1
+"Russell County, Kansas",20167,False,Mining,1
+"Saline County, Kansas",20169,False,None (nonspecialized),0
+"Scott County, Kansas",20171,False,Farming,0
+"Sedgwick County, Kansas",20173,True,Manufacturing,0
+"Seward County, Kansas",20175,False,Manufacturing,1
+"Shawnee County, Kansas",20177,True,None (nonspecialized),0
+"Sheridan County, Kansas",20179,False,Farming,1
+"Sherman County, Kansas",20181,False,None (nonspecialized),1
+"Smith County, Kansas",20183,False,Farming,1
+"Stafford County, Kansas",20185,False,Farming,1
+"Stanton County, Kansas",20187,False,Farming,2
+"Stevens County, Kansas",20189,False,Farming,0
+"Sumner County, Kansas",20191,True,None (nonspecialized),1
+"Thomas County, Kansas",20193,False,None (nonspecialized),0
+"Trego County, Kansas",20195,False,Farming,1
+"Wabaunsee County, Kansas",20197,True,None (nonspecialized),0
+"Wallace County, Kansas",20199,False,Farming,0
+"Washington County, Kansas",20201,False,Farming,1
+"Wichita County, Kansas",20203,False,Farming,1
+"Wilson County, Kansas",20205,False,Manufacturing,1
+"Woodson County, Kansas",20207,False,None (nonspecialized),1
+"Wyandotte County, Kansas",20209,True,None (nonspecialized),1
+"Adair County, Kentucky",21001,False,None (nonspecialized),0
+"Allen County, Kentucky",21003,True,Manufacturing,0
+"Anderson County, Kentucky",21005,False,Manufacturing,0
+"Ballard County, Kentucky",21007,True,Manufacturing,1
+"Barren County, Kentucky",21009,False,None (nonspecialized),0
+"Bath County, Kentucky",21011,False,None (nonspecialized),2
+"Bell County, Kentucky",21013,False,None (nonspecialized),4
+"Boone County, Kentucky",21015,True,None (nonspecialized),0
+"Bourbon County, Kentucky",21017,True,Farming,1
+"Boyd County, Kentucky",21019,True,None (nonspecialized),1
+"Boyle County, Kentucky",21021,False,None (nonspecialized),0
+"Bracken County, Kentucky",21023,True,None (nonspecialized),0
+"Breathitt County, Kentucky",21025,False,None (nonspecialized),4
+"Breckinridge County, Kentucky",21027,False,None (nonspecialized),0
+"Bullitt County, Kentucky",21029,True,None (nonspecialized),0
+"Butler County, Kentucky",21031,True,Manufacturing,2
+"Caldwell County, Kentucky",21033,False,Manufacturing,1
+"Calloway County, Kentucky",21035,False,None (nonspecialized),0
+"Campbell County, Kentucky",21037,True,None (nonspecialized),0
+"Carlisle County, Kentucky",21039,True,Farming,1
+"Carroll County, Kentucky",21041,False,Manufacturing,1
+"Carter County, Kentucky",21043,True,None (nonspecialized),1
+"Casey County, Kentucky",21045,False,Manufacturing,3
+"Christian County, Kentucky",21047,True,None (nonspecialized),2
+"Clark County, Kentucky",21049,True,Manufacturing,0
+"Clay County, Kentucky",21051,False,None (nonspecialized),4
+"Clinton County, Kentucky",21053,False,Manufacturing,1
+"Crittenden County, Kentucky",21055,False,Manufacturing,1
+"Cumberland County, Kentucky",21057,False,None (nonspecialized),4
+"Daviess County, Kentucky",21059,True,None (nonspecialized),0
+"Edmonson County, Kentucky",21061,True,None (nonspecialized),1
+"Elliott County, Kentucky",21063,False,Government,3
+"Estill County, Kentucky",21065,False,None (nonspecialized),4
+"Fayette County, Kentucky",21067,True,Government,1
+"Fleming County, Kentucky",21069,False,None (nonspecialized),0
+"Floyd County, Kentucky",21071,False,None (nonspecialized),4
+"Franklin County, Kentucky",21073,False,Government,0
+"Fulton County, Kentucky",21075,False,Manufacturing,5
+"Gallatin County, Kentucky",21077,True,Manufacturing,1
+"Garrard County, Kentucky",21079,False,None (nonspecialized),0
+"Grant County, Kentucky",21081,True,None (nonspecialized),0
+"Graves County, Kentucky",21083,False,None (nonspecialized),0
+"Grayson County, Kentucky",21085,False,Manufacturing,1
+"Green County, Kentucky",21087,False,Farming,1
+"Greenup County, Kentucky",21089,True,None (nonspecialized),0
+"Hancock County, Kentucky",21091,False,Manufacturing,0
+"Hardin County, Kentucky",21093,True,None (nonspecialized),0
+"Harlan County, Kentucky",21095,False,None (nonspecialized),3
+"Harrison County, Kentucky",21097,False,Manufacturing,0
+"Hart County, Kentucky",21099,False,Manufacturing,2
+"Henderson County, Kentucky",21101,False,Manufacturing,0
+"Henry County, Kentucky",21103,True,None (nonspecialized),2
+"Hickman County, Kentucky",21105,False,Farming,1
+"Hopkins County, Kentucky",21107,False,None (nonspecialized),0
+"Jackson County, Kentucky",21109,False,None (nonspecialized),4
+"Jefferson County, Kentucky",21111,True,None (nonspecialized),0
+"Jessamine County, Kentucky",21113,True,None (nonspecialized),0
+"Johnson County, Kentucky",21115,False,None (nonspecialized),2
+"Kenton County, Kentucky",21117,True,None (nonspecialized),0
+"Knott County, Kentucky",21119,False,None (nonspecialized),3
+"Knox County, Kentucky",21121,False,None (nonspecialized),3
+"Larue County, Kentucky",21123,True,None (nonspecialized),0
+"Laurel County, Kentucky",21125,False,None (nonspecialized),1
+"Lawrence County, Kentucky",21127,True,None (nonspecialized),3
+"Lee County, Kentucky",21129,False,None (nonspecialized),4
+"Leslie County, Kentucky",21131,False,None (nonspecialized),3
+"Letcher County, Kentucky",21133,False,None (nonspecialized),3
+"Lewis County, Kentucky",21135,False,None (nonspecialized),4
+"Lincoln County, Kentucky",21137,False,None (nonspecialized),1
+"Livingston County, Kentucky",21139,True,None (nonspecialized),1
+"Logan County, Kentucky",21141,False,Manufacturing,0
+"Lyon County, Kentucky",21143,False,Government,1
+"McCracken County, Kentucky",21145,True,None (nonspecialized),0
+"McCreary County, Kentucky",21147,False,Government,3
+"McLean County, Kentucky",21149,True,Farming,1
+"Madison County, Kentucky",21151,False,None (nonspecialized),0
+"Magoffin County, Kentucky",21153,False,None (nonspecialized),3
+"Marion County, Kentucky",21155,False,Manufacturing,1
+"Marshall County, Kentucky",21157,False,Manufacturing,0
+"Martin County, Kentucky",21159,False,Government,3
+"Mason County, Kentucky",21161,False,Manufacturing,0
+"Meade County, Kentucky",21163,True,None (nonspecialized),0
+"Menifee County, Kentucky",21165,False,None (nonspecialized),5
+"Mercer County, Kentucky",21167,False,Manufacturing,0
+"Metcalfe County, Kentucky",21169,False,Manufacturing,0
+"Monroe County, Kentucky",21171,False,None (nonspecialized),1
+"Montgomery County, Kentucky",21173,False,Manufacturing,0
+"Morgan County, Kentucky",21175,False,None (nonspecialized),4
+"Muhlenberg County, Kentucky",21177,False,None (nonspecialized),1
+"Nelson County, Kentucky",21179,True,Manufacturing,0
+"Nicholas County, Kentucky",21181,False,Farming,1
+"Ohio County, Kentucky",21183,False,Manufacturing,0
+"Oldham County, Kentucky",21185,True,None (nonspecialized),0
+"Owen County, Kentucky",21187,False,None (nonspecialized),0
+"Owsley County, Kentucky",21189,False,None (nonspecialized),4
+"Pendleton County, Kentucky",21191,True,None (nonspecialized),0
+"Perry County, Kentucky",21193,False,None (nonspecialized),2
+"Pike County, Kentucky",21195,False,None (nonspecialized),3
+"Powell County, Kentucky",21197,False,None (nonspecialized),2
+"Pulaski County, Kentucky",21199,False,None (nonspecialized),0
+"Robertson County, Kentucky",21201,False,Farming,2
+"Rockcastle County, Kentucky",21203,False,None (nonspecialized),2
+"Rowan County, Kentucky",21205,False,Government,1
+"Russell County, Kentucky",21207,False,Manufacturing,1
+"Scott County, Kentucky",21209,True,Manufacturing,0
+"Shelby County, Kentucky",21211,True,Manufacturing,0
+"Simpson County, Kentucky",21213,False,Manufacturing,0
+"Spencer County, Kentucky",21215,True,None (nonspecialized),0
+"Taylor County, Kentucky",21217,False,None (nonspecialized),0
+"Todd County, Kentucky",21219,False,Farming,1
+"Trigg County, Kentucky",21221,True,None (nonspecialized),0
+"Trimble County, Kentucky",21223,False,None (nonspecialized),0
+"Union County, Kentucky",21225,False,Mining,1
+"Warren County, Kentucky",21227,True,Manufacturing,0
+"Washington County, Kentucky",21229,False,Manufacturing,0
+"Wayne County, Kentucky",21231,False,Manufacturing,3
+"Webster County, Kentucky",21233,False,Farming,2
+"Whitley County, Kentucky",21235,False,None (nonspecialized),1
+"Wolfe County, Kentucky",21237,False,None (nonspecialized),3
+"Woodford County, Kentucky",21239,True,None (nonspecialized),0
+"Acadia Parish, Louisiana",22001,True,None (nonspecialized),2
+"Allen Parish, Louisiana",22003,False,None (nonspecialized),2
+"Ascension Parish, Louisiana",22005,True,Manufacturing,0
+"Assumption Parish, Louisiana",22007,True,None (nonspecialized),1
+"Avoyelles Parish, Louisiana",22009,False,None (nonspecialized),1
+"Beauregard Parish, Louisiana",22011,False,None (nonspecialized),0
+"Bienville Parish, Louisiana",22013,False,Manufacturing,5
+"Bossier Parish, Louisiana",22015,True,None (nonspecialized),1
+"Caddo Parish, Louisiana",22017,True,None (nonspecialized),2
+"Calcasieu Parish, Louisiana",22019,True,None (nonspecialized),0
+"Caldwell Parish, Louisiana",22021,False,None (nonspecialized),3
+"Cameron Parish, Louisiana",22023,True,None (nonspecialized),1
+"Catahoula Parish, Louisiana",22025,False,None (nonspecialized),4
+"Claiborne Parish, Louisiana",22027,False,None (nonspecialized),3
+"Concordia Parish, Louisiana",22029,False,None (nonspecialized),3
+"De Soto Parish, Louisiana",22031,True,Mining,0
+"East Baton Rouge Parish, Louisiana",22033,True,None (nonspecialized),1
+"East Carroll Parish, Louisiana",22035,False,Farming,5
+"East Feliciana Parish, Louisiana",22037,True,Government,3
+"Evangeline Parish, Louisiana",22039,False,None (nonspecialized),5
+"Franklin Parish, Louisiana",22041,False,None (nonspecialized),3
+"Grant Parish, Louisiana",22043,True,Government,2
+"Iberia Parish, Louisiana",22045,False,None (nonspecialized),3
+"Iberville Parish, Louisiana",22047,True,Manufacturing,0
+"Jackson Parish, Louisiana",22049,False,None (nonspecialized),2
+"Jefferson Parish, Louisiana",22051,True,None (nonspecialized),1
+"Jefferson Davis Parish, Louisiana",22053,True,None (nonspecialized),0
+"Lafayette Parish, Louisiana",22055,True,None (nonspecialized),0
+"Lafourche Parish, Louisiana",22057,True,None (nonspecialized),0
+"LaSalle Parish, Louisiana",22059,False,None (nonspecialized),1
+"Lincoln Parish, Louisiana",22061,False,None (nonspecialized),2
+"Livingston Parish, Louisiana",22063,True,None (nonspecialized),0
+"Madison Parish, Louisiana",22065,False,None (nonspecialized),5
+"Morehouse Parish, Louisiana",22067,True,None (nonspecialized),4
+"Natchitoches Parish, Louisiana",22069,False,Manufacturing,1
+"Orleans Parish, Louisiana",22071,True,None (nonspecialized),2
+"Ouachita Parish, Louisiana",22073,True,None (nonspecialized),2
+"Plaquemines Parish, Louisiana",22075,True,None (nonspecialized),0
+"Pointe Coupee Parish, Louisiana",22077,True,None (nonspecialized),0
+"Rapides Parish, Louisiana",22079,True,None (nonspecialized),0
+"Red River Parish, Louisiana",22081,False,None (nonspecialized),3
+"Richland Parish, Louisiana",22083,True,None (nonspecialized),3
+"Sabine Parish, Louisiana",22085,False,None (nonspecialized),3
+"St. Bernard Parish, Louisiana",22087,True,Manufacturing,2
+"St. Charles Parish, Louisiana",22089,True,Manufacturing,0
+"St. Helena Parish, Louisiana",22091,True,Manufacturing,2
+"St. James Parish, Louisiana",22093,True,Manufacturing,0
+"St. John the Baptist Parish, Louisiana",22095,True,Manufacturing,0
+"St. Landry Parish, Louisiana",22097,False,None (nonspecialized),3
+"St. Martin Parish, Louisiana",22099,True,Manufacturing,1
+"St. Mary Parish, Louisiana",22101,False,None (nonspecialized),2
+"St. Tammany Parish, Louisiana",22103,True,None (nonspecialized),0
+"Tangipahoa Parish, Louisiana",22105,True,None (nonspecialized),1
+"Tensas Parish, Louisiana",22107,False,Farming,4
+"Terrebonne Parish, Louisiana",22109,True,None (nonspecialized),0
+"Union Parish, Louisiana",22111,True,None (nonspecialized),1
+"Vermilion Parish, Louisiana",22113,True,None (nonspecialized),0
+"Vernon Parish, Louisiana",22115,False,None (nonspecialized),2
+"Washington Parish, Louisiana",22117,False,None (nonspecialized),2
+"Webster Parish, Louisiana",22119,False,None (nonspecialized),4
+"West Baton Rouge Parish, Louisiana",22121,True,Manufacturing,0
+"West Carroll Parish, Louisiana",22123,False,None (nonspecialized),3
+"West Feliciana Parish, Louisiana",22125,True,Government,1
+"Winn Parish, Louisiana",22127,False,None (nonspecialized),3
+"Androscoggin County, Maine",23001,True,None (nonspecialized),0
+"Aroostook County, Maine",23003,False,None (nonspecialized),1
+"Cumberland County, Maine",23005,True,Recreation,0
+"Franklin County, Maine",23007,False,Recreation,0
+"Hancock County, Maine",23009,False,Recreation,0
+"Kennebec County, Maine",23011,False,Government,0
+"Knox County, Maine",23013,False,Recreation,0
+"Lincoln County, Maine",23015,False,Recreation,0
+"Oxford County, Maine",23017,False,Recreation,0
+"Penobscot County, Maine",23019,True,None (nonspecialized),0
+"Piscataquis County, Maine",23021,False,Manufacturing,0
+"Sagadahoc County, Maine",23023,True,Manufacturing,1
+"Somerset County, Maine",23025,False,None (nonspecialized),0
+"Waldo County, Maine",23027,False,None (nonspecialized),0
+"Washington County, Maine",23029,False,None (nonspecialized),1
+"York County, Maine",23031,True,Recreation,1
+"Allegany County, Maryland",24001,False,None (nonspecialized),0
+"Anne Arundel County, Maryland",24003,True,Government,0
+"Baltimore County, Maryland",24005,True,None (nonspecialized),1
+"Calvert County, Maryland",24009,True,None (nonspecialized),0
+"Caroline County, Maryland",24011,False,None (nonspecialized),1
+"Carroll County, Maryland",24013,True,None (nonspecialized),0
+"Cecil County, Maryland",24015,True,None (nonspecialized),1
+"Charles County, Maryland",24017,True,None (nonspecialized),0
+"Dorchester County, Maryland",24019,False,Manufacturing,1
+"Frederick County, Maryland",24021,True,None (nonspecialized),0
+"Garrett County, Maryland",24023,False,Recreation,0
+"Harford County, Maryland",24025,True,None (nonspecialized),0
+"Howard County, Maryland",24027,True,None (nonspecialized),0
+"Kent County, Maryland",24029,False,None (nonspecialized),1
+"Montgomery County, Maryland",24031,True,None (nonspecialized),1
+"Prince George's County, Maryland",24033,True,Government,1
+"Queen Anne's County, Maryland",24035,True,None (nonspecialized),1
+"St. Mary's County, Maryland",24037,True,Government,0
+"Somerset County, Maryland",24039,True,Government,2
+"Talbot County, Maryland",24041,False,Recreation,1
+"Washington County, Maryland",24043,True,None (nonspecialized),0
+"Wicomico County, Maryland",24045,True,None (nonspecialized),1
+"Worcester County, Maryland",24047,False,Recreation,2
+"Baltimore City, Maryland",24510,True,None (nonspecialized),3
+"Barnstable County, Massachusetts",25001,True,Recreation,2
+"Berkshire County, Massachusetts",25003,True,None (nonspecialized),2
+"Bristol County, Massachusetts",25005,True,None (nonspecialized),1
+"Dukes County, Massachusetts",25007,False,Recreation,2
+"Essex County, Massachusetts",25009,True,None (nonspecialized),1
+"Franklin County, Massachusetts",25011,False,None (nonspecialized),2
+"Hampden County, Massachusetts",25013,True,None (nonspecialized),1
+"Hampshire County, Massachusetts",25015,True,Government,1
+"Middlesex County, Massachusetts",25017,True,None (nonspecialized),1
+"Nantucket County, Massachusetts",25019,False,Recreation,2
+"Norfolk County, Massachusetts",25021,True,None (nonspecialized),1
+"Plymouth County, Massachusetts",25023,True,None (nonspecialized),1
+"Suffolk County, Massachusetts",25025,True,None (nonspecialized),1
+"Worcester County, Massachusetts",25027,True,None (nonspecialized),1
+"Alcona County, Michigan",26001,False,Recreation,2
+"Alger County, Michigan",26003,False,Recreation,2
+"Allegan County, Michigan",26005,False,Manufacturing,0
+"Alpena County, Michigan",26007,False,None (nonspecialized),1
+"Antrim County, Michigan",26009,False,Recreation,1
+"Arenac County, Michigan",26011,False,Manufacturing,1
+"Baraga County, Michigan",26013,False,Manufacturing,1
+"Barry County, Michigan",26015,True,Manufacturing,0
+"Bay County, Michigan",26017,True,None (nonspecialized),1
+"Benzie County, Michigan",26019,True,Recreation,1
+"Berrien County, Michigan",26021,True,Manufacturing,1
+"Branch County, Michigan",26023,False,Manufacturing,1
+"Calhoun County, Michigan",26025,True,Manufacturing,1
+"Cass County, Michigan",26027,True,Manufacturing,0
+"Charlevoix County, Michigan",26029,False,Recreation,0
+"Cheboygan County, Michigan",26031,False,Recreation,2
+"Chippewa County, Michigan",26033,False,None (nonspecialized),1
+"Clare County, Michigan",26035,False,Recreation,2
+"Clinton County, Michigan",26037,True,None (nonspecialized),0
+"Crawford County, Michigan",26039,False,Recreation,1
+"Delta County, Michigan",26041,False,Manufacturing,1
+"Dickinson County, Michigan",26043,False,Manufacturing,1
+"Eaton County, Michigan",26045,True,None (nonspecialized),0
+"Emmet County, Michigan",26047,False,Recreation,0
+"Genesee County, Michigan",26049,True,None (nonspecialized),1
+"Gladwin County, Michigan",26051,False,Recreation,2
+"Gogebic County, Michigan",26053,False,None (nonspecialized),1
+"Grand Traverse County, Michigan",26055,True,None (nonspecialized),0
+"Gratiot County, Michigan",26057,False,None (nonspecialized),0
+"Hillsdale County, Michigan",26059,False,Manufacturing,0
+"Houghton County, Michigan",26061,False,Government,0
+"Huron County, Michigan",26063,False,None (nonspecialized),1
+"Ingham County, Michigan",26065,True,Government,1
+"Ionia County, Michigan",26067,True,Manufacturing,0
+"Iosco County, Michigan",26069,False,Recreation,2
+"Iron County, Michigan",26071,False,None (nonspecialized),2
+"Isabella County, Michigan",26073,False,Government,2
+"Jackson County, Michigan",26075,True,None (nonspecialized),0
+"Kalamazoo County, Michigan",26077,True,Manufacturing,0
+"Kalkaska County, Michigan",26079,True,Recreation,0
+"Kent County, Michigan",26081,True,None (nonspecialized),0
+"Keweenaw County, Michigan",26083,False,Recreation,1
+"Lake County, Michigan",26085,False,Recreation,4
+"Lapeer County, Michigan",26087,True,Manufacturing,0
+"Leelanau County, Michigan",26089,True,Recreation,1
+"Lenawee County, Michigan",26091,False,Manufacturing,0
+"Livingston County, Michigan",26093,True,None (nonspecialized),0
+"Luce County, Michigan",26095,False,None (nonspecialized),2
+"Mackinac County, Michigan",26097,False,Recreation,1
+"Macomb County, Michigan",26099,True,Manufacturing,0
+"Manistee County, Michigan",26101,False,Recreation,1
+"Marquette County, Michigan",26103,False,None (nonspecialized),0
+"Mason County, Michigan",26105,False,Manufacturing,0
+"Mecosta County, Michigan",26107,False,None (nonspecialized),0
+"Menominee County, Michigan",26109,False,Manufacturing,1
+"Midland County, Michigan",26111,True,None (nonspecialized),0
+"Missaukee County, Michigan",26113,False,Manufacturing,0
+"Monroe County, Michigan",26115,True,None (nonspecialized),0
+"Montcalm County, Michigan",26117,True,Manufacturing,0
+"Montmorency County, Michigan",26119,False,Recreation,2
+"Muskegon County, Michigan",26121,True,Manufacturing,0
+"Newaygo County, Michigan",26123,False,Manufacturing,0
+"Oakland County, Michigan",26125,True,None (nonspecialized),0
+"Oceana County, Michigan",26127,False,Manufacturing,0
+"Ogemaw County, Michigan",26129,False,Recreation,1
+"Ontonagon County, Michigan",26131,False,None (nonspecialized),1
+"Osceola County, Michigan",26133,False,Manufacturing,0
+"Oscoda County, Michigan",26135,False,Recreation,2
+"Otsego County, Michigan",26137,False,Recreation,0
+"Ottawa County, Michigan",26139,True,Manufacturing,0
+"Presque Isle County, Michigan",26141,False,None (nonspecialized),2
+"Roscommon County, Michigan",26143,False,Recreation,2
+"Saginaw County, Michigan",26145,True,None (nonspecialized),1
+"St. Clair County, Michigan",26147,True,None (nonspecialized),1
+"St. Joseph County, Michigan",26149,False,Manufacturing,1
+"Sanilac County, Michigan",26151,False,Manufacturing,1
+"Schoolcraft County, Michigan",26153,False,None (nonspecialized),1
+"Shiawassee County, Michigan",26155,False,None (nonspecialized),1
+"Tuscola County, Michigan",26157,False,None (nonspecialized),1
+"Van Buren County, Michigan",26159,False,None (nonspecialized),1
+"Washtenaw County, Michigan",26161,True,Government,1
+"Wayne County, Michigan",26163,True,None (nonspecialized),2
+"Wexford County, Michigan",26165,False,Manufacturing,0
+"Aitkin County, Minnesota",27001,False,Recreation,1
+"Anoka County, Minnesota",27003,True,Manufacturing,0
+"Becker County, Minnesota",27005,False,Recreation,0
+"Beltrami County, Minnesota",27007,False,None (nonspecialized),0
+"Benton County, Minnesota",27009,True,Manufacturing,0
+"Big Stone County, Minnesota",27011,False,Farming,1
+"Blue Earth County, Minnesota",27013,True,None (nonspecialized),1
+"Brown County, Minnesota",27015,False,Manufacturing,0
+"Carlton County, Minnesota",27017,True,None (nonspecialized),0
+"Carver County, Minnesota",27019,True,Manufacturing,0
+"Cass County, Minnesota",27021,False,Recreation,1
+"Chippewa County, Minnesota",27023,False,Manufacturing,0
+"Chisago County, Minnesota",27025,True,None (nonspecialized),0
+"Clay County, Minnesota",27027,True,None (nonspecialized),1
+"Clearwater County, Minnesota",27029,False,None (nonspecialized),0
+"Cook County, Minnesota",27031,False,Recreation,1
+"Cottonwood County, Minnesota",27033,False,Manufacturing,1
+"Crow Wing County, Minnesota",27035,False,Recreation,1
+"Dakota County, Minnesota",27037,True,None (nonspecialized),0
+"Dodge County, Minnesota",27039,True,Manufacturing,0
+"Douglas County, Minnesota",27041,False,Manufacturing,1
+"Faribault County, Minnesota",27043,False,Manufacturing,1
+"Fillmore County, Minnesota",27045,True,None (nonspecialized),0
+"Freeborn County, Minnesota",27047,False,Manufacturing,1
+"Goodhue County, Minnesota",27049,False,Manufacturing,0
+"Grant County, Minnesota",27051,False,Farming,0
+"Hennepin County, Minnesota",27053,True,None (nonspecialized),0
+"Houston County, Minnesota",27055,True,None (nonspecialized),1
+"Hubbard County, Minnesota",27057,False,Manufacturing,1
+"Isanti County, Minnesota",27059,True,None (nonspecialized),0
+"Itasca County, Minnesota",27061,False,None (nonspecialized),0
+"Jackson County, Minnesota",27063,False,Manufacturing,1
+"Kanabec County, Minnesota",27065,False,None (nonspecialized),0
+"Kandiyohi County, Minnesota",27067,False,None (nonspecialized),0
+"Kittson County, Minnesota",27069,False,Farming,1
+"Koochiching County, Minnesota",27071,False,Manufacturing,1
+"Lac qui Parle County, Minnesota",27073,False,Farming,1
+"Lake County, Minnesota",27075,False,Recreation,0
+"Lake of the Woods County, Minnesota",27077,False,Recreation,1
+"Le Sueur County, Minnesota",27079,True,Manufacturing,0
+"Lincoln County, Minnesota",27081,False,Farming,1
+"Lyon County, Minnesota",27083,False,None (nonspecialized),0
+"McLeod County, Minnesota",27085,False,Manufacturing,0
+"Mahnomen County, Minnesota",27087,False,None (nonspecialized),0
+"Marshall County, Minnesota",27089,False,Farming,1
+"Martin County, Minnesota",27091,False,None (nonspecialized),1
+"Meeker County, Minnesota",27093,False,Manufacturing,0
+"Mille Lacs County, Minnesota",27095,True,None (nonspecialized),0
+"Morrison County, Minnesota",27097,False,None (nonspecialized),0
+"Mower County, Minnesota",27099,False,Manufacturing,0
+"Murray County, Minnesota",27101,False,Farming,1
+"Nicollet County, Minnesota",27103,True,Manufacturing,0
+"Nobles County, Minnesota",27105,False,Manufacturing,0
+"Norman County, Minnesota",27107,False,Farming,1
+"Olmsted County, Minnesota",27109,True,None (nonspecialized),0
+"Otter Tail County, Minnesota",27111,False,None (nonspecialized),0
+"Pennington County, Minnesota",27113,False,None (nonspecialized),0
+"Pine County, Minnesota",27115,False,Recreation,0
+"Pipestone County, Minnesota",27117,False,None (nonspecialized),1
+"Polk County, Minnesota",27119,True,None (nonspecialized),0
+"Pope County, Minnesota",27121,False,None (nonspecialized),0
+"Ramsey County, Minnesota",27123,True,None (nonspecialized),1
+"Red Lake County, Minnesota",27125,False,Farming,1
+"Redwood County, Minnesota",27127,False,Manufacturing,1
+"Renville County, Minnesota",27129,False,Farming,1
+"Rice County, Minnesota",27131,False,Manufacturing,0
+"Rock County, Minnesota",27133,True,Farming,0
+"Roseau County, Minnesota",27135,False,Manufacturing,1
+"St. Louis County, Minnesota",27137,True,None (nonspecialized),0
+"Scott County, Minnesota",27139,True,None (nonspecialized),0
+"Sherburne County, Minnesota",27141,True,None (nonspecialized),0
+"Sibley County, Minnesota",27143,False,None (nonspecialized),1
+"Stearns County, Minnesota",27145,True,None (nonspecialized),0
+"Steele County, Minnesota",27147,False,Manufacturing,0
+"Stevens County, Minnesota",27149,False,None (nonspecialized),1
+"Swift County, Minnesota",27151,False,Manufacturing,0
+"Todd County, Minnesota",27153,False,Manufacturing,0
+"Traverse County, Minnesota",27155,False,Farming,1
+"Wabasha County, Minnesota",27157,True,Manufacturing,0
+"Wadena County, Minnesota",27159,False,None (nonspecialized),0
+"Waseca County, Minnesota",27161,False,Manufacturing,1
+"Washington County, Minnesota",27163,True,None (nonspecialized),0
+"Watonwan County, Minnesota",27165,False,Manufacturing,0
+"Wilkin County, Minnesota",27167,False,None (nonspecialized),1
+"Winona County, Minnesota",27169,False,Manufacturing,0
+"Wright County, Minnesota",27171,True,None (nonspecialized),0
+"Yellow Medicine County, Minnesota",27173,False,None (nonspecialized),1
+"Adams County, Mississippi",28001,False,None (nonspecialized),3
+"Alcorn County, Mississippi",28003,False,Manufacturing,0
+"Amite County, Mississippi",28005,False,None (nonspecialized),3
+"Attala County, Mississippi",28007,False,None (nonspecialized),3
+"Benton County, Mississippi",28009,True,None (nonspecialized),0
+"Bolivar County, Mississippi",28011,False,None (nonspecialized),4
+"Calhoun County, Mississippi",28013,False,Manufacturing,1
+"Carroll County, Mississippi",28015,False,None (nonspecialized),1
+"Chickasaw County, Mississippi",28017,False,Manufacturing,4
+"Choctaw County, Mississippi",28019,False,None (nonspecialized),1
+"Claiborne County, Mississippi",28021,False,Government,3
+"Clarke County, Mississippi",28023,False,None (nonspecialized),2
+"Clay County, Mississippi",28025,False,Manufacturing,2
+"Coahoma County, Mississippi",28027,False,None (nonspecialized),3
+"Copiah County, Mississippi",28029,True,Manufacturing,1
+"Covington County, Mississippi",28031,False,Manufacturing,1
+"DeSoto County, Mississippi",28033,True,None (nonspecialized),0
+"Forrest County, Mississippi",28035,True,None (nonspecialized),2
+"Franklin County, Mississippi",28037,False,None (nonspecialized),2
+"George County, Mississippi",28039,False,None (nonspecialized),0
+"Greene County, Mississippi",28041,False,None (nonspecialized),2
+"Grenada County, Mississippi",28043,False,Manufacturing,3
+"Hancock County, Mississippi",28045,True,None (nonspecialized),1
+"Harrison County, Mississippi",28047,True,None (nonspecialized),1
+"Hinds County, Mississippi",28049,True,Government,2
+"Holmes County, Mississippi",28051,True,None (nonspecialized),4
+"Humphreys County, Mississippi",28053,False,Manufacturing,3
+"Issaquena County, Mississippi",28055,False,Farming,5
+"Itawamba County, Mississippi",28057,False,Manufacturing,0
+"Jackson County, Mississippi",28059,True,Manufacturing,0
+"Jasper County, Mississippi",28061,False,Manufacturing,1
+"Jefferson County, Mississippi",28063,False,None (nonspecialized),3
+"Jefferson Davis County, Mississippi",28065,False,None (nonspecialized),3
+"Jones County, Mississippi",28067,False,Manufacturing,0
+"Kemper County, Mississippi",28069,False,None (nonspecialized),2
+"Lafayette County, Mississippi",28071,False,Government,2
+"Lamar County, Mississippi",28073,True,None (nonspecialized),0
+"Lauderdale County, Mississippi",28075,False,None (nonspecialized),2
+"Lawrence County, Mississippi",28077,False,Manufacturing,1
+"Leake County, Mississippi",28079,False,Manufacturing,1
+"Lee County, Mississippi",28081,False,Manufacturing,0
+"Leflore County, Mississippi",28083,False,Manufacturing,3
+"Lincoln County, Mississippi",28085,False,None (nonspecialized),0
+"Lowndes County, Mississippi",28087,False,None (nonspecialized),1
+"Madison County, Mississippi",28089,True,None (nonspecialized),0
+"Marion County, Mississippi",28091,False,None (nonspecialized),1
+"Marshall County, Mississippi",28093,True,None (nonspecialized),1
+"Monroe County, Mississippi",28095,False,Manufacturing,1
+"Montgomery County, Mississippi",28097,False,None (nonspecialized),2
+"Neshoba County, Mississippi",28099,False,None (nonspecialized),1
+"Newton County, Mississippi",28101,False,None (nonspecialized),1
+"Noxubee County, Mississippi",28103,False,Manufacturing,2
+"Oktibbeha County, Mississippi",28105,False,Government,2
+"Panola County, Mississippi",28107,False,None (nonspecialized),1
+"Pearl River County, Mississippi",28109,False,None (nonspecialized),0
+"Perry County, Mississippi",28111,True,Manufacturing,0
+"Pike County, Mississippi",28113,False,None (nonspecialized),2
+"Pontotoc County, Mississippi",28115,False,Manufacturing,0
+"Prentiss County, Mississippi",28117,False,Manufacturing,1
+"Quitman County, Mississippi",28119,False,None (nonspecialized),3
+"Rankin County, Mississippi",28121,True,None (nonspecialized),0
+"Scott County, Mississippi",28123,True,Manufacturing,2
+"Sharkey County, Mississippi",28125,False,Farming,3
+"Simpson County, Mississippi",28127,True,None (nonspecialized),1
+"Smith County, Mississippi",28129,False,Manufacturing,0
+"Stone County, Mississippi",28131,True,None (nonspecialized),0
+"Sunflower County, Mississippi",28133,False,None (nonspecialized),3
+"Tallahatchie County, Mississippi",28135,False,Farming,2
+"Tate County, Mississippi",28137,True,None (nonspecialized),1
+"Tippah County, Mississippi",28139,False,Manufacturing,0
+"Tishomingo County, Mississippi",28141,False,Manufacturing,0
+"Tunica County, Mississippi",28143,True,Recreation,3
+"Union County, Mississippi",28145,False,Manufacturing,0
+"Walthall County, Mississippi",28147,False,None (nonspecialized),2
+"Warren County, Mississippi",28149,False,Government,1
+"Washington County, Mississippi",28151,False,None (nonspecialized),3
+"Wayne County, Mississippi",28153,False,None (nonspecialized),1
+"Webster County, Mississippi",28155,False,None (nonspecialized),1
+"Wilkinson County, Mississippi",28157,False,None (nonspecialized),4
+"Winston County, Mississippi",28159,False,Manufacturing,2
+"Yalobusha County, Mississippi",28161,False,Manufacturing,3
+"Yazoo County, Mississippi",28163,True,Government,5
+"Adair County, Missouri",29001,False,None (nonspecialized),1
+"Andrew County, Missouri",29003,True,None (nonspecialized),0
+"Atchison County, Missouri",29005,False,Farming,1
+"Audrain County, Missouri",29007,False,Manufacturing,1
+"Barry County, Missouri",29009,False,Manufacturing,0
+"Barton County, Missouri",29011,False,Farming,1
+"Bates County, Missouri",29013,True,None (nonspecialized),1
+"Benton County, Missouri",29015,False,Recreation,1
+"Bollinger County, Missouri",29017,True,None (nonspecialized),1
+"Boone County, Missouri",29019,True,Government,1
+"Buchanan County, Missouri",29021,True,Manufacturing,0
+"Butler County, Missouri",29023,False,None (nonspecialized),1
+"Caldwell County, Missouri",29025,True,Farming,0
+"Callaway County, Missouri",29027,True,None (nonspecialized),0
+"Camden County, Missouri",29029,False,Recreation,1
+"Cape Girardeau County, Missouri",29031,True,None (nonspecialized),0
+"Carroll County, Missouri",29033,False,Farming,1
+"Carter County, Missouri",29035,False,None (nonspecialized),2
+"Cass County, Missouri",29037,True,None (nonspecialized),0
+"Cedar County, Missouri",29039,False,None (nonspecialized),1
+"Chariton County, Missouri",29041,False,Farming,1
+"Christian County, Missouri",29043,True,None (nonspecialized),0
+"Clark County, Missouri",29045,False,Farming,1
+"Clay County, Missouri",29047,True,None (nonspecialized),0
+"Clinton County, Missouri",29049,True,None (nonspecialized),0
+"Cole County, Missouri",29051,True,Government,0
+"Cooper County, Missouri",29053,True,None (nonspecialized),0
+"Crawford County, Missouri",29055,False,Manufacturing,0
+"Dade County, Missouri",29057,False,Farming,1
+"Dallas County, Missouri",29059,True,None (nonspecialized),0
+"Daviess County, Missouri",29061,False,Farming,0
+"DeKalb County, Missouri",29063,True,None (nonspecialized),1
+"Dent County, Missouri",29065,False,None (nonspecialized),0
+"Douglas County, Missouri",29067,False,None (nonspecialized),0
+"Dunklin County, Missouri",29069,False,None (nonspecialized),3
+"Franklin County, Missouri",29071,True,Manufacturing,0
+"Gasconade County, Missouri",29073,False,Manufacturing,1
+"Gentry County, Missouri",29075,False,None (nonspecialized),1
+"Greene County, Missouri",29077,True,None (nonspecialized),1
+"Grundy County, Missouri",29079,False,None (nonspecialized),1
+"Harrison County, Missouri",29081,False,Farming,0
+"Henry County, Missouri",29083,False,None (nonspecialized),0
+"Hickory County, Missouri",29085,False,None (nonspecialized),3
+"Holt County, Missouri",29087,False,Farming,1
+"Howard County, Missouri",29089,True,None (nonspecialized),0
+"Howell County, Missouri",29091,False,None (nonspecialized),0
+"Iron County, Missouri",29093,False,Mining,1
+"Jackson County, Missouri",29095,True,None (nonspecialized),1
+"Jasper County, Missouri",29097,True,Manufacturing,0
+"Jefferson County, Missouri",29099,True,None (nonspecialized),0
+"Johnson County, Missouri",29101,False,Government,0
+"Knox County, Missouri",29103,False,Farming,1
+"Laclede County, Missouri",29105,False,Manufacturing,0
+"Lafayette County, Missouri",29107,True,None (nonspecialized),0
+"Lawrence County, Missouri",29109,False,None (nonspecialized),0
+"Lewis County, Missouri",29111,False,None (nonspecialized),2
+"Lincoln County, Missouri",29113,True,None (nonspecialized),0
+"Linn County, Missouri",29115,False,None (nonspecialized),1
+"Livingston County, Missouri",29117,False,None (nonspecialized),0
+"McDonald County, Missouri",29119,False,Manufacturing,2
+"Macon County, Missouri",29121,False,None (nonspecialized),1
+"Madison County, Missouri",29123,False,None (nonspecialized),0
+"Maries County, Missouri",29125,False,None (nonspecialized),0
+"Marion County, Missouri",29127,False,None (nonspecialized),0
+"Mercer County, Missouri",29129,False,Farming,0
+"Miller County, Missouri",29131,False,None (nonspecialized),0
+"Mississippi County, Missouri",29133,False,None (nonspecialized),3
+"Moniteau County, Missouri",29135,True,None (nonspecialized),0
+"Monroe County, Missouri",29137,False,Farming,1
+"Montgomery County, Missouri",29139,False,Manufacturing,0
+"Morgan County, Missouri",29141,False,Recreation,2
+"New Madrid County, Missouri",29143,False,None (nonspecialized),2
+"Newton County, Missouri",29145,True,None (nonspecialized),0
+"Nodaway County, Missouri",29147,False,Government,0
+"Oregon County, Missouri",29149,False,None (nonspecialized),2
+"Osage County, Missouri",29151,True,Manufacturing,0
+"Ozark County, Missouri",29153,False,None (nonspecialized),1
+"Pemiscot County, Missouri",29155,False,None (nonspecialized),5
+"Perry County, Missouri",29157,False,Manufacturing,0
+"Pettis County, Missouri",29159,False,Manufacturing,0
+"Phelps County, Missouri",29161,False,None (nonspecialized),1
+"Pike County, Missouri",29163,False,None (nonspecialized),2
+"Platte County, Missouri",29165,True,None (nonspecialized),0
+"Polk County, Missouri",29167,True,None (nonspecialized),0
+"Pulaski County, Missouri",29169,False,None (nonspecialized),1
+"Putnam County, Missouri",29171,False,Farming,1
+"Ralls County, Missouri",29173,False,Manufacturing,0
+"Randolph County, Missouri",29175,False,None (nonspecialized),0
+"Ray County, Missouri",29177,True,None (nonspecialized),0
+"Reynolds County, Missouri",29179,False,Mining,0
+"Ripley County, Missouri",29181,False,None (nonspecialized),1
+"St. Charles County, Missouri",29183,True,None (nonspecialized),0
+"St. Clair County, Missouri",29185,False,None (nonspecialized),0
+"Ste. Genevieve County, Missouri",29186,False,Manufacturing,0
+"St. Francois County, Missouri",29187,False,None (nonspecialized),0
+"St. Louis County, Missouri",29189,True,None (nonspecialized),0
+"Saline County, Missouri",29195,False,Manufacturing,1
+"Schuyler County, Missouri",29197,False,Farming,0
+"Scotland County, Missouri",29199,False,Farming,2
+"Scott County, Missouri",29201,False,None (nonspecialized),1
+"Shannon County, Missouri",29203,False,Manufacturing,2
+"Shelby County, Missouri",29205,False,None (nonspecialized),1
+"Stoddard County, Missouri",29207,False,Manufacturing,1
+"Stone County, Missouri",29209,False,Recreation,1
+"Sullivan County, Missouri",29211,False,Manufacturing,2
+"Taney County, Missouri",29213,False,Recreation,1
+"Texas County, Missouri",29215,False,None (nonspecialized),2
+"Vernon County, Missouri",29217,False,None (nonspecialized),0
+"Warren County, Missouri",29219,True,Manufacturing,0
+"Washington County, Missouri",29221,False,None (nonspecialized),1
+"Wayne County, Missouri",29223,False,None (nonspecialized),1
+"Webster County, Missouri",29225,True,Manufacturing,0
+"Worth County, Missouri",29227,False,Farming,2
+"Wright County, Missouri",29229,False,None (nonspecialized),1
+"St. Louis City, Missouri",29510,True,None (nonspecialized),2
+"Beaverhead County, Montana",30001,False,None (nonspecialized),0
+"Big Horn County, Montana",30003,False,None (nonspecialized),2
+"Blaine County, Montana",30005,False,Farming,1
+"Broadwater County, Montana",30007,True,None (nonspecialized),1
+"Carbon County, Montana",30009,True,Recreation,0
+"Carter County, Montana",30011,False,Farming,2
+"Cascade County, Montana",30013,True,None (nonspecialized),0
+"Chouteau County, Montana",30015,False,Farming,0
+"Custer County, Montana",30017,False,None (nonspecialized),0
+"Daniels County, Montana",30019,False,Farming,1
+"Dawson County, Montana",30021,False,None (nonspecialized),1
+"Deer Lodge County, Montana",30023,False,Government,1
+"Fallon County, Montana",30025,False,Mining,0
+"Fergus County, Montana",30027,False,None (nonspecialized),1
+"Flathead County, Montana",30029,False,Recreation,1
+"Gallatin County, Montana",30031,True,Recreation,1
+"Garfield County, Montana",30033,False,Farming,1
+"Glacier County, Montana",30035,False,None (nonspecialized),2
+"Golden Valley County, Montana",30037,False,Farming,1
+"Granite County, Montana",30039,False,Recreation,1
+"Hill County, Montana",30041,False,None (nonspecialized),0
+"Jefferson County, Montana",30043,True,None (nonspecialized),0
+"Judith Basin County, Montana",30045,False,Farming,1
+"Lake County, Montana",30047,False,Recreation,2
+"Lewis and Clark County, Montana",30049,True,Government,0
+"Liberty County, Montana",30051,False,Farming,1
+"Lincoln County, Montana",30053,False,None (nonspecialized),2
+"McCone County, Montana",30055,False,Farming,1
+"Madison County, Montana",30057,False,Recreation,1
+"Meagher County, Montana",30059,False,Recreation,1
+"Mineral County, Montana",30061,True,Recreation,1
+"Missoula County, Montana",30063,True,None (nonspecialized),1
+"Musselshell County, Montana",30065,False,Mining,0
+"Park County, Montana",30067,False,Recreation,1
+"Petroleum County, Montana",30069,False,Farming,0
+"Phillips County, Montana",30071,False,Farming,1
+"Pondera County, Montana",30073,False,Farming,1
+"Powder River County, Montana",30075,False,Farming,1
+"Powell County, Montana",30077,False,Government,2
+"Prairie County, Montana",30079,False,Farming,1
+"Ravalli County, Montana",30081,False,None (nonspecialized),1
+"Richland County, Montana",30083,False,None (nonspecialized),0
+"Roosevelt County, Montana",30085,False,None (nonspecialized),2
+"Rosebud County, Montana",30087,False,None (nonspecialized),2
+"Sanders County, Montana",30089,False,Recreation,3
+"Sheridan County, Montana",30091,False,None (nonspecialized),0
+"Silver Bow County, Montana",30093,False,None (nonspecialized),0
+"Stillwater County, Montana",30095,True,Mining,0
+"Sweet Grass County, Montana",30097,False,Mining,0
+"Teton County, Montana",30099,False,Farming,0
+"Toole County, Montana",30101,False,None (nonspecialized),1
+"Treasure County, Montana",30103,False,Farming,0
+"Valley County, Montana",30105,False,None (nonspecialized),0
+"Wheatland County, Montana",30107,False,Farming,1
+"Wibaux County, Montana",30109,False,Farming,1
+"Yellowstone County, Montana",30111,True,None (nonspecialized),0
+"Adams County, Nebraska",31001,False,None (nonspecialized),0
+"Antelope County, Nebraska",31003,False,Farming,1
+"Arthur County, Nebraska",31005,False,Farming,0
+"Banner County, Nebraska",31007,False,Farming,1
+"Blaine County, Nebraska",31009,False,Farming,1
+"Boone County, Nebraska",31011,False,Farming,1
+"Box Butte County, Nebraska",31013,False,None (nonspecialized),1
+"Boyd County, Nebraska",31015,False,Farming,1
+"Brown County, Nebraska",31017,False,Farming,1
+"Buffalo County, Nebraska",31019,False,None (nonspecialized),0
+"Burt County, Nebraska",31021,False,Farming,1
+"Butler County, Nebraska",31023,False,Farming,1
+"Cass County, Nebraska",31025,True,None (nonspecialized),0
+"Cedar County, Nebraska",31027,False,Farming,1
+"Chase County, Nebraska",31029,False,Farming,1
+"Cherry County, Nebraska",31031,False,Farming,1
+"Cheyenne County, Nebraska",31033,False,None (nonspecialized),0
+"Clay County, Nebraska",31035,False,Farming,1
+"Colfax County, Nebraska",31037,False,Manufacturing,0
+"Cuming County, Nebraska",31039,False,Farming,1
+"Custer County, Nebraska",31041,False,Farming,1
+"Dakota County, Nebraska",31043,True,Manufacturing,1
+"Dawes County, Nebraska",31045,False,Government,0
+"Dawson County, Nebraska",31047,False,Manufacturing,1
+"Deuel County, Nebraska",31049,False,Farming,1
+"Dixon County, Nebraska",31051,False,Manufacturing,1
+"Dodge County, Nebraska",31053,False,Manufacturing,0
+"Douglas County, Nebraska",31055,True,None (nonspecialized),1
+"Dundy County, Nebraska",31057,False,Farming,1
+"Fillmore County, Nebraska",31059,False,Farming,1
+"Franklin County, Nebraska",31061,False,Farming,1
+"Frontier County, Nebraska",31063,False,Farming,1
+"Furnas County, Nebraska",31065,False,None (nonspecialized),1
+"Gage County, Nebraska",31067,False,Manufacturing,1
+"Garden County, Nebraska",31069,False,Farming,1
+"Garfield County, Nebraska",31071,False,None (nonspecialized),0
+"Gosper County, Nebraska",31073,False,Farming,1
+"Grant County, Nebraska",31075,False,Farming,1
+"Greeley County, Nebraska",31077,False,Farming,1
+"Hall County, Nebraska",31079,True,Manufacturing,0
+"Hamilton County, Nebraska",31081,False,None (nonspecialized),0
+"Harlan County, Nebraska",31083,False,Farming,1
+"Hayes County, Nebraska",31085,False,Farming,1
+"Hitchcock County, Nebraska",31087,False,Farming,1
+"Holt County, Nebraska",31089,False,Farming,1
+"Hooker County, Nebraska",31091,False,Recreation,1
+"Howard County, Nebraska",31093,True,Farming,0
+"Jefferson County, Nebraska",31095,False,None (nonspecialized),1
+"Johnson County, Nebraska",31097,False,Farming,1
+"Kearney County, Nebraska",31099,False,Farming,0
+"Keith County, Nebraska",31101,False,Recreation,1
+"Keya Paha County, Nebraska",31103,False,Farming,1
+"Kimball County, Nebraska",31105,False,None (nonspecialized),1
+"Knox County, Nebraska",31107,False,Farming,1
+"Lancaster County, Nebraska",31109,True,None (nonspecialized),0
+"Lincoln County, Nebraska",31111,False,None (nonspecialized),0
+"Logan County, Nebraska",31113,False,Farming,1
+"Loup County, Nebraska",31115,False,Farming,1
+"McPherson County, Nebraska",31117,False,Farming,0
+"Madison County, Nebraska",31119,False,None (nonspecialized),0
+"Merrick County, Nebraska",31121,True,Farming,2
+"Morrill County, Nebraska",31123,False,Farming,1
+"Nance County, Nebraska",31125,False,Farming,1
+"Nemaha County, Nebraska",31127,False,None (nonspecialized),1
+"Nuckolls County, Nebraska",31129,False,Farming,1
+"Otoe County, Nebraska",31131,False,Manufacturing,0
+"Pawnee County, Nebraska",31133,False,Farming,1
+"Perkins County, Nebraska",31135,False,Farming,1
+"Phelps County, Nebraska",31137,False,None (nonspecialized),1
+"Pierce County, Nebraska",31139,False,Farming,0
+"Platte County, Nebraska",31141,False,Manufacturing,0
+"Polk County, Nebraska",31143,False,Farming,1
+"Red Willow County, Nebraska",31145,False,None (nonspecialized),1
+"Richardson County, Nebraska",31147,False,Farming,1
+"Rock County, Nebraska",31149,False,Farming,1
+"Saline County, Nebraska",31151,False,Manufacturing,0
+"Sarpy County, Nebraska",31153,True,None (nonspecialized),0
+"Saunders County, Nebraska",31155,True,None (nonspecialized),0
+"Scotts Bluff County, Nebraska",31157,False,None (nonspecialized),0
+"Seward County, Nebraska",31159,True,None (nonspecialized),0
+"Sheridan County, Nebraska",31161,False,Farming,1
+"Sherman County, Nebraska",31163,False,Farming,1
+"Sioux County, Nebraska",31165,False,Farming,1
+"Stanton County, Nebraska",31167,False,Manufacturing,1
+"Thayer County, Nebraska",31169,False,Farming,1
+"Thomas County, Nebraska",31171,False,Farming,0
+"Thurston County, Nebraska",31173,False,None (nonspecialized),2
+"Valley County, Nebraska",31175,False,Farming,1
+"Washington County, Nebraska",31177,True,Manufacturing,0
+"Wayne County, Nebraska",31179,False,Manufacturing,0
+"Webster County, Nebraska",31181,False,Farming,1
+"Wheeler County, Nebraska",31183,False,Farming,1
+"York County, Nebraska",31185,False,None (nonspecialized),0
+"Churchill County, Nevada",32001,False,None (nonspecialized),0
+"Clark County, Nevada",32003,True,Recreation,1
+"Douglas County, Nevada",32005,False,Recreation,2
+"Elko County, Nevada",32007,False,None (nonspecialized),0
+"Esmeralda County, Nevada",32009,False,Mining,1
+"Eureka County, Nevada",32011,False,Mining,0
+"Humboldt County, Nevada",32013,False,Mining,0
+"Lander County, Nevada",32015,False,Mining,1
+"Lincoln County, Nevada",32017,False,None (nonspecialized),1
+"Lyon County, Nevada",32019,True,None (nonspecialized),2
+"Mineral County, Nevada",32021,False,None (nonspecialized),1
+"Nye County, Nevada",32023,False,None (nonspecialized),1
+"Pershing County, Nevada",32027,False,Mining,2
+"Storey County, Nevada",32029,True,Manufacturing,0
+"Washoe County, Nevada",32031,True,None (nonspecialized),1
+"White Pine County, Nevada",32033,False,Mining,1
+"Carson City, Nevada",32510,True,Government,1
+"Belknap County, New Hampshire",33001,False,Recreation,1
+"Carroll County, New Hampshire",33003,False,Recreation,2
+"Cheshire County, New Hampshire",33005,False,None (nonspecialized),1
+"Coos County, New Hampshire",33007,False,Recreation,1
+"Grafton County, New Hampshire",33009,False,Recreation,1
+"Hillsborough County, New Hampshire",33011,True,None (nonspecialized),1
+"Merrimack County, New Hampshire",33013,False,None (nonspecialized),0
+"Rockingham County, New Hampshire",33015,True,None (nonspecialized),0
+"Strafford County, New Hampshire",33017,True,None (nonspecialized),1
+"Sullivan County, New Hampshire",33019,False,Manufacturing,1
+"Atlantic County, New Jersey",34001,True,Recreation,1
+"Bergen County, New Jersey",34003,True,None (nonspecialized),1
+"Burlington County, New Jersey",34005,True,None (nonspecialized),1
+"Camden County, New Jersey",34007,True,None (nonspecialized),1
+"Cape May County, New Jersey",34009,True,Recreation,3
+"Cumberland County, New Jersey",34011,True,None (nonspecialized),2
+"Essex County, New Jersey",34013,True,None (nonspecialized),1
+"Gloucester County, New Jersey",34015,True,None (nonspecialized),1
+"Hudson County, New Jersey",34017,True,None (nonspecialized),1
+"Hunterdon County, New Jersey",34019,True,None (nonspecialized),0
+"Mercer County, New Jersey",34021,True,None (nonspecialized),1
+"Middlesex County, New Jersey",34023,True,None (nonspecialized),1
+"Monmouth County, New Jersey",34025,True,None (nonspecialized),1
+"Morris County, New Jersey",34027,True,None (nonspecialized),1
+"Ocean County, New Jersey",34029,True,Recreation,2
+"Passaic County, New Jersey",34031,True,None (nonspecialized),1
+"Salem County, New Jersey",34033,True,None (nonspecialized),1
+"Somerset County, New Jersey",34035,True,None (nonspecialized),1
+"Sussex County, New Jersey",34037,True,None (nonspecialized),1
+"Union County, New Jersey",34039,True,None (nonspecialized),1
+"Warren County, New Jersey",34041,True,None (nonspecialized),1
+"Bernalillo County, New Mexico",35001,True,None (nonspecialized),1
+"Catron County, New Mexico",35003,False,Farming,2
+"Chaves County, New Mexico",35005,False,None (nonspecialized),1
+"Cibola County, New Mexico",35006,False,None (nonspecialized),2
+"Colfax County, New Mexico",35007,False,Recreation,1
+"Curry County, New Mexico",35009,False,None (nonspecialized),2
+"De Baca County, New Mexico",35011,False,Farming,1
+"Doña Ana County, New Mexico",35013,True,None (nonspecialized),2
+"Eddy County, New Mexico",35015,False,Mining,0
+"Grant County, New Mexico",35017,False,None (nonspecialized),1
+"Guadalupe County, New Mexico",35019,False,None (nonspecialized),2
+"Harding County, New Mexico",35021,False,Farming,1
+"Hidalgo County, New Mexico",35023,False,Government,2
+"Lea County, New Mexico",35025,False,Mining,0
+"Lincoln County, New Mexico",35027,False,Recreation,1
+"Los Alamos County, New Mexico",35028,False,None (nonspecialized),0
+"Luna County, New Mexico",35029,False,None (nonspecialized),2
+"McKinley County, New Mexico",35031,False,Government,3
+"Mora County, New Mexico",35033,False,Farming,2
+"Otero County, New Mexico",35035,False,None (nonspecialized),1
+"Quay County, New Mexico",35037,False,None (nonspecialized),2
+"Rio Arriba County, New Mexico",35039,False,None (nonspecialized),0
+"Roosevelt County, New Mexico",35041,False,Farming,1
+"Sandoval County, New Mexico",35043,True,None (nonspecialized),0
+"San Juan County, New Mexico",35045,True,None (nonspecialized),1
+"San Miguel County, New Mexico",35047,False,Government,3
+"Santa Fe County, New Mexico",35049,True,None (nonspecialized),1
+"Sierra County, New Mexico",35051,False,None (nonspecialized),2
+"Socorro County, New Mexico",35053,False,Government,4
+"Taos County, New Mexico",35055,False,Recreation,0
+"Torrance County, New Mexico",35057,True,None (nonspecialized),1
+"Union County, New Mexico",35059,False,Farming,2
+"Valencia County, New Mexico",35061,True,None (nonspecialized),0
+"Albany County, New York",36001,True,Government,1
+"Allegany County, New York",36003,False,None (nonspecialized),1
+"Bronx County, New York",36005,True,None (nonspecialized),2
+"Broome County, New York",36007,True,None (nonspecialized),0
+"Cattaraugus County, New York",36009,False,None (nonspecialized),1
+"Cayuga County, New York",36011,False,None (nonspecialized),1
+"Chautauqua County, New York",36013,False,Manufacturing,1
+"Chemung County, New York",36015,True,None (nonspecialized),1
+"Chenango County, New York",36017,False,Manufacturing,1
+"Clinton County, New York",36019,False,None (nonspecialized),0
+"Columbia County, New York",36021,False,None (nonspecialized),0
+"Cortland County, New York",36023,False,None (nonspecialized),0
+"Delaware County, New York",36025,False,Manufacturing,1
+"Dutchess County, New York",36027,True,None (nonspecialized),1
+"Erie County, New York",36029,True,None (nonspecialized),0
+"Essex County, New York",36031,False,Recreation,0
+"Franklin County, New York",36033,False,Government,0
+"Fulton County, New York",36035,False,None (nonspecialized),0
+"Genesee County, New York",36037,False,None (nonspecialized),1
+"Greene County, New York",36039,False,Recreation,1
+"Hamilton County, New York",36041,False,Recreation,1
+"Herkimer County, New York",36043,True,None (nonspecialized),0
+"Jefferson County, New York",36045,True,None (nonspecialized),2
+"Kings County, New York",36047,True,None (nonspecialized),1
+"Lewis County, New York",36049,False,None (nonspecialized),0
+"Livingston County, New York",36051,True,None (nonspecialized),0
+"Madison County, New York",36053,True,None (nonspecialized),0
+"Monroe County, New York",36055,True,None (nonspecialized),1
+"Montgomery County, New York",36057,False,None (nonspecialized),1
+"Nassau County, New York",36059,True,None (nonspecialized),1
+"New York County, New York",36061,True,None (nonspecialized),1
+"Niagara County, New York",36063,True,None (nonspecialized),1
+"Oneida County, New York",36065,True,None (nonspecialized),1
+"Onondaga County, New York",36067,True,None (nonspecialized),0
+"Ontario County, New York",36069,True,None (nonspecialized),0
+"Orange County, New York",36071,True,None (nonspecialized),1
+"Orleans County, New York",36073,True,None (nonspecialized),1
+"Oswego County, New York",36075,True,None (nonspecialized),1
+"Otsego County, New York",36077,False,None (nonspecialized),0
+"Putnam County, New York",36079,True,None (nonspecialized),1
+"Queens County, New York",36081,True,None (nonspecialized),1
+"Rensselaer County, New York",36083,True,None (nonspecialized),0
+"Richmond County, New York",36085,True,None (nonspecialized),1
+"Rockland County, New York",36087,True,None (nonspecialized),1
+"St. Lawrence County, New York",36089,False,None (nonspecialized),0
+"Saratoga County, New York",36091,True,None (nonspecialized),0
+"Schenectady County, New York",36093,True,None (nonspecialized),0
+"Schoharie County, New York",36095,True,None (nonspecialized),0
+"Schuyler County, New York",36097,False,Recreation,1
+"Seneca County, New York",36099,False,Manufacturing,0
+"Steuben County, New York",36101,False,None (nonspecialized),0
+"Suffolk County, New York",36103,True,None (nonspecialized),1
+"Sullivan County, New York",36105,False,Recreation,1
+"Tioga County, New York",36107,True,Manufacturing,1
+"Tompkins County, New York",36109,True,None (nonspecialized),1
+"Ulster County, New York",36111,True,None (nonspecialized),1
+"Warren County, New York",36113,True,Recreation,0
+"Washington County, New York",36115,True,None (nonspecialized),0
+"Wayne County, New York",36117,True,Manufacturing,0
+"Westchester County, New York",36119,True,None (nonspecialized),1
+"Wyoming County, New York",36121,False,Government,1
+"Yates County, New York",36123,False,None (nonspecialized),0
+"Alamance County, North Carolina",37001,True,None (nonspecialized),0
+"Alexander County, North Carolina",37003,True,Manufacturing,0
+"Alleghany County, North Carolina",37005,False,Recreation,1
+"Anson County, North Carolina",37007,True,None (nonspecialized),3
+"Ashe County, North Carolina",37009,False,None (nonspecialized),0
+"Avery County, North Carolina",37011,False,Recreation,1
+"Beaufort County, North Carolina",37013,False,None (nonspecialized),1
+"Bertie County, North Carolina",37015,False,Manufacturing,3
+"Bladen County, North Carolina",37017,False,Manufacturing,2
+"Brunswick County, North Carolina",37019,True,Recreation,1
+"Buncombe County, North Carolina",37021,True,None (nonspecialized),2
+"Burke County, North Carolina",37023,True,Manufacturing,0
+"Cabarrus County, North Carolina",37025,True,None (nonspecialized),0
+"Caldwell County, North Carolina",37027,True,Manufacturing,0
+"Camden County, North Carolina",37029,True,None (nonspecialized),0
+"Carteret County, North Carolina",37031,False,Recreation,1
+"Caswell County, North Carolina",37033,False,None (nonspecialized),0
+"Catawba County, North Carolina",37035,True,Manufacturing,0
+"Chatham County, North Carolina",37037,True,None (nonspecialized),1
+"Cherokee County, North Carolina",37039,False,None (nonspecialized),1
+"Chowan County, North Carolina",37041,False,None (nonspecialized),0
+"Clay County, North Carolina",37043,False,Recreation,2
+"Cleveland County, North Carolina",37045,False,Manufacturing,0
+"Columbus County, North Carolina",37047,False,None (nonspecialized),2
+"Craven County, North Carolina",37049,False,Government,0
+"Cumberland County, North Carolina",37051,True,None (nonspecialized),2
+"Currituck County, North Carolina",37053,True,Recreation,1
+"Dare County, North Carolina",37055,False,Recreation,2
+"Davidson County, North Carolina",37057,True,Manufacturing,0
+"Davie County, North Carolina",37059,True,Manufacturing,0
+"Duplin County, North Carolina",37061,False,Manufacturing,0
+"Durham County, North Carolina",37063,True,None (nonspecialized),1
+"Edgecombe County, North Carolina",37065,True,Manufacturing,1
+"Forsyth County, North Carolina",37067,True,None (nonspecialized),0
+"Franklin County, North Carolina",37069,True,Manufacturing,0
+"Gaston County, North Carolina",37071,True,Manufacturing,0
+"Gates County, North Carolina",37073,True,None (nonspecialized),0
+"Graham County, North Carolina",37075,False,None (nonspecialized),0
+"Granville County, North Carolina",37077,False,Government,0
+"Greene County, North Carolina",37079,False,Government,2
+"Guilford County, North Carolina",37081,True,None (nonspecialized),1
+"Halifax County, North Carolina",37083,False,None (nonspecialized),3
+"Harnett County, North Carolina",37085,False,None (nonspecialized),0
+"Haywood County, North Carolina",37087,False,Recreation,1
+"Henderson County, North Carolina",37089,True,None (nonspecialized),1
+"Hertford County, North Carolina",37091,False,None (nonspecialized),1
+"Hoke County, North Carolina",37093,True,Manufacturing,2
+"Hyde County, North Carolina",37095,False,Recreation,3
+"Iredell County, North Carolina",37097,True,None (nonspecialized),0
+"Jackson County, North Carolina",37099,False,Recreation,1
+"Johnston County, North Carolina",37101,True,None (nonspecialized),1
+"Jones County, North Carolina",37103,False,Farming,1
+"Lee County, North Carolina",37105,False,Manufacturing,0
+"Lenoir County, North Carolina",37107,False,Manufacturing,2
+"Lincoln County, North Carolina",37109,True,Manufacturing,0
+"McDowell County, North Carolina",37111,False,Manufacturing,0
+"Macon County, North Carolina",37113,False,Recreation,1
+"Madison County, North Carolina",37115,True,None (nonspecialized),0
+"Martin County, North Carolina",37117,False,None (nonspecialized),1
+"Mecklenburg County, North Carolina",37119,True,None (nonspecialized),1
+"Mitchell County, North Carolina",37121,False,None (nonspecialized),1
+"Montgomery County, North Carolina",37123,False,Manufacturing,0
+"Moore County, North Carolina",37125,True,None (nonspecialized),1
+"Nash County, North Carolina",37127,True,Manufacturing,1
+"New Hanover County, North Carolina",37129,True,None (nonspecialized),2
+"Northampton County, North Carolina",37131,False,None (nonspecialized),2
+"Onslow County, North Carolina",37133,True,None (nonspecialized),2
+"Orange County, North Carolina",37135,True,Government,1
+"Pamlico County, North Carolina",37137,False,Recreation,0
+"Pasquotank County, North Carolina",37139,False,None (nonspecialized),1
+"Pender County, North Carolina",37141,True,None (nonspecialized),1
+"Perquimans County, North Carolina",37143,False,None (nonspecialized),1
+"Person County, North Carolina",37145,True,None (nonspecialized),0
+"Pitt County, North Carolina",37147,True,None (nonspecialized),2
+"Polk County, North Carolina",37149,False,Recreation,0
+"Randolph County, North Carolina",37151,True,Manufacturing,0
+"Richmond County, North Carolina",37153,False,Manufacturing,1
+"Robeson County, North Carolina",37155,False,None (nonspecialized),1
+"Rockingham County, North Carolina",37157,True,Manufacturing,0
+"Rowan County, North Carolina",37159,True,None (nonspecialized),0
+"Rutherford County, North Carolina",37161,False,None (nonspecialized),0
+"Sampson County, North Carolina",37163,False,None (nonspecialized),0
+"Scotland County, North Carolina",37165,False,Manufacturing,2
+"Stanly County, North Carolina",37167,False,None (nonspecialized),0
+"Stokes County, North Carolina",37169,True,None (nonspecialized),0
+"Surry County, North Carolina",37171,False,None (nonspecialized),0
+"Swain County, North Carolina",37173,False,Recreation,0
+"Transylvania County, North Carolina",37175,False,Recreation,1
+"Tyrrell County, North Carolina",37177,False,None (nonspecialized),2
+"Union County, North Carolina",37179,True,None (nonspecialized),0
+"Vance County, North Carolina",37181,False,None (nonspecialized),1
+"Wake County, North Carolina",37183,True,None (nonspecialized),0
+"Warren County, North Carolina",37185,False,None (nonspecialized),1
+"Washington County, North Carolina",37187,False,None (nonspecialized),3
+"Watauga County, North Carolina",37189,False,Recreation,1
+"Wayne County, North Carolina",37191,True,None (nonspecialized),1
+"Wilkes County, North Carolina",37193,False,None (nonspecialized),0
+"Wilson County, North Carolina",37195,False,Manufacturing,1
+"Yadkin County, North Carolina",37197,True,Manufacturing,0
+"Yancey County, North Carolina",37199,False,Manufacturing,1
+"Adams County, North Dakota",38001,False,None (nonspecialized),1
+"Barnes County, North Dakota",38003,False,Farming,1
+"Benson County, North Dakota",38005,False,Farming,3
+"Billings County, North Dakota",38007,False,Recreation,0
+"Bottineau County, North Dakota",38009,False,Farming,1
+"Bowman County, North Dakota",38011,False,None (nonspecialized),1
+"Burke County, North Dakota",38013,False,Farming,0
+"Burleigh County, North Dakota",38015,True,None (nonspecialized),0
+"Cass County, North Dakota",38017,True,None (nonspecialized),0
+"Cavalier County, North Dakota",38019,False,Farming,1
+"Dickey County, North Dakota",38021,False,Farming,1
+"Divide County, North Dakota",38023,False,Farming,0
+"Dunn County, North Dakota",38025,False,Mining,0
+"Eddy County, North Dakota",38027,False,Farming,1
+"Emmons County, North Dakota",38029,False,Farming,1
+"Foster County, North Dakota",38031,False,Farming,0
+"Golden Valley County, North Dakota",38033,False,None (nonspecialized),1
+"Grand Forks County, North Dakota",38035,True,None (nonspecialized),1
+"Grant County, North Dakota",38037,False,Farming,1
+"Griggs County, North Dakota",38039,False,Farming,1
+"Hettinger County, North Dakota",38041,False,Farming,0
+"Kidder County, North Dakota",38043,False,Farming,1
+"LaMoure County, North Dakota",38045,False,Farming,1
+"Logan County, North Dakota",38047,False,Farming,1
+"McHenry County, North Dakota",38049,True,Farming,1
+"McIntosh County, North Dakota",38051,False,Farming,1
+"McKenzie County, North Dakota",38053,False,Mining,1
+"McLean County, North Dakota",38055,False,Farming,0
+"Mercer County, North Dakota",38057,False,None (nonspecialized),1
+"Morton County, North Dakota",38059,True,None (nonspecialized),0
+"Mountrail County, North Dakota",38061,False,Mining,0
+"Nelson County, North Dakota",38063,False,Farming,1
+"Oliver County, North Dakota",38065,True,Mining,0
+"Pembina County, North Dakota",38067,False,Farming,1
+"Pierce County, North Dakota",38069,False,Farming,1
+"Ramsey County, North Dakota",38071,False,None (nonspecialized),0
+"Ransom County, North Dakota",38073,False,Farming,0
+"Renville County, North Dakota",38075,True,Farming,1
+"Richland County, North Dakota",38077,False,Manufacturing,0
+"Rolette County, North Dakota",38079,False,Government,2
+"Sargent County, North Dakota",38081,False,Manufacturing,0
+"Sheridan County, North Dakota",38083,False,Farming,1
+"Sioux County, North Dakota",38085,False,Government,3
+"Slope County, North Dakota",38087,False,Farming,1
+"Stark County, North Dakota",38089,False,None (nonspecialized),0
+"Steele County, North Dakota",38091,False,Farming,1
+"Stutsman County, North Dakota",38093,False,None (nonspecialized),0
+"Towner County, North Dakota",38095,False,Farming,1
+"Traill County, North Dakota",38097,False,None (nonspecialized),1
+"Walsh County, North Dakota",38099,False,Farming,1
+"Ward County, North Dakota",38101,True,None (nonspecialized),0
+"Wells County, North Dakota",38103,False,Farming,1
+"Williams County, North Dakota",38105,False,Mining,0
+"Adams County, Ohio",39001,False,None (nonspecialized),0
+"Allen County, Ohio",39003,True,Manufacturing,1
+"Ashland County, Ohio",39005,False,Manufacturing,0
+"Ashtabula County, Ohio",39007,True,Manufacturing,1
+"Athens County, Ohio",39009,False,Government,2
+"Auglaize County, Ohio",39011,False,Manufacturing,0
+"Belmont County, Ohio",39013,True,None (nonspecialized),0
+"Brown County, Ohio",39015,True,None (nonspecialized),0
+"Butler County, Ohio",39017,True,None (nonspecialized),0
+"Carroll County, Ohio",39019,True,None (nonspecialized),0
+"Champaign County, Ohio",39021,False,Manufacturing,0
+"Clark County, Ohio",39023,True,None (nonspecialized),1
+"Clermont County, Ohio",39025,True,None (nonspecialized),0
+"Clinton County, Ohio",39027,False,None (nonspecialized),0
+"Columbiana County, Ohio",39029,False,Manufacturing,1
+"Coshocton County, Ohio",39031,False,Manufacturing,0
+"Crawford County, Ohio",39033,False,None (nonspecialized),1
+"Cuyahoga County, Ohio",39035,True,None (nonspecialized),2
+"Darke County, Ohio",39037,False,Manufacturing,1
+"Defiance County, Ohio",39039,False,Manufacturing,1
+"Delaware County, Ohio",39041,True,None (nonspecialized),0
+"Erie County, Ohio",39043,True,Recreation,1
+"Fairfield County, Ohio",39045,True,None (nonspecialized),0
+"Fayette County, Ohio",39047,False,None (nonspecialized),1
+"Franklin County, Ohio",39049,True,None (nonspecialized),1
+"Fulton County, Ohio",39051,True,Manufacturing,0
+"Gallia County, Ohio",39053,False,None (nonspecialized),1
+"Geauga County, Ohio",39055,True,Manufacturing,0
+"Greene County, Ohio",39057,True,Government,0
+"Guernsey County, Ohio",39059,False,Manufacturing,1
+"Hamilton County, Ohio",39061,True,None (nonspecialized),1
+"Hancock County, Ohio",39063,False,Manufacturing,0
+"Hardin County, Ohio",39065,False,Manufacturing,0
+"Harrison County, Ohio",39067,False,None (nonspecialized),1
+"Henry County, Ohio",39069,False,Manufacturing,1
+"Highland County, Ohio",39071,False,None (nonspecialized),0
+"Hocking County, Ohio",39073,True,None (nonspecialized),0
+"Holmes County, Ohio",39075,False,Manufacturing,1
+"Huron County, Ohio",39077,False,Manufacturing,0
+"Jackson County, Ohio",39079,False,Manufacturing,0
+"Jefferson County, Ohio",39081,True,None (nonspecialized),1
+"Knox County, Ohio",39083,False,Manufacturing,0
+"Lake County, Ohio",39085,True,Manufacturing,0
+"Lawrence County, Ohio",39087,True,None (nonspecialized),0
+"Licking County, Ohio",39089,True,None (nonspecialized),0
+"Logan County, Ohio",39091,False,Manufacturing,0
+"Lorain County, Ohio",39093,True,Manufacturing,0
+"Lucas County, Ohio",39095,True,None (nonspecialized),1
+"Madison County, Ohio",39097,True,Manufacturing,0
+"Mahoning County, Ohio",39099,True,None (nonspecialized),1
+"Marion County, Ohio",39101,False,Manufacturing,0
+"Medina County, Ohio",39103,True,None (nonspecialized),0
+"Meigs County, Ohio",39105,False,None (nonspecialized),0
+"Mercer County, Ohio",39107,False,Manufacturing,0
+"Miami County, Ohio",39109,True,Manufacturing,0
+"Monroe County, Ohio",39111,False,None (nonspecialized),1
+"Montgomery County, Ohio",39113,True,None (nonspecialized),0
+"Morgan County, Ohio",39115,False,None (nonspecialized),0
+"Morrow County, Ohio",39117,True,None (nonspecialized),0
+"Muskingum County, Ohio",39119,False,None (nonspecialized),0
+"Noble County, Ohio",39121,False,None (nonspecialized),2
+"Ottawa County, Ohio",39123,True,Recreation,0
+"Paulding County, Ohio",39125,False,Manufacturing,1
+"Perry County, Ohio",39127,True,None (nonspecialized),0
+"Pickaway County, Ohio",39129,True,None (nonspecialized),0
+"Pike County, Ohio",39131,False,None (nonspecialized),1
+"Portage County, Ohio",39133,True,Manufacturing,0
+"Preble County, Ohio",39135,False,Manufacturing,1
+"Putnam County, Ohio",39137,False,Manufacturing,1
+"Richland County, Ohio",39139,True,Manufacturing,0
+"Ross County, Ohio",39141,False,None (nonspecialized),0
+"Sandusky County, Ohio",39143,False,Manufacturing,1
+"Scioto County, Ohio",39145,False,None (nonspecialized),1
+"Seneca County, Ohio",39147,False,Manufacturing,1
+"Shelby County, Ohio",39149,False,Manufacturing,0
+"Stark County, Ohio",39151,True,None (nonspecialized),1
+"Summit County, Ohio",39153,True,None (nonspecialized),1
+"Trumbull County, Ohio",39155,True,None (nonspecialized),1
+"Tuscarawas County, Ohio",39157,False,Manufacturing,0
+"Union County, Ohio",39159,True,Manufacturing,0
+"Van Wert County, Ohio",39161,False,Manufacturing,0
+"Vinton County, Ohio",39163,False,Manufacturing,1
+"Warren County, Ohio",39165,True,None (nonspecialized),0
+"Washington County, Ohio",39167,False,None (nonspecialized),1
+"Wayne County, Ohio",39169,False,Manufacturing,0
+"Williams County, Ohio",39171,False,Manufacturing,1
+"Wood County, Ohio",39173,True,Manufacturing,0
+"Wyandot County, Ohio",39175,False,Manufacturing,1
+"Adair County, Oklahoma",40001,False,Manufacturing,2
+"Alfalfa County, Oklahoma",40003,False,Farming,1
+"Atoka County, Oklahoma",40005,False,None (nonspecialized),2
+"Beaver County, Oklahoma",40007,False,Farming,1
+"Beckham County, Oklahoma",40009,False,Mining,1
+"Blaine County, Oklahoma",40011,False,None (nonspecialized),2
+"Bryan County, Oklahoma",40013,False,None (nonspecialized),0
+"Caddo County, Oklahoma",40015,False,None (nonspecialized),2
+"Canadian County, Oklahoma",40017,True,None (nonspecialized),0
+"Carter County, Oklahoma",40019,False,None (nonspecialized),0
+"Cherokee County, Oklahoma",40021,False,None (nonspecialized),1
+"Choctaw County, Oklahoma",40023,False,None (nonspecialized),2
+"Cimarron County, Oklahoma",40025,False,Farming,1
+"Cleveland County, Oklahoma",40027,True,None (nonspecialized),0
+"Coal County, Oklahoma",40029,False,Farming,3
+"Comanche County, Oklahoma",40031,True,None (nonspecialized),1
+"Cotton County, Oklahoma",40033,True,None (nonspecialized),1
+"Craig County, Oklahoma",40035,False,None (nonspecialized),0
+"Creek County, Oklahoma",40037,True,Manufacturing,0
+"Custer County, Oklahoma",40039,False,None (nonspecialized),0
+"Delaware County, Oklahoma",40041,False,None (nonspecialized),1
+"Dewey County, Oklahoma",40043,False,Mining,0
+"Ellis County, Oklahoma",40045,False,Farming,0
+"Garfield County, Oklahoma",40047,True,None (nonspecialized),0
+"Garvin County, Oklahoma",40049,False,None (nonspecialized),0
+"Grady County, Oklahoma",40051,True,None (nonspecialized),0
+"Grant County, Oklahoma",40053,False,Farming,1
+"Greer County, Oklahoma",40055,False,Farming,2
+"Harmon County, Oklahoma",40057,False,Farming,1
+"Harper County, Oklahoma",40059,False,Farming,0
+"Haskell County, Oklahoma",40061,False,None (nonspecialized),0
+"Hughes County, Oklahoma",40063,False,Farming,3
+"Jackson County, Oklahoma",40065,False,None (nonspecialized),1
+"Jefferson County, Oklahoma",40067,False,None (nonspecialized),2
+"Johnston County, Oklahoma",40069,False,None (nonspecialized),1
+"Kay County, Oklahoma",40071,False,None (nonspecialized),1
+"Kingfisher County, Oklahoma",40073,False,None (nonspecialized),0
+"Kiowa County, Oklahoma",40075,False,Farming,1
+"Latimer County, Oklahoma",40077,False,None (nonspecialized),0
+"Le Flore County, Oklahoma",40079,False,None (nonspecialized),0
+"Lincoln County, Oklahoma",40081,True,None (nonspecialized),0
+"Logan County, Oklahoma",40083,True,None (nonspecialized),1
+"Love County, Oklahoma",40085,False,None (nonspecialized),0
+"McClain County, Oklahoma",40087,True,None (nonspecialized),0
+"McCurtain County, Oklahoma",40089,False,Manufacturing,2
+"McIntosh County, Oklahoma",40091,False,None (nonspecialized),2
+"Major County, Oklahoma",40093,False,Mining,0
+"Marshall County, Oklahoma",40095,False,Manufacturing,1
+"Mayes County, Oklahoma",40097,False,Manufacturing,0
+"Murray County, Oklahoma",40099,False,None (nonspecialized),0
+"Muskogee County, Oklahoma",40101,False,Government,0
+"Noble County, Oklahoma",40103,False,Manufacturing,0
+"Nowata County, Oklahoma",40105,False,None (nonspecialized),1
+"Okfuskee County, Oklahoma",40107,False,None (nonspecialized),2
+"Oklahoma County, Oklahoma",40109,True,None (nonspecialized),1
+"Okmulgee County, Oklahoma",40111,True,None (nonspecialized),0
+"Osage County, Oklahoma",40113,True,None (nonspecialized),0
+"Ottawa County, Oklahoma",40115,False,None (nonspecialized),1
+"Pawnee County, Oklahoma",40117,True,None (nonspecialized),1
+"Payne County, Oklahoma",40119,False,Government,2
+"Pittsburg County, Oklahoma",40121,False,Government,0
+"Pontotoc County, Oklahoma",40123,False,None (nonspecialized),0
+"Pottawatomie County, Oklahoma",40125,False,None (nonspecialized),0
+"Pushmataha County, Oklahoma",40127,False,None (nonspecialized),2
+"Roger Mills County, Oklahoma",40129,False,None (nonspecialized),0
+"Rogers County, Oklahoma",40131,True,None (nonspecialized),0
+"Seminole County, Oklahoma",40133,False,None (nonspecialized),1
+"Sequoyah County, Oklahoma",40135,True,None (nonspecialized),0
+"Stephens County, Oklahoma",40137,False,None (nonspecialized),0
+"Texas County, Oklahoma",40139,False,Farming,1
+"Tillman County, Oklahoma",40141,False,None (nonspecialized),1
+"Tulsa County, Oklahoma",40143,True,None (nonspecialized),0
+"Wagoner County, Oklahoma",40145,True,None (nonspecialized),0
+"Washington County, Oklahoma",40147,False,Mining,0
+"Washita County, Oklahoma",40149,False,None (nonspecialized),0
+"Woods County, Oklahoma",40151,False,None (nonspecialized),1
+"Woodward County, Oklahoma",40153,False,Mining,0
+"Baker County, Oregon",41001,False,None (nonspecialized),0
+"Benton County, Oregon",41003,True,None (nonspecialized),1
+"Clackamas County, Oregon",41005,True,None (nonspecialized),1
+"Clatsop County, Oregon",41007,False,Recreation,2
+"Columbia County, Oregon",41009,True,None (nonspecialized),0
+"Coos County, Oregon",41011,False,None (nonspecialized),2
+"Crook County, Oregon",41013,True,None (nonspecialized),1
+"Curry County, Oregon",41015,False,Recreation,2
+"Deschutes County, Oregon",41017,True,Recreation,2
+"Douglas County, Oregon",41019,False,None (nonspecialized),2
+"Gilliam County, Oregon",41021,False,Farming,0
+"Grant County, Oregon",41023,False,None (nonspecialized),1
+"Harney County, Oregon",41025,False,Farming,0
+"Hood River County, Oregon",41027,False,Recreation,1
+"Jackson County, Oregon",41029,True,None (nonspecialized),1
+"Jefferson County, Oregon",41031,True,None (nonspecialized),2
+"Josephine County, Oregon",41033,True,None (nonspecialized),2
+"Klamath County, Oregon",41035,False,None (nonspecialized),1
+"Lake County, Oregon",41037,False,None (nonspecialized),1
+"Lane County, Oregon",41039,True,None (nonspecialized),1
+"Lincoln County, Oregon",41041,False,Recreation,2
+"Linn County, Oregon",41043,True,Manufacturing,1
+"Malheur County, Oregon",41045,False,None (nonspecialized),2
+"Marion County, Oregon",41047,True,None (nonspecialized),1
+"Morrow County, Oregon",41049,False,Manufacturing,0
+"Multnomah County, Oregon",41051,True,None (nonspecialized),1
+"Polk County, Oregon",41053,True,None (nonspecialized),1
+"Sherman County, Oregon",41055,False,Farming,0
+"Tillamook County, Oregon",41057,False,Recreation,2
+"Umatilla County, Oregon",41059,False,None (nonspecialized),0
+"Union County, Oregon",41061,False,None (nonspecialized),1
+"Wallowa County, Oregon",41063,False,Recreation,0
+"Wasco County, Oregon",41065,False,None (nonspecialized),0
+"Washington County, Oregon",41067,True,Manufacturing,1
+"Wheeler County, Oregon",41069,False,Farming,1
+"Yamhill County, Oregon",41071,True,Manufacturing,1
+"Adams County, Pennsylvania",42001,True,Manufacturing,0
+"Allegheny County, Pennsylvania",42003,True,None (nonspecialized),0
+"Armstrong County, Pennsylvania",42005,True,None (nonspecialized),1
+"Beaver County, Pennsylvania",42007,True,None (nonspecialized),1
+"Bedford County, Pennsylvania",42009,False,None (nonspecialized),1
+"Berks County, Pennsylvania",42011,True,Manufacturing,0
+"Blair County, Pennsylvania",42013,True,None (nonspecialized),1
+"Bradford County, Pennsylvania",42015,False,None (nonspecialized),1
+"Bucks County, Pennsylvania",42017,True,None (nonspecialized),0
+"Butler County, Pennsylvania",42019,True,None (nonspecialized),0
+"Cambria County, Pennsylvania",42021,True,None (nonspecialized),1
+"Cameron County, Pennsylvania",42023,False,Manufacturing,1
+"Carbon County, Pennsylvania",42025,True,None (nonspecialized),0
+"Centre County, Pennsylvania",42027,True,Government,1
+"Chester County, Pennsylvania",42029,True,None (nonspecialized),0
+"Clarion County, Pennsylvania",42031,False,None (nonspecialized),1
+"Clearfield County, Pennsylvania",42033,False,None (nonspecialized),1
+"Clinton County, Pennsylvania",42035,False,Manufacturing,0
+"Columbia County, Pennsylvania",42037,False,None (nonspecialized),0
+"Crawford County, Pennsylvania",42039,False,Manufacturing,1
+"Cumberland County, Pennsylvania",42041,True,None (nonspecialized),0
+"Dauphin County, Pennsylvania",42043,True,None (nonspecialized),0
+"Delaware County, Pennsylvania",42045,True,None (nonspecialized),1
+"Elk County, Pennsylvania",42047,False,Manufacturing,1
+"Erie County, Pennsylvania",42049,True,None (nonspecialized),1
+"Fayette County, Pennsylvania",42051,True,None (nonspecialized),1
+"Forest County, Pennsylvania",42053,False,Government,2
+"Franklin County, Pennsylvania",42055,True,None (nonspecialized),0
+"Fulton County, Pennsylvania",42057,False,Manufacturing,0
+"Greene County, Pennsylvania",42059,False,Mining,1
+"Huntingdon County, Pennsylvania",42061,False,None (nonspecialized),1
+"Indiana County, Pennsylvania",42063,False,None (nonspecialized),1
+"Jefferson County, Pennsylvania",42065,False,Manufacturing,2
+"Juniata County, Pennsylvania",42067,False,Manufacturing,1
+"Lackawanna County, Pennsylvania",42069,True,None (nonspecialized),0
+"Lancaster County, Pennsylvania",42071,True,None (nonspecialized),0
+"Lawrence County, Pennsylvania",42073,True,None (nonspecialized),1
+"Lebanon County, Pennsylvania",42075,True,None (nonspecialized),0
+"Lehigh County, Pennsylvania",42077,True,None (nonspecialized),1
+"Luzerne County, Pennsylvania",42079,True,None (nonspecialized),0
+"Lycoming County, Pennsylvania",42081,True,None (nonspecialized),1
+"McKean County, Pennsylvania",42083,False,Manufacturing,1
+"Mercer County, Pennsylvania",42085,False,Manufacturing,1
+"Mifflin County, Pennsylvania",42087,False,Manufacturing,1
+"Monroe County, Pennsylvania",42089,False,Recreation,1
+"Montgomery County, Pennsylvania",42091,True,None (nonspecialized),0
+"Montour County, Pennsylvania",42093,False,None (nonspecialized),0
+"Northampton County, Pennsylvania",42095,True,None (nonspecialized),0
+"Northumberland County, Pennsylvania",42097,False,None (nonspecialized),1
+"Perry County, Pennsylvania",42099,True,None (nonspecialized),0
+"Philadelphia County, Pennsylvania",42101,True,None (nonspecialized),2
+"Pike County, Pennsylvania",42103,False,Recreation,0
+"Potter County, Pennsylvania",42105,False,None (nonspecialized),1
+"Schuylkill County, Pennsylvania",42107,False,Manufacturing,1
+"Snyder County, Pennsylvania",42109,False,Manufacturing,0
+"Somerset County, Pennsylvania",42111,False,None (nonspecialized),1
+"Sullivan County, Pennsylvania",42113,False,Recreation,3
+"Susquehanna County, Pennsylvania",42115,False,None (nonspecialized),0
+"Tioga County, Pennsylvania",42117,False,None (nonspecialized),0
+"Union County, Pennsylvania",42119,False,None (nonspecialized),1
+"Venango County, Pennsylvania",42121,False,Manufacturing,1
+"Warren County, Pennsylvania",42123,False,Manufacturing,1
+"Washington County, Pennsylvania",42125,True,None (nonspecialized),0
+"Wayne County, Pennsylvania",42127,False,Recreation,0
+"Westmoreland County, Pennsylvania",42129,True,None (nonspecialized),1
+"Wyoming County, Pennsylvania",42131,True,Manufacturing,0
+"York County, Pennsylvania",42133,True,Manufacturing,0
+"Bristol County, Rhode Island",44001,True,None (nonspecialized),0
+"Kent County, Rhode Island",44003,True,None (nonspecialized),1
+"Newport County, Rhode Island",44005,True,Recreation,1
+"Providence County, Rhode Island",44007,True,None (nonspecialized),1
+"Washington County, Rhode Island",44009,True,Recreation,0
+"Abbeville County, South Carolina",45001,False,Manufacturing,1
+"Aiken County, South Carolina",45003,True,None (nonspecialized),0
+"Allendale County, South Carolina",45005,False,Manufacturing,4
+"Anderson County, South Carolina",45007,True,Manufacturing,0
+"Bamberg County, South Carolina",45009,False,None (nonspecialized),1
+"Barnwell County, South Carolina",45011,False,Manufacturing,2
+"Beaufort County, South Carolina",45013,True,Recreation,2
+"Berkeley County, South Carolina",45015,True,None (nonspecialized),1
+"Calhoun County, South Carolina",45017,True,Manufacturing,1
+"Charleston County, South Carolina",45019,True,None (nonspecialized),2
+"Cherokee County, South Carolina",45021,False,Manufacturing,0
+"Chester County, South Carolina",45023,True,Manufacturing,1
+"Chesterfield County, South Carolina",45025,False,Manufacturing,1
+"Clarendon County, South Carolina",45027,False,None (nonspecialized),0
+"Colleton County, South Carolina",45029,False,None (nonspecialized),0
+"Darlington County, South Carolina",45031,True,Manufacturing,0
+"Dillon County, South Carolina",45033,False,Manufacturing,2
+"Dorchester County, South Carolina",45035,True,None (nonspecialized),0
+"Edgefield County, South Carolina",45037,True,Manufacturing,1
+"Fairfield County, South Carolina",45039,True,None (nonspecialized),0
+"Florence County, South Carolina",45041,True,None (nonspecialized),0
+"Georgetown County, South Carolina",45043,False,Recreation,1
+"Greenville County, South Carolina",45045,True,None (nonspecialized),0
+"Greenwood County, South Carolina",45047,False,Manufacturing,0
+"Hampton County, South Carolina",45049,False,None (nonspecialized),3
+"Horry County, South Carolina",45051,True,Recreation,1
+"Jasper County, South Carolina",45053,True,None (nonspecialized),2
+"Kershaw County, South Carolina",45055,True,None (nonspecialized),0
+"Lancaster County, South Carolina",45057,True,None (nonspecialized),1
+"Laurens County, South Carolina",45059,True,Manufacturing,0
+"Lee County, South Carolina",45061,False,None (nonspecialized),5
+"Lexington County, South Carolina",45063,True,None (nonspecialized),0
+"McCormick County, South Carolina",45065,False,Government,2
+"Marion County, South Carolina",45067,False,None (nonspecialized),3
+"Marlboro County, South Carolina",45069,False,Manufacturing,3
+"Newberry County, South Carolina",45071,False,Manufacturing,0
+"Oconee County, South Carolina",45073,False,Manufacturing,1
+"Orangeburg County, South Carolina",45075,False,Manufacturing,1
+"Pickens County, South Carolina",45077,True,Government,0
+"Richland County, South Carolina",45079,True,None (nonspecialized),1
+"Saluda County, South Carolina",45081,True,Manufacturing,0
+"Spartanburg County, South Carolina",45083,True,Manufacturing,0
+"Sumter County, South Carolina",45085,True,None (nonspecialized),0
+"Union County, South Carolina",45087,True,Manufacturing,1
+"Williamsburg County, South Carolina",45089,False,Manufacturing,4
+"York County, South Carolina",45091,True,None (nonspecialized),0
+"Aurora County, South Dakota",46003,False,Farming,0
+"Beadle County, South Dakota",46005,False,Manufacturing,0
+"Bennett County, South Dakota",46007,False,Farming,3
+"Bon Homme County, South Dakota",46009,False,Farming,2
+"Brookings County, South Dakota",46011,False,Manufacturing,0
+"Brown County, South Dakota",46013,False,None (nonspecialized),0
+"Brule County, South Dakota",46015,False,Farming,1
+"Buffalo County, South Dakota",46017,False,Government,4
+"Butte County, South Dakota",46019,False,None (nonspecialized),0
+"Campbell County, South Dakota",46021,False,Farming,1
+"Charles Mix County, South Dakota",46023,False,Farming,1
+"Clark County, South Dakota",46025,False,Farming,0
+"Clay County, South Dakota",46027,False,Government,2
+"Codington County, South Dakota",46029,False,Manufacturing,0
+"Corson County, South Dakota",46031,False,Farming,3
+"Custer County, South Dakota",46033,True,Recreation,2
+"Davison County, South Dakota",46035,False,None (nonspecialized),0
+"Day County, South Dakota",46037,False,Farming,1
+"Deuel County, South Dakota",46039,False,Farming,1
+"Dewey County, South Dakota",46041,False,Government,2
+"Douglas County, South Dakota",46043,False,Farming,1
+"Edmunds County, South Dakota",46045,False,Farming,1
+"Fall River County, South Dakota",46047,False,Government,3
+"Faulk County, South Dakota",46049,False,Farming,1
+"Grant County, South Dakota",46051,False,Farming,0
+"Gregory County, South Dakota",46053,False,Farming,1
+"Haakon County, South Dakota",46055,False,Farming,1
+"Hamlin County, South Dakota",46057,False,Farming,0
+"Hand County, South Dakota",46059,False,Farming,1
+"Hanson County, South Dakota",46061,False,Farming,1
+"Harding County, South Dakota",46063,False,Farming,0
+"Hughes County, South Dakota",46065,False,Government,0
+"Hutchinson County, South Dakota",46067,False,Farming,0
+"Hyde County, South Dakota",46069,False,Farming,1
+"Jackson County, South Dakota",46071,False,Farming,3
+"Jerauld County, South Dakota",46073,False,Manufacturing,1
+"Jones County, South Dakota",46075,False,Farming,1
+"Kingsbury County, South Dakota",46077,False,Farming,0
+"Lake County, South Dakota",46079,False,Manufacturing,2
+"Lawrence County, South Dakota",46081,False,Recreation,1
+"Lincoln County, South Dakota",46083,True,None (nonspecialized),1
+"Lyman County, South Dakota",46085,False,Farming,1
+"McCook County, South Dakota",46087,True,Farming,0
+"McPherson County, South Dakota",46089,False,Farming,1
+"Marshall County, South Dakota",46091,False,Farming,0
+"Meade County, South Dakota",46093,True,Government,0
+"Mellette County, South Dakota",46095,False,Farming,4
+"Miner County, South Dakota",46097,False,Farming,1
+"Minnehaha County, South Dakota",46099,True,None (nonspecialized),0
+"Moody County, South Dakota",46101,False,Farming,1
+"Oglala Lakota County, South Dakota",46102,False,Government,4
+"Pennington County, South Dakota",46103,True,None (nonspecialized),1
+"Perkins County, South Dakota",46105,False,Farming,1
+"Potter County, South Dakota",46107,False,None (nonspecialized),0
+"Roberts County, South Dakota",46109,False,Farming,1
+"Sanborn County, South Dakota",46111,False,Farming,1
+"Spink County, South Dakota",46115,False,Farming,1
+"Stanley County, South Dakota",46117,False,Farming,0
+"Sully County, South Dakota",46119,False,Farming,0
+"Todd County, South Dakota",46121,False,None (nonspecialized),3
+"Tripp County, South Dakota",46123,False,Farming,1
+"Turner County, South Dakota",46125,True,Farming,0
+"Union County, South Dakota",46127,True,None (nonspecialized),0
+"Walworth County, South Dakota",46129,False,None (nonspecialized),1
+"Yankton County, South Dakota",46135,False,Manufacturing,0
+"Ziebach County, South Dakota",46137,False,Farming,2
+"Anderson County, Tennessee",47001,True,Manufacturing,0
+"Bedford County, Tennessee",47003,False,Manufacturing,0
+"Benton County, Tennessee",47005,False,None (nonspecialized),2
+"Bledsoe County, Tennessee",47007,False,None (nonspecialized),3
+"Blount County, Tennessee",47009,True,None (nonspecialized),1
+"Bradley County, Tennessee",47011,True,Manufacturing,0
+"Campbell County, Tennessee",47013,True,None (nonspecialized),1
+"Cannon County, Tennessee",47015,True,None (nonspecialized),0
+"Carroll County, Tennessee",47017,False,None (nonspecialized),1
+"Carter County, Tennessee",47019,True,None (nonspecialized),0
+"Cheatham County, Tennessee",47021,True,Manufacturing,0
+"Chester County, Tennessee",47023,True,None (nonspecialized),0
+"Claiborne County, Tennessee",47025,False,Manufacturing,0
+"Clay County, Tennessee",47027,False,None (nonspecialized),3
+"Cocke County, Tennessee",47029,False,None (nonspecialized),3
+"Coffee County, Tennessee",47031,False,Manufacturing,0
+"Crockett County, Tennessee",47033,True,Manufacturing,0
+"Cumberland County, Tennessee",47035,False,None (nonspecialized),1
+"Davidson County, Tennessee",47037,True,None (nonspecialized),1
+"Decatur County, Tennessee",47039,False,None (nonspecialized),2
+"DeKalb County, Tennessee",47041,False,Manufacturing,3
+"Dickson County, Tennessee",47043,True,Manufacturing,0
+"Dyer County, Tennessee",47045,False,Manufacturing,0
+"Fayette County, Tennessee",47047,True,Manufacturing,1
+"Fentress County, Tennessee",47049,False,None (nonspecialized),2
+"Franklin County, Tennessee",47051,False,None (nonspecialized),0
+"Gibson County, Tennessee",47053,True,None (nonspecialized),0
+"Giles County, Tennessee",47055,False,Manufacturing,0
+"Grainger County, Tennessee",47057,True,Manufacturing,2
+"Greene County, Tennessee",47059,False,Manufacturing,0
+"Grundy County, Tennessee",47061,False,None (nonspecialized),2
+"Hamblen County, Tennessee",47063,True,Manufacturing,0
+"Hamilton County, Tennessee",47065,True,None (nonspecialized),0
+"Hancock County, Tennessee",47067,False,None (nonspecialized),4
+"Hardeman County, Tennessee",47069,False,Manufacturing,4
+"Hardin County, Tennessee",47071,False,Manufacturing,1
+"Hawkins County, Tennessee",47073,True,Manufacturing,0
+"Haywood County, Tennessee",47075,False,Manufacturing,3
+"Henderson County, Tennessee",47077,False,Manufacturing,1
+"Henry County, Tennessee",47079,False,Manufacturing,1
+"Hickman County, Tennessee",47081,True,None (nonspecialized),1
+"Houston County, Tennessee",47083,False,None (nonspecialized),1
+"Humphreys County, Tennessee",47085,False,Manufacturing,0
+"Jackson County, Tennessee",47087,False,None (nonspecialized),2
+"Jefferson County, Tennessee",47089,True,None (nonspecialized),1
+"Johnson County, Tennessee",47091,False,Manufacturing,3
+"Knox County, Tennessee",47093,True,None (nonspecialized),0
+"Lake County, Tennessee",47095,False,Government,4
+"Lauderdale County, Tennessee",47097,False,Manufacturing,2
+"Lawrence County, Tennessee",47099,False,None (nonspecialized),0
+"Lewis County, Tennessee",47101,False,None (nonspecialized),0
+"Lincoln County, Tennessee",47103,False,Manufacturing,0
+"Loudon County, Tennessee",47105,True,Manufacturing,1
+"McMinn County, Tennessee",47107,False,Manufacturing,0
+"McNairy County, Tennessee",47109,False,Manufacturing,1
+"Macon County, Tennessee",47111,True,None (nonspecialized),2
+"Madison County, Tennessee",47113,True,None (nonspecialized),1
+"Marion County, Tennessee",47115,True,Manufacturing,0
+"Marshall County, Tennessee",47117,False,Manufacturing,0
+"Maury County, Tennessee",47119,True,None (nonspecialized),1
+"Meigs County, Tennessee",47121,False,Manufacturing,2
+"Monroe County, Tennessee",47123,False,Manufacturing,1
+"Montgomery County, Tennessee",47125,True,None (nonspecialized),0
+"Moore County, Tennessee",47127,False,Manufacturing,0
+"Morgan County, Tennessee",47129,True,None (nonspecialized),2
+"Obion County, Tennessee",47131,False,Manufacturing,2
+"Overton County, Tennessee",47133,False,None (nonspecialized),1
+"Perry County, Tennessee",47135,False,None (nonspecialized),2
+"Pickett County, Tennessee",47137,False,None (nonspecialized),1
+"Polk County, Tennessee",47139,True,None (nonspecialized),1
+"Putnam County, Tennessee",47141,False,None (nonspecialized),0
+"Rhea County, Tennessee",47143,False,Manufacturing,0
+"Roane County, Tennessee",47145,True,None (nonspecialized),0
+"Robertson County, Tennessee",47147,True,Manufacturing,0
+"Rutherford County, Tennessee",47149,True,Manufacturing,0
+"Scott County, Tennessee",47151,False,Manufacturing,3
+"Sequatchie County, Tennessee",47153,True,None (nonspecialized),1
+"Sevier County, Tennessee",47155,False,Recreation,1
+"Shelby County, Tennessee",47157,True,None (nonspecialized),1
+"Smith County, Tennessee",47159,True,Manufacturing,0
+"Stewart County, Tennessee",47161,True,Government,0
+"Sullivan County, Tennessee",47163,True,Manufacturing,0
+"Sumner County, Tennessee",47165,True,None (nonspecialized),0
+"Tipton County, Tennessee",47167,True,None (nonspecialized),0
+"Trousdale County, Tennessee",47169,True,None (nonspecialized),3
+"Unicoi County, Tennessee",47171,True,Manufacturing,0
+"Union County, Tennessee",47173,True,None (nonspecialized),1
+"Van Buren County, Tennessee",47175,False,Manufacturing,2
+"Warren County, Tennessee",47177,False,Manufacturing,1
+"Washington County, Tennessee",47179,True,None (nonspecialized),0
+"Wayne County, Tennessee",47181,False,None (nonspecialized),2
+"Weakley County, Tennessee",47183,False,None (nonspecialized),0
+"White County, Tennessee",47185,False,Manufacturing,1
+"Williamson County, Tennessee",47187,True,None (nonspecialized),0
+"Wilson County, Tennessee",47189,True,None (nonspecialized),1
+"Anderson County, Texas",48001,False,None (nonspecialized),1
+"Andrews County, Texas",48003,False,Mining,0
+"Angelina County, Texas",48005,False,None (nonspecialized),0
+"Aransas County, Texas",48007,True,Recreation,2
+"Archer County, Texas",48009,True,Mining,0
+"Armstrong County, Texas",48011,True,Farming,1
+"Atascosa County, Texas",48013,True,Mining,0
+"Austin County, Texas",48015,True,None (nonspecialized),1
+"Bailey County, Texas",48017,False,Farming,1
+"Bandera County, Texas",48019,True,Recreation,1
+"Bastrop County, Texas",48021,True,None (nonspecialized),1
+"Baylor County, Texas",48023,False,None (nonspecialized),1
+"Bee County, Texas",48025,False,None (nonspecialized),2
+"Bell County, Texas",48027,True,None (nonspecialized),1
+"Bexar County, Texas",48029,True,None (nonspecialized),1
+"Blanco County, Texas",48031,False,None (nonspecialized),1
+"Borden County, Texas",48033,False,None (nonspecialized),1
+"Bosque County, Texas",48035,True,None (nonspecialized),1
+"Bowie County, Texas",48037,True,None (nonspecialized),1
+"Brazoria County, Texas",48039,True,None (nonspecialized),0
+"Brazos County, Texas",48041,True,Government,2
+"Brewster County, Texas",48043,False,Government,0
+"Briscoe County, Texas",48045,False,Farming,1
+"Brooks County, Texas",48047,False,Government,3
+"Brown County, Texas",48049,False,Manufacturing,0
+"Burleson County, Texas",48051,True,None (nonspecialized),0
+"Burnet County, Texas",48053,False,Recreation,1
+"Caldwell County, Texas",48055,True,None (nonspecialized),3
+"Calhoun County, Texas",48057,False,Manufacturing,0
+"Callahan County, Texas",48059,True,None (nonspecialized),0
+"Cameron County, Texas",48061,True,None (nonspecialized),2
+"Camp County, Texas",48063,False,None (nonspecialized),1
+"Carson County, Texas",48065,True,Manufacturing,1
+"Cass County, Texas",48067,False,Manufacturing,0
+"Castro County, Texas",48069,False,Farming,1
+"Chambers County, Texas",48071,True,Manufacturing,0
+"Cherokee County, Texas",48073,False,None (nonspecialized),0
+"Childress County, Texas",48075,False,None (nonspecialized),2
+"Clay County, Texas",48077,True,None (nonspecialized),1
+"Cochran County, Texas",48079,True,Farming,2
+"Coke County, Texas",48081,False,None (nonspecialized),1
+"Coleman County, Texas",48083,False,None (nonspecialized),1
+"Collin County, Texas",48085,True,None (nonspecialized),1
+"Collingsworth County, Texas",48087,False,None (nonspecialized),1
+"Colorado County, Texas",48089,False,None (nonspecialized),0
+"Comal County, Texas",48091,True,None (nonspecialized),1
+"Comanche County, Texas",48093,False,Farming,1
+"Concho County, Texas",48095,False,Farming,2
+"Cooke County, Texas",48097,False,Manufacturing,0
+"Coryell County, Texas",48099,True,None (nonspecialized),1
+"Cottle County, Texas",48101,False,Farming,1
+"Crane County, Texas",48103,False,Mining,1
+"Crockett County, Texas",48105,False,Mining,2
+"Crosby County, Texas",48107,True,Farming,3
+"Culberson County, Texas",48109,False,Manufacturing,3
+"Dallam County, Texas",48111,False,Farming,1
+"Dallas County, Texas",48113,True,None (nonspecialized),1
+"Dawson County, Texas",48115,False,None (nonspecialized),4
+"Deaf Smith County, Texas",48117,False,Farming,1
+"Delta County, Texas",48119,False,Farming,1
+"Denton County, Texas",48121,True,None (nonspecialized),2
+"DeWitt County, Texas",48123,False,None (nonspecialized),2
+"Dickens County, Texas",48125,False,None (nonspecialized),3
+"Dimmit County, Texas",48127,False,Mining,5
+"Donley County, Texas",48129,False,Farming,1
+"Duval County, Texas",48131,False,None (nonspecialized),4
+"Eastland County, Texas",48133,False,Mining,0
+"Ector County, Texas",48135,True,Mining,1
+"Edwards County, Texas",48137,False,Farming,1
+"Ellis County, Texas",48139,True,None (nonspecialized),0
+"El Paso County, Texas",48141,True,None (nonspecialized),1
+"Erath County, Texas",48143,False,None (nonspecialized),1
+"Falls County, Texas",48145,True,None (nonspecialized),4
+"Fannin County, Texas",48147,False,None (nonspecialized),0
+"Fayette County, Texas",48149,False,None (nonspecialized),0
+"Fisher County, Texas",48151,False,Farming,1
+"Floyd County, Texas",48153,False,Farming,1
+"Foard County, Texas",48155,False,Farming,1
+"Fort Bend County, Texas",48157,True,None (nonspecialized),0
+"Franklin County, Texas",48159,False,None (nonspecialized),0
+"Freestone County, Texas",48161,False,None (nonspecialized),0
+"Frio County, Texas",48163,False,Mining,3
+"Gaines County, Texas",48165,False,None (nonspecialized),1
+"Galveston County, Texas",48167,True,None (nonspecialized),1
+"Garza County, Texas",48169,True,Mining,2
+"Gillespie County, Texas",48171,False,Recreation,2
+"Glasscock County, Texas",48173,False,Mining,1
+"Goliad County, Texas",48175,True,None (nonspecialized),0
+"Gonzales County, Texas",48177,False,Farming,1
+"Gray County, Texas",48179,False,Manufacturing,1
+"Grayson County, Texas",48181,True,None (nonspecialized),1
+"Gregg County, Texas",48183,True,None (nonspecialized),0
+"Grimes County, Texas",48185,False,None (nonspecialized),0
+"Guadalupe County, Texas",48187,True,Manufacturing,0
+"Hale County, Texas",48189,False,None (nonspecialized),2
+"Hall County, Texas",48191,False,Farming,1
+"Hamilton County, Texas",48193,False,None (nonspecialized),0
+"Hansford County, Texas",48195,False,Farming,0
+"Hardeman County, Texas",48197,False,Manufacturing,1
+"Hardin County, Texas",48199,True,None (nonspecialized),0
+"Harris County, Texas",48201,True,None (nonspecialized),1
+"Harrison County, Texas",48203,True,Manufacturing,0
+"Hartley County, Texas",48205,False,Farming,1
+"Haskell County, Texas",48207,False,Farming,2
+"Hays County, Texas",48209,True,None (nonspecialized),2
+"Hemphill County, Texas",48211,False,Mining,0
+"Henderson County, Texas",48213,False,None (nonspecialized),1
+"Hidalgo County, Texas",48215,True,None (nonspecialized),2
+"Hill County, Texas",48217,False,None (nonspecialized),0
+"Hockley County, Texas",48219,True,Mining,0
+"Hood County, Texas",48221,False,None (nonspecialized),2
+"Hopkins County, Texas",48223,False,None (nonspecialized),0
+"Houston County, Texas",48225,False,None (nonspecialized),2
+"Howard County, Texas",48227,False,None (nonspecialized),1
+"Hudspeth County, Texas",48229,True,Government,4
+"Hunt County, Texas",48231,True,Manufacturing,1
+"Hutchinson County, Texas",48233,False,Mining,1
+"Irion County, Texas",48235,True,Mining,2
+"Jack County, Texas",48237,False,Mining,1
+"Jackson County, Texas",48239,False,Manufacturing,0
+"Jasper County, Texas",48241,False,None (nonspecialized),1
+"Jeff Davis County, Texas",48243,False,Recreation,0
+"Jefferson County, Texas",48245,True,None (nonspecialized),1
+"Jim Hogg County, Texas",48247,False,Government,3
+"Jim Wells County, Texas",48249,False,Mining,3
+"Johnson County, Texas",48251,True,None (nonspecialized),0
+"Jones County, Texas",48253,True,Government,3
+"Karnes County, Texas",48255,False,Mining,3
+"Kaufman County, Texas",48257,True,None (nonspecialized),1
+"Kendall County, Texas",48259,True,None (nonspecialized),0
+"Kenedy County, Texas",48261,False,Mining,1
+"Kent County, Texas",48263,False,Farming,1
+"Kerr County, Texas",48265,False,None (nonspecialized),2
+"Kimble County, Texas",48267,False,Recreation,0
+"King County, Texas",48269,False,Farming,1
+"Kinney County, Texas",48271,False,Government,1
+"Kleberg County, Texas",48273,False,Government,2
+"Knox County, Texas",48275,False,None (nonspecialized),1
+"Lamar County, Texas",48277,False,Manufacturing,0
+"Lamb County, Texas",48279,False,Farming,2
+"Lampasas County, Texas",48281,True,None (nonspecialized),1
+"La Salle County, Texas",48283,False,Mining,4
+"Lavaca County, Texas",48285,False,None (nonspecialized),0
+"Lee County, Texas",48287,False,None (nonspecialized),1
+"Leon County, Texas",48289,False,Manufacturing,0
+"Liberty County, Texas",48291,True,None (nonspecialized),3
+"Limestone County, Texas",48293,False,None (nonspecialized),0
+"Lipscomb County, Texas",48295,False,Manufacturing,0
+"Live Oak County, Texas",48297,False,None (nonspecialized),2
+"Llano County, Texas",48299,False,Recreation,2
+"Loving County, Texas",48301,False,Mining,1
+"Lubbock County, Texas",48303,True,None (nonspecialized),1
+"Lynn County, Texas",48305,True,None (nonspecialized),1
+"McCulloch County, Texas",48307,False,None (nonspecialized),0
+"McLennan County, Texas",48309,True,None (nonspecialized),1
+"McMullen County, Texas",48311,False,Mining,4
+"Madison County, Texas",48313,False,None (nonspecialized),2
+"Marion County, Texas",48315,False,None (nonspecialized),2
+"Martin County, Texas",48317,True,None (nonspecialized),0
+"Mason County, Texas",48319,False,Recreation,0
+"Matagorda County, Texas",48321,False,None (nonspecialized),1
+"Maverick County, Texas",48323,True,None (nonspecialized),2
+"Medina County, Texas",48325,True,None (nonspecialized),0
+"Menard County, Texas",48327,False,None (nonspecialized),1
+"Midland County, Texas",48329,True,Mining,1
+"Milam County, Texas",48331,False,None (nonspecialized),0
+"Mills County, Texas",48333,False,None (nonspecialized),1
+"Mitchell County, Texas",48335,False,Mining,2
+"Montague County, Texas",48337,False,None (nonspecialized),0
+"Montgomery County, Texas",48339,True,None (nonspecialized),1
+"Moore County, Texas",48341,False,Manufacturing,1
+"Morris County, Texas",48343,False,Manufacturing,1
+"Motley County, Texas",48345,False,Farming,1
+"Nacogdoches County, Texas",48347,False,None (nonspecialized),2
+"Navarro County, Texas",48349,False,Manufacturing,1
+"Newton County, Texas",48351,False,None (nonspecialized),3
+"Nolan County, Texas",48353,False,None (nonspecialized),1
+"Nueces County, Texas",48355,True,None (nonspecialized),1
+"Ochiltree County, Texas",48357,False,Mining,1
+"Oldham County, Texas",48359,True,Farming,1
+"Orange County, Texas",48361,True,Manufacturing,0
+"Palo Pinto County, Texas",48363,False,Recreation,0
+"Panola County, Texas",48365,False,None (nonspecialized),0
+"Parker County, Texas",48367,True,None (nonspecialized),1
+"Parmer County, Texas",48369,False,Manufacturing,0
+"Pecos County, Texas",48371,False,None (nonspecialized),3
+"Polk County, Texas",48373,False,None (nonspecialized),3
+"Potter County, Texas",48375,True,None (nonspecialized),1
+"Presidio County, Texas",48377,False,Government,2
+"Rains County, Texas",48379,False,None (nonspecialized),1
+"Randall County, Texas",48381,True,None (nonspecialized),0
+"Reagan County, Texas",48383,False,Mining,1
+"Real County, Texas",48385,False,Recreation,1
+"Red River County, Texas",48387,False,None (nonspecialized),1
+"Reeves County, Texas",48389,False,Mining,1
+"Refugio County, Texas",48391,False,None (nonspecialized),2
+"Roberts County, Texas",48393,False,Mining,0
+"Robertson County, Texas",48395,True,None (nonspecialized),0
+"Rockwall County, Texas",48397,True,None (nonspecialized),0
+"Runnels County, Texas",48399,False,None (nonspecialized),1
+"Rusk County, Texas",48401,True,None (nonspecialized),0
+"Sabine County, Texas",48403,False,None (nonspecialized),1
+"San Augustine County, Texas",48405,False,None (nonspecialized),4
+"San Jacinto County, Texas",48407,True,None (nonspecialized),2
+"San Patricio County, Texas",48409,True,None (nonspecialized),1
+"San Saba County, Texas",48411,False,None (nonspecialized),1
+"Schleicher County, Texas",48413,False,None (nonspecialized),0
+"Scurry County, Texas",48415,False,Mining,0
+"Shackelford County, Texas",48417,False,Mining,0
+"Shelby County, Texas",48419,False,Manufacturing,0
+"Sherman County, Texas",48421,False,Farming,1
+"Smith County, Texas",48423,True,None (nonspecialized),0
+"Somervell County, Texas",48425,False,None (nonspecialized),0
+"Starr County, Texas",48427,False,None (nonspecialized),3
+"Stephens County, Texas",48429,False,Mining,2
+"Sterling County, Texas",48431,False,None (nonspecialized),0
+"Stonewall County, Texas",48433,False,Farming,2
+"Sutton County, Texas",48435,False,Mining,0
+"Swisher County, Texas",48437,False,Farming,2
+"Tarrant County, Texas",48439,True,None (nonspecialized),1
+"Taylor County, Texas",48441,True,None (nonspecialized),1
+"Terrell County, Texas",48443,False,Government,1
+"Terry County, Texas",48445,False,Farming,2
+"Throckmorton County, Texas",48447,False,None (nonspecialized),1
+"Titus County, Texas",48449,False,Manufacturing,2
+"Tom Green County, Texas",48451,True,None (nonspecialized),0
+"Travis County, Texas",48453,True,None (nonspecialized),1
+"Trinity County, Texas",48455,False,None (nonspecialized),1
+"Tyler County, Texas",48457,False,None (nonspecialized),2
+"Upshur County, Texas",48459,True,None (nonspecialized),0
+"Upton County, Texas",48461,False,Mining,2
+"Uvalde County, Texas",48463,False,None (nonspecialized),1
+"Val Verde County, Texas",48465,False,None (nonspecialized),1
+"Van Zandt County, Texas",48467,False,None (nonspecialized),1
+"Victoria County, Texas",48469,True,None (nonspecialized),0
+"Walker County, Texas",48471,False,Government,2
+"Waller County, Texas",48473,True,Manufacturing,0
+"Ward County, Texas",48475,False,Mining,0
+"Washington County, Texas",48477,False,Manufacturing,0
+"Webb County, Texas",48479,True,None (nonspecialized),2
+"Wharton County, Texas",48481,False,None (nonspecialized),0
+"Wheeler County, Texas",48483,False,None (nonspecialized),0
+"Wichita County, Texas",48485,True,None (nonspecialized),1
+"Wilbarger County, Texas",48487,False,Government,1
+"Willacy County, Texas",48489,False,None (nonspecialized),3
+"Williamson County, Texas",48491,True,None (nonspecialized),2
+"Wilson County, Texas",48493,True,None (nonspecialized),0
+"Winkler County, Texas",48495,False,Mining,1
+"Wise County, Texas",48497,True,None (nonspecialized),0
+"Wood County, Texas",48499,False,None (nonspecialized),1
+"Yoakum County, Texas",48501,False,Mining,1
+"Young County, Texas",48503,False,Manufacturing,0
+"Zapata County, Texas",48505,False,Mining,3
+"Zavala County, Texas",48507,False,None (nonspecialized),1
+"Beaver County, Utah",49001,False,Farming,0
+"Box Elder County, Utah",49003,False,Manufacturing,0
+"Cache County, Utah",49005,True,Manufacturing,0
+"Carbon County, Utah",49007,False,None (nonspecialized),1
+"Daggett County, Utah",49009,False,Recreation,0
+"Davis County, Utah",49011,True,None (nonspecialized),0
+"Duchesne County, Utah",49013,False,Mining,0
+"Emery County, Utah",49015,False,None (nonspecialized),0
+"Garfield County, Utah",49017,False,Recreation,0
+"Grand County, Utah",49019,False,Recreation,1
+"Iron County, Utah",49021,False,Recreation,1
+"Juab County, Utah",49023,True,Manufacturing,0
+"Kane County, Utah",49025,False,Recreation,0
+"Millard County, Utah",49027,False,None (nonspecialized),0
+"Morgan County, Utah",49029,True,None (nonspecialized),0
+"Piute County, Utah",49031,False,Farming,1
+"Rich County, Utah",49033,False,Recreation,1
+"Salt Lake County, Utah",49035,True,None (nonspecialized),1
+"San Juan County, Utah",49037,False,None (nonspecialized),2
+"Sanpete County, Utah",49039,False,None (nonspecialized),0
+"Sevier County, Utah",49041,False,None (nonspecialized),0
+"Summit County, Utah",49043,False,Recreation,0
+"Tooele County, Utah",49045,True,None (nonspecialized),0
+"Uintah County, Utah",49047,False,None (nonspecialized),0
+"Utah County, Utah",49049,True,None (nonspecialized),0
+"Wasatch County, Utah",49051,False,Recreation,2
+"Washington County, Utah",49053,True,Recreation,2
+"Wayne County, Utah",49055,False,Recreation,0
+"Weber County, Utah",49057,True,None (nonspecialized),0
+"Addison County, Vermont",50001,False,None (nonspecialized),0
+"Bennington County, Vermont",50003,False,Recreation,1
+"Caledonia County, Vermont",50005,False,None (nonspecialized),1
+"Chittenden County, Vermont",50007,True,None (nonspecialized),1
+"Essex County, Vermont",50009,False,None (nonspecialized),2
+"Franklin County, Vermont",50011,True,None (nonspecialized),1
+"Grand Isle County, Vermont",50013,True,Recreation,0
+"Lamoille County, Vermont",50015,False,Recreation,1
+"Orange County, Vermont",50017,False,None (nonspecialized),0
+"Orleans County, Vermont",50019,False,Recreation,0
+"Rutland County, Vermont",50021,False,None (nonspecialized),2
+"Washington County, Vermont",50023,False,None (nonspecialized),0
+"Windham County, Vermont",50025,False,Recreation,1
+"Windsor County, Vermont",50027,False,Recreation,1
+"Accomack County, Virginia",51001,False,None (nonspecialized),1
+"Albemarle County, Virginia",51003,True,Government,0
+"Alleghany County, Virginia",51005,False,Manufacturing,1
+"Amelia County, Virginia",51007,True,None (nonspecialized),2
+"Amherst County, Virginia",51009,True,Manufacturing,0
+"Appomattox County, Virginia",51011,True,None (nonspecialized),0
+"Arlington County, Virginia",51013,True,None (nonspecialized),1
+"Augusta County, Virginia",51015,True,None (nonspecialized),0
+"Bath County, Virginia",51017,False,Recreation,1
+"Bedford County, Virginia",51019,True,None (nonspecialized),0
+"Bland County, Virginia",51021,False,Manufacturing,2
+"Botetourt County, Virginia",51023,True,None (nonspecialized),0
+"Brunswick County, Virginia",51025,False,None (nonspecialized),2
+"Buchanan County, Virginia",51027,False,Mining,4
+"Buckingham County, Virginia",51029,False,Government,2
+"Campbell County, Virginia",51031,True,Manufacturing,0
+"Caroline County, Virginia",51033,False,None (nonspecialized),0
+"Carroll County, Virginia",51035,False,Manufacturing,0
+"Charles City County, Virginia",51036,True,None (nonspecialized),0
+"Charlotte County, Virginia",51037,False,None (nonspecialized),0
+"Chesterfield County, Virginia",51041,True,None (nonspecialized),0
+"Clarke County, Virginia",51043,True,None (nonspecialized),0
+"Craig County, Virginia",51045,True,None (nonspecialized),0
+"Culpeper County, Virginia",51047,True,None (nonspecialized),0
+"Cumberland County, Virginia",51049,False,None (nonspecialized),0
+"Dickenson County, Virginia",51051,False,Mining,3
+"Dinwiddie County, Virginia",51053,True,None (nonspecialized),0
+"Essex County, Virginia",51057,False,None (nonspecialized),1
+"Fairfax County, Virginia",51059,True,None (nonspecialized),0
+"Fauquier County, Virginia",51061,True,None (nonspecialized),0
+"Floyd County, Virginia",51063,True,None (nonspecialized),0
+"Fluvanna County, Virginia",51065,True,None (nonspecialized),0
+"Franklin County, Virginia",51067,True,Manufacturing,0
+"Frederick County, Virginia",51069,True,None (nonspecialized),0
+"Giles County, Virginia",51071,True,Manufacturing,0
+"Gloucester County, Virginia",51073,True,None (nonspecialized),0
+"Goochland County, Virginia",51075,True,None (nonspecialized),0
+"Grayson County, Virginia",51077,False,None (nonspecialized),1
+"Greene County, Virginia",51079,True,None (nonspecialized),0
+"Greensville County, Virginia",51081,False,Manufacturing,2
+"Halifax County, Virginia",51083,False,None (nonspecialized),1
+"Hanover County, Virginia",51085,True,None (nonspecialized),0
+"Henrico County, Virginia",51087,True,None (nonspecialized),1
+"Henry County, Virginia",51089,False,Manufacturing,1
+"Highland County, Virginia",51091,False,Farming,2
+"Isle of Wight County, Virginia",51093,True,Manufacturing,0
+"James City County, Virginia",51095,True,Recreation,1
+"King and Queen County, Virginia",51097,True,None (nonspecialized),0
+"King George County, Virginia",51099,False,Government,0
+"King William County, Virginia",51101,True,Manufacturing,0
+"Lancaster County, Virginia",51103,False,Recreation,2
+"Lee County, Virginia",51105,False,None (nonspecialized),2
+"Loudoun County, Virginia",51107,True,None (nonspecialized),0
+"Louisa County, Virginia",51109,False,None (nonspecialized),1
+"Lunenburg County, Virginia",51111,False,None (nonspecialized),3
+"Madison County, Virginia",51113,False,None (nonspecialized),0
+"Mathews County, Virginia",51115,True,Recreation,1
+"Mecklenburg County, Virginia",51117,False,None (nonspecialized),0
+"Middlesex County, Virginia",51119,False,Recreation,1
+"Montgomery County, Virginia",51121,True,Government,1
+"Nelson County, Virginia",51125,True,Recreation,0
+"New Kent County, Virginia",51127,True,Recreation,0
+"Northampton County, Virginia",51131,False,Recreation,2
+"Northumberland County, Virginia",51133,False,Manufacturing,1
+"Nottoway County, Virginia",51135,False,Government,1
+"Orange County, Virginia",51137,False,None (nonspecialized),0
+"Page County, Virginia",51139,False,None (nonspecialized),1
+"Patrick County, Virginia",51141,False,Manufacturing,1
+"Pittsylvania County, Virginia",51143,False,Manufacturing,0
+"Powhatan County, Virginia",51145,True,None (nonspecialized),0
+"Prince Edward County, Virginia",51147,False,None (nonspecialized),1
+"Prince George County, Virginia",51149,True,Government,1
+"Prince William County, Virginia",51153,True,None (nonspecialized),1
+"Pulaski County, Virginia",51155,True,Manufacturing,1
+"Rappahannock County, Virginia",51157,True,Recreation,0
+"Richmond County, Virginia",51159,False,Government,2
+"Roanoke County, Virginia",51161,True,None (nonspecialized),0
+"Rockbridge County, Virginia",51163,False,None (nonspecialized),0
+"Rockingham County, Virginia",51165,True,None (nonspecialized),0
+"Russell County, Virginia",51167,False,None (nonspecialized),2
+"Scott County, Virginia",51169,True,Manufacturing,1
+"Shenandoah County, Virginia",51171,False,Manufacturing,0
+"Smyth County, Virginia",51173,False,Manufacturing,1
+"Southampton County, Virginia",51175,False,None (nonspecialized),0
+"Spotsylvania County, Virginia",51177,True,None (nonspecialized),0
+"Stafford County, Virginia",51179,True,None (nonspecialized),0
+"Surry County, Virginia",51181,True,None (nonspecialized),0
+"Sussex County, Virginia",51183,True,Government,2
+"Tazewell County, Virginia",51185,False,None (nonspecialized),0
+"Warren County, Virginia",51187,True,None (nonspecialized),0
+"Washington County, Virginia",51191,True,None (nonspecialized),0
+"Westmoreland County, Virginia",51193,False,None (nonspecialized),2
+"Wise County, Virginia",51195,False,None (nonspecialized),1
+"Wythe County, Virginia",51197,False,Manufacturing,0
+"York County, Virginia",51199,True,None (nonspecialized),0
+"Alexandria City, Virginia",51510,True,Government,1
+"Bristol City, Virginia",51520,True,None (nonspecialized),0
+"Buena Vista City, Virginia",51530,False,None (nonspecialized),1
+"Charlottesville City, Virginia",51540,True,Government,3
+"Chesapeake City, Virginia",51550,True,None (nonspecialized),1
+"Colonial Heights City, Virginia",51570,True,None (nonspecialized),0
+"Covington City, Virginia",51580,False,Manufacturing,2
+"Danville City, Virginia",51590,False,Manufacturing,2
+"Emporia City, Virginia",51595,False,Manufacturing,2
+"Fairfax City, Virginia",51600,True,None (nonspecialized),0
+"Falls Church City, Virginia",51610,True,None (nonspecialized),0
+"Franklin City, Virginia",51620,False,None (nonspecialized),1
+"Fredericksburg City, Virginia",51630,True,None (nonspecialized),1
+"Galax City, Virginia",51640,False,Manufacturing,0
+"Hampton City, Virginia",51650,True,Government,2
+"Harrisonburg City, Virginia",51660,True,None (nonspecialized),2
+"Hopewell City, Virginia",51670,True,Government,1
+"Lexington City, Virginia",51678,False,None (nonspecialized),1
+"Lynchburg City, Virginia",51680,True,Manufacturing,1
+"Manassas City, Virginia",51683,True,None (nonspecialized),1
+"Manassas Park City, Virginia",51685,True,None (nonspecialized),1
+"Martinsville City, Virginia",51690,False,Manufacturing,2
+"Newport News City, Virginia",51700,True,Manufacturing,1
+"Norfolk City, Virginia",51710,True,Government,1
+"Norton City, Virginia",51720,False,None (nonspecialized),2
+"Petersburg City, Virginia",51730,True,None (nonspecialized),1
+"Poquoson City, Virginia",51735,True,None (nonspecialized),0
+"Portsmouth City, Virginia",51740,True,Government,1
+"Radford City, Virginia",51750,True,Government,2
+"Richmond City, Virginia",51760,True,Government,1
+"Roanoke City, Virginia",51770,True,None (nonspecialized),1
+"Salem City, Virginia",51775,True,None (nonspecialized),0
+"Staunton City, Virginia",51790,True,None (nonspecialized),2
+"Suffolk City, Virginia",51800,True,None (nonspecialized),1
+"Virginia Beach City, Virginia",51810,True,None (nonspecialized),1
+"Waynesboro City, Virginia",51820,True,None (nonspecialized),1
+"Williamsburg City, Virginia",51830,True,Recreation,2
+"Winchester City, Virginia",51840,True,None (nonspecialized),1
+"Adams County, Washington",53001,False,Farming,2
+"Asotin County, Washington",53003,True,None (nonspecialized),1
+"Benton County, Washington",53005,True,None (nonspecialized),0
+"Chelan County, Washington",53007,True,Recreation,0
+"Clallam County, Washington",53009,False,None (nonspecialized),2
+"Clark County, Washington",53011,True,None (nonspecialized),1
+"Columbia County, Washington",53013,False,None (nonspecialized),0
+"Cowlitz County, Washington",53015,True,Manufacturing,1
+"Douglas County, Washington",53017,True,None (nonspecialized),0
+"Ferry County, Washington",53019,False,None (nonspecialized),1
+"Franklin County, Washington",53021,True,None (nonspecialized),1
+"Garfield County, Washington",53023,False,Farming,0
+"Grant County, Washington",53025,False,None (nonspecialized),1
+"Grays Harbor County, Washington",53027,False,None (nonspecialized),2
+"Island County, Washington",53029,False,None (nonspecialized),3
+"Jefferson County, Washington",53031,False,Recreation,2
+"King County, Washington",53033,True,None (nonspecialized),1
+"Kitsap County, Washington",53035,True,Government,1
+"Kittitas County, Washington",53037,False,Recreation,2
+"Klickitat County, Washington",53039,False,Manufacturing,1
+"Lewis County, Washington",53041,False,None (nonspecialized),2
+"Lincoln County, Washington",53043,False,Farming,0
+"Mason County, Washington",53045,False,Recreation,2
+"Okanogan County, Washington",53047,False,None (nonspecialized),1
+"Pacific County, Washington",53049,False,Recreation,1
+"Pend Oreille County, Washington",53051,False,None (nonspecialized),1
+"Pierce County, Washington",53053,True,None (nonspecialized),1
+"San Juan County, Washington",53055,False,Recreation,2
+"Skagit County, Washington",53057,True,None (nonspecialized),2
+"Skamania County, Washington",53059,True,Recreation,1
+"Snohomish County, Washington",53061,True,Manufacturing,1
+"Spokane County, Washington",53063,True,None (nonspecialized),1
+"Stevens County, Washington",53065,True,None (nonspecialized),1
+"Thurston County, Washington",53067,True,Government,1
+"Wahkiakum County, Washington",53069,False,None (nonspecialized),2
+"Walla Walla County, Washington",53071,True,None (nonspecialized),1
+"Whatcom County, Washington",53073,True,None (nonspecialized),1
+"Whitman County, Washington",53075,False,Government,2
+"Yakima County, Washington",53077,True,None (nonspecialized),1
+"Barbour County, West Virginia",54001,False,Mining,1
+"Berkeley County, West Virginia",54003,True,None (nonspecialized),0
+"Boone County, West Virginia",54005,True,Mining,3
+"Braxton County, West Virginia",54007,False,None (nonspecialized),3
+"Brooke County, West Virginia",54009,True,Manufacturing,1
+"Cabell County, West Virginia",54011,True,None (nonspecialized),1
+"Calhoun County, West Virginia",54013,False,Mining,3
+"Clay County, West Virginia",54015,True,None (nonspecialized),4
+"Doddridge County, West Virginia",54017,False,Mining,2
+"Fayette County, West Virginia",54019,True,None (nonspecialized),3
+"Gilmer County, West Virginia",54021,False,Government,2
+"Grant County, West Virginia",54023,False,None (nonspecialized),1
+"Greenbrier County, West Virginia",54025,False,None (nonspecialized),0
+"Hampshire County, West Virginia",54027,True,None (nonspecialized),0
+"Hancock County, West Virginia",54029,True,Manufacturing,1
+"Hardy County, West Virginia",54031,False,Manufacturing,1
+"Harrison County, West Virginia",54033,False,None (nonspecialized),0
+"Jackson County, West Virginia",54035,False,Manufacturing,0
+"Jefferson County, West Virginia",54037,True,Government,0
+"Kanawha County, West Virginia",54039,True,None (nonspecialized),1
+"Lewis County, West Virginia",54041,False,None (nonspecialized),0
+"Lincoln County, West Virginia",54043,False,None (nonspecialized),4
+"Logan County, West Virginia",54045,False,None (nonspecialized),4
+"McDowell County, West Virginia",54047,False,Mining,4
+"Marion County, West Virginia",54049,False,None (nonspecialized),1
+"Marshall County, West Virginia",54051,True,Mining,1
+"Mason County, West Virginia",54053,False,None (nonspecialized),1
+"Mercer County, West Virginia",54055,False,None (nonspecialized),1
+"Mineral County, West Virginia",54057,False,Manufacturing,0
+"Mingo County, West Virginia",54059,False,Mining,4
+"Monongalia County, West Virginia",54061,True,Government,0
+"Monroe County, West Virginia",54063,False,None (nonspecialized),2
+"Morgan County, West Virginia",54065,True,None (nonspecialized),0
+"Nicholas County, West Virginia",54067,False,None (nonspecialized),1
+"Ohio County, West Virginia",54069,True,None (nonspecialized),1
+"Pendleton County, West Virginia",54071,False,None (nonspecialized),2
+"Pleasants County, West Virginia",54073,False,Manufacturing,1
+"Pocahontas County, West Virginia",54075,False,Recreation,3
+"Preston County, West Virginia",54077,True,Government,2
+"Putnam County, West Virginia",54079,True,None (nonspecialized),0
+"Raleigh County, West Virginia",54081,True,None (nonspecialized),2
+"Randolph County, West Virginia",54083,False,None (nonspecialized),2
+"Ritchie County, West Virginia",54085,False,Mining,2
+"Roane County, West Virginia",54087,False,None (nonspecialized),4
+"Summers County, West Virginia",54089,False,None (nonspecialized),2
+"Taylor County, West Virginia",54091,False,Mining,0
+"Tucker County, West Virginia",54093,False,Recreation,1
+"Tyler County, West Virginia",54095,False,Manufacturing,2
+"Upshur County, West Virginia",54097,False,None (nonspecialized),1
+"Wayne County, West Virginia",54099,True,Government,1
+"Webster County, West Virginia",54101,False,None (nonspecialized),4
+"Wetzel County, West Virginia",54103,False,None (nonspecialized),2
+"Wirt County, West Virginia",54105,True,None (nonspecialized),1
+"Wood County, West Virginia",54107,True,None (nonspecialized),1
+"Wyoming County, West Virginia",54109,False,Mining,3
+"Adams County, Wisconsin",55001,False,Recreation,1
+"Ashland County, Wisconsin",55003,False,None (nonspecialized),1
+"Barron County, Wisconsin",55005,False,Manufacturing,0
+"Bayfield County, Wisconsin",55007,False,Recreation,1
+"Brown County, Wisconsin",55009,True,None (nonspecialized),0
+"Buffalo County, Wisconsin",55011,False,None (nonspecialized),1
+"Burnett County, Wisconsin",55013,False,Manufacturing,1
+"Calumet County, Wisconsin",55015,True,Manufacturing,0
+"Chippewa County, Wisconsin",55017,True,Manufacturing,0
+"Clark County, Wisconsin",55019,False,Manufacturing,0
+"Columbia County, Wisconsin",55021,True,Manufacturing,0
+"Crawford County, Wisconsin",55023,False,Manufacturing,1
+"Dane County, Wisconsin",55025,True,None (nonspecialized),1
+"Dodge County, Wisconsin",55027,False,Manufacturing,0
+"Door County, Wisconsin",55029,False,Recreation,1
+"Douglas County, Wisconsin",55031,True,None (nonspecialized),0
+"Dunn County, Wisconsin",55033,False,Manufacturing,0
+"Eau Claire County, Wisconsin",55035,True,None (nonspecialized),0
+"Florence County, Wisconsin",55037,False,Recreation,1
+"Fond du Lac County, Wisconsin",55039,True,Manufacturing,0
+"Forest County, Wisconsin",55041,False,None (nonspecialized),2
+"Grant County, Wisconsin",55043,False,None (nonspecialized),0
+"Green County, Wisconsin",55045,True,Manufacturing,0
+"Green Lake County, Wisconsin",55047,False,None (nonspecialized),1
+"Iowa County, Wisconsin",55049,True,None (nonspecialized),0
+"Iron County, Wisconsin",55051,False,Recreation,1
+"Jackson County, Wisconsin",55053,False,None (nonspecialized),0
+"Jefferson County, Wisconsin",55055,False,Manufacturing,0
+"Juneau County, Wisconsin",55057,False,Manufacturing,0
+"Kenosha County, Wisconsin",55059,True,None (nonspecialized),0
+"Kewaunee County, Wisconsin",55061,True,Manufacturing,0
+"La Crosse County, Wisconsin",55063,True,None (nonspecialized),0
+"Lafayette County, Wisconsin",55065,False,Farming,0
+"Langlade County, Wisconsin",55067,False,None (nonspecialized),1
+"Lincoln County, Wisconsin",55069,False,Manufacturing,1
+"Manitowoc County, Wisconsin",55071,False,Manufacturing,1
+"Marathon County, Wisconsin",55073,True,Manufacturing,0
+"Marinette County, Wisconsin",55075,False,Manufacturing,0
+"Marquette County, Wisconsin",55077,False,Manufacturing,1
+"Menominee County, Wisconsin",55078,False,None (nonspecialized),2
+"Milwaukee County, Wisconsin",55079,True,None (nonspecialized),1
+"Monroe County, Wisconsin",55081,False,Manufacturing,0
+"Oconto County, Wisconsin",55083,True,Manufacturing,0
+"Oneida County, Wisconsin",55085,False,Recreation,1
+"Outagamie County, Wisconsin",55087,True,Manufacturing,0
+"Ozaukee County, Wisconsin",55089,True,Manufacturing,0
+"Pepin County, Wisconsin",55091,False,None (nonspecialized),0
+"Pierce County, Wisconsin",55093,True,None (nonspecialized),0
+"Polk County, Wisconsin",55095,False,Manufacturing,0
+"Portage County, Wisconsin",55097,False,None (nonspecialized),0
+"Price County, Wisconsin",55099,False,Manufacturing,1
+"Racine County, Wisconsin",55101,True,Manufacturing,0
+"Richland County, Wisconsin",55103,False,Manufacturing,0
+"Rock County, Wisconsin",55105,True,None (nonspecialized),0
+"Rusk County, Wisconsin",55107,False,Manufacturing,1
+"St. Croix County, Wisconsin",55109,True,Manufacturing,0
+"Sauk County, Wisconsin",55111,False,Recreation,0
+"Sawyer County, Wisconsin",55113,False,Recreation,1
+"Shawano County, Wisconsin",55115,False,None (nonspecialized),0
+"Sheboygan County, Wisconsin",55117,True,Manufacturing,0
+"Taylor County, Wisconsin",55119,False,Manufacturing,0
+"Trempealeau County, Wisconsin",55121,False,Manufacturing,0
+"Vernon County, Wisconsin",55123,True,None (nonspecialized),0
+"Vilas County, Wisconsin",55125,False,Recreation,1
+"Walworth County, Wisconsin",55127,False,Recreation,0
+"Washburn County, Wisconsin",55129,False,Recreation,1
+"Washington County, Wisconsin",55131,True,Manufacturing,0
+"Waukesha County, Wisconsin",55133,True,Manufacturing,0
+"Waupaca County, Wisconsin",55135,False,Manufacturing,0
+"Waushara County, Wisconsin",55137,False,None (nonspecialized),0
+"Winnebago County, Wisconsin",55139,True,Manufacturing,0
+"Wood County, Wisconsin",55141,False,None (nonspecialized),1
+"Albany County, Wyoming",56001,False,Government,1
+"Big Horn County, Wyoming",56003,False,None (nonspecialized),0
+"Campbell County, Wyoming",56005,False,Mining,0
+"Carbon County, Wyoming",56007,False,Manufacturing,0
+"Converse County, Wyoming",56009,False,Mining,0
+"Crook County, Wyoming",56011,False,None (nonspecialized),0
+"Fremont County, Wyoming",56013,False,None (nonspecialized),0
+"Goshen County, Wyoming",56015,False,None (nonspecialized),0
+"Hot Springs County, Wyoming",56017,False,None (nonspecialized),1
+"Johnson County, Wyoming",56019,False,Recreation,0
+"Laramie County, Wyoming",56021,True,None (nonspecialized),0
+"Lincoln County, Wyoming",56023,False,None (nonspecialized),0
+"Natrona County, Wyoming",56025,True,None (nonspecialized),0
+"Niobrara County, Wyoming",56027,False,None (nonspecialized),1
+"Park County, Wyoming",56029,False,None (nonspecialized),0
+"Platte County, Wyoming",56031,False,None (nonspecialized),1
+"Sheridan County, Wyoming",56033,False,None (nonspecialized),1
+"Sublette County, Wyoming",56035,False,Mining,0
+"Sweetwater County, Wyoming",56037,False,Mining,0
+"Teton County, Wyoming",56039,False,Recreation,1
+"Uinta County, Wyoming",56041,False,None (nonspecialized),0
+"Washakie County, Wyoming",56043,False,None (nonspecialized),0
+"Weston County, Wyoming",56045,False,None (nonspecialized),0

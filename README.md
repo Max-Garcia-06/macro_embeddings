@@ -110,3 +110,17 @@ uv run scripts/ingest_source_e.py
 ```
 
 Output: `data/source_e_irs_soi.parquet` with columns `county_name`, `fips_code`, `num_returns`, `agi_thousands`, `wages_salaries_thousands`, `qualified_dividends_thousands`, `net_cap_gain_thousands`, `capital_to_wage_ratio`.
+
+## Source F: USDA ERS County Typology Codes
+
+`ingest_source_f.py` downloads the 2025-edition USDA Economic Research Service County Typology Codes and reshapes them into one row per county -- the "Structural Resilience Baseline" anchor pillar of `E_macro`. Unlike Sources A and C, this is a single static file download: no API key, no rate limiting, and (per the source) a decennial/annual-refresh baseline rather than a time series.
+
+The ERS file is published long-format (one row per county/attribute pair) and includes six non-exclusive "high concentration" economic flags, one mutually-exclusive dominant-industry code, six non-exclusive demographic flags, and a metro/nonmetro indicator. The pipeline pivots this to one row per county, one-hot encodes the dominant-industry code into `industry_dependence_{none,farming,mining,manufacturing,government,recreation}`, and leaves the already-binary flags as nullable booleans. ERS's sentinel codes (`99` = not classified, `-1` = insufficient data) are mapped to null rather than `False`.
+
+No credentials are required:
+
+```bash
+uv run scripts/ingest_source_f.py
+```
+
+Output: `data/source_f_usda_typology.parquet` with columns `county_name`, `fips_code`, `metro_2023`, `high_farming`, `high_mining`, `high_manufacturing`, `high_government`, `high_recreation`, `nonspecialized`, `low_postsecondary_ed`, `low_employment`, `population_loss`, `housing_stress`, `retirement_destination`, `persistent_poverty`, and the six `industry_dependence_*` one-hot columns.

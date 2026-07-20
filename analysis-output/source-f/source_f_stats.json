@@ -1,0 +1,45 @@
+{
+  "total_counties": 3144,
+  "dependence_counts": {
+    "None (nonspecialized)": 1572,
+    "Manufacturing": 706,
+    "Farming": 354,
+    "Recreation": 267,
+    "Government": 146,
+    "Mining": 90,
+    "Not classified": 9
+  },
+  "dependence_rates": {
+    "None (nonspecialized)": 0.5,
+    "Manufacturing": 0.22455470737913485,
+    "Farming": 0.11259541984732824,
+    "Recreation": 0.08492366412213741,
+    "Government": 0.04643765903307888,
+    "Mining": 0.02862595419847328,
+    "Not classified": 0.0028625954198473282
+  },
+  "none_dependence_rate_by_metro": {
+    "False": 0.3962167689161554,
+    "True": 0.6759966072943172
+  },
+  "distress_distribution": {
+    "0": 1194,
+    "1": 1338,
+    "2": 392,
+    "3": 143,
+    "4": 60,
+    "5": 17
+  },
+  "distress_mean_by_metro": {
+    "False": 1.069458631256384,
+    "True": 0.6593591905564924
+  },
+  "distress_vs_unemployment_velocity_corr": 0.00646059353682839,
+  "distress_vs_unemployment_velocity_p": 0.718,
+  "distress_vs_gdp_velocity_pct_corr": -0.01894000623368352,
+  "distress_vs_gdp_velocity_pct_p": 0.296,
+  "gdp_velocity_pct_by_metro": {
+    "False": 0.01716631640419011,
+    "True": 0.022940274430984457
+  }
+}
