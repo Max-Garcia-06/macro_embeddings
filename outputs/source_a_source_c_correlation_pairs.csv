@@ -1,0 +1,21 @@
+county_a,county_b,similarity,economic_distance
+"Borden County, Texas","Terrell County, Texas",0.5504618901607707,11.167611492550988
+"Campbell County, South Dakota","Borden County, Texas",0.5823469290915115,11.033954957750232
+"Kittson County, Minnesota","Live Oak County, Texas",0.5350908240680343,11.023160652932438
+"Massac County, Illinois","Martin County, Texas",0.5853208620646575,10.939619885414928
+"Massac County, Illinois","Dawson County, Texas",0.5850914512972775,10.923243672865077
+"Massac County, Illinois","Glasscock County, Texas",0.5472017772562288,10.875699833323536
+"Edmunds County, South Dakota","Borden County, Texas",0.5555298489440835,10.695988278545805
+"Kittson County, Minnesota","Ellis County, Oklahoma",0.5611510166134678,10.679026024659494
+"Petroleum County, Montana","Emmons County, North Dakota",0.5531592752187682,10.61346667251949
+"Massac County, Illinois","Hamilton County, Kansas",0.5573047072584315,10.446103319818103
+"Hamilton County, Kansas","Kittson County, Minnesota",0.6046770768636769,10.42653789299629
+"Massac County, Illinois","Ellis County, Oklahoma",0.5428255973951422,10.425249439004133
+"Emmons County, North Dakota","Loving County, Texas",0.5588636923475139,10.412164071468474
+"Campbell County, South Dakota","Dawson County, Texas",0.6167736405138979,10.35920270229148
+"Kittson County, Minnesota","Piute County, Utah",0.5451797121953846,10.305084485581572
+"Emmons County, North Dakota","Live Oak County, Texas",0.5471787374690075,10.275233717144255
+"Campbell County, South Dakota","Martin County, Texas",0.5768441929579903,10.234455475124635
+"Massac County, Illinois","Concho County, Texas",0.5348225620385458,10.23013647717913
+"Kent County, Texas","Terrell County, Texas",0.5535624711481089,10.208840535340448
+"Briscoe County, Texas","Glasscock County, Texas",0.5750580826029152,10.133636227514247

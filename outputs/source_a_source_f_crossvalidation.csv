@@ -1,0 +1,3144 @@
+county_name,fips_code,content_length,distress_count,metro_2023
+"Autauga County, Alabama",01001,85,0,True
+"Baldwin County, Alabama",01003,713,1,True
+"Barbour County, Alabama",01005,178,5,False
+"Bibb County, Alabama",01007,748,2,True
+"Blount County, Alabama",01009,577,0,True
+"Bullock County, Alabama",01011,430,4,False
+"Butler County, Alabama",01013,175,2,False
+"Calhoun County, Alabama",01015,177,0,True
+"Chambers County, Alabama",01017,294,0,False
+"Cherokee County, Alabama",01019,79,0,False
+"Chilton County, Alabama",01021,706,1,True
+"Choctaw County, Alabama",01023,138,2,False
+"Clarke County, Alabama",01025,329,4,False
+"Clay County, Alabama",01027,365,0,False
+"Cleburne County, Alabama",01029,224,0,False
+"Coffee County, Alabama",01031,925,0,False
+"Colbert County, Alabama",01033,532,0,True
+"Conecuh County, Alabama",01035,146,2,False
+"Coosa County, Alabama",01037,317,2,False
+"Covington County, Alabama",01039,184,0,False
+"Crenshaw County, Alabama",01041,160,1,False
+"Cullman County, Alabama",01043,590,0,False
+"Dale County, Alabama",01045,554,1,False
+"Dallas County, Alabama",01047,206,3,False
+"DeKalb County, Alabama",01049,176,0,False
+"Elmore County, Alabama",01051,132,0,True
+"Escambia County, Alabama",01053,550,4,False
+"Etowah County, Alabama",01055,235,0,True
+"Fayette County, Alabama",01057,178,1,False
+"Franklin County, Alabama",01059,193,0,False
+"Geneva County, Alabama",01061,266,0,True
+"Greene County, Alabama",01063,726,3,True
+"Hale County, Alabama",01065,152,3,True
+"Henry County, Alabama",01067,161,0,True
+"Houston County, Alabama",01069,151,0,True
+"Jackson County, Alabama",01071,652,1,False
+"Jefferson County, Alabama",01073,354,1,True
+"Lamar County, Alabama",01075,274,1,False
+"Lauderdale County, Alabama",01077,220,0,True
+"Lawrence County, Alabama",01079,271,1,True
+"Lee County, Alabama",01081,426,2,True
+"Limestone County, Alabama",01083,139,1,True
+"Lowndes County, Alabama",01085,448,4,True
+"Macon County, Alabama",01087,347,2,True
+"Madison County, Alabama",01089,583,0,True
+"Marengo County, Alabama",01091,218,2,False
+"Marion County, Alabama",01093,715,1,False
+"Marshall County, Alabama",01095,441,0,False
+"Mobile County, Alabama",01097,1111,1,True
+"Monroe County, Alabama",01099,884,4,False
+"Montgomery County, Alabama",01101,157,1,True
+"Morgan County, Alabama",01103,499,0,True
+"Perry County, Alabama",01105,298,4,False
+"Pickens County, Alabama",01107,268,3,True
+"Pike County, Alabama",01109,230,2,False
+"Randolph County, Alabama",01111,223,0,False
+"Russell County, Alabama",01113,429,1,True
+"St. Clair County, Alabama",01115,320,0,True
+"Shelby County, Alabama",01117,331,0,True
+"Sumter County, Alabama",01119,199,2,False
+"Talladega County, Alabama",01121,300,0,False
+"Tallapoosa County, Alabama",01123,75,0,False
+"Tuscaloosa County, Alabama",01125,622,2,True
+"Walker County, Alabama",01127,194,1,True
+"Washington County, Alabama",01129,537,1,False
+"Wilcox County, Alabama",01131,35,5,False
+"Winston County, Alabama",01133,396,2,False
+"Aleutians East Borough, Alaska",02013,95,1,False
+"Aleutians West Census Area, Alaska",02016,426,1,False
+"Bethel Census Area, Alaska",02050,228,3,False
+"Bristol Bay Borough, Alaska",02060,494,1,False
+"Chugach Census Area, Alaska",02063,361,0,False
+"Copper River Census Area, Alaska",02066,426,0,False
+"Denali Borough, Alaska",02068,807,2,False
+"Dillingham Census Area, Alaska",02070,253,1,False
+"Fairbanks North Star Borough, Alaska",02090,366,1,True
+"Haines Borough, Alaska",02100,50,1,False
+"Kenai Peninsula Borough, Alaska",02122,312,1,False
+"Ketchikan Gateway Borough, Alaska",02130,232,1,False
+"Kodiak Island Borough, Alaska",02150,81,2,False
+"Kusilvak Census Area, Alaska",02158,610,4,False
+"Lake and Peninsula Borough, Alaska",02164,502,2,False
+"Matanuska-Susitna Borough, Alaska",02170,512,1,True
+"Nome Census Area, Alaska",02180,221,1,False
+"North Slope Borough, Alaska",02185,408,1,False
+"Northwest Arctic Borough, Alaska",02188,119,2,False
+"Petersburg Borough, Alaska",02195,58,0,False
+"Southeast Fairbanks Census Area, Alaska",02240,197,1,False
+"Yukon-Koyukuk Census Area, Alaska",02290,598,3,False
+"Apache County, Arizona",04001,265,3,False
+"Cochise County, Arizona",04003,377,0,True
+"Coconino County, Arizona",04005,827,1,True
+"Gila County, Arizona",04007,279,2,False
+"Graham County, Arizona",04009,447,1,False
+"Greenlee County, Arizona",04011,312,0,False
+"La Paz County, Arizona",04012,419,1,False
+"Maricopa County, Arizona",04013,886,1,True
+"Mohave County, Arizona",04015,650,1,True
+"Navajo County, Arizona",04017,250,3,False
+"Pima County, Arizona",04019,1211,1,True
+"Pinal County, Arizona",04021,792,1,True
+"Santa Cruz County, Arizona",04023,128,2,False
+"Yavapai County, Arizona",04025,316,2,True
+"Yuma County, Arizona",04027,419,1,True
+"Arkansas County, Arkansas",05001,896,1,False
+"Ashley County, Arkansas",05003,2054,2,False
+"Baxter County, Arkansas",05005,1929,1,False
+"Benton County, Arkansas",05007,1189,1,True
+"Boone County, Arkansas",05009,170,0,False
+"Bradley County, Arkansas",05011,408,2,False
+"Calhoun County, Arkansas",05013,265,3,False
+"Carroll County, Arkansas",05015,250,0,False
+"Chicot County, Arkansas",05017,556,4,False
+"Clark County, Arkansas",05019,108,1,False
+"Clay County, Arkansas",05021,217,1,False
+"Cleburne County, Arkansas",05023,325,1,False
+"Cleveland County, Arkansas",05025,256,0,False
+"Columbia County, Arkansas",05027,286,2,False
+"Conway County, Arkansas",05029,569,0,False
+"Craighead County, Arkansas",05031,365,0,True
+"Crawford County, Arkansas",05033,955,0,True
+"Crittenden County, Arkansas",05035,342,1,True
+"Cross County, Arkansas",05037,1919,2,False
+"Dallas County, Arkansas",05039,208,1,False
+"Desha County, Arkansas",05041,155,3,False
+"Drew County, Arkansas",05043,626,1,False
+"Faulkner County, Arkansas",05045,854,1,True
+"Franklin County, Arkansas",05047,319,0,False
+"Fulton County, Arkansas",05049,180,1,False
+"Garland County, Arkansas",05051,421,1,True
+"Grant County, Arkansas",05053,159,0,True
+"Greene County, Arkansas",05055,135,0,False
+"Hempstead County, Arkansas",05057,531,2,False
+"Hot Spring County, Arkansas",05059,714,1,False
+"Howard County, Arkansas",05061,149,1,False
+"Independence County, Arkansas",05063,297,0,False
+"Izard County, Arkansas",05065,226,1,False
+"Jackson County, Arkansas",05067,1044,2,False
+"Jefferson County, Arkansas",05069,706,1,False
+"Johnson County, Arkansas",05071,217,2,False
+"Lafayette County, Arkansas",05073,314,3,False
+"Lawrence County, Arkansas",05075,204,1,False
+"Lee County, Arkansas",05077,383,5,False
+"Lincoln County, Arkansas",05079,1454,3,False
+"Little River County, Arkansas",05081,161,1,True
+"Logan County, Arkansas",05083,102,1,False
+"Lonoke County, Arkansas",05085,241,0,True
+"Madison County, Arkansas",05087,253,1,True
+"Marion County, Arkansas",05089,1309,1,False
+"Miller County, Arkansas",05091,149,0,True
+"Mississippi County, Arkansas",05093,331,2,False
+"Monroe County, Arkansas",05095,1538,3,False
+"Montgomery County, Arkansas",05097,160,0,False
+"Nevada County, Arkansas",05099,485,5,False
+"Newton County, Arkansas",05101,238,1,False
+"Ouachita County, Arkansas",05103,310,1,False
+"Perry County, Arkansas",05105,283,0,True
+"Phillips County, Arkansas",05107,550,3,False
+"Pike County, Arkansas",05109,216,1,False
+"Poinsett County, Arkansas",05111,106,3,True
+"Polk County, Arkansas",05113,152,0,False
+"Pope County, Arkansas",05115,885,0,False
+"Prairie County, Arkansas",05117,1038,1,False
+"Pulaski County, Arkansas",05119,771,1,True
+"Randolph County, Arkansas",05121,526,0,False
+"St. Francis County, Arkansas",05123,194,5,False
+"Saline County, Arkansas",05125,308,0,True
+"Scott County, Arkansas",05127,204,0,False
+"Searcy County, Arkansas",05129,362,2,False
+"Sebastian County, Arkansas",05131,181,0,True
+"Sevier County, Arkansas",05133,277,1,False
+"Sharp County, Arkansas",05135,140,1,False
+"Stone County, Arkansas",05137,1252,2,False
+"Union County, Arkansas",05139,743,1,False
+"Van Buren County, Arkansas",05141,450,1,False
+"Washington County, Arkansas",05143,2016,0,True
+"White County, Arkansas",05145,606,0,False
+"Woodruff County, Arkansas",05147,1176,3,False
+"Yell County, Arkansas",05149,504,1,False
+"Alameda County, California",06001,709,1,True
+"Alpine County, California",06003,188,0,False
+"Amador County, California",06005,222,1,False
+"Butte County, California",06007,434,1,True
+"Calaveras County, California",06009,1455,1,False
+"Colusa County, California",06011,147,1,False
+"Contra Costa County, California",06013,460,1,True
+"Del Norte County, California",06015,912,2,False
+"El Dorado County, California",06017,879,1,True
+"Fresno County, California",06019,509,2,True
+"Glenn County, California",06021,215,1,False
+"Humboldt County, California",06023,1539,1,False
+"Imperial County, California",06025,1449,3,True
+"Inyo County, California",06027,773,1,False
+"Kern County, California",06029,976,1,True
+"Kings County, California",06031,263,2,True
+"Lake County, California",06033,622,1,False
+"Lassen County, California",06035,419,2,False
+"Los Angeles County, California",06037,727,1,True
+"Madera County, California",06039,769,1,True
+"Marin County, California",06041,998,1,True
+"Mariposa County, California",06043,683,1,False
+"Mendocino County, California",06045,1075,1,False
+"Merced County, California",06047,373,1,True
+"Modoc County, California",06049,714,0,False
+"Mono County, California",06051,738,1,False
+"Monterey County, California",06053,1058,1,True
+"Napa County, California",06055,693,1,True
+"Nevada County, California",06057,313,1,False
+"Orange County, California",06059,1995,1,True
+"Placer County, California",06061,433,1,True
+"Plumas County, California",06063,327,1,False
+"Riverside County, California",06065,1438,1,True
+"Sacramento County, California",06067,723,1,True
+"San Benito County, California",06069,539,1,True
+"San Bernardino County, California",06071,1190,1,True
+"San Diego County, California",06073,1832,1,True
+"San Francisco County, California",06075,3860,1,True
+"San Joaquin County, California",06077,1038,1,True
+"San Luis Obispo County, California",06079,2040,1,True
+"San Mateo County, California",06081,718,1,True
+"Santa Barbara County, California",06083,645,1,True
+"Santa Clara County, California",06085,1233,1,True
+"Santa Cruz County, California",06087,473,1,True
+"Shasta County, California",06089,528,1,True
+"Sierra County, California",06091,233,2,False
+"Siskiyou County, California",06093,347,1,False
+"Solano County, California",06095,301,1,True
+"Sonoma County, California",06097,1175,1,True
+"Stanislaus County, California",06099,349,1,True
+"Sutter County, California",06101,282,1,True
+"Tehama County, California",06103,259,1,False
+"Trinity County, California",06105,543,4,False
+"Tulare County, California",06107,766,1,True
+"Tuolumne County, California",06109,422,1,False
+"Ventura County, California",06111,521,1,True
+"Yolo County, California",06113,274,1,True
+"Yuba County, California",06115,383,1,True
+"Adams County, Colorado",08001,200,1,True
+"Alamosa County, Colorado",08003,115,1,False
+"Arapahoe County, Colorado",08005,424,1,True
+"Archuleta County, Colorado",08007,179,2,False
+"Baca County, Colorado",08009,150,1,False
+"Bent County, Colorado",08011,155,3,False
+"Boulder County, Colorado",08013,230,1,True
+"Broomfield County, Colorado",08014,492,0,True
+"Chaffee County, Colorado",08015,35,1,False
+"Cheyenne County, Colorado",08017,77,1,False
+"Clear Creek County, Colorado",08019,38,1,True
+"Conejos County, Colorado",08021,174,1,False
+"Costilla County, Colorado",08023,102,4,False
+"Crowley County, Colorado",08025,76,2,False
+"Custer County, Colorado",08027,50,1,False
+"Delta County, Colorado",08029,131,2,False
+"Denver County, Colorado",08031,1947,1,True
+"Dolores County, Colorado",08033,38,1,False
+"Douglas County, Colorado",08035,587,0,True
+"Eagle County, Colorado",08037,187,1,False
+"Elbert County, Colorado",08039,173,0,True
+"El Paso County, Colorado",08041,246,1,True
+"Fremont County, Colorado",08043,782,1,False
+"Garfield County, Colorado",08045,419,1,False
+"Gilpin County, Colorado",08047,322,1,True
+"Grand County, Colorado",08049,160,1,False
+"Gunnison County, Colorado",08051,216,1,False
+"Hinsdale County, Colorado",08053,473,1,False
+"Huerfano County, Colorado",08055,453,1,False
+"Jackson County, Colorado",08057,224,1,False
+"Jefferson County, Colorado",08059,1034,0,True
+"Kiowa County, Colorado",08061,155,0,False
+"Kit Carson County, Colorado",08063,141,0,False
+"Lake County, Colorado",08065,385,0,False
+"La Plata County, Colorado",08067,336,1,False
+"Larimer County, Colorado",08069,299,1,True
+"Las Animas County, Colorado",08071,239,1,False
+"Lincoln County, Colorado",08073,237,1,False
+"Logan County, Colorado",08075,157,0,False
+"Mesa County, Colorado",08077,512,1,True
+"Mineral County, Colorado",08079,376,2,False
+"Moffat County, Colorado",08081,287,1,False
+"Montezuma County, Colorado",08083,449,0,False
+"Montrose County, Colorado",08085,128,1,False
+"Morgan County, Colorado",08087,226,1,False
+"Otero County, Colorado",08089,282,2,False
+"Ouray County, Colorado",08091,139,1,False
+"Park County, Colorado",08093,518,0,True
+"Phillips County, Colorado",08095,159,0,False
+"Pitkin County, Colorado",08097,245,1,False
+"Prowers County, Colorado",08099,149,2,False
+"Pueblo County, Colorado",08101,273,1,True
+"Rio Blanco County, Colorado",08103,159,0,False
+"Rio Grande County, Colorado",08105,146,1,False
+"Routt County, Colorado",08107,167,1,False
+"Saguache County, Colorado",08109,69,1,False
+"San Juan County, Colorado",08111,602,1,False
+"San Miguel County, Colorado",08113,109,1,False
+"Sedgwick County, Colorado",08115,233,1,False
+"Summit County, Colorado",08117,156,1,False
+"Teller County, Colorado",08119,135,1,True
+"Washington County, Colorado",08121,180,0,False
+"Weld County, Colorado",08123,213,1,True
+"Yuma County, Colorado",08125,54,0,False
+"Capitol Planning Region, Connecticut",09110,424,1,True
+"Greater Bridgeport Planning Region, Connecticut",09120,242,1,True
+"Lower Connecticut River Valley Planning Region, Connecticut",09130,242,1,True
+"Naugatuck Valley Planning Region, Connecticut",09140,243,1,True
+"Northeastern Connecticut Planning Region, Connecticut",09150,240,0,False
+"Northwest Hills Planning Region, Connecticut",09160,242,1,False
+"South Central Connecticut Planning Region, Connecticut",09170,327,1,True
+"Southeastern Connecticut Planning Region, Connecticut",09180,239,1,True
+"Western Connecticut Planning Region, Connecticut",09190,730,1,True
+"Kent County, Delaware",10001,328,2,True
+"New Castle County, Delaware",10003,664,0,True
+"Sussex County, Delaware",10005,414,1,False
+"Alachua County, Florida",12001,113,2,True
+"Baker County, Florida",12003,312,0,True
+"Bay County, Florida",12005,141,1,True
+"Bradford County, Florida",12007,198,3,False
+"Brevard County, Florida",12009,379,1,True
+"Broward County, Florida",12011,673,1,True
+"Calhoun County, Florida",12013,87,2,False
+"Charlotte County, Florida",12015,233,2,True
+"Citrus County, Florida",12017,175,1,True
+"Clay County, Florida",12019,1960,0,True
+"Collier County, Florida",12021,567,2,True
+"Columbia County, Florida",12023,237,0,False
+"DeSoto County, Florida",12027,181,2,False
+"Dixie County, Florida",12029,39,2,False
+"Duval County, Florida",12031,404,1,True
+"Escambia County, Florida",12033,482,1,True
+"Flagler County, Florida",12035,364,1,True
+"Franklin County, Florida",12037,328,3,False
+"Gadsden County, Florida",12039,212,1,True
+"Gilchrist County, Florida",12041,228,1,True
+"Glades County, Florida",12043,406,2,False
+"Gulf County, Florida",12045,109,1,False
+"Hamilton County, Florida",12047,54,3,False
+"Hardee County, Florida",12049,95,4,False
+"Hendry County, Florida",12051,428,2,False
+"Hernando County, Florida",12053,253,1,True
+"Highlands County, Florida",12055,382,1,True
+"Hillsborough County, Florida",12057,517,1,True
+"Holmes County, Florida",12059,55,1,False
+"Indian River County, Florida",12061,559,1,True
+"Jackson County, Florida",12063,91,1,False
+"Jefferson County, Florida",12065,194,0,True
+"Lafayette County, Florida",12067,154,2,False
+"Lake County, Florida",12069,149,2,True
+"Lee County, Florida",12071,976,2,True
+"Leon County, Florida",12073,602,1,True
+"Levy County, Florida",12075,173,1,True
+"Liberty County, Florida",12077,339,2,False
+"Madison County, Florida",12079,36,2,False
+"Manatee County, Florida",12081,344,2,True
+"Marion County, Florida",12083,209,1,True
+"Martin County, Florida",12085,119,2,True
+"Miami-Dade County, Florida",12086,2412,1,True
+"Monroe County, Florida",12087,407,1,False
+"Nassau County, Florida",12089,965,1,True
+"Okaloosa County, Florida",12091,190,1,True
+"Okeechobee County, Florida",12093,73,0,False
+"Orange County, Florida",12095,1321,1,True
+"Osceola County, Florida",12097,370,2,True
+"Palm Beach County, Florida",12099,1494,2,True
+"Pasco County, Florida",12101,987,2,True
+"Pinellas County, Florida",12103,539,2,True
+"Polk County, Florida",12105,579,2,True
+"Putnam County, Florida",12107,293,2,False
+"St. Johns County, Florida",12109,808,1,True
+"St. Lucie County, Florida",12111,273,2,True
+"Santa Rosa County, Florida",12113,350,1,True
+"Sarasota County, Florida",12115,1340,2,True
+"Seminole County, Florida",12117,246,1,True
+"Sumter County, Florida",12119,369,2,True
+"Suwannee County, Florida",12121,162,1,False
+"Taylor County, Florida",12123,200,2,False
+"Union County, Florida",12125,75,2,False
+"Volusia County, Florida",12127,573,2,True
+"Wakulla County, Florida",12129,347,0,True
+"Walton County, Florida",12131,270,2,True
+"Washington County, Florida",12133,119,2,True
+"Appling County, Georgia",13001,35,1,False
+"Atkinson County, Georgia",13003,270,2,False
+"Bacon County, Georgia",13005,33,2,False
+"Baker County, Georgia",13007,628,3,False
+"Baldwin County, Georgia",13009,148,0,False
+"Banks County, Georgia",13011,229,0,False
+"Barrow County, Georgia",13013,116,0,True
+"Bartow County, Georgia",13015,478,0,True
+"Ben Hill County, Georgia",13017,301,2,False
+"Berrien County, Georgia",13019,215,0,False
+"Bibb County, Georgia",13021,506,1,True
+"Bleckley County, Georgia",13023,36,0,False
+"Brantley County, Georgia",13025,82,2,True
+"Brooks County, Georgia",13027,412,2,True
+"Bryan County, Georgia",13029,165,0,True
+"Bulloch County, Georgia",13031,672,2,False
+"Burke County, Georgia",13033,136,0,True
+"Butts County, Georgia",13035,252,1,True
+"Calhoun County, Georgia",13037,44,3,False
+"Camden County, Georgia",13039,441,0,False
+"Candler County, Georgia",13043,122,0,False
+"Carroll County, Georgia",13045,190,0,True
+"Catoosa County, Georgia",13047,346,0,True
+"Charlton County, Georgia",13049,87,3,False
+"Chatham County, Georgia",13051,668,1,True
+"Chattahoochee County, Georgia",13053,353,2,True
+"Chattooga County, Georgia",13055,355,2,False
+"Cherokee County, Georgia",13057,176,1,True
+"Clarke County, Georgia",13059,301,3,True
+"Clay County, Georgia",13061,86,2,False
+"Clayton County, Georgia",13063,461,1,True
+"Clinch County, Georgia",13065,124,4,False
+"Cobb County, Georgia",13067,1411,0,True
+"Coffee County, Georgia",13069,108,1,False
+"Colquitt County, Georgia",13071,199,1,False
+"Columbia County, Georgia",13073,204,0,True
+"Cook County, Georgia",13075,283,2,False
+"Coweta County, Georgia",13077,166,0,True
+"Crawford County, Georgia",13079,122,0,True
+"Crisp County, Georgia",13081,207,2,False
+"Dade County, Georgia",13083,559,0,True
+"Dawson County, Georgia",13085,242,1,True
+"Decatur County, Georgia",13087,190,2,False
+"DeKalb County, Georgia",13089,678,1,True
+"Dodge County, Georgia",13091,317,0,False
+"Dooly County, Georgia",13093,410,3,False
+"Dougherty County, Georgia",13095,331,3,True
+"Douglas County, Georgia",13097,297,1,True
+"Early County, Georgia",13099,246,4,False
+"Echols County, Georgia",13101,351,1,True
+"Effingham County, Georgia",13103,315,0,True
+"Elbert County, Georgia",13105,143,1,False
+"Emanuel County, Georgia",13107,39,2,False
+"Evans County, Georgia",13109,1390,1,False
+"Fannin County, Georgia",13111,325,2,False
+"Fayette County, Georgia",13113,927,0,True
+"Floyd County, Georgia",13115,85,1,True
+"Forsyth County, Georgia",13117,1955,0,True
+"Franklin County, Georgia",13119,490,0,False
+"Fulton County, Georgia",13121,345,1,True
+"Gilmer County, Georgia",13123,562,1,False
+"Glascock County, Georgia",13125,212,1,False
+"Glynn County, Georgia",13127,155,1,True
+"Gordon County, Georgia",13129,175,0,False
+"Grady County, Georgia",13131,34,1,False
+"Greene County, Georgia",13133,165,1,False
+"Gwinnett County, Georgia",13135,672,1,True
+"Habersham County, Georgia",13137,234,0,False
+"Hall County, Georgia",13139,239,1,True
+"Hancock County, Georgia",13141,154,5,False
+"Haralson County, Georgia",13143,245,0,True
+"Harris County, Georgia",13145,675,0,True
+"Hart County, Georgia",13147,188,0,False
+"Heard County, Georgia",13149,163,1,True
+"Henry County, Georgia",13151,323,1,True
+"Houston County, Georgia",13153,855,0,True
+"Irwin County, Georgia",13155,334,0,False
+"Jackson County, Georgia",13157,203,1,False
+"Jasper County, Georgia",13159,114,0,True
+"Jeff Davis County, Georgia",13161,176,1,False
+"Jefferson County, Georgia",13163,222,2,False
+"Jenkins County, Georgia",13165,111,3,False
+"Johnson County, Georgia",13167,98,2,False
+"Jones County, Georgia",13169,128,0,True
+"Lamar County, Georgia",13171,40,0,False
+"Lanier County, Georgia",13173,194,2,True
+"Laurens County, Georgia",13175,302,1,False
+"Lee County, Georgia",13177,123,0,True
+"Liberty County, Georgia",13179,156,2,True
+"Lincoln County, Georgia",13181,356,1,True
+"Long County, Georgia",13183,419,1,True
+"Lowndes County, Georgia",13185,462,1,True
+"Lumpkin County, Georgia",13187,120,0,True
+"McDuffie County, Georgia",13189,233,0,True
+"McIntosh County, Georgia",13191,148,0,True
+"Macon County, Georgia",13193,80,4,False
+"Madison County, Georgia",13195,284,0,True
+"Marion County, Georgia",13197,274,1,True
+"Meriwether County, Georgia",13199,293,2,True
+"Miller County, Georgia",13201,188,1,False
+"Mitchell County, Georgia",13205,70,4,False
+"Monroe County, Georgia",13207,162,0,True
+"Montgomery County, Georgia",13209,100,0,False
+"Morgan County, Georgia",13211,240,0,True
+"Murray County, Georgia",13213,197,0,True
+"Muscogee County, Georgia",13215,799,1,True
+"Newton County, Georgia",13217,94,1,True
+"Oconee County, Georgia",13219,141,0,True
+"Oglethorpe County, Georgia",13221,263,0,True
+"Paulding County, Georgia",13223,59,0,True
+"Peach County, Georgia",13225,387,0,True
+"Pickens County, Georgia",13227,113,1,True
+"Pierce County, Georgia",13229,97,0,False
+"Pike County, Georgia",13231,36,0,True
+"Polk County, Georgia",13233,275,2,False
+"Pulaski County, Georgia",13235,40,2,False
+"Putnam County, Georgia",13237,285,1,False
+"Quitman County, Georgia",13239,399,4,False
+"Rabun County, Georgia",13241,650,1,False
+"Randolph County, Georgia",13243,262,3,False
+"Richmond County, Georgia",13245,537,1,True
+"Rockdale County, Georgia",13247,90,1,True
+"Schley County, Georgia",13249,198,1,False
+"Screven County, Georgia",13251,37,1,False
+"Seminole County, Georgia",13253,99,2,False
+"Spalding County, Georgia",13255,213,1,True
+"Stephens County, Georgia",13257,224,0,False
+"Stewart County, Georgia",13259,80,3,True
+"Sumter County, Georgia",13261,138,3,False
+"Talbot County, Georgia",13263,57,1,True
+"Taliaferro County, Georgia",13265,280,2,False
+"Tattnall County, Georgia",13267,295,3,False
+"Taylor County, Georgia",13269,34,3,False
+"Telfair County, Georgia",13271,686,3,False
+"Terrell County, Georgia",13273,81,2,True
+"Thomas County, Georgia",13275,102,0,False
+"Tift County, Georgia",13277,89,0,False
+"Toombs County, Georgia",13279,164,2,False
+"Towns County, Georgia",13281,146,2,False
+"Treutlen County, Georgia",13283,184,2,False
+"Troup County, Georgia",13285,243,1,False
+"Turner County, Georgia",13287,163,2,False
+"Twiggs County, Georgia",13289,257,2,True
+"Union County, Georgia",13291,52,1,False
+"Upson County, Georgia",13293,225,0,False
+"Walker County, Georgia",13295,235,0,True
+"Walton County, Georgia",13297,403,0,True
+"Ware County, Georgia",13299,141,1,False
+"Warren County, Georgia",13301,194,3,False
+"Washington County, Georgia",13303,238,1,False
+"Wayne County, Georgia",13305,118,1,False
+"Webster County, Georgia",13307,120,1,False
+"Wheeler County, Georgia",13309,33,3,False
+"White County, Georgia",13311,340,0,False
+"Whitfield County, Georgia",13313,336,1,True
+"Wilcox County, Georgia",13315,37,3,False
+"Wilkes County, Georgia",13317,289,2,False
+"Wilkinson County, Georgia",13319,127,1,False
+"Worth County, Georgia",13321,85,1,True
+"Honolulu County, Hawaii",15003,1249,1,True
+"Kalawao County, Hawaii",15005,720,1,True
+"Kauai County, Hawaii",15007,264,1,False
+"Maui County, Hawaii",15009,375,1,True
+"Ada County, Idaho",16001,576,1,True
+"Adams County, Idaho",16003,294,1,False
+"Bannock County, Idaho",16005,475,0,True
+"Bear Lake County, Idaho",16007,370,0,False
+"Benewah County, Idaho",16009,409,2,False
+"Bingham County, Idaho",16011,182,0,False
+"Blaine County, Idaho",16013,478,1,False
+"Boise County, Idaho",16015,573,1,True
+"Bonner County, Idaho",16017,205,2,False
+"Bonneville County, Idaho",16019,541,0,True
+"Boundary County, Idaho",16021,652,1,False
+"Butte County, Idaho",16023,275,1,True
+"Camas County, Idaho",16025,453,0,False
+"Canyon County, Idaho",16027,246,1,True
+"Caribou County, Idaho",16029,52,0,False
+"Cassia County, Idaho",16031,109,0,False
+"Clark County, Idaho",16033,82,3,False
+"Clearwater County, Idaho",16035,453,2,False
+"Custer County, Idaho",16037,370,0,False
+"Elmore County, Idaho",16039,239,2,False
+"Franklin County, Idaho",16041,328,1,True
+"Fremont County, Idaho",16043,237,0,False
+"Gem County, Idaho",16045,109,1,True
+"Gooding County, Idaho",16047,221,0,False
+"Idaho County, Idaho",16049,239,1,False
+"Jefferson County, Idaho",16051,181,0,True
+"Jerome County, Idaho",16053,530,0,True
+"Kootenai County, Idaho",16055,487,2,True
+"Latah County, Idaho",16057,924,1,False
+"Lemhi County, Idaho",16059,235,2,False
+"Lewis County, Idaho",16061,576,0,False
+"Lincoln County, Idaho",16063,233,0,False
+"Madison County, Idaho",16065,162,2,False
+"Minidoka County, Idaho",16067,94,0,False
+"Nez Perce County, Idaho",16069,179,0,True
+"Oneida County, Idaho",16071,136,0,False
+"Owyhee County, Idaho",16073,517,1,True
+"Payette County, Idaho",16075,119,1,False
+"Power County, Idaho",16077,233,0,False
+"Shoshone County, Idaho",16079,352,1,False
+"Teton County, Idaho",16081,478,2,False
+"Twin Falls County, Idaho",16083,1069,1,True
+"Valley County, Idaho",16085,497,2,False
+"Washington County, Idaho",16087,197,2,False
+"Adams County, Illinois",17001,146,1,False
+"Alexander County, Illinois",17003,294,3,True
+"Bond County, Illinois",17005,109,1,True
+"Boone County, Illinois",17007,87,0,True
+"Brown County, Illinois",17009,102,3,False
+"Bureau County, Illinois",17011,171,1,False
+"Calhoun County, Illinois",17013,537,0,True
+"Carroll County, Illinois",17015,42,0,False
+"Cass County, Illinois",17017,114,1,False
+"Champaign County, Illinois",17019,267,1,True
+"Christian County, Illinois",17021,86,1,False
+"Clark County, Illinois",17023,164,1,False
+"Clay County, Illinois",17025,191,1,False
+"Clinton County, Illinois",17027,190,0,True
+"Coles County, Illinois",17029,175,0,False
+"Cook County, Illinois",17031,2797,1,True
+"Crawford County, Illinois",17033,37,1,False
+"Cumberland County, Illinois",17035,108,1,False
+"DeKalb County, Illinois",17037,120,1,True
+"Douglas County, Illinois",17041,36,0,False
+"DuPage County, Illinois",17043,1022,0,True
+"Edgar County, Illinois",17045,34,1,False
+"Edwards County, Illinois",17047,34,1,False
+"Effingham County, Illinois",17049,298,0,False
+"Fayette County, Illinois",17051,182,0,False
+"Ford County, Illinois",17053,222,1,True
+"Franklin County, Illinois",17055,156,0,False
+"Fulton County, Illinois",17057,200,1,False
+"Gallatin County, Illinois",17059,342,1,False
+"Greene County, Illinois",17061,298,1,False
+"Grundy County, Illinois",17063,516,0,True
+"Hamilton County, Illinois",17065,126,1,False
+"Hancock County, Illinois",17067,215,1,False
+"Hardin County, Illinois",17069,299,2,False
+"Henderson County, Illinois",17071,151,1,False
+"Henry County, Illinois",17073,179,1,True
+"Iroquois County, Illinois",17075,198,1,False
+"Jackson County, Illinois",17077,494,2,False
+"Jasper County, Illinois",17079,38,1,False
+"Jefferson County, Illinois",17081,369,1,False
+"Jersey County, Illinois",17083,277,0,True
+"Jo Daviess County, Illinois",17085,407,0,False
+"Johnson County, Illinois",17087,115,1,False
+"Kane County, Illinois",17089,263,1,True
+"Kankakee County, Illinois",17091,101,1,True
+"Kendall County, Illinois",17093,296,0,True
+"Knox County, Illinois",17095,102,1,False
+"Lake County, Illinois",17097,1710,1,True
+"LaSalle County, Illinois",17099,698,0,False
+"Lawrence County, Illinois",17101,91,1,False
+"Lee County, Illinois",17103,100,1,False
+"Livingston County, Illinois",17105,266,1,False
+"Logan County, Illinois",17107,191,1,False
+"McDonough County, Illinois",17109,144,2,False
+"McHenry County, Illinois",17111,452,0,True
+"McLean County, Illinois",17113,223,0,True
+"Macon County, Illinois",17115,144,1,True
+"Macoupin County, Illinois",17117,147,1,True
+"Madison County, Illinois",17119,785,0,True
+"Marion County, Illinois",17121,198,1,False
+"Marshall County, Illinois",17123,80,1,True
+"Mason County, Illinois",17125,193,1,False
+"Massac County, Illinois",17127,288,0,True
+"Menard County, Illinois",17129,136,0,True
+"Mercer County, Illinois",17131,147,1,True
+"Monroe County, Illinois",17133,192,0,True
+"Montgomery County, Illinois",17135,87,1,False
+"Morgan County, Illinois",17137,204,1,False
+"Moultrie County, Illinois",17139,229,0,False
+"Ogle County, Illinois",17141,266,0,False
+"Peoria County, Illinois",17143,148,0,True
+"Perry County, Illinois",17145,131,2,False
+"Piatt County, Illinois",17147,157,0,True
+"Pike County, Illinois",17149,159,1,False
+"Pope County, Illinois",17151,313,2,False
+"Pulaski County, Illinois",17153,183,1,False
+"Putnam County, Illinois",17155,325,1,False
+"Randolph County, Illinois",17157,403,1,False
+"Richland County, Illinois",17159,83,0,False
+"Rock Island County, Illinois",17161,327,1,True
+"St. Clair County, Illinois",17163,935,0,True
+"Saline County, Illinois",17165,374,1,False
+"Sangamon County, Illinois",17167,132,0,True
+"Schuyler County, Illinois",17169,41,0,False
+"Scott County, Illinois",17171,253,1,False
+"Shelby County, Illinois",17173,75,1,False
+"Stark County, Illinois",17175,115,1,True
+"Stephenson County, Illinois",17177,242,1,False
+"Tazewell County, Illinois",17179,219,0,True
+"Union County, Illinois",17181,163,1,False
+"Vermilion County, Illinois",17183,375,1,False
+"Wabash County, Illinois",17185,121,1,False
+"Warren County, Illinois",17187,41,1,False
+"Washington County, Illinois",17189,168,1,False
+"Wayne County, Illinois",17191,118,1,False
+"White County, Illinois",17193,145,1,False
+"Whiteside County, Illinois",17195,315,1,False
+"Will County, Illinois",17197,382,0,True
+"Williamson County, Illinois",17199,141,0,False
+"Winnebago County, Illinois",17201,207,0,True
+"Woodford County, Illinois",17203,282,0,True
+"Adams County, Indiana",18001,653,0,False
+"Allen County, Indiana",18003,1038,0,True
+"Bartholomew County, Indiana",18005,279,0,True
+"Benton County, Indiana",18007,357,1,True
+"Blackford County, Indiana",18009,2675,1,False
+"Boone County, Indiana",18011,48,0,True
+"Brown County, Indiana",18013,130,0,True
+"Carroll County, Indiana",18015,198,0,True
+"Cass County, Indiana",18017,100,1,False
+"Clark County, Indiana",18019,196,0,True
+"Clay County, Indiana",18021,113,0,True
+"Clinton County, Indiana",18023,50,1,False
+"Crawford County, Indiana",18025,48,2,False
+"Daviess County, Indiana",18027,164,0,False
+"Dearborn County, Indiana",18029,290,0,True
+"Decatur County, Indiana",18031,87,0,False
+"DeKalb County, Indiana",18033,35,0,False
+"Delaware County, Indiana",18035,162,1,True
+"Dubois County, Indiana",18037,116,0,False
+"Elkhart County, Indiana",18039,586,0,True
+"Fayette County, Indiana",18041,970,1,False
+"Floyd County, Indiana",18043,441,0,True
+"Fountain County, Indiana",18045,621,1,False
+"Franklin County, Indiana",18047,254,0,True
+"Fulton County, Indiana",18049,51,0,False
+"Gibson County, Indiana",18051,62,0,False
+"Grant County, Indiana",18053,238,1,False
+"Greene County, Indiana",18055,156,0,False
+"Hamilton County, Indiana",18057,1246,0,True
+"Hancock County, Indiana",18059,164,0,True
+"Harrison County, Indiana",18061,1853,0,True
+"Hendricks County, Indiana",18063,198,0,True
+"Henry County, Indiana",18065,220,0,False
+"Howard County, Indiana",18067,231,0,True
+"Huntington County, Indiana",18069,343,1,False
+"Jackson County, Indiana",18071,51,0,False
+"Jasper County, Indiana",18073,98,0,True
+"Jay County, Indiana",18075,49,1,False
+"Jefferson County, Indiana",18077,48,0,False
+"Jennings County, Indiana",18079,47,0,False
+"Johnson County, Indiana",18081,139,0,True
+"Knox County, Indiana",18083,448,1,False
+"Kosciusko County, Indiana",18085,341,0,False
+"LaGrange County, Indiana",18087,609,1,False
+"Lake County, Indiana",18089,419,0,True
+"LaPorte County, Indiana",18091,312,0,True
+"Lawrence County, Indiana",18093,106,0,False
+"Madison County, Indiana",18095,249,1,True
+"Marion County, Indiana",18097,433,1,True
+"Marshall County, Indiana",18099,96,0,False
+"Martin County, Indiana",18101,148,1,False
+"Miami County, Indiana",18103,91,0,False
+"Monroe County, Indiana",18105,192,1,True
+"Montgomery County, Indiana",18107,186,0,False
+"Morgan County, Indiana",18109,446,0,True
+"Newton County, Indiana",18111,195,2,True
+"Noble County, Indiana",18113,255,0,False
+"Ohio County, Indiana",18115,596,0,True
+"Orange County, Indiana",18117,361,0,False
+"Owen County, Indiana",18119,202,1,True
+"Parke County, Indiana",18121,752,0,False
+"Perry County, Indiana",18123,952,0,False
+"Pike County, Indiana",18125,125,0,False
+"Porter County, Indiana",18127,330,0,True
+"Posey County, Indiana",18129,661,1,True
+"Pulaski County, Indiana",18131,111,1,False
+"Putnam County, Indiana",18133,227,0,False
+"Randolph County, Indiana",18135,84,1,False
+"Ripley County, Indiana",18137,39,0,False
+"Rush County, Indiana",18139,108,1,False
+"St. Joseph County, Indiana",18141,333,0,True
+"Scott County, Indiana",18143,51,1,False
+"Shelby County, Indiana",18145,119,0,True
+"Spencer County, Indiana",18147,189,0,False
+"Starke County, Indiana",18149,139,0,False
+"Steuben County, Indiana",18151,149,0,False
+"Sullivan County, Indiana",18153,268,1,True
+"Switzerland County, Indiana",18155,169,1,False
+"Tippecanoe County, Indiana",18157,721,1,True
+"Tipton County, Indiana",18159,673,1,True
+"Union County, Indiana",18161,171,0,False
+"Vanderburgh County, Indiana",18163,301,0,True
+"Vermillion County, Indiana",18165,570,1,True
+"Vigo County, Indiana",18167,773,1,True
+"Wabash County, Indiana",18169,47,1,False
+"Warren County, Indiana",18171,1269,0,True
+"Warrick County, Indiana",18173,321,0,True
+"Washington County, Indiana",18175,153,0,True
+"Wayne County, Indiana",18177,252,1,False
+"Wells County, Indiana",18179,188,0,True
+"White County, Indiana",18181,118,0,False
+"Whitley County, Indiana",18183,388,0,True
+"Adair County, Iowa",19001,38,1,False
+"Adams County, Iowa",19003,71,1,False
+"Allamakee County, Iowa",19005,115,1,False
+"Appanoose County, Iowa",19007,40,1,False
+"Audubon County, Iowa",19009,152,1,False
+"Benton County, Iowa",19011,176,0,True
+"Black Hawk County, Iowa",19013,137,0,True
+"Boone County, Iowa",19015,184,0,True
+"Bremer County, Iowa",19017,190,0,True
+"Buchanan County, Iowa",19019,165,1,False
+"Buena Vista County, Iowa",19021,281,0,False
+"Butler County, Iowa",19023,111,1,False
+"Calhoun County, Iowa",19025,80,0,False
+"Carroll County, Iowa",19027,144,1,False
+"Cass County, Iowa",19029,123,1,False
+"Cedar County, Iowa",19031,283,0,False
+"Cerro Gordo County, Iowa",19033,276,1,False
+"Cherokee County, Iowa",19035,141,1,False
+"Chickasaw County, Iowa",19037,119,1,False
+"Clarke County, Iowa",19039,216,0,False
+"Clay County, Iowa",19041,366,1,False
+"Clayton County, Iowa",19043,111,1,False
+"Clinton County, Iowa",19045,277,1,False
+"Crawford County, Iowa",19047,199,0,False
+"Dallas County, Iowa",19049,487,1,True
+"Davis County, Iowa",19051,102,0,False
+"Decatur County, Iowa",19053,133,1,False
+"Delaware County, Iowa",19055,100,1,False
+"Des Moines County, Iowa",19057,710,1,False
+"Dickinson County, Iowa",19059,212,0,False
+"Dubuque County, Iowa",19061,250,0,True
+"Emmet County, Iowa",19063,79,1,False
+"Fayette County, Iowa",19065,39,1,False
+"Floyd County, Iowa",19067,81,1,False
+"Franklin County, Iowa",19069,114,1,False
+"Fremont County, Iowa",19071,210,1,False
+"Greene County, Iowa",19073,96,1,False
+"Grundy County, Iowa",19075,252,0,True
+"Guthrie County, Iowa",19077,242,1,True
+"Hamilton County, Iowa",19079,206,1,False
+"Hancock County, Iowa",19081,186,1,False
+"Hardin County, Iowa",19083,149,1,False
+"Harrison County, Iowa",19085,190,1,True
+"Henry County, Iowa",19087,123,0,False
+"Howard County, Iowa",19089,187,1,False
+"Humboldt County, Iowa",19091,235,1,False
+"Ida County, Iowa",19093,318,1,False
+"Iowa County, Iowa",19095,352,0,False
+"Jackson County, Iowa",19097,38,1,False
+"Jasper County, Iowa",19099,185,0,True
+"Jefferson County, Iowa",19101,189,0,False
+"Johnson County, Iowa",19103,353,1,True
+"Jones County, Iowa",19105,246,0,True
+"Keokuk County, Iowa",19107,117,1,False
+"Kossuth County, Iowa",19109,98,1,False
+"Lee County, Iowa",19111,289,1,False
+"Linn County, Iowa",19113,295,0,True
+"Louisa County, Iowa",19115,169,1,False
+"Lucas County, Iowa",19117,128,1,False
+"Lyon County, Iowa",19119,444,0,False
+"Madison County, Iowa",19121,358,0,True
+"Mahaska County, Iowa",19123,98,0,False
+"Marion County, Iowa",19125,212,0,False
+"Marshall County, Iowa",19127,337,0,False
+"Mills County, Iowa",19129,257,0,True
+"Mitchell County, Iowa",19131,34,1,False
+"Monona County, Iowa",19133,33,1,False
+"Monroe County, Iowa",19135,361,1,False
+"Montgomery County, Iowa",19137,654,1,False
+"Muscatine County, Iowa",19139,239,0,False
+"O'Brien County, Iowa",19141,37,1,False
+"Osceola County, Iowa",19143,286,1,False
+"Page County, Iowa",19145,168,1,False
+"Palo Alto County, Iowa",19147,135,1,False
+"Plymouth County, Iowa",19149,253,0,False
+"Pocahontas County, Iowa",19151,164,1,False
+"Polk County, Iowa",19153,281,0,True
+"Pottawattamie County, Iowa",19155,356,0,True
+"Poweshiek County, Iowa",19157,226,0,False
+"Ringgold County, Iowa",19159,376,1,False
+"Sac County, Iowa",19161,510,1,False
+"Scott County, Iowa",19163,254,0,True
+"Shelby County, Iowa",19165,178,1,False
+"Sioux County, Iowa",19167,77,0,False
+"Story County, Iowa",19169,381,1,True
+"Tama County, Iowa",19171,81,1,False
+"Taylor County, Iowa",19173,168,1,False
+"Union County, Iowa",19175,249,0,False
+"Van Buren County, Iowa",19177,237,1,False
+"Wapello County, Iowa",19179,263,1,False
+"Warren County, Iowa",19181,128,0,True
+"Washington County, Iowa",19183,135,0,True
+"Wayne County, Iowa",19185,134,0,False
+"Webster County, Iowa",19187,345,1,False
+"Winnebago County, Iowa",19189,189,1,False
+"Winneshiek County, Iowa",19191,36,1,False
+"Woodbury County, Iowa",19193,219,0,True
+"Worth County, Iowa",19195,261,1,False
+"Wright County, Iowa",19197,223,1,False
+"Allen County, Kansas",20001,146,1,False
+"Anderson County, Kansas",20003,230,1,False
+"Atchison County, Kansas",20005,170,0,False
+"Barber County, Kansas",20007,172,1,False
+"Barton County, Kansas",20009,198,1,False
+"Bourbon County, Kansas",20011,161,1,False
+"Brown County, Kansas",20013,315,1,False
+"Butler County, Kansas",20015,248,0,True
+"Chase County, Kansas",20017,446,1,False
+"Chautauqua County, Kansas",20019,230,1,False
+"Cherokee County, Kansas",20021,241,1,True
+"Cheyenne County, Kansas",20023,94,1,False
+"Clark County, Kansas",20025,85,1,False
+"Clay County, Kansas",20027,127,2,False
+"Cloud County, Kansas",20029,125,1,False
+"Coffey County, Kansas",20031,172,1,False
+"Comanche County, Kansas",20033,92,1,False
+"Cowley County, Kansas",20035,209,0,False
+"Crawford County, Kansas",20037,237,0,False
+"Decatur County, Kansas",20039,285,1,False
+"Dickinson County, Kansas",20041,180,0,False
+"Doniphan County, Kansas",20043,325,1,True
+"Douglas County, Kansas",20045,391,1,True
+"Edwards County, Kansas",20047,212,1,False
+"Elk County, Kansas",20049,82,1,False
+"Ellis County, Kansas",20051,255,1,False
+"Ellsworth County, Kansas",20053,88,2,False
+"Finney County, Kansas",20055,263,1,False
+"Ford County, Kansas",20057,135,0,False
+"Franklin County, Kansas",20059,216,0,False
+"Geary County, Kansas",20061,199,2,True
+"Gove County, Kansas",20063,255,0,False
+"Graham County, Kansas",20065,336,1,False
+"Grant County, Kansas",20067,177,1,False
+"Gray County, Kansas",20069,111,0,False
+"Greeley County, Kansas",20071,384,0,False
+"Greenwood County, Kansas",20073,144,1,False
+"Hamilton County, Kansas",20075,149,1,False
+"Harper County, Kansas",20077,152,1,False
+"Harvey County, Kansas",20079,125,0,True
+"Haskell County, Kansas",20081,129,1,False
+"Hodgeman County, Kansas",20083,121,1,False
+"Jackson County, Kansas",20085,313,0,True
+"Jefferson County, Kansas",20087,131,0,True
+"Jewell County, Kansas",20089,354,1,False
+"Johnson County, Kansas",20091,433,0,True
+"Kearny County, Kansas",20093,201,1,False
+"Kingman County, Kansas",20095,147,1,False
+"Kiowa County, Kansas",20097,89,1,False
+"Labette County, Kansas",20099,476,1,False
+"Lane County, Kansas",20101,271,1,False
+"Leavenworth County, Kansas",20103,202,0,True
+"Lincoln County, Kansas",20105,135,1,False
+"Linn County, Kansas",20107,193,0,True
+"Logan County, Kansas",20109,526,0,False
+"Lyon County, Kansas",20111,165,1,False
+"McPherson County, Kansas",20113,117,0,False
+"Marion County, Kansas",20115,214,1,False
+"Marshall County, Kansas",20117,169,1,False
+"Meade County, Kansas",20119,147,1,False
+"Miami County, Kansas",20121,180,0,True
+"Mitchell County, Kansas",20123,84,1,False
+"Montgomery County, Kansas",20125,230,1,False
+"Morris County, Kansas",20127,141,1,False
+"Morton County, Kansas",20129,128,1,False
+"Nemaha County, Kansas",20131,85,0,False
+"Neosho County, Kansas",20133,152,1,False
+"Ness County, Kansas",20135,111,1,False
+"Norton County, Kansas",20137,237,2,False
+"Osage County, Kansas",20139,224,1,True
+"Osborne County, Kansas",20141,120,1,False
+"Ottawa County, Kansas",20143,91,1,False
+"Pawnee County, Kansas",20145,356,2,False
+"Phillips County, Kansas",20147,166,1,False
+"Pottawatomie County, Kansas",20149,95,0,True
+"Pratt County, Kansas",20151,445,0,False
+"Rawlins County, Kansas",20153,112,0,False
+"Reno County, Kansas",20155,109,1,False
+"Republic County, Kansas",20157,319,1,False
+"Rice County, Kansas",20159,191,1,False
+"Riley County, Kansas",20161,190,2,True
+"Rooks County, Kansas",20163,248,1,False
+"Rush County, Kansas",20165,85,1,False
+"Russell County, Kansas",20167,204,1,False
+"Saline County, Kansas",20169,122,0,False
+"Scott County, Kansas",20171,186,0,False
+"Sedgwick County, Kansas",20173,270,0,True
+"Seward County, Kansas",20175,196,1,False
+"Shawnee County, Kansas",20177,300,0,True
+"Sheridan County, Kansas",20179,130,1,False
+"Sherman County, Kansas",20181,166,1,False
+"Smith County, Kansas",20183,281,1,False
+"Stafford County, Kansas",20185,194,1,False
+"Stanton County, Kansas",20187,137,2,False
+"Stevens County, Kansas",20189,131,0,False
+"Sumner County, Kansas",20191,161,1,True
+"Thomas County, Kansas",20193,122,0,False
+"Trego County, Kansas",20195,81,1,False
+"Wabaunsee County, Kansas",20197,108,0,True
+"Wallace County, Kansas",20199,622,0,False
+"Washington County, Kansas",20201,130,1,False
+"Wichita County, Kansas",20203,87,1,False
+"Wilson County, Kansas",20205,156,1,False
+"Woodson County, Kansas",20207,137,1,False
+"Wyandotte County, Kansas",20209,289,1,True
+"Adair County, Kentucky",21001,276,0,False
+"Allen County, Kentucky",21003,481,0,True
+"Anderson County, Kentucky",21005,1036,0,False
+"Ballard County, Kentucky",21007,289,1,True
+"Barren County, Kentucky",21009,490,0,False
+"Bath County, Kentucky",21011,241,2,False
+"Bell County, Kentucky",21013,384,4,False
+"Boone County, Kentucky",21015,507,0,True
+"Bourbon County, Kentucky",21017,216,1,True
+"Boyd County, Kentucky",21019,356,1,True
+"Boyle County, Kentucky",21021,324,0,False
+"Bracken County, Kentucky",21023,153,0,True
+"Breathitt County, Kentucky",21025,270,4,False
+"Breckinridge County, Kentucky",21027,378,0,False
+"Bullitt County, Kentucky",21029,462,0,True
+"Butler County, Kentucky",21031,149,2,True
+"Caldwell County, Kentucky",21033,328,1,False
+"Calloway County, Kentucky",21035,347,0,False
+"Campbell County, Kentucky",21037,415,0,True
+"Carlisle County, Kentucky",21039,323,1,True
+"Carroll County, Kentucky",21041,204,1,False
+"Carter County, Kentucky",21043,154,1,True
+"Casey County, Kentucky",21045,335,3,False
+"Christian County, Kentucky",21047,145,2,True
+"Clark County, Kentucky",21049,236,0,True
+"Clay County, Kentucky",21051,332,4,False
+"Clinton County, Kentucky",21053,233,1,False
+"Crittenden County, Kentucky",21055,173,1,False
+"Cumberland County, Kentucky",21057,207,4,False
+"Daviess County, Kentucky",21059,336,0,True
+"Edmonson County, Kentucky",21061,350,1,True
+"Elliott County, Kentucky",21063,805,3,False
+"Estill County, Kentucky",21065,1037,4,False
+"Fayette County, Kentucky",21067,295,1,True
+"Fleming County, Kentucky",21069,243,0,False
+"Floyd County, Kentucky",21071,115,4,False
+"Franklin County, Kentucky",21073,572,0,False
+"Fulton County, Kentucky",21075,742,5,False
+"Gallatin County, Kentucky",21077,275,1,True
+"Garrard County, Kentucky",21079,1135,0,False
+"Grant County, Kentucky",21081,700,0,True
+"Graves County, Kentucky",21083,693,0,False
+"Grayson County, Kentucky",21085,321,1,False
+"Green County, Kentucky",21087,103,1,False
+"Greenup County, Kentucky",21089,187,0,True
+"Hancock County, Kentucky",21091,591,0,False
+"Hardin County, Kentucky",21093,398,0,True
+"Harlan County, Kentucky",21095,753,3,False
+"Harrison County, Kentucky",21097,182,0,False
+"Hart County, Kentucky",21099,154,2,False
+"Henderson County, Kentucky",21101,416,0,False
+"Henry County, Kentucky",21103,534,2,True
+"Hickman County, Kentucky",21105,204,1,False
+"Hopkins County, Kentucky",21107,711,0,False
+"Jackson County, Kentucky",21109,980,4,False
+"Jefferson County, Kentucky",21111,550,0,True
+"Jessamine County, Kentucky",21113,366,0,True
+"Johnson County, Kentucky",21115,430,2,False
+"Kenton County, Kentucky",21117,544,0,True
+"Knott County, Kentucky",21119,309,3,False
+"Knox County, Kentucky",21121,244,3,False
+"Laurel County, Kentucky",21125,290,1,False
+"Lawrence County, Kentucky",21127,461,3,True
+"Lee County, Kentucky",21129,1235,4,False
+"Leslie County, Kentucky",21131,171,3,False
+"Letcher County, Kentucky",21133,159,3,False
+"Lewis County, Kentucky",21135,90,4,False
+"Lincoln County, Kentucky",21137,137,1,False
+"Livingston County, Kentucky",21139,575,1,True
+"Logan County, Kentucky",21141,114,0,False
+"Lyon County, Kentucky",21143,140,1,False
+"McCracken County, Kentucky",21145,695,0,True
+"McCreary County, Kentucky",21147,255,3,False
+"McLean County, Kentucky",21149,233,1,True
+"Madison County, Kentucky",21151,1004,0,False
+"Magoffin County, Kentucky",21153,202,3,False
+"Marion County, Kentucky",21155,231,1,False
+"Marshall County, Kentucky",21157,363,0,False
+"Martin County, Kentucky",21159,115,3,False
+"Mason County, Kentucky",21161,391,0,False
+"Meade County, Kentucky",21163,332,0,True
+"Menifee County, Kentucky",21165,414,5,False
+"Mercer County, Kentucky",21167,254,0,False
+"Metcalfe County, Kentucky",21169,295,0,False
+"Monroe County, Kentucky",21171,165,1,False
+"Montgomery County, Kentucky",21173,443,0,False
+"Morgan County, Kentucky",21175,41,4,False
+"Muhlenberg County, Kentucky",21177,108,1,False
+"Nelson County, Kentucky",21179,219,0,True
+"Nicholas County, Kentucky",21181,195,1,False
+"Ohio County, Kentucky",21183,264,0,False
+"Oldham County, Kentucky",21185,646,0,True
+"Owen County, Kentucky",21187,243,0,False
+"Owsley County, Kentucky",21189,599,4,False
+"Pendleton County, Kentucky",21191,162,0,True
+"Perry County, Kentucky",21193,179,2,False
+"Pike County, Kentucky",21195,334,3,False
+"Powell County, Kentucky",21197,400,2,False
+"Pulaski County, Kentucky",21199,334,0,False
+"Robertson County, Kentucky",21201,179,2,False
+"Rockcastle County, Kentucky",21203,345,2,False
+"Rowan County, Kentucky",21205,453,1,False
+"Russell County, Kentucky",21207,831,1,False
+"Scott County, Kentucky",21209,106,0,True
+"Shelby County, Kentucky",21211,294,0,True
+"Simpson County, Kentucky",21213,43,0,False
+"Spencer County, Kentucky",21215,493,0,True
+"Taylor County, Kentucky",21217,435,0,False
+"Todd County, Kentucky",21219,163,1,False
+"Trigg County, Kentucky",21221,527,0,True
+"Trimble County, Kentucky",21223,125,0,False
+"Union County, Kentucky",21225,338,1,False
+"Warren County, Kentucky",21227,387,0,True
+"Washington County, Kentucky",21229,751,0,False
+"Wayne County, Kentucky",21231,367,3,False
+"Webster County, Kentucky",21233,564,2,False
+"Whitley County, Kentucky",21235,235,1,False
+"Wolfe County, Kentucky",21237,215,3,False
+"Woodford County, Kentucky",21239,203,0,True
+"Acadia Parish, Louisiana",22001,387,2,True
+"Allen Parish, Louisiana",22003,313,2,False
+"Ascension Parish, Louisiana",22005,698,0,True
+"Assumption Parish, Louisiana",22007,353,1,True
+"Avoyelles Parish, Louisiana",22009,704,1,False
+"Beauregard Parish, Louisiana",22011,275,0,False
+"Bienville Parish, Louisiana",22013,494,5,False
+"Bossier Parish, Louisiana",22015,726,1,True
+"Caddo Parish, Louisiana",22017,366,2,True
+"Calcasieu Parish, Louisiana",22019,974,0,True
+"Caldwell Parish, Louisiana",22021,48,3,False
+"Cameron Parish, Louisiana",22023,332,1,True
+"Catahoula Parish, Louisiana",22025,225,4,False
+"Claiborne Parish, Louisiana",22027,167,3,False
+"Concordia Parish, Louisiana",22029,657,3,False
+"East Baton Rouge Parish, Louisiana",22033,247,1,True
+"East Carroll Parish, Louisiana",22035,295,5,False
+"East Feliciana Parish, Louisiana",22037,379,3,True
+"Evangeline Parish, Louisiana",22039,78,5,False
+"Franklin Parish, Louisiana",22041,329,3,False
+"Grant Parish, Louisiana",22043,784,2,True
+"Iberia Parish, Louisiana",22045,680,3,False
+"Iberville Parish, Louisiana",22047,92,0,True
+"Jackson Parish, Louisiana",22049,353,2,False
+"Jefferson Parish, Louisiana",22051,201,1,True
+"Jefferson Davis Parish, Louisiana",22053,206,0,True
+"Lafayette Parish, Louisiana",22055,251,0,True
+"Lafourche Parish, Louisiana",22057,1105,0,True
+"LaSalle Parish, Louisiana",22059,158,1,False
+"Lincoln Parish, Louisiana",22061,694,2,False
+"Livingston Parish, Louisiana",22063,616,0,True
+"Madison Parish, Louisiana",22065,608,5,False
+"Morehouse Parish, Louisiana",22067,314,4,True
+"Natchitoches Parish, Louisiana",22069,1235,1,False
+"Orleans Parish, Louisiana",22071,218,2,True
+"Ouachita Parish, Louisiana",22073,432,2,True
+"Plaquemines Parish, Louisiana",22075,618,0,True
+"Pointe Coupee Parish, Louisiana",22077,269,0,True
+"Rapides Parish, Louisiana",22079,418,0,True
+"Red River Parish, Louisiana",22081,1121,3,False
+"Richland Parish, Louisiana",22083,229,3,True
+"Sabine Parish, Louisiana",22085,376,3,False
+"St. Bernard Parish, Louisiana",22087,629,2,True
+"St. Charles Parish, Louisiana",22089,671,0,True
+"St. Helena Parish, Louisiana",22091,208,2,True
+"St. James Parish, Louisiana",22093,295,0,True
+"St. John the Baptist Parish, Louisiana",22095,135,0,True
+"St. Landry Parish, Louisiana",22097,347,3,False
+"St. Martin Parish, Louisiana",22099,235,1,True
+"St. Mary Parish, Louisiana",22101,262,2,False
+"St. Tammany Parish, Louisiana",22103,1146,0,True
+"Tangipahoa Parish, Louisiana",22105,615,1,True
+"Tensas Parish, Louisiana",22107,472,4,False
+"Terrebonne Parish, Louisiana",22109,417,0,True
+"Union Parish, Louisiana",22111,308,1,True
+"Vermilion Parish, Louisiana",22113,384,0,True
+"Vernon Parish, Louisiana",22115,790,2,False
+"Washington Parish, Louisiana",22117,434,2,False
+"Webster Parish, Louisiana",22119,1659,4,False
+"West Baton Rouge Parish, Louisiana",22121,558,0,True
+"West Carroll Parish, Louisiana",22123,566,3,False
+"West Feliciana Parish, Louisiana",22125,708,1,True
+"Winn Parish, Louisiana",22127,277,3,False
+"Androscoggin County, Maine",23001,376,0,True
+"Aroostook County, Maine",23003,1458,1,False
+"Cumberland County, Maine",23005,653,0,True
+"Franklin County, Maine",23007,179,0,False
+"Hancock County, Maine",23009,361,0,False
+"Kennebec County, Maine",23011,411,0,False
+"Knox County, Maine",23013,458,0,False
+"Lincoln County, Maine",23015,577,0,False
+"Oxford County, Maine",23017,266,0,False
+"Penobscot County, Maine",23019,340,0,True
+"Piscataquis County, Maine",23021,936,0,False
+"Sagadahoc County, Maine",23023,193,1,True
+"Somerset County, Maine",23025,53,0,False
+"Waldo County, Maine",23027,336,0,False
+"Washington County, Maine",23029,669,1,False
+"York County, Maine",23031,562,1,True
+"Allegany County, Maryland",24001,401,0,False
+"Anne Arundel County, Maryland",24003,619,0,True
+"Baltimore County, Maryland",24005,643,1,True
+"Calvert County, Maryland",24009,605,0,True
+"Caroline County, Maryland",24011,293,1,False
+"Carroll County, Maryland",24013,298,0,True
+"Cecil County, Maryland",24015,570,1,True
+"Charles County, Maryland",24017,364,0,True
+"Dorchester County, Maryland",24019,783,1,False
+"Frederick County, Maryland",24021,506,0,True
+"Garrett County, Maryland",24023,1590,0,False
+"Harford County, Maryland",24025,277,0,True
+"Howard County, Maryland",24027,1251,0,True
+"Kent County, Maryland",24029,369,1,False
+"Montgomery County, Maryland",24031,855,1,True
+"Prince George's County, Maryland",24033,862,1,True
+"Queen Anne's County, Maryland",24035,777,1,True
+"St. Mary's County, Maryland",24037,1148,0,True
+"Somerset County, Maryland",24039,722,2,True
+"Talbot County, Maryland",24041,556,1,False
+"Washington County, Maryland",24043,631,0,True
+"Wicomico County, Maryland",24045,530,1,True
+"Worcester County, Maryland",24047,1148,2,False
+"Baltimore City, Maryland",24510,2926,3,True
+"Barnstable County, Massachusetts",25001,481,2,True
+"Berkshire County, Massachusetts",25003,713,2,True
+"Bristol County, Massachusetts",25005,553,1,True
+"Dukes County, Massachusetts",25007,379,2,False
+"Essex County, Massachusetts",25009,1082,1,True
+"Franklin County, Massachusetts",25011,392,2,False
+"Hampden County, Massachusetts",25013,330,1,True
+"Hampshire County, Massachusetts",25015,471,1,True
+"Middlesex County, Massachusetts",25017,1238,1,True
+"Norfolk County, Massachusetts",25021,431,1,True
+"Plymouth County, Massachusetts",25023,402,1,True
+"Suffolk County, Massachusetts",25025,738,1,True
+"Worcester County, Massachusetts",25027,413,1,True
+"Alcona County, Michigan",26001,165,2,False
+"Alger County, Michigan",26003,394,2,False
+"Allegan County, Michigan",26005,1095,0,False
+"Alpena County, Michigan",26007,171,1,False
+"Antrim County, Michigan",26009,392,1,False
+"Arenac County, Michigan",26011,72,1,False
+"Baraga County, Michigan",26013,296,1,False
+"Barry County, Michigan",26015,37,0,True
+"Bay County, Michigan",26017,230,1,True
+"Benzie County, Michigan",26019,526,1,True
+"Berrien County, Michigan",26021,402,1,True
+"Branch County, Michigan",26023,281,1,False
+"Calhoun County, Michigan",26025,414,1,True
+"Cass County, Michigan",26027,184,0,True
+"Charlevoix County, Michigan",26029,295,0,False
+"Cheboygan County, Michigan",26031,339,2,False
+"Chippewa County, Michigan",26033,560,1,False
+"Clare County, Michigan",26035,113,2,False
+"Clinton County, Michigan",26037,232,0,True
+"Crawford County, Michigan",26039,396,1,False
+"Delta County, Michigan",26041,470,1,False
+"Dickinson County, Michigan",26043,326,1,False
+"Eaton County, Michigan",26045,292,0,True
+"Emmet County, Michigan",26047,501,0,False
+"Genesee County, Michigan",26049,761,1,True
+"Gladwin County, Michigan",26051,36,2,False
+"Gogebic County, Michigan",26053,408,1,False
+"Grand Traverse County, Michigan",26055,921,0,True
+"Gratiot County, Michigan",26057,570,0,False
+"Hillsdale County, Michigan",26059,402,0,False
+"Houghton County, Michigan",26061,476,0,False
+"Huron County, Michigan",26063,582,1,False
+"Ingham County, Michigan",26065,504,1,True
+"Ionia County, Michigan",26067,218,0,True
+"Iosco County, Michigan",26069,122,2,False
+"Iron County, Michigan",26071,122,2,False
+"Isabella County, Michigan",26073,265,2,False
+"Jackson County, Michigan",26075,481,0,True
+"Kalamazoo County, Michigan",26077,173,0,True
+"Kalkaska County, Michigan",26079,239,0,True
+"Kent County, Michigan",26081,688,0,True
+"Keweenaw County, Michigan",26083,748,1,False
+"Lake County, Michigan",26085,73,4,False
+"Lapeer County, Michigan",26087,280,0,True
+"Leelanau County, Michigan",26089,779,1,True
+"Lenawee County, Michigan",26091,399,0,False
+"Livingston County, Michigan",26093,1111,0,True
+"Luce County, Michigan",26095,420,2,False
+"Mackinac County, Michigan",26097,666,1,False
+"Macomb County, Michigan",26099,554,0,True
+"Manistee County, Michigan",26101,248,1,False
+"Marquette County, Michigan",26103,296,0,False
+"Mason County, Michigan",26105,98,0,False
+"Mecosta County, Michigan",26107,1071,0,False
+"Menominee County, Michigan",26109,449,1,False
+"Midland County, Michigan",26111,537,0,True
+"Missaukee County, Michigan",26113,217,0,False
+"Monroe County, Michigan",26115,290,0,True
+"Montcalm County, Michigan",26117,435,0,True
+"Montmorency County, Michigan",26119,369,2,False
+"Muskegon County, Michigan",26121,386,0,True
+"Newaygo County, Michigan",26123,266,0,False
+"Oakland County, Michigan",26125,841,0,True
+"Oceana County, Michigan",26127,463,0,False
+"Ogemaw County, Michigan",26129,129,1,False
+"Ontonagon County, Michigan",26131,572,1,False
+"Osceola County, Michigan",26133,81,0,False
+"Oscoda County, Michigan",26135,246,2,False
+"Otsego County, Michigan",26137,190,0,False
+"Ottawa County, Michigan",26139,802,0,True
+"Presque Isle County, Michigan",26141,763,2,False
+"Roscommon County, Michigan",26143,200,2,False
+"Saginaw County, Michigan",26145,706,1,True
+"St. Clair County, Michigan",26147,525,1,True
+"St. Joseph County, Michigan",26149,146,1,False
+"Sanilac County, Michigan",26151,453,1,False
+"Schoolcraft County, Michigan",26153,444,1,False
+"Shiawassee County, Michigan",26155,287,1,False
+"Tuscola County, Michigan",26157,473,1,False
+"Van Buren County, Michigan",26159,90,1,False
+"Washtenaw County, Michigan",26161,419,1,True
+"Wayne County, Michigan",26163,493,2,True
+"Wexford County, Michigan",26165,498,0,False
+"Aitkin County, Minnesota",27001,261,1,False
+"Anoka County, Minnesota",27003,1552,0,True
+"Becker County, Minnesota",27005,147,0,False
+"Beltrami County, Minnesota",27007,579,0,False
+"Benton County, Minnesota",27009,170,0,True
+"Big Stone County, Minnesota",27011,38,1,False
+"Blue Earth County, Minnesota",27013,218,1,True
+"Brown County, Minnesota",27015,326,0,False
+"Carlton County, Minnesota",27017,179,0,True
+"Carver County, Minnesota",27019,275,0,True
+"Cass County, Minnesota",27021,232,1,False
+"Chippewa County, Minnesota",27023,138,0,False
+"Chisago County, Minnesota",27025,517,0,True
+"Clay County, Minnesota",27027,139,1,True
+"Clearwater County, Minnesota",27029,179,0,False
+"Cook County, Minnesota",27031,218,1,False
+"Cottonwood County, Minnesota",27033,35,1,False
+"Crow Wing County, Minnesota",27035,159,1,False
+"Dakota County, Minnesota",27037,761,0,True
+"Dodge County, Minnesota",27039,103,0,True
+"Douglas County, Minnesota",27041,198,1,False
+"Faribault County, Minnesota",27043,217,1,False
+"Fillmore County, Minnesota",27045,85,0,True
+"Freeborn County, Minnesota",27047,96,1,False
+"Goodhue County, Minnesota",27049,279,0,False
+"Grant County, Minnesota",27051,38,0,False
+"Hennepin County, Minnesota",27053,670,0,True
+"Houston County, Minnesota",27055,145,1,True
+"Hubbard County, Minnesota",27057,140,1,False
+"Isanti County, Minnesota",27059,78,0,True
+"Itasca County, Minnesota",27061,333,0,False
+"Jackson County, Minnesota",27063,35,1,False
+"Kanabec County, Minnesota",27065,73,0,False
+"Kandiyohi County, Minnesota",27067,191,0,False
+"Kittson County, Minnesota",27069,109,1,False
+"Koochiching County, Minnesota",27071,273,1,False
+"Lac qui Parle County, Minnesota",27073,123,1,False
+"Lake County, Minnesota",27075,40,0,False
+"Lake of the Woods County, Minnesota",27077,691,1,False
+"Le Sueur County, Minnesota",27079,160,0,True
+"Lincoln County, Minnesota",27081,35,1,False
+"Lyon County, Minnesota",27083,92,0,False
+"McLeod County, Minnesota",27085,209,0,False
+"Mahnomen County, Minnesota",27087,304,0,False
+"Marshall County, Minnesota",27089,34,1,False
+"Martin County, Minnesota",27091,69,1,False
+"Meeker County, Minnesota",27093,39,0,False
+"Mille Lacs County, Minnesota",27095,278,0,True
+"Morrison County, Minnesota",27097,121,0,False
+"Mower County, Minnesota",27099,235,0,False
+"Murray County, Minnesota",27101,36,1,False
+"Nicollet County, Minnesota",27103,145,0,True
+"Nobles County, Minnesota",27105,102,0,False
+"Norman County, Minnesota",27107,155,1,False
+"Olmsted County, Minnesota",27109,212,0,True
+"Otter Tail County, Minnesota",27111,251,0,False
+"Pennington County, Minnesota",27113,46,0,False
+"Pine County, Minnesota",27115,192,0,False
+"Pipestone County, Minnesota",27117,37,1,False
+"Polk County, Minnesota",27119,186,0,True
+"Pope County, Minnesota",27121,90,0,False
+"Ramsey County, Minnesota",27123,516,1,True
+"Red Lake County, Minnesota",27125,89,1,False
+"Redwood County, Minnesota",27127,338,1,False
+"Renville County, Minnesota",27129,35,1,False
+"Rice County, Minnesota",27131,196,0,False
+"Rock County, Minnesota",27133,78,0,True
+"Roseau County, Minnesota",27135,182,1,False
+"St. Louis County, Minnesota",27137,662,0,True
+"Scott County, Minnesota",27139,1312,0,True
+"Sherburne County, Minnesota",27141,161,0,True
+"Sibley County, Minnesota",27143,36,1,False
+"Stearns County, Minnesota",27145,369,0,True
+"Steele County, Minnesota",27147,92,0,False
+"Stevens County, Minnesota",27149,34,1,False
+"Swift County, Minnesota",27151,140,0,False
+"Todd County, Minnesota",27153,41,0,False
+"Traverse County, Minnesota",27155,195,1,False
+"Wabasha County, Minnesota",27157,84,0,True
+"Wadena County, Minnesota",27159,119,0,False
+"Waseca County, Minnesota",27161,60,1,False
+"Washington County, Minnesota",27163,394,0,True
+"Watonwan County, Minnesota",27165,38,0,False
+"Wilkin County, Minnesota",27167,314,1,False
+"Winona County, Minnesota",27169,88,0,False
+"Wright County, Minnesota",27171,287,0,True
+"Yellow Medicine County, Minnesota",27173,361,1,False
+"Adams County, Mississippi",28001,341,3,False
+"Alcorn County, Mississippi",28003,155,0,False
+"Amite County, Mississippi",28005,226,3,False
+"Attala County, Mississippi",28007,210,3,False
+"Benton County, Mississippi",28009,395,0,True
+"Bolivar County, Mississippi",28011,623,4,False
+"Calhoun County, Mississippi",28013,145,1,False
+"Carroll County, Mississippi",28015,531,1,False
+"Chickasaw County, Mississippi",28017,296,4,False
+"Choctaw County, Mississippi",28019,477,1,False
+"Claiborne County, Mississippi",28021,953,3,False
+"Clarke County, Mississippi",28023,178,2,False
+"Clay County, Mississippi",28025,506,2,False
+"Coahoma County, Mississippi",28027,376,3,False
+"Copiah County, Mississippi",28029,134,1,True
+"Covington County, Mississippi",28031,114,1,False
+"DeSoto County, Mississippi",28033,336,0,True
+"Forrest County, Mississippi",28035,296,2,True
+"Franklin County, Mississippi",28037,272,2,False
+"George County, Mississippi",28039,206,0,False
+"Greene County, Mississippi",28041,147,2,False
+"Grenada County, Mississippi",28043,259,3,False
+"Hancock County, Mississippi",28045,516,1,True
+"Harrison County, Mississippi",28047,545,1,True
+"Hinds County, Mississippi",28049,796,2,True
+"Holmes County, Mississippi",28051,2272,4,True
+"Humphreys County, Mississippi",28053,792,3,False
+"Issaquena County, Mississippi",28055,739,5,False
+"Itawamba County, Mississippi",28057,300,0,False
+"Jackson County, Mississippi",28059,729,0,True
+"Jasper County, Mississippi",28061,618,1,False
+"Jefferson County, Mississippi",28063,927,3,False
+"Jefferson Davis County, Mississippi",28065,270,3,False
+"Jones County, Mississippi",28067,167,0,False
+"Kemper County, Mississippi",28069,611,2,False
+"Lafayette County, Mississippi",28071,480,2,False
+"Lamar County, Mississippi",28073,267,0,True
+"Lauderdale County, Mississippi",28075,217,2,False
+"Lawrence County, Mississippi",28077,95,1,False
+"Leake County, Mississippi",28079,189,1,False
+"Lee County, Mississippi",28081,92,0,False
+"Leflore County, Mississippi",28083,1009,3,False
+"Lincoln County, Mississippi",28085,501,0,False
+"Lowndes County, Mississippi",28087,282,1,False
+"Madison County, Mississippi",28089,272,0,True
+"Marion County, Mississippi",28091,138,1,False
+"Marshall County, Mississippi",28093,228,1,True
+"Monroe County, Mississippi",28095,55,1,False
+"Montgomery County, Mississippi",28097,578,2,False
+"Neshoba County, Mississippi",28099,837,1,False
+"Newton County, Mississippi",28101,50,1,False
+"Noxubee County, Mississippi",28103,105,2,False
+"Oktibbeha County, Mississippi",28105,489,2,False
+"Panola County, Mississippi",28107,523,1,False
+"Pearl River County, Mississippi",28109,364,0,False
+"Perry County, Mississippi",28111,581,0,True
+"Pike County, Mississippi",28113,133,2,False
+"Pontotoc County, Mississippi",28115,375,0,False
+"Prentiss County, Mississippi",28117,139,1,False
+"Quitman County, Mississippi",28119,213,3,False
+"Rankin County, Mississippi",28121,475,0,True
+"Scott County, Mississippi",28123,155,2,True
+"Sharkey County, Mississippi",28125,287,3,False
+"Simpson County, Mississippi",28127,323,1,True
+"Smith County, Mississippi",28129,36,0,False
+"Stone County, Mississippi",28131,411,0,True
+"Sunflower County, Mississippi",28133,342,3,False
+"Tallahatchie County, Mississippi",28135,263,2,False
+"Tate County, Mississippi",28137,484,1,True
+"Tippah County, Mississippi",28139,489,0,False
+"Tishomingo County, Mississippi",28141,33,0,False
+"Tunica County, Mississippi",28143,489,3,True
+"Union County, Mississippi",28145,500,0,False
+"Walthall County, Mississippi",28147,127,2,False
+"Warren County, Mississippi",28149,487,1,False
+"Washington County, Mississippi",28151,304,3,False
+"Wayne County, Mississippi",28153,99,1,False
+"Webster County, Mississippi",28155,527,1,False
+"Wilkinson County, Mississippi",28157,260,4,False
+"Winston County, Mississippi",28159,490,2,False
+"Yalobusha County, Mississippi",28161,128,3,False
+"Yazoo County, Mississippi",28163,225,5,True
+"Adair County, Missouri",29001,208,1,False
+"Andrew County, Missouri",29003,320,0,True
+"Atchison County, Missouri",29005,302,1,False
+"Audrain County, Missouri",29007,193,1,False
+"Barry County, Missouri",29009,262,0,False
+"Barton County, Missouri",29011,221,1,False
+"Bates County, Missouri",29013,384,1,True
+"Benton County, Missouri",29015,129,1,False
+"Bollinger County, Missouri",29017,611,1,True
+"Boone County, Missouri",29019,820,1,True
+"Buchanan County, Missouri",29021,389,0,True
+"Butler County, Missouri",29023,451,1,False
+"Caldwell County, Missouri",29025,744,0,True
+"Callaway County, Missouri",29027,837,0,True
+"Camden County, Missouri",29029,296,1,False
+"Cape Girardeau County, Missouri",29031,671,0,True
+"Carroll County, Missouri",29033,211,1,False
+"Carter County, Missouri",29035,258,2,False
+"Cass County, Missouri",29037,370,0,True
+"Cedar County, Missouri",29039,218,1,False
+"Chariton County, Missouri",29041,148,1,False
+"Christian County, Missouri",29043,482,0,True
+"Clark County, Missouri",29045,411,1,False
+"Clay County, Missouri",29047,550,0,True
+"Clinton County, Missouri",29049,419,0,True
+"Cole County, Missouri",29051,413,0,True
+"Cooper County, Missouri",29053,299,0,True
+"Crawford County, Missouri",29055,363,0,False
+"Dade County, Missouri",29057,279,1,False
+"Dallas County, Missouri",29059,233,0,True
+"Daviess County, Missouri",29061,318,0,False
+"DeKalb County, Missouri",29063,339,1,True
+"Dent County, Missouri",29065,253,0,False
+"Douglas County, Missouri",29067,253,0,False
+"Dunklin County, Missouri",29069,180,3,False
+"Franklin County, Missouri",29071,497,0,True
+"Gasconade County, Missouri",29073,556,1,False
+"Gentry County, Missouri",29075,170,1,False
+"Greene County, Missouri",29077,477,1,True
+"Grundy County, Missouri",29079,162,1,False
+"Harrison County, Missouri",29081,137,0,False
+"Henry County, Missouri",29083,354,0,False
+"Hickory County, Missouri",29085,546,3,False
+"Holt County, Missouri",29087,204,1,False
+"Howard County, Missouri",29089,1785,0,True
+"Howell County, Missouri",29091,284,0,False
+"Iron County, Missouri",29093,807,1,False
+"Jackson County, Missouri",29095,495,1,True
+"Jasper County, Missouri",29097,362,0,True
+"Jefferson County, Missouri",29099,609,0,True
+"Johnson County, Missouri",29101,325,0,False
+"Knox County, Missouri",29103,181,1,False
+"Laclede County, Missouri",29105,198,0,False
+"Lafayette County, Missouri",29107,480,0,True
+"Lawrence County, Missouri",29109,787,0,False
+"Lewis County, Missouri",29111,293,2,False
+"Lincoln County, Missouri",29113,276,0,True
+"Linn County, Missouri",29115,126,1,False
+"Livingston County, Missouri",29117,140,0,False
+"McDonald County, Missouri",29119,78,2,False
+"Macon County, Missouri",29121,164,1,False
+"Madison County, Missouri",29123,360,0,False
+"Maries County, Missouri",29125,225,0,False
+"Marion County, Missouri",29127,619,0,False
+"Mercer County, Missouri",29129,193,0,False
+"Miller County, Missouri",29131,154,0,False
+"Mississippi County, Missouri",29133,234,3,False
+"Moniteau County, Missouri",29135,285,0,True
+"Monroe County, Missouri",29137,97,1,False
+"Montgomery County, Missouri",29139,313,0,False
+"Morgan County, Missouri",29141,153,2,False
+"New Madrid County, Missouri",29143,991,2,False
+"Newton County, Missouri",29145,194,0,True
+"Nodaway County, Missouri",29147,338,0,False
+"Oregon County, Missouri",29149,969,2,False
+"Osage County, Missouri",29151,448,0,True
+"Ozark County, Missouri",29153,293,1,False
+"Pemiscot County, Missouri",29155,763,5,False
+"Perry County, Missouri",29157,227,0,False
+"Pettis County, Missouri",29159,268,0,False
+"Phelps County, Missouri",29161,976,1,False
+"Pike County, Missouri",29163,480,2,False
+"Platte County, Missouri",29165,557,0,True
+"Polk County, Missouri",29167,157,0,True
+"Pulaski County, Missouri",29169,361,1,False
+"Putnam County, Missouri",29171,1563,1,False
+"Ralls County, Missouri",29173,273,0,False
+"Randolph County, Missouri",29175,313,0,False
+"Ray County, Missouri",29177,232,0,True
+"Reynolds County, Missouri",29179,333,0,False
+"Ripley County, Missouri",29181,782,1,False
+"St. Charles County, Missouri",29183,824,0,True
+"St. Clair County, Missouri",29185,613,0,False
+"Ste. Genevieve County, Missouri",29186,527,0,False
+"St. Francois County, Missouri",29187,864,0,False
+"St. Louis County, Missouri",29189,1332,0,True
+"Saline County, Missouri",29195,636,1,False
+"Schuyler County, Missouri",29197,394,0,False
+"Scotland County, Missouri",29199,195,2,False
+"Scott County, Missouri",29201,305,1,False
+"Shannon County, Missouri",29203,547,2,False
+"Shelby County, Missouri",29205,167,1,False
+"Stoddard County, Missouri",29207,210,1,False
+"Stone County, Missouri",29209,151,1,False
+"Sullivan County, Missouri",29211,155,2,False
+"Taney County, Missouri",29213,547,1,False
+"Texas County, Missouri",29215,292,2,False
+"Vernon County, Missouri",29217,379,0,False
+"Warren County, Missouri",29219,564,0,True
+"Washington County, Missouri",29221,210,1,False
+"Wayne County, Missouri",29223,289,1,False
+"Webster County, Missouri",29225,220,0,True
+"Worth County, Missouri",29227,604,2,False
+"Wright County, Missouri",29229,349,1,False
+"St. Louis City, Missouri",29510,89,2,True
+"Beaverhead County, Montana",30001,355,0,False
+"Big Horn County, Montana",30003,378,2,False
+"Blaine County, Montana",30005,228,1,False
+"Broadwater County, Montana",30007,141,1,True
+"Carbon County, Montana",30009,111,0,True
+"Carter County, Montana",30011,84,2,False
+"Cascade County, Montana",30013,202,0,True
+"Chouteau County, Montana",30015,419,0,False
+"Custer County, Montana",30017,848,0,False
+"Daniels County, Montana",30019,116,1,False
+"Dawson County, Montana",30021,36,1,False
+"Deer Lodge County, Montana",30023,204,1,False
+"Fallon County, Montana",30025,237,0,False
+"Fergus County, Montana",30027,156,1,False
+"Flathead County, Montana",30029,399,1,False
+"Gallatin County, Montana",30031,712,1,True
+"Garfield County, Montana",30033,254,1,False
+"Glacier County, Montana",30035,580,2,False
+"Golden Valley County, Montana",30037,80,1,False
+"Granite County, Montana",30039,149,1,False
+"Hill County, Montana",30041,252,0,False
+"Jefferson County, Montana",30043,201,0,True
+"Judith Basin County, Montana",30045,48,1,False
+"Lake County, Montana",30047,35,2,False
+"Lewis and Clark County, Montana",30049,608,0,True
+"Liberty County, Montana",30051,304,1,False
+"Lincoln County, Montana",30053,449,2,False
+"McCone County, Montana",30055,182,1,False
+"Madison County, Montana",30057,116,1,False
+"Meagher County, Montana",30059,223,1,False
+"Mineral County, Montana",30061,36,1,True
+"Missoula County, Montana",30063,248,1,True
+"Musselshell County, Montana",30065,66,0,False
+"Park County, Montana",30067,120,1,False
+"Petroleum County, Montana",30069,240,0,False
+"Phillips County, Montana",30071,330,1,False
+"Pondera County, Montana",30073,76,1,False
+"Powder River County, Montana",30075,35,1,False
+"Powell County, Montana",30077,38,2,False
+"Prairie County, Montana",30079,362,1,False
+"Ravalli County, Montana",30081,500,1,False
+"Richland County, Montana",30083,222,0,False
+"Roosevelt County, Montana",30085,205,2,False
+"Rosebud County, Montana",30087,114,2,False
+"Sanders County, Montana",30089,222,3,False
+"Sheridan County, Montana",30091,154,0,False
+"Silver Bow County, Montana",30093,305,0,False
+"Stillwater County, Montana",30095,36,0,True
+"Sweet Grass County, Montana",30097,70,0,False
+"Teton County, Montana",30099,67,0,False
+"Toole County, Montana",30101,334,1,False
+"Treasure County, Montana",30103,189,0,False
+"Valley County, Montana",30105,167,0,False
+"Wheatland County, Montana",30107,239,1,False
+"Wibaux County, Montana",30109,111,1,False
+"Yellowstone County, Montana",30111,618,0,True
+"Adams County, Nebraska",31001,367,0,False
+"Antelope County, Nebraska",31003,384,1,False
+"Arthur County, Nebraska",31005,657,0,False
+"Banner County, Nebraska",31007,502,1,False
+"Blaine County, Nebraska",31009,396,1,False
+"Boone County, Nebraska",31011,304,1,False
+"Box Butte County, Nebraska",31013,268,1,False
+"Boyd County, Nebraska",31015,298,1,False
+"Brown County, Nebraska",31017,307,1,False
+"Buffalo County, Nebraska",31019,396,0,False
+"Burt County, Nebraska",31021,359,1,False
+"Butler County, Nebraska",31023,381,1,False
+"Cass County, Nebraska",31025,371,0,True
+"Cedar County, Nebraska",31027,309,1,False
+"Chase County, Nebraska",31029,209,1,False
+"Cherry County, Nebraska",31031,307,1,False
+"Cheyenne County, Nebraska",31033,302,0,False
+"Clay County, Nebraska",31035,424,1,False
+"Colfax County, Nebraska",31037,308,0,False
+"Cuming County, Nebraska",31039,228,1,False
+"Custer County, Nebraska",31041,367,1,False
+"Dakota County, Nebraska",31043,625,1,True
+"Dawes County, Nebraska",31045,305,0,False
+"Dawson County, Nebraska",31047,358,1,False
+"Deuel County, Nebraska",31049,355,1,False
+"Dixon County, Nebraska",31051,355,1,False
+"Dodge County, Nebraska",31053,485,0,False
+"Douglas County, Nebraska",31055,673,1,True
+"Dundy County, Nebraska",31057,233,1,False
+"Fillmore County, Nebraska",31059,283,1,False
+"Franklin County, Nebraska",31061,313,1,False
+"Frontier County, Nebraska",31063,367,1,False
+"Furnas County, Nebraska",31065,324,1,False
+"Gage County, Nebraska",31067,438,1,False
+"Garden County, Nebraska",31069,338,1,False
+"Garfield County, Nebraska",31071,331,0,False
+"Gosper County, Nebraska",31073,407,1,False
+"Grant County, Nebraska",31075,415,1,False
+"Greeley County, Nebraska",31077,259,1,False
+"Hall County, Nebraska",31079,408,0,True
+"Hamilton County, Nebraska",31081,424,0,False
+"Harlan County, Nebraska",31083,257,1,False
+"Hayes County, Nebraska",31085,377,1,False
+"Hitchcock County, Nebraska",31087,231,1,False
+"Holt County, Nebraska",31089,307,1,False
+"Hooker County, Nebraska",31091,424,1,False
+"Howard County, Nebraska",31093,355,0,True
+"Jefferson County, Nebraska",31095,325,1,False
+"Johnson County, Nebraska",31097,397,1,False
+"Kearney County, Nebraska",31099,402,0,False
+"Keith County, Nebraska",31101,231,1,False
+"Keya Paha County, Nebraska",31103,343,1,False
+"Kimball County, Nebraska",31105,305,1,False
+"Knox County, Nebraska",31107,287,1,False
+"Lancaster County, Nebraska",31109,640,0,True
+"Lincoln County, Nebraska",31111,462,0,False
+"Logan County, Nebraska",31113,366,1,False
+"Loup County, Nebraska",31115,379,1,False
+"McPherson County, Nebraska",31117,444,0,False
+"Madison County, Nebraska",31119,397,0,False
+"Merrick County, Nebraska",31121,88,2,True
+"Morrill County, Nebraska",31123,224,1,False
+"Nance County, Nebraska",31125,232,1,False
+"Nemaha County, Nebraska",31127,230,1,False
+"Nuckolls County, Nebraska",31129,221,1,False
+"Otoe County, Nebraska",31131,33,0,False
+"Pawnee County, Nebraska",31133,234,1,False
+"Perkins County, Nebraska",31135,230,1,False
+"Phelps County, Nebraska",31137,416,1,False
+"Pierce County, Nebraska",31139,361,0,False
+"Platte County, Nebraska",31141,402,0,False
+"Polk County, Nebraska",31143,323,1,False
+"Red Willow County, Nebraska",31145,230,1,False
+"Richardson County, Nebraska",31147,527,1,False
+"Rock County, Nebraska",31149,305,1,False
+"Saline County, Nebraska",31151,264,0,False
+"Sarpy County, Nebraska",31153,828,0,True
+"Saunders County, Nebraska",31155,365,0,True
+"Scotts Bluff County, Nebraska",31157,403,0,False
+"Seward County, Nebraska",31159,354,0,True
+"Sheridan County, Nebraska",31161,298,1,False
+"Sherman County, Nebraska",31163,361,1,False
+"Sioux County, Nebraska",31165,365,1,False
+"Stanton County, Nebraska",31167,498,1,False
+"Thayer County, Nebraska",31169,387,1,False
+"Thomas County, Nebraska",31171,288,0,False
+"Thurston County, Nebraska",31173,354,2,False
+"Valley County, Nebraska",31175,218,1,False
+"Washington County, Nebraska",31177,391,0,True
+"Wayne County, Nebraska",31179,219,0,False
+"Webster County, Nebraska",31181,309,1,False
+"Wheeler County, Nebraska",31183,305,1,False
+"York County, Nebraska",31185,304,0,False
+"Churchill County, Nevada",32001,318,0,False
+"Clark County, Nevada",32003,1623,1,True
+"Douglas County, Nevada",32005,199,2,False
+"Elko County, Nevada",32007,896,0,False
+"Esmeralda County, Nevada",32009,769,1,False
+"Eureka County, Nevada",32011,134,0,False
+"Humboldt County, Nevada",32013,1525,0,False
+"Lander County, Nevada",32015,43,1,False
+"Lincoln County, Nevada",32017,223,1,False
+"Lyon County, Nevada",32019,80,2,True
+"Mineral County, Nevada",32021,84,1,False
+"Nye County, Nevada",32023,1255,1,False
+"Pershing County, Nevada",32027,223,2,False
+"Storey County, Nevada",32029,531,0,True
+"Washoe County, Nevada",32031,273,1,True
+"White Pine County, Nevada",32033,768,1,False
+"Carson City, Nevada",32510,1314,1,True
+"Belknap County, New Hampshire",33001,974,1,False
+"Carroll County, New Hampshire",33003,338,2,False
+"Cheshire County, New Hampshire",33005,308,1,False
+"Coos County, New Hampshire",33007,1048,1,False
+"Grafton County, New Hampshire",33009,618,1,False
+"Hillsborough County, New Hampshire",33011,499,1,True
+"Merrimack County, New Hampshire",33013,666,0,False
+"Rockingham County, New Hampshire",33015,532,0,True
+"Strafford County, New Hampshire",33017,727,1,True
+"Sullivan County, New Hampshire",33019,164,1,False
+"Atlantic County, New Jersey",34001,919,1,True
+"Bergen County, New Jersey",34003,1988,1,True
+"Burlington County, New Jersey",34005,1133,1,True
+"Camden County, New Jersey",34007,1140,1,True
+"Cape May County, New Jersey",34009,2884,3,True
+"Cumberland County, New Jersey",34011,841,2,True
+"Essex County, New Jersey",34013,954,1,True
+"Gloucester County, New Jersey",34015,1209,1,True
+"Hudson County, New Jersey",34017,1446,1,True
+"Hunterdon County, New Jersey",34019,1464,0,True
+"Mercer County, New Jersey",34021,2058,1,True
+"Middlesex County, New Jersey",34023,2929,1,True
+"Monmouth County, New Jersey",34025,3462,1,True
+"Morris County, New Jersey",34027,1362,1,True
+"Ocean County, New Jersey",34029,1928,2,True
+"Passaic County, New Jersey",34031,906,1,True
+"Salem County, New Jersey",34033,1047,1,True
+"Somerset County, New Jersey",34035,1766,1,True
+"Sussex County, New Jersey",34037,1141,1,True
+"Union County, New Jersey",34039,1343,1,True
+"Warren County, New Jersey",34041,1672,1,True
+"Bernalillo County, New Mexico",35001,250,1,True
+"Catron County, New Mexico",35003,107,2,False
+"Chaves County, New Mexico",35005,355,1,False
+"Cibola County, New Mexico",35006,334,2,False
+"Colfax County, New Mexico",35007,382,1,False
+"Curry County, New Mexico",35009,357,2,False
+"De Baca County, New Mexico",35011,165,1,False
+"Doña Ana County, New Mexico",35013,1092,2,True
+"Eddy County, New Mexico",35015,341,0,False
+"Grant County, New Mexico",35017,260,1,False
+"Guadalupe County, New Mexico",35019,140,2,False
+"Harding County, New Mexico",35021,475,1,False
+"Hidalgo County, New Mexico",35023,603,2,False
+"Lea County, New Mexico",35025,166,0,False
+"Lincoln County, New Mexico",35027,79,1,False
+"Los Alamos County, New Mexico",35028,739,0,False
+"Luna County, New Mexico",35029,202,2,False
+"McKinley County, New Mexico",35031,153,3,False
+"Mora County, New Mexico",35033,515,2,False
+"Otero County, New Mexico",35035,288,1,False
+"Quay County, New Mexico",35037,265,2,False
+"Rio Arriba County, New Mexico",35039,278,0,False
+"Roosevelt County, New Mexico",35041,379,1,False
+"Sandoval County, New Mexico",35043,170,0,True
+"San Juan County, New Mexico",35045,421,1,True
+"San Miguel County, New Mexico",35047,221,3,False
+"Santa Fe County, New Mexico",35049,370,1,True
+"Sierra County, New Mexico",35051,84,2,False
+"Socorro County, New Mexico",35053,1070,4,False
+"Taos County, New Mexico",35055,167,0,False
+"Torrance County, New Mexico",35057,240,1,True
+"Union County, New Mexico",35059,264,2,False
+"Valencia County, New Mexico",35061,271,0,True
+"Albany County, New York",36001,819,1,True
+"Allegany County, New York",36003,705,1,False
+"Broome County, New York",36007,383,0,True
+"Cattaraugus County, New York",36009,592,1,False
+"Cayuga County, New York",36011,337,1,False
+"Chautauqua County, New York",36013,604,1,False
+"Chemung County, New York",36015,482,1,True
+"Chenango County, New York",36017,176,1,False
+"Clinton County, New York",36019,531,0,False
+"Columbia County, New York",36021,292,0,False
+"Cortland County, New York",36023,459,0,False
+"Delaware County, New York",36025,246,1,False
+"Dutchess County, New York",36027,366,1,True
+"Erie County, New York",36029,741,0,True
+"Essex County, New York",36031,274,0,False
+"Franklin County, New York",36033,807,0,False
+"Fulton County, New York",36035,321,0,False
+"Genesee County, New York",36037,478,1,False
+"Greene County, New York",36039,192,1,False
+"Hamilton County, New York",36041,579,1,False
+"Herkimer County, New York",36043,403,0,True
+"Jefferson County, New York",36045,734,2,True
+"Lewis County, New York",36049,1571,0,False
+"Livingston County, New York",36051,280,0,True
+"Madison County, New York",36053,365,0,True
+"Monroe County, New York",36055,348,1,True
+"Montgomery County, New York",36057,733,1,False
+"Nassau County, New York",36059,2598,1,True
+"Niagara County, New York",36063,559,1,True
+"Oneida County, New York",36065,586,1,True
+"Onondaga County, New York",36067,412,0,True
+"Ontario County, New York",36069,147,0,True
+"Orange County, New York",36071,449,1,True
+"Orleans County, New York",36073,452,1,True
+"Oswego County, New York",36075,346,1,True
+"Otsego County, New York",36077,222,0,False
+"Putnam County, New York",36079,890,1,True
+"Rensselaer County, New York",36083,369,0,True
+"Rockland County, New York",36087,1352,1,True
+"St. Lawrence County, New York",36089,455,0,False
+"Saratoga County, New York",36091,2222,0,True
+"Schenectady County, New York",36093,704,0,True
+"Schoharie County, New York",36095,373,0,True
+"Schuyler County, New York",36097,306,1,False
+"Seneca County, New York",36099,714,0,False
+"Steuben County, New York",36101,497,0,False
+"Suffolk County, New York",36103,1481,1,True
+"Sullivan County, New York",36105,572,1,False
+"Tioga County, New York",36107,267,1,True
+"Tompkins County, New York",36109,355,1,True
+"Ulster County, New York",36111,196,1,True
+"Warren County, New York",36113,253,0,True
+"Washington County, New York",36115,195,0,True
+"Wayne County, New York",36117,1076,0,True
+"Westchester County, New York",36119,2317,1,True
+"Wyoming County, New York",36121,403,1,False
+"Yates County, New York",36123,295,0,False
+"Alamance County, North Carolina",37001,440,0,True
+"Alexander County, North Carolina",37003,126,0,True
+"Alleghany County, North Carolina",37005,102,1,False
+"Anson County, North Carolina",37007,38,3,True
+"Ashe County, North Carolina",37009,59,0,False
+"Avery County, North Carolina",37011,248,1,False
+"Beaufort County, North Carolina",37013,400,1,False
+"Bertie County, North Carolina",37015,155,3,False
+"Bladen County, North Carolina",37017,150,2,False
+"Brunswick County, North Carolina",37019,1402,1,True
+"Buncombe County, North Carolina",37021,236,2,True
+"Burke County, North Carolina",37023,270,0,True
+"Cabarrus County, North Carolina",37025,1403,0,True
+"Caldwell County, North Carolina",37027,177,0,True
+"Camden County, North Carolina",37029,166,0,True
+"Carteret County, North Carolina",37031,568,1,False
+"Caswell County, North Carolina",37033,1315,0,False
+"Catawba County, North Carolina",37035,201,0,True
+"Chatham County, North Carolina",37037,407,1,True
+"Cherokee County, North Carolina",37039,143,1,False
+"Chowan County, North Carolina",37041,207,0,False
+"Clay County, North Carolina",37043,106,2,False
+"Cleveland County, North Carolina",37045,192,0,False
+"Columbus County, North Carolina",37047,39,2,False
+"Craven County, North Carolina",37049,423,0,False
+"Cumberland County, North Carolina",37051,152,2,True
+"Currituck County, North Carolina",37053,802,1,True
+"Dare County, North Carolina",37055,433,2,False
+"Davidson County, North Carolina",37057,290,0,True
+"Davie County, North Carolina",37059,210,0,True
+"Duplin County, North Carolina",37061,77,0,False
+"Durham County, North Carolina",37063,709,1,True
+"Edgecombe County, North Carolina",37065,160,1,True
+"Forsyth County, North Carolina",37067,346,0,True
+"Franklin County, North Carolina",37069,247,0,True
+"Gaston County, North Carolina",37071,652,0,True
+"Gates County, North Carolina",37073,256,0,True
+"Graham County, North Carolina",37075,121,0,False
+"Granville County, North Carolina",37077,147,0,False
+"Greene County, North Carolina",37079,38,2,False
+"Guilford County, North Carolina",37081,407,1,True
+"Halifax County, North Carolina",37083,202,3,False
+"Harnett County, North Carolina",37085,182,0,False
+"Haywood County, North Carolina",37087,148,1,False
+"Henderson County, North Carolina",37089,105,1,True
+"Hertford County, North Carolina",37091,230,1,False
+"Hoke County, North Carolina",37093,103,2,True
+"Hyde County, North Carolina",37095,211,3,False
+"Iredell County, North Carolina",37097,445,0,True
+"Jackson County, North Carolina",37099,775,1,False
+"Johnston County, North Carolina",37101,251,1,True
+"Jones County, North Carolina",37103,634,1,False
+"Lee County, North Carolina",37105,230,0,False
+"Lenoir County, North Carolina",37107,196,2,False
+"Lincoln County, North Carolina",37109,177,0,True
+"McDowell County, North Carolina",37111,175,0,False
+"Macon County, North Carolina",37113,218,1,False
+"Madison County, North Carolina",37115,110,0,True
+"Martin County, North Carolina",37117,40,1,False
+"Mecklenburg County, North Carolina",37119,766,1,True
+"Mitchell County, North Carolina",37121,411,1,False
+"Montgomery County, North Carolina",37123,33,0,False
+"Moore County, North Carolina",37125,755,1,True
+"Nash County, North Carolina",37127,102,1,True
+"New Hanover County, North Carolina",37129,412,2,True
+"Northampton County, North Carolina",37131,250,2,False
+"Onslow County, North Carolina",37133,260,2,True
+"Orange County, North Carolina",37135,258,1,True
+"Pamlico County, North Carolina",37137,136,0,False
+"Pasquotank County, North Carolina",37139,258,1,False
+"Pender County, North Carolina",37141,98,1,True
+"Perquimans County, North Carolina",37143,151,1,False
+"Person County, North Carolina",37145,252,0,True
+"Pitt County, North Carolina",37147,209,2,True
+"Polk County, North Carolina",37149,37,0,False
+"Randolph County, North Carolina",37151,291,0,True
+"Richmond County, North Carolina",37153,172,1,False
+"Robeson County, North Carolina",37155,2591,1,False
+"Rockingham County, North Carolina",37157,78,0,True
+"Rowan County, North Carolina",37159,566,0,True
+"Rutherford County, North Carolina",37161,105,0,False
+"Sampson County, North Carolina",37163,37,0,False
+"Scotland County, North Carolina",37165,949,2,False
+"Stanly County, North Carolina",37167,272,0,False
+"Stokes County, North Carolina",37169,205,0,True
+"Surry County, North Carolina",37171,241,0,False
+"Swain County, North Carolina",37173,506,0,False
+"Transylvania County, North Carolina",37175,185,1,False
+"Tyrrell County, North Carolina",37177,189,2,False
+"Union County, North Carolina",37179,121,0,True
+"Vance County, North Carolina",37181,241,1,False
+"Wake County, North Carolina",37183,718,0,True
+"Warren County, North Carolina",37185,245,1,False
+"Washington County, North Carolina",37187,240,3,False
+"Watauga County, North Carolina",37189,359,1,False
+"Wayne County, North Carolina",37191,159,1,True
+"Wilkes County, North Carolina",37193,209,0,False
+"Wilson County, North Carolina",37195,206,1,False
+"Yadkin County, North Carolina",37197,209,0,True
+"Yancey County, North Carolina",37199,39,1,False
+"Adams County, North Dakota",38001,76,1,False
+"Barnes County, North Dakota",38003,120,1,False
+"Benson County, North Dakota",38005,78,3,False
+"Billings County, North Dakota",38007,626,0,False
+"Bottineau County, North Dakota",38009,709,1,False
+"Bowman County, North Dakota",38011,113,1,False
+"Burke County, North Dakota",38013,213,0,False
+"Burleigh County, North Dakota",38015,340,0,True
+"Cass County, North Dakota",38017,637,0,True
+"Cavalier County, North Dakota",38019,308,1,False
+"Dickey County, North Dakota",38021,105,1,False
+"Divide County, North Dakota",38023,113,0,False
+"Dunn County, North Dakota",38025,107,0,False
+"Eddy County, North Dakota",38027,184,1,False
+"Emmons County, North Dakota",38029,113,1,False
+"Foster County, North Dakota",38031,117,0,False
+"Golden Valley County, North Dakota",38033,262,1,False
+"Grand Forks County, North Dakota",38035,343,1,True
+"Grant County, North Dakota",38037,64,1,False
+"Griggs County, North Dakota",38039,79,1,False
+"Hettinger County, North Dakota",38041,235,0,False
+"Kidder County, North Dakota",38043,73,1,False
+"LaMoure County, North Dakota",38045,114,1,False
+"Logan County, North Dakota",38047,166,1,False
+"McHenry County, North Dakota",38049,102,1,True
+"McIntosh County, North Dakota",38051,293,1,False
+"McKenzie County, North Dakota",38053,340,1,False
+"McLean County, North Dakota",38055,143,0,False
+"Mercer County, North Dakota",38057,105,1,False
+"Morton County, North Dakota",38059,238,0,True
+"Mountrail County, North Dakota",38061,495,0,False
+"Nelson County, North Dakota",38063,73,1,False
+"Oliver County, North Dakota",38065,121,0,True
+"Pembina County, North Dakota",38067,238,1,False
+"Pierce County, North Dakota",38069,112,1,False
+"Ramsey County, North Dakota",38071,120,0,False
+"Ransom County, North Dakota",38073,113,0,False
+"Renville County, North Dakota",38075,246,1,True
+"Richland County, North Dakota",38077,262,0,False
+"Rolette County, North Dakota",38079,112,2,False
+"Sargent County, North Dakota",38081,555,0,False
+"Sheridan County, North Dakota",38083,162,1,False
+"Sioux County, North Dakota",38085,122,3,False
+"Slope County, North Dakota",38087,199,1,False
+"Stark County, North Dakota",38089,266,0,False
+"Steele County, North Dakota",38091,161,1,False
+"Stutsman County, North Dakota",38093,219,0,False
+"Towner County, North Dakota",38095,123,1,False
+"Traill County, North Dakota",38097,108,1,False
+"Walsh County, North Dakota",38099,116,1,False
+"Ward County, North Dakota",38101,260,0,True
+"Wells County, North Dakota",38103,107,1,False
+"Williams County, North Dakota",38105,461,0,False
+"Adams County, Ohio",39001,161,0,False
+"Allen County, Ohio",39003,339,1,True
+"Ashland County, Ohio",39005,362,0,False
+"Ashtabula County, Ohio",39007,1066,1,True
+"Athens County, Ohio",39009,343,2,False
+"Auglaize County, Ohio",39011,257,0,False
+"Belmont County, Ohio",39013,270,0,True
+"Brown County, Ohio",39015,272,0,True
+"Butler County, Ohio",39017,353,0,True
+"Carroll County, Ohio",39019,375,0,True
+"Champaign County, Ohio",39021,382,0,False
+"Clark County, Ohio",39023,318,1,True
+"Clermont County, Ohio",39025,454,0,True
+"Clinton County, Ohio",39027,271,0,False
+"Columbiana County, Ohio",39029,851,1,False
+"Coshocton County, Ohio",39031,521,0,False
+"Crawford County, Ohio",39033,331,1,False
+"Cuyahoga County, Ohio",39035,727,2,True
+"Darke County, Ohio",39037,323,1,False
+"Defiance County, Ohio",39039,267,1,False
+"Delaware County, Ohio",39041,545,0,True
+"Erie County, Ohio",39043,369,1,True
+"Fairfield County, Ohio",39045,207,0,True
+"Fayette County, Ohio",39047,540,1,False
+"Franklin County, Ohio",39049,1047,1,True
+"Fulton County, Ohio",39051,239,0,True
+"Gallia County, Ohio",39053,348,1,False
+"Geauga County, Ohio",39055,462,0,True
+"Greene County, Ohio",39057,298,0,True
+"Guernsey County, Ohio",39059,308,1,False
+"Hamilton County, Ohio",39061,309,1,True
+"Hancock County, Ohio",39063,237,0,False
+"Hardin County, Ohio",39065,165,0,False
+"Harrison County, Ohio",39067,224,1,False
+"Henry County, Ohio",39069,229,1,False
+"Highland County, Ohio",39071,243,0,False
+"Hocking County, Ohio",39073,348,0,True
+"Holmes County, Ohio",39075,577,1,False
+"Huron County, Ohio",39077,296,0,False
+"Jackson County, Ohio",39079,204,0,False
+"Jefferson County, Ohio",39081,309,1,True
+"Knox County, Ohio",39083,318,0,False
+"Lake County, Ohio",39085,378,0,True
+"Lawrence County, Ohio",39087,298,0,True
+"Licking County, Ohio",39089,502,0,True
+"Logan County, Ohio",39091,271,0,False
+"Lorain County, Ohio",39093,280,0,True
+"Lucas County, Ohio",39095,526,1,True
+"Madison County, Ohio",39097,204,0,True
+"Mahoning County, Ohio",39099,381,1,True
+"Marion County, Ohio",39101,410,0,False
+"Medina County, Ohio",39103,346,0,True
+"Meigs County, Ohio",39105,132,0,False
+"Mercer County, Ohio",39107,260,0,False
+"Miami County, Ohio",39109,127,0,True
+"Monroe County, Ohio",39111,185,1,False
+"Montgomery County, Ohio",39113,356,0,True
+"Morgan County, Ohio",39115,229,0,False
+"Morrow County, Ohio",39117,1179,0,True
+"Muskingum County, Ohio",39119,696,0,False
+"Noble County, Ohio",39121,195,2,False
+"Ottawa County, Ohio",39123,317,0,True
+"Paulding County, Ohio",39125,204,1,False
+"Perry County, Ohio",39127,410,0,True
+"Pickaway County, Ohio",39129,222,0,True
+"Pike County, Ohio",39131,88,1,False
+"Portage County, Ohio",39133,719,0,True
+"Preble County, Ohio",39135,340,1,False
+"Putnam County, Ohio",39137,369,1,False
+"Richland County, Ohio",39139,370,0,True
+"Ross County, Ohio",39141,328,0,False
+"Sandusky County, Ohio",39143,376,1,False
+"Scioto County, Ohio",39145,285,1,False
+"Seneca County, Ohio",39147,411,1,False
+"Shelby County, Ohio",39149,274,0,False
+"Stark County, Ohio",39151,376,1,True
+"Summit County, Ohio",39153,474,1,True
+"Trumbull County, Ohio",39155,220,1,True
+"Tuscarawas County, Ohio",39157,345,0,False
+"Union County, Ohio",39159,218,0,True
+"Van Wert County, Ohio",39161,367,0,False
+"Vinton County, Ohio",39163,174,1,False
+"Warren County, Ohio",39165,489,0,True
+"Washington County, Ohio",39167,290,1,False
+"Wayne County, Ohio",39169,215,0,False
+"Williams County, Ohio",39171,114,1,False
+"Wood County, Ohio",39173,366,0,True
+"Wyandot County, Ohio",39175,460,1,False
+"Adair County, Oklahoma",40001,258,2,False
+"Alfalfa County, Oklahoma",40003,344,1,False
+"Atoka County, Oklahoma",40005,199,2,False
+"Beaver County, Oklahoma",40007,181,1,False
+"Beckham County, Oklahoma",40009,270,1,False
+"Blaine County, Oklahoma",40011,344,2,False
+"Bryan County, Oklahoma",40013,470,0,False
+"Caddo County, Oklahoma",40015,448,2,False
+"Canadian County, Oklahoma",40017,501,0,True
+"Carter County, Oklahoma",40019,221,0,False
+"Cherokee County, Oklahoma",40021,149,1,False
+"Choctaw County, Oklahoma",40023,395,2,False
+"Cimarron County, Oklahoma",40025,716,1,False
+"Cleveland County, Oklahoma",40027,192,0,True
+"Coal County, Oklahoma",40029,36,3,False
+"Comanche County, Oklahoma",40031,1268,1,True
+"Cotton County, Oklahoma",40033,293,1,True
+"Craig County, Oklahoma",40035,188,0,False
+"Creek County, Oklahoma",40037,77,0,True
+"Custer County, Oklahoma",40039,176,0,False
+"Delaware County, Oklahoma",40041,417,1,False
+"Dewey County, Oklahoma",40043,169,0,False
+"Ellis County, Oklahoma",40045,178,0,False
+"Garfield County, Oklahoma",40047,891,0,True
+"Garvin County, Oklahoma",40049,363,0,False
+"Grady County, Oklahoma",40051,171,0,True
+"Grant County, Oklahoma",40053,245,1,False
+"Greer County, Oklahoma",40055,507,2,False
+"Harmon County, Oklahoma",40057,164,1,False
+"Harper County, Oklahoma",40059,235,0,False
+"Haskell County, Oklahoma",40061,113,0,False
+"Hughes County, Oklahoma",40063,145,3,False
+"Jackson County, Oklahoma",40065,418,1,False
+"Jefferson County, Oklahoma",40067,122,2,False
+"Johnston County, Oklahoma",40069,196,1,False
+"Kay County, Oklahoma",40071,326,1,False
+"Kingfisher County, Oklahoma",40073,230,0,False
+"Kiowa County, Oklahoma",40075,124,1,False
+"Latimer County, Oklahoma",40077,318,0,False
+"Lincoln County, Oklahoma",40081,197,0,True
+"Logan County, Oklahoma",40083,182,1,True
+"Love County, Oklahoma",40085,286,0,False
+"McClain County, Oklahoma",40087,216,0,True
+"McCurtain County, Oklahoma",40089,362,2,False
+"McIntosh County, Oklahoma",40091,383,2,False
+"Major County, Oklahoma",40093,397,0,False
+"Marshall County, Oklahoma",40095,364,1,False
+"Mayes County, Oklahoma",40097,200,0,False
+"Murray County, Oklahoma",40099,163,0,False
+"Muskogee County, Oklahoma",40101,412,0,False
+"Noble County, Oklahoma",40103,400,0,False
+"Nowata County, Oklahoma",40105,198,1,False
+"Okfuskee County, Oklahoma",40107,180,2,False
+"Oklahoma County, Oklahoma",40109,520,1,True
+"Okmulgee County, Oklahoma",40111,295,0,True
+"Osage County, Oklahoma",40113,482,0,True
+"Ottawa County, Oklahoma",40115,595,1,False
+"Pawnee County, Oklahoma",40117,201,1,True
+"Payne County, Oklahoma",40119,452,2,False
+"Pittsburg County, Oklahoma",40121,305,0,False
+"Pontotoc County, Oklahoma",40123,468,0,False
+"Pottawatomie County, Oklahoma",40125,170,0,False
+"Pushmataha County, Oklahoma",40127,572,2,False
+"Roger Mills County, Oklahoma",40129,304,0,False
+"Rogers County, Oklahoma",40131,449,0,True
+"Seminole County, Oklahoma",40133,648,1,False
+"Sequoyah County, Oklahoma",40135,215,0,True
+"Stephens County, Oklahoma",40137,284,0,False
+"Texas County, Oklahoma",40139,521,1,False
+"Tillman County, Oklahoma",40141,223,1,False
+"Tulsa County, Oklahoma",40143,542,0,True
+"Wagoner County, Oklahoma",40145,81,0,True
+"Washington County, Oklahoma",40147,408,0,False
+"Washita County, Oklahoma",40149,126,0,False
+"Woods County, Oklahoma",40151,108,1,False
+"Woodward County, Oklahoma",40153,739,0,False
+"Baker County, Oregon",41001,564,0,False
+"Benton County, Oregon",41003,342,1,True
+"Clackamas County, Oregon",41005,405,1,True
+"Clatsop County, Oregon",41007,357,2,False
+"Columbia County, Oregon",41009,39,0,True
+"Coos County, Oregon",41011,266,2,False
+"Crook County, Oregon",41013,298,1,True
+"Curry County, Oregon",41015,261,2,False
+"Deschutes County, Oregon",41017,441,2,True
+"Douglas County, Oregon",41019,337,2,False
+"Gilliam County, Oregon",41021,250,0,False
+"Grant County, Oregon",41023,321,1,False
+"Harney County, Oregon",41025,2461,0,False
+"Hood River County, Oregon",41027,489,1,False
+"Jackson County, Oregon",41029,320,1,True
+"Jefferson County, Oregon",41031,112,2,True
+"Josephine County, Oregon",41033,322,2,True
+"Klamath County, Oregon",41035,289,1,False
+"Lake County, Oregon",41037,814,1,False
+"Lane County, Oregon",41039,319,1,True
+"Lincoln County, Oregon",41041,170,2,False
+"Linn County, Oregon",41043,503,1,True
+"Malheur County, Oregon",41045,443,2,False
+"Marion County, Oregon",41047,667,1,True
+"Morrow County, Oregon",41049,555,0,False
+"Multnomah County, Oregon",41051,233,1,True
+"Polk County, Oregon",41053,311,1,True
+"Sherman County, Oregon",41055,228,0,False
+"Tillamook County, Oregon",41057,268,2,False
+"Umatilla County, Oregon",41059,430,0,False
+"Union County, Oregon",41061,146,1,False
+"Wallowa County, Oregon",41063,612,0,False
+"Wasco County, Oregon",41065,269,0,False
+"Washington County, Oregon",41067,1378,1,True
+"Wheeler County, Oregon",41069,219,1,False
+"Yamhill County, Oregon",41071,224,1,True
+"Adams County, Pennsylvania",42001,608,0,True
+"Allegheny County, Pennsylvania",42003,884,0,True
+"Armstrong County, Pennsylvania",42005,365,1,True
+"Beaver County, Pennsylvania",42007,145,1,True
+"Bedford County, Pennsylvania",42009,100,1,False
+"Berks County, Pennsylvania",42011,906,0,True
+"Blair County, Pennsylvania",42013,412,1,True
+"Bradford County, Pennsylvania",42015,604,1,False
+"Bucks County, Pennsylvania",42017,753,0,True
+"Butler County, Pennsylvania",42019,253,0,True
+"Cambria County, Pennsylvania",42021,454,1,True
+"Cameron County, Pennsylvania",42023,283,1,False
+"Carbon County, Pennsylvania",42025,619,0,True
+"Centre County, Pennsylvania",42027,185,1,True
+"Chester County, Pennsylvania",42029,998,0,True
+"Clarion County, Pennsylvania",42031,252,1,False
+"Clearfield County, Pennsylvania",42033,340,1,False
+"Clinton County, Pennsylvania",42035,249,0,False
+"Columbia County, Pennsylvania",42037,330,0,False
+"Crawford County, Pennsylvania",42039,344,1,False
+"Cumberland County, Pennsylvania",42041,177,0,True
+"Dauphin County, Pennsylvania",42043,565,0,True
+"Delaware County, Pennsylvania",42045,667,1,True
+"Elk County, Pennsylvania",42047,471,1,False
+"Erie County, Pennsylvania",42049,337,1,True
+"Fayette County, Pennsylvania",42051,501,1,True
+"Forest County, Pennsylvania",42053,211,2,False
+"Franklin County, Pennsylvania",42055,263,0,True
+"Fulton County, Pennsylvania",42057,272,0,False
+"Greene County, Pennsylvania",42059,144,1,False
+"Huntingdon County, Pennsylvania",42061,563,1,False
+"Indiana County, Pennsylvania",42063,903,1,False
+"Jefferson County, Pennsylvania",42065,390,2,False
+"Juniata County, Pennsylvania",42067,1348,1,False
+"Lackawanna County, Pennsylvania",42069,824,0,True
+"Lancaster County, Pennsylvania",42071,806,0,True
+"Lawrence County, Pennsylvania",42073,196,1,True
+"Lebanon County, Pennsylvania",42075,525,0,True
+"Lehigh County, Pennsylvania",42077,1391,1,True
+"Luzerne County, Pennsylvania",42079,1625,0,True
+"Lycoming County, Pennsylvania",42081,318,1,True
+"McKean County, Pennsylvania",42083,840,1,False
+"Mercer County, Pennsylvania",42085,241,1,False
+"Mifflin County, Pennsylvania",42087,317,1,False
+"Monroe County, Pennsylvania",42089,1344,1,False
+"Montgomery County, Pennsylvania",42091,924,0,True
+"Montour County, Pennsylvania",42093,388,0,False
+"Northampton County, Pennsylvania",42095,1288,0,True
+"Northumberland County, Pennsylvania",42097,901,1,False
+"Perry County, Pennsylvania",42099,624,0,True
+"Philadelphia County, Pennsylvania",42101,4403,2,True
+"Pike County, Pennsylvania",42103,160,0,False
+"Potter County, Pennsylvania",42105,407,1,False
+"Schuylkill County, Pennsylvania",42107,875,1,False
+"Snyder County, Pennsylvania",42109,299,0,False
+"Somerset County, Pennsylvania",42111,894,1,False
+"Sullivan County, Pennsylvania",42113,255,3,False
+"Susquehanna County, Pennsylvania",42115,235,0,False
+"Tioga County, Pennsylvania",42117,233,0,False
+"Union County, Pennsylvania",42119,546,1,False
+"Venango County, Pennsylvania",42121,332,1,False
+"Warren County, Pennsylvania",42123,344,1,False
+"Washington County, Pennsylvania",42125,601,0,True
+"Wayne County, Pennsylvania",42127,377,0,False
+"Westmoreland County, Pennsylvania",42129,278,1,True
+"Wyoming County, Pennsylvania",42131,288,0,True
+"York County, Pennsylvania",42133,1491,0,True
+"Bristol County, Rhode Island",44001,370,0,True
+"Kent County, Rhode Island",44003,473,1,True
+"Newport County, Rhode Island",44005,507,1,True
+"Providence County, Rhode Island",44007,462,1,True
+"Washington County, Rhode Island",44009,429,0,True
+"Abbeville County, South Carolina",45001,256,1,False
+"Aiken County, South Carolina",45003,320,0,True
+"Allendale County, South Carolina",45005,78,4,False
+"Anderson County, South Carolina",45007,633,0,True
+"Bamberg County, South Carolina",45009,278,1,False
+"Barnwell County, South Carolina",45011,88,2,False
+"Beaufort County, South Carolina",45013,871,2,True
+"Berkeley County, South Carolina",45015,214,1,True
+"Calhoun County, South Carolina",45017,737,1,True
+"Charleston County, South Carolina",45019,570,2,True
+"Cherokee County, South Carolina",45021,375,0,False
+"Chester County, South Carolina",45023,85,1,True
+"Chesterfield County, South Carolina",45025,186,1,False
+"Clarendon County, South Carolina",45027,920,0,False
+"Colleton County, South Carolina",45029,228,0,False
+"Darlington County, South Carolina",45031,336,0,True
+"Dillon County, South Carolina",45033,44,2,False
+"Dorchester County, South Carolina",45035,241,0,True
+"Edgefield County, South Carolina",45037,326,1,True
+"Fairfield County, South Carolina",45039,83,0,True
+"Florence County, South Carolina",45041,87,0,True
+"Georgetown County, South Carolina",45043,273,1,False
+"Greenville County, South Carolina",45045,556,0,True
+"Greenwood County, South Carolina",45047,177,0,False
+"Hampton County, South Carolina",45049,185,3,False
+"Horry County, South Carolina",45051,445,1,True
+"Jasper County, South Carolina",45053,428,2,True
+"Kershaw County, South Carolina",45055,346,0,True
+"Lancaster County, South Carolina",45057,265,1,True
+"Laurens County, South Carolina",45059,117,0,True
+"Lee County, South Carolina",45061,87,5,False
+"Lexington County, South Carolina",45063,404,0,True
+"McCormick County, South Carolina",45065,177,2,False
+"Marion County, South Carolina",45067,101,3,False
+"Marlboro County, South Carolina",45069,694,3,False
+"Newberry County, South Carolina",45071,272,0,False
+"Oconee County, South Carolina",45073,436,1,False
+"Orangeburg County, South Carolina",45075,461,1,False
+"Pickens County, South Carolina",45077,149,0,True
+"Richland County, South Carolina",45079,524,1,True
+"Saluda County, South Carolina",45081,170,0,True
+"Spartanburg County, South Carolina",45083,265,0,True
+"Sumter County, South Carolina",45085,796,0,True
+"Union County, South Carolina",45087,227,1,True
+"Williamsburg County, South Carolina",45089,153,4,False
+"York County, South Carolina",45091,253,0,True
+"Aurora County, South Dakota",46003,84,0,False
+"Beadle County, South Dakota",46005,189,0,False
+"Bennett County, South Dakota",46007,835,3,False
+"Bon Homme County, South Dakota",46009,96,2,False
+"Brookings County, South Dakota",46011,244,0,False
+"Brown County, South Dakota",46013,285,0,False
+"Brule County, South Dakota",46015,39,1,False
+"Buffalo County, South Dakota",46017,865,4,False
+"Butte County, South Dakota",46019,179,0,False
+"Campbell County, South Dakota",46021,255,1,False
+"Charles Mix County, South Dakota",46023,550,1,False
+"Clark County, South Dakota",46025,157,0,False
+"Clay County, South Dakota",46027,422,2,False
+"Codington County, South Dakota",46029,271,0,False
+"Corson County, South Dakota",46031,549,3,False
+"Custer County, South Dakota",46033,352,2,True
+"Davison County, South Dakota",46035,264,0,False
+"Day County, South Dakota",46037,123,1,False
+"Deuel County, South Dakota",46039,172,1,False
+"Dewey County, South Dakota",46041,437,2,False
+"Douglas County, South Dakota",46043,153,1,False
+"Edmunds County, South Dakota",46045,227,1,False
+"Fall River County, South Dakota",46047,125,3,False
+"Faulk County, South Dakota",46049,170,1,False
+"Grant County, South Dakota",46051,161,0,False
+"Gregory County, South Dakota",46053,136,1,False
+"Haakon County, South Dakota",46055,34,1,False
+"Hamlin County, South Dakota",46057,154,0,False
+"Hand County, South Dakota",46059,34,1,False
+"Hanson County, South Dakota",46061,362,1,False
+"Harding County, South Dakota",46063,750,0,False
+"Hughes County, South Dakota",46065,458,0,False
+"Hutchinson County, South Dakota",46067,151,0,False
+"Hyde County, South Dakota",46069,244,1,False
+"Jackson County, South Dakota",46071,186,3,False
+"Jerauld County, South Dakota",46073,46,1,False
+"Jones County, South Dakota",46075,310,1,False
+"Kingsbury County, South Dakota",46077,364,0,False
+"Lake County, South Dakota",46079,67,2,False
+"Lawrence County, South Dakota",46081,276,1,False
+"Lincoln County, South Dakota",46083,483,1,True
+"Lyman County, South Dakota",46085,259,1,False
+"McCook County, South Dakota",46087,249,0,True
+"McPherson County, South Dakota",46089,33,1,False
+"Marshall County, South Dakota",46091,142,0,False
+"Meade County, South Dakota",46093,301,0,True
+"Mellette County, South Dakota",46095,623,4,False
+"Miner County, South Dakota",46097,88,1,False
+"Minnehaha County, South Dakota",46099,485,0,True
+"Moody County, South Dakota",46101,95,1,False
+"Oglala Lakota County, South Dakota",46102,932,4,False
+"Pennington County, South Dakota",46103,441,1,True
+"Perkins County, South Dakota",46105,146,1,False
+"Potter County, South Dakota",46107,92,0,False
+"Roberts County, South Dakota",46109,220,1,False
+"Sanborn County, South Dakota",46111,197,1,False
+"Spink County, South Dakota",46115,120,1,False
+"Stanley County, South Dakota",46117,266,0,False
+"Sully County, South Dakota",46119,944,0,False
+"Todd County, South Dakota",46121,862,3,False
+"Tripp County, South Dakota",46123,345,1,False
+"Turner County, South Dakota",46125,180,0,True
+"Union County, South Dakota",46127,497,0,True
+"Walworth County, South Dakota",46129,1001,1,False
+"Yankton County, South Dakota",46135,138,0,False
+"Ziebach County, South Dakota",46137,305,2,False
+"Anderson County, Tennessee",47001,159,0,True
+"Bedford County, Tennessee",47003,196,0,False
+"Benton County, Tennessee",47005,477,2,False
+"Bledsoe County, Tennessee",47007,38,3,False
+"Blount County, Tennessee",47009,129,1,True
+"Bradley County, Tennessee",47011,396,0,True
+"Campbell County, Tennessee",47013,142,1,True
+"Cannon County, Tennessee",47015,129,0,True
+"Carroll County, Tennessee",47017,156,1,False
+"Carter County, Tennessee",47019,363,0,True
+"Cheatham County, Tennessee",47021,200,0,True
+"Chester County, Tennessee",47023,140,0,True
+"Claiborne County, Tennessee",47025,71,0,False
+"Clay County, Tennessee",47027,240,3,False
+"Cocke County, Tennessee",47029,182,3,False
+"Coffee County, Tennessee",47031,220,0,False
+"Crockett County, Tennessee",47033,82,0,True
+"Cumberland County, Tennessee",47035,100,1,False
+"Davidson County, Tennessee",47037,752,1,True
+"Decatur County, Tennessee",47039,41,2,False
+"DeKalb County, Tennessee",47041,182,3,False
+"Dickson County, Tennessee",47043,379,0,True
+"Dyer County, Tennessee",47045,98,0,False
+"Fayette County, Tennessee",47047,339,1,True
+"Fentress County, Tennessee",47049,38,2,False
+"Franklin County, Tennessee",47051,291,0,False
+"Gibson County, Tennessee",47053,221,0,True
+"Giles County, Tennessee",47055,36,0,False
+"Grainger County, Tennessee",47057,140,2,True
+"Greene County, Tennessee",47059,102,0,False
+"Grundy County, Tennessee",47061,127,2,False
+"Hamblen County, Tennessee",47063,321,0,True
+"Hamilton County, Tennessee",47065,815,0,True
+"Hancock County, Tennessee",47067,86,4,False
+"Hardeman County, Tennessee",47069,36,4,False
+"Hardin County, Tennessee",47071,456,1,False
+"Hawkins County, Tennessee",47073,226,0,True
+"Haywood County, Tennessee",47075,188,3,False
+"Henderson County, Tennessee",47077,164,1,False
+"Henry County, Tennessee",47079,480,1,False
+"Hickman County, Tennessee",47081,187,1,True
+"Houston County, Tennessee",47083,95,1,False
+"Humphreys County, Tennessee",47085,190,0,False
+"Jackson County, Tennessee",47087,106,2,False
+"Jefferson County, Tennessee",47089,317,1,True
+"Johnson County, Tennessee",47091,91,3,False
+"Knox County, Tennessee",47093,394,0,True
+"Lake County, Tennessee",47095,909,4,False
+"Lauderdale County, Tennessee",47097,163,2,False
+"Lawrence County, Tennessee",47099,238,0,False
+"Lewis County, Tennessee",47101,157,0,False
+"Lincoln County, Tennessee",47103,145,0,False
+"Loudon County, Tennessee",47105,217,1,True
+"McMinn County, Tennessee",47107,291,0,False
+"McNairy County, Tennessee",47109,775,1,False
+"Macon County, Tennessee",47111,135,2,True
+"Madison County, Tennessee",47113,83,1,True
+"Marion County, Tennessee",47115,167,0,True
+"Marshall County, Tennessee",47117,555,0,False
+"Maury County, Tennessee",47119,133,1,True
+"Meigs County, Tennessee",47121,91,2,False
+"Monroe County, Tennessee",47123,78,1,False
+"Montgomery County, Tennessee",47125,199,0,True
+"Moore County, Tennessee",47127,388,0,False
+"Morgan County, Tennessee",47129,95,2,True
+"Obion County, Tennessee",47131,276,2,False
+"Overton County, Tennessee",47133,102,1,False
+"Perry County, Tennessee",47135,1677,2,False
+"Pickett County, Tennessee",47137,474,1,False
+"Polk County, Tennessee",47139,431,1,True
+"Putnam County, Tennessee",47141,101,0,False
+"Rhea County, Tennessee",47143,208,0,False
+"Roane County, Tennessee",47145,86,0,True
+"Robertson County, Tennessee",47147,393,0,True
+"Rutherford County, Tennessee",47149,436,0,True
+"Scott County, Tennessee",47151,271,3,False
+"Sequatchie County, Tennessee",47153,82,1,True
+"Sevier County, Tennessee",47155,226,1,False
+"Shelby County, Tennessee",47157,1023,1,True
+"Smith County, Tennessee",47159,349,0,True
+"Stewart County, Tennessee",47161,93,0,True
+"Sullivan County, Tennessee",47163,466,0,True
+"Sumner County, Tennessee",47165,500,0,True
+"Tipton County, Tennessee",47167,155,0,True
+"Trousdale County, Tennessee",47169,1352,3,True
+"Unicoi County, Tennessee",47171,336,0,True
+"Union County, Tennessee",47173,90,1,True
+"Van Buren County, Tennessee",47175,83,2,False
+"Warren County, Tennessee",47177,102,1,False
+"Washington County, Tennessee",47179,487,0,True
+"Wayne County, Tennessee",47181,234,2,False
+"Weakley County, Tennessee",47183,300,0,False
+"White County, Tennessee",47185,119,1,False
+"Williamson County, Tennessee",47187,516,0,True
+"Wilson County, Tennessee",47189,133,1,True
+"Anderson County, Texas",48001,239,1,False
+"Andrews County, Texas",48003,252,0,False
+"Angelina County, Texas",48005,333,0,False
+"Aransas County, Texas",48007,151,2,True
+"Archer County, Texas",48009,186,0,True
+"Armstrong County, Texas",48011,263,1,True
+"Atascosa County, Texas",48013,180,0,True
+"Austin County, Texas",48015,356,1,True
+"Bailey County, Texas",48017,54,1,False
+"Bandera County, Texas",48019,410,1,True
+"Bastrop County, Texas",48021,148,1,True
+"Baylor County, Texas",48023,35,1,False
+"Bee County, Texas",48025,271,2,False
+"Bell County, Texas",48027,303,1,True
+"Bexar County, Texas",48029,674,1,True
+"Blanco County, Texas",48031,191,1,False
+"Borden County, Texas",48033,351,1,False
+"Bosque County, Texas",48035,515,1,True
+"Bowie County, Texas",48037,297,1,True
+"Brazoria County, Texas",48039,911,0,True
+"Brazos County, Texas",48041,438,2,True
+"Brewster County, Texas",48043,481,0,False
+"Briscoe County, Texas",48045,558,1,False
+"Brooks County, Texas",48047,692,3,False
+"Brown County, Texas",48049,308,0,False
+"Burleson County, Texas",48051,301,0,True
+"Burnet County, Texas",48053,480,1,False
+"Caldwell County, Texas",48055,398,3,True
+"Calhoun County, Texas",48057,284,0,False
+"Callahan County, Texas",48059,220,0,True
+"Cameron County, Texas",48061,753,2,True
+"Camp County, Texas",48063,171,1,False
+"Carson County, Texas",48065,250,1,True
+"Cass County, Texas",48067,179,0,False
+"Castro County, Texas",48069,386,1,False
+"Chambers County, Texas",48071,169,0,True
+"Cherokee County, Texas",48073,336,0,False
+"Childress County, Texas",48075,447,2,False
+"Clay County, Texas",48077,456,1,True
+"Cochran County, Texas",48079,156,2,True
+"Coke County, Texas",48081,268,1,False
+"Coleman County, Texas",48083,212,1,False
+"Collin County, Texas",48085,296,1,True
+"Collingsworth County, Texas",48087,413,1,False
+"Colorado County, Texas",48089,137,0,False
+"Comal County, Texas",48091,1022,1,True
+"Comanche County, Texas",48093,177,1,False
+"Concho County, Texas",48095,142,2,False
+"Cooke County, Texas",48097,425,0,False
+"Coryell County, Texas",48099,234,1,True
+"Cottle County, Texas",48101,345,1,False
+"Crane County, Texas",48103,236,1,False
+"Crockett County, Texas",48105,188,2,False
+"Crosby County, Texas",48107,846,3,True
+"Culberson County, Texas",48109,480,3,False
+"Dallam County, Texas",48111,223,1,False
+"Dallas County, Texas",48113,724,1,True
+"Dawson County, Texas",48115,284,4,False
+"Deaf Smith County, Texas",48117,213,1,False
+"Delta County, Texas",48119,379,1,False
+"Denton County, Texas",48121,320,2,True
+"DeWitt County, Texas",48123,130,2,False
+"Dickens County, Texas",48125,188,3,False
+"Dimmit County, Texas",48127,334,5,False
+"Donley County, Texas",48129,97,1,False
+"Duval County, Texas",48131,191,4,False
+"Eastland County, Texas",48133,443,0,False
+"Ector County, Texas",48135,369,1,True
+"Edwards County, Texas",48137,312,1,False
+"Ellis County, Texas",48139,291,0,True
+"El Paso County, Texas",48141,856,1,True
+"Erath County, Texas",48143,475,1,False
+"Falls County, Texas",48145,513,4,True
+"Fannin County, Texas",48147,287,0,False
+"Fayette County, Texas",48149,250,0,False
+"Fisher County, Texas",48151,314,1,False
+"Floyd County, Texas",48153,300,1,False
+"Foard County, Texas",48155,390,1,False
+"Fort Bend County, Texas",48157,677,0,True
+"Franklin County, Texas",48159,41,0,False
+"Freestone County, Texas",48161,98,0,False
+"Frio County, Texas",48163,166,3,False
+"Gaines County, Texas",48165,107,1,False
+"Galveston County, Texas",48167,519,1,True
+"Garza County, Texas",48169,338,2,True
+"Gillespie County, Texas",48171,695,2,False
+"Glasscock County, Texas",48173,370,1,False
+"Goliad County, Texas",48175,270,0,True
+"Gonzales County, Texas",48177,1274,1,False
+"Gray County, Texas",48179,240,1,False
+"Grayson County, Texas",48181,440,1,True
+"Gregg County, Texas",48183,607,0,True
+"Grimes County, Texas",48185,449,0,False
+"Guadalupe County, Texas",48187,301,0,True
+"Hale County, Texas",48189,221,2,False
+"Hall County, Texas",48191,171,1,False
+"Hamilton County, Texas",48193,182,0,False
+"Hansford County, Texas",48195,155,0,False
+"Hardeman County, Texas",48197,435,1,False
+"Hardin County, Texas",48199,197,0,True
+"Harris County, Texas",48201,655,1,True
+"Harrison County, Texas",48203,1063,0,True
+"Hartley County, Texas",48205,200,1,False
+"Haskell County, Texas",48207,175,2,False
+"Hays County, Texas",48209,660,2,True
+"Hemphill County, Texas",48211,448,0,False
+"Henderson County, Texas",48213,499,1,False
+"Hidalgo County, Texas",48215,1325,2,True
+"Hill County, Texas",48217,216,0,False
+"Hockley County, Texas",48219,311,0,True
+"Hood County, Texas",48221,266,2,False
+"Hopkins County, Texas",48223,413,0,False
+"Houston County, Texas",48225,678,2,False
+"Howard County, Texas",48227,241,1,False
+"Hudspeth County, Texas",48229,588,4,True
+"Hunt County, Texas",48231,322,1,True
+"Hutchinson County, Texas",48233,510,1,False
+"Irion County, Texas",48235,210,2,True
+"Jack County, Texas",48237,208,1,False
+"Jackson County, Texas",48239,274,0,False
+"Jasper County, Texas",48241,223,1,False
+"Jeff Davis County, Texas",48243,793,0,False
+"Jefferson County, Texas",48245,821,1,True
+"Jim Hogg County, Texas",48247,120,3,False
+"Jim Wells County, Texas",48249,328,3,False
+"Johnson County, Texas",48251,304,0,True
+"Jones County, Texas",48253,251,3,True
+"Karnes County, Texas",48255,232,3,False
+"Kaufman County, Texas",48257,109,1,True
+"Kendall County, Texas",48259,708,0,True
+"Kenedy County, Texas",48261,844,1,False
+"Kent County, Texas",48263,286,1,False
+"Kerr County, Texas",48265,323,2,False
+"Kimble County, Texas",48267,283,0,False
+"King County, Texas",48269,339,1,False
+"Kinney County, Texas",48271,406,1,False
+"Kleberg County, Texas",48273,387,2,False
+"Knox County, Texas",48275,164,1,False
+"Lamar County, Texas",48277,324,0,False
+"Lamb County, Texas",48279,327,2,False
+"Lampasas County, Texas",48281,184,1,True
+"La Salle County, Texas",48283,203,4,False
+"Lavaca County, Texas",48285,256,0,False
+"Lee County, Texas",48287,121,1,False
+"Leon County, Texas",48289,118,0,False
+"Liberty County, Texas",48291,385,3,True
+"Limestone County, Texas",48293,70,0,False
+"Lipscomb County, Texas",48295,213,0,False
+"Live Oak County, Texas",48297,128,2,False
+"Llano County, Texas",48299,133,2,False
+"Loving County, Texas",48301,459,1,False
+"Lubbock County, Texas",48303,639,1,True
+"Lynn County, Texas",48305,916,1,True
+"McCulloch County, Texas",48307,224,0,False
+"McLennan County, Texas",48309,286,1,True
+"McMullen County, Texas",48311,455,4,False
+"Madison County, Texas",48313,472,2,False
+"Marion County, Texas",48315,232,2,False
+"Martin County, Texas",48317,199,0,True
+"Mason County, Texas",48319,103,0,False
+"Matagorda County, Texas",48321,389,1,False
+"Maverick County, Texas",48323,324,2,True
+"Medina County, Texas",48325,545,0,True
+"Menard County, Texas",48327,164,1,False
+"Midland County, Texas",48329,336,1,True
+"Milam County, Texas",48331,216,0,False
+"Mills County, Texas",48333,372,1,False
+"Mitchell County, Texas",48335,202,2,False
+"Montague County, Texas",48337,240,0,False
+"Montgomery County, Texas",48339,156,1,True
+"Moore County, Texas",48341,277,1,False
+"Morris County, Texas",48343,260,1,False
+"Motley County, Texas",48345,517,1,False
+"Nacogdoches County, Texas",48347,370,2,False
+"Navarro County, Texas",48349,360,1,False
+"Newton County, Texas",48351,391,3,False
+"Nolan County, Texas",48353,226,1,False
+"Nueces County, Texas",48355,610,1,True
+"Ochiltree County, Texas",48357,464,1,False
+"Oldham County, Texas",48359,151,1,True
+"Orange County, Texas",48361,180,0,True
+"Palo Pinto County, Texas",48363,287,0,False
+"Panola County, Texas",48365,297,0,False
+"Parker County, Texas",48367,336,1,True
+"Parmer County, Texas",48369,294,0,False
+"Pecos County, Texas",48371,240,3,False
+"Polk County, Texas",48373,502,3,False
+"Potter County, Texas",48375,263,1,True
+"Presidio County, Texas",48377,311,2,False
+"Rains County, Texas",48379,214,1,False
+"Randall County, Texas",48381,539,0,True
+"Reagan County, Texas",48383,253,1,False
+"Real County, Texas",48385,318,1,False
+"Red River County, Texas",48387,351,1,False
+"Reeves County, Texas",48389,333,1,False
+"Refugio County, Texas",48391,182,2,False
+"Roberts County, Texas",48393,312,0,False
+"Robertson County, Texas",48395,303,0,True
+"Rockwall County, Texas",48397,559,0,True
+"Runnels County, Texas",48399,152,1,False
+"Rusk County, Texas",48401,252,0,True
+"Sabine County, Texas",48403,310,1,False
+"San Augustine County, Texas",48405,41,4,False
+"San Jacinto County, Texas",48407,269,2,True
+"San Patricio County, Texas",48409,145,1,True
+"San Saba County, Texas",48411,194,1,False
+"Schleicher County, Texas",48413,212,0,False
+"Scurry County, Texas",48415,468,0,False
+"Shackelford County, Texas",48417,557,0,False
+"Shelby County, Texas",48419,276,0,False
+"Sherman County, Texas",48421,298,1,False
+"Smith County, Texas",48423,284,0,True
+"Somervell County, Texas",48425,274,0,False
+"Starr County, Texas",48427,728,3,False
+"Stephens County, Texas",48429,284,2,False
+"Sterling County, Texas",48431,257,0,False
+"Stonewall County, Texas",48433,170,2,False
+"Sutton County, Texas",48435,237,0,False
+"Swisher County, Texas",48437,386,2,False
+"Tarrant County, Texas",48439,599,1,True
+"Taylor County, Texas",48441,344,1,True
+"Terrell County, Texas",48443,483,1,False
+"Terry County, Texas",48445,324,2,False
+"Throckmorton County, Texas",48447,241,1,False
+"Titus County, Texas",48449,169,2,False
+"Tom Green County, Texas",48451,498,0,True
+"Travis County, Texas",48453,475,1,True
+"Trinity County, Texas",48455,144,1,False
+"Tyler County, Texas",48457,341,2,False
+"Upshur County, Texas",48459,270,0,True
+"Upton County, Texas",48461,194,2,False
+"Uvalde County, Texas",48463,361,1,False
+"Val Verde County, Texas",48465,744,1,False
+"Van Zandt County, Texas",48467,243,1,False
+"Victoria County, Texas",48469,169,0,True
+"Walker County, Texas",48471,541,2,False
+"Waller County, Texas",48473,286,0,True
+"Ward County, Texas",48475,154,0,False
+"Washington County, Texas",48477,921,0,False
+"Webb County, Texas",48479,983,2,True
+"Wharton County, Texas",48481,398,0,False
+"Wheeler County, Texas",48483,605,0,False
+"Wichita County, Texas",48485,204,1,True
+"Wilbarger County, Texas",48487,327,1,False
+"Willacy County, Texas",48489,309,3,False
+"Williamson County, Texas",48491,686,2,True
+"Wilson County, Texas",48493,168,0,True
+"Winkler County, Texas",48495,165,1,False
+"Wise County, Texas",48497,261,0,True
+"Wood County, Texas",48499,109,1,False
+"Yoakum County, Texas",48501,734,1,False
+"Young County, Texas",48503,157,0,False
+"Zapata County, Texas",48505,445,3,False
+"Zavala County, Texas",48507,100,1,False
+"Beaver County, Utah",49001,175,0,False
+"Box Elder County, Utah",49003,466,0,False
+"Cache County, Utah",49005,265,0,True
+"Carbon County, Utah",49007,96,1,False
+"Daggett County, Utah",49009,328,0,False
+"Davis County, Utah",49011,359,0,True
+"Duchesne County, Utah",49013,108,0,False
+"Emery County, Utah",49015,179,0,False
+"Garfield County, Utah",49017,323,0,False
+"Grand County, Utah",49019,225,1,False
+"Iron County, Utah",49021,285,1,False
+"Juab County, Utah",49023,250,0,True
+"Kane County, Utah",49025,33,0,False
+"Millard County, Utah",49027,243,0,False
+"Morgan County, Utah",49029,369,0,True
+"Piute County, Utah",49031,199,1,False
+"Rich County, Utah",49033,666,1,False
+"Salt Lake County, Utah",49035,1042,1,True
+"San Juan County, Utah",49037,337,2,False
+"Sanpete County, Utah",49039,135,0,False
+"Sevier County, Utah",49041,489,0,False
+"Summit County, Utah",49043,305,0,False
+"Tooele County, Utah",49045,1333,0,True
+"Uintah County, Utah",49047,539,0,False
+"Utah County, Utah",49049,981,0,True
+"Wasatch County, Utah",49051,307,2,False
+"Washington County, Utah",49053,583,2,True
+"Wayne County, Utah",49055,160,0,False
+"Weber County, Utah",49057,334,0,True
+"Addison County, Vermont",50001,85,0,False
+"Bennington County, Vermont",50003,459,1,False
+"Caledonia County, Vermont",50005,243,1,False
+"Chittenden County, Vermont",50007,1422,1,True
+"Essex County, Vermont",50009,346,2,False
+"Franklin County, Vermont",50011,196,1,True
+"Grand Isle County, Vermont",50013,480,0,True
+"Lamoille County, Vermont",50015,393,1,False
+"Orange County, Vermont",50017,116,0,False
+"Orleans County, Vermont",50019,324,0,False
+"Rutland County, Vermont",50021,216,2,False
+"Washington County, Vermont",50023,575,0,False
+"Windham County, Vermont",50025,128,1,False
+"Windsor County, Vermont",50027,144,1,False
+"Accomack County, Virginia",51001,684,1,False
+"Albemarle County, Virginia",51003,670,0,True
+"Alleghany County, Virginia",51005,634,1,False
+"Amelia County, Virginia",51007,372,2,True
+"Amherst County, Virginia",51009,570,0,True
+"Appomattox County, Virginia",51011,295,0,True
+"Arlington County, Virginia",51013,3751,1,True
+"Augusta County, Virginia",51015,641,0,True
+"Bath County, Virginia",51017,375,1,False
+"Bedford County, Virginia",51019,477,0,True
+"Bland County, Virginia",51021,379,2,False
+"Botetourt County, Virginia",51023,689,0,True
+"Brunswick County, Virginia",51025,448,2,False
+"Buchanan County, Virginia",51027,850,4,False
+"Buckingham County, Virginia",51029,455,2,False
+"Campbell County, Virginia",51031,750,0,True
+"Caroline County, Virginia",51033,873,0,False
+"Carroll County, Virginia",51035,497,0,False
+"Charles City County, Virginia",51036,915,0,True
+"Charlotte County, Virginia",51037,427,0,False
+"Chesterfield County, Virginia",51041,586,0,True
+"Clarke County, Virginia",51043,395,0,True
+"Craig County, Virginia",51045,439,0,True
+"Culpeper County, Virginia",51047,431,0,True
+"Cumberland County, Virginia",51049,307,0,False
+"Dickenson County, Virginia",51051,512,3,False
+"Dinwiddie County, Virginia",51053,550,0,True
+"Essex County, Virginia",51057,592,1,False
+"Fairfax County, Virginia",51059,1682,0,True
+"Fauquier County, Virginia",51061,481,0,True
+"Floyd County, Virginia",51063,552,0,True
+"Fluvanna County, Virginia",51065,190,0,True
+"Franklin County, Virginia",51067,207,0,True
+"Frederick County, Virginia",51069,332,0,True
+"Giles County, Virginia",51071,335,0,True
+"Gloucester County, Virginia",51073,1871,0,True
+"Goochland County, Virginia",51075,134,0,True
+"Grayson County, Virginia",51077,115,1,False
+"Greene County, Virginia",51079,296,0,True
+"Greensville County, Virginia",51081,126,2,False
+"Halifax County, Virginia",51083,36,1,False
+"Hanover County, Virginia",51085,80,0,True
+"Henrico County, Virginia",51087,1058,1,True
+"Henry County, Virginia",51089,473,1,False
+"Highland County, Virginia",51091,353,2,False
+"Isle of Wight County, Virginia",51093,417,0,True
+"James City County, Virginia",51095,1297,1,True
+"King and Queen County, Virginia",51097,271,0,True
+"King George County, Virginia",51099,604,0,False
+"King William County, Virginia",51101,125,0,True
+"Lancaster County, Virginia",51103,327,2,False
+"Lee County, Virginia",51105,210,2,False
+"Loudoun County, Virginia",51107,491,0,True
+"Louisa County, Virginia",51109,35,1,False
+"Lunenburg County, Virginia",51111,38,3,False
+"Madison County, Virginia",51113,129,0,False
+"Mathews County, Virginia",51115,160,1,True
+"Mecklenburg County, Virginia",51117,36,0,False
+"Middlesex County, Virginia",51119,35,1,False
+"Montgomery County, Virginia",51121,410,1,True
+"Nelson County, Virginia",51125,135,0,True
+"New Kent County, Virginia",51127,178,0,True
+"Northampton County, Virginia",51131,322,2,False
+"Northumberland County, Virginia",51133,174,1,False
+"Nottoway County, Virginia",51135,125,1,False
+"Orange County, Virginia",51137,322,0,False
+"Page County, Virginia",51139,190,1,False
+"Patrick County, Virginia",51141,171,1,False
+"Pittsylvania County, Virginia",51143,250,0,False
+"Powhatan County, Virginia",51145,907,0,True
+"Prince Edward County, Virginia",51147,94,1,False
+"Prince George County, Virginia",51149,223,1,True
+"Prince William County, Virginia",51153,403,1,True
+"Pulaski County, Virginia",51155,97,1,True
+"Rappahannock County, Virginia",51157,505,0,True
+"Richmond County, Virginia",51159,224,2,False
+"Roanoke County, Virginia",51161,637,0,True
+"Rockbridge County, Virginia",51163,248,0,False
+"Rockingham County, Virginia",51165,191,0,True
+"Russell County, Virginia",51167,60,2,False
+"Scott County, Virginia",51169,463,1,True
+"Shenandoah County, Virginia",51171,115,0,False
+"Smyth County, Virginia",51173,35,1,False
+"Southampton County, Virginia",51175,143,0,False
+"Spotsylvania County, Virginia",51177,469,0,True
+"Stafford County, Virginia",51179,660,0,True
+"Surry County, Virginia",51181,604,0,True
+"Sussex County, Virginia",51183,180,2,True
+"Tazewell County, Virginia",51185,303,0,False
+"Warren County, Virginia",51187,201,0,True
+"Washington County, Virginia",51191,397,0,True
+"Westmoreland County, Virginia",51193,41,2,False
+"Wise County, Virginia",51195,146,1,False
+"Wythe County, Virginia",51197,55,0,False
+"York County, Virginia",51199,1663,0,True
+"Franklin City, Virginia",51620,67,1,False
+"Adams County, Washington",53001,510,2,False
+"Asotin County, Washington",53003,373,1,True
+"Benton County, Washington",53005,321,0,True
+"Chelan County, Washington",53007,450,0,True
+"Clallam County, Washington",53009,757,2,False
+"Clark County, Washington",53011,558,1,True
+"Columbia County, Washington",53013,301,0,False
+"Cowlitz County, Washington",53015,433,1,True
+"Douglas County, Washington",53017,273,0,True
+"Ferry County, Washington",53019,210,1,False
+"Franklin County, Washington",53021,293,1,True
+"Garfield County, Washington",53023,215,0,False
+"Grant County, Washington",53025,323,1,False
+"Grays Harbor County, Washington",53027,133,2,False
+"Island County, Washington",53029,758,3,False
+"Jefferson County, Washington",53031,644,2,False
+"King County, Washington",53033,975,1,True
+"Kitsap County, Washington",53035,1029,1,True
+"Kittitas County, Washington",53037,624,2,False
+"Klickitat County, Washington",53039,138,1,False
+"Lewis County, Washington",53041,222,2,False
+"Lincoln County, Washington",53043,220,0,False
+"Mason County, Washington",53045,449,2,False
+"Okanogan County, Washington",53047,599,1,False
+"Pacific County, Washington",53049,460,1,False
+"Pend Oreille County, Washington",53051,445,1,False
+"Pierce County, Washington",53053,1342,1,True
+"San Juan County, Washington",53055,550,2,False
+"Skagit County, Washington",53057,540,2,True
+"Skamania County, Washington",53059,280,1,True
+"Snohomish County, Washington",53061,1803,1,True
+"Spokane County, Washington",53063,396,1,True
+"Stevens County, Washington",53065,350,1,True
+"Thurston County, Washington",53067,688,1,True
+"Wahkiakum County, Washington",53069,468,2,False
+"Walla Walla County, Washington",53071,413,1,True
+"Whatcom County, Washington",53073,1064,1,True
+"Whitman County, Washington",53075,317,2,False
+"Yakima County, Washington",53077,274,1,True
+"Barbour County, West Virginia",54001,891,1,False
+"Berkeley County, West Virginia",54003,319,0,True
+"Boone County, West Virginia",54005,219,3,True
+"Braxton County, West Virginia",54007,653,3,False
+"Brooke County, West Virginia",54009,345,1,True
+"Cabell County, West Virginia",54011,268,1,True
+"Calhoun County, West Virginia",54013,175,3,False
+"Clay County, West Virginia",54015,294,4,True
+"Doddridge County, West Virginia",54017,120,2,False
+"Fayette County, West Virginia",54019,126,3,True
+"Gilmer County, West Virginia",54021,1196,2,False
+"Grant County, West Virginia",54023,183,1,False
+"Greenbrier County, West Virginia",54025,243,0,False
+"Hampshire County, West Virginia",54027,330,0,True
+"Hancock County, West Virginia",54029,521,1,True
+"Hardy County, West Virginia",54031,148,1,False
+"Harrison County, West Virginia",54033,140,0,False
+"Jackson County, West Virginia",54035,80,0,False
+"Jefferson County, West Virginia",54037,247,0,True
+"Kanawha County, West Virginia",54039,228,1,True
+"Lewis County, West Virginia",54041,185,0,False
+"Lincoln County, West Virginia",54043,174,4,False
+"Logan County, West Virginia",54045,196,4,False
+"McDowell County, West Virginia",54047,737,4,False
+"Marion County, West Virginia",54049,321,1,False
+"Marshall County, West Virginia",54051,624,1,True
+"Mason County, West Virginia",54053,284,1,False
+"Mercer County, West Virginia",54055,269,1,False
+"Mineral County, West Virginia",54057,153,0,False
+"Mingo County, West Virginia",54059,130,4,False
+"Monongalia County, West Virginia",54061,376,0,True
+"Monroe County, West Virginia",54063,332,2,False
+"Morgan County, West Virginia",54065,747,0,True
+"Nicholas County, West Virginia",54067,160,1,False
+"Ohio County, West Virginia",54069,355,1,True
+"Pendleton County, West Virginia",54071,504,2,False
+"Pleasants County, West Virginia",54073,37,1,False
+"Pocahontas County, West Virginia",54075,408,3,False
+"Preston County, West Virginia",54077,365,2,True
+"Putnam County, West Virginia",54079,277,0,True
+"Raleigh County, West Virginia",54081,167,2,True
+"Randolph County, West Virginia",54083,166,2,False
+"Ritchie County, West Virginia",54085,163,2,False
+"Roane County, West Virginia",54087,100,4,False
+"Summers County, West Virginia",54089,224,2,False
+"Taylor County, West Virginia",54091,176,0,False
+"Tucker County, West Virginia",54093,341,1,False
+"Tyler County, West Virginia",54095,141,2,False
+"Upshur County, West Virginia",54097,305,1,False
+"Wayne County, West Virginia",54099,244,1,True
+"Webster County, West Virginia",54101,117,4,False
+"Wetzel County, West Virginia",54103,251,2,False
+"Wirt County, West Virginia",54105,347,1,True
+"Wood County, West Virginia",54107,335,1,True
+"Wyoming County, West Virginia",54109,172,3,False
+"Adams County, Wisconsin",55001,361,1,False
+"Ashland County, Wisconsin",55003,220,1,False
+"Barron County, Wisconsin",55005,89,0,False
+"Bayfield County, Wisconsin",55007,299,1,False
+"Brown County, Wisconsin",55009,162,0,True
+"Buffalo County, Wisconsin",55011,265,1,False
+"Burnett County, Wisconsin",55013,377,1,False
+"Calumet County, Wisconsin",55015,308,0,True
+"Chippewa County, Wisconsin",55017,400,0,True
+"Clark County, Wisconsin",55019,40,0,False
+"Columbia County, Wisconsin",55021,225,0,True
+"Crawford County, Wisconsin",55023,45,1,False
+"Dane County, Wisconsin",55025,496,1,True
+"Dodge County, Wisconsin",55027,253,0,False
+"Door County, Wisconsin",55029,773,1,False
+"Douglas County, Wisconsin",55031,104,0,True
+"Dunn County, Wisconsin",55033,196,0,False
+"Eau Claire County, Wisconsin",55035,248,0,True
+"Florence County, Wisconsin",55037,282,1,False
+"Fond du Lac County, Wisconsin",55039,378,0,True
+"Forest County, Wisconsin",55041,224,2,False
+"Grant County, Wisconsin",55043,537,0,False
+"Green County, Wisconsin",55045,99,0,True
+"Green Lake County, Wisconsin",55047,121,1,False
+"Iowa County, Wisconsin",55049,152,0,True
+"Iron County, Wisconsin",55051,369,1,False
+"Jackson County, Wisconsin",55053,131,0,False
+"Jefferson County, Wisconsin",55055,208,0,False
+"Juneau County, Wisconsin",55057,134,0,False
+"Kenosha County, Wisconsin",55059,635,0,True
+"Kewaunee County, Wisconsin",55061,555,0,True
+"La Crosse County, Wisconsin",55063,252,0,True
+"Lafayette County, Wisconsin",55065,569,0,False
+"Langlade County, Wisconsin",55067,35,1,False
+"Lincoln County, Wisconsin",55069,264,1,False
+"Manitowoc County, Wisconsin",55071,218,1,False
+"Marathon County, Wisconsin",55073,411,0,True
+"Marinette County, Wisconsin",55075,119,0,False
+"Marquette County, Wisconsin",55077,215,1,False
+"Menominee County, Wisconsin",55078,576,2,False
+"Milwaukee County, Wisconsin",55079,1077,1,True
+"Monroe County, Wisconsin",55081,35,0,False
+"Oconto County, Wisconsin",55083,178,0,True
+"Oneida County, Wisconsin",55085,160,1,False
+"Outagamie County, Wisconsin",55087,308,0,True
+"Ozaukee County, Wisconsin",55089,253,0,True
+"Pepin County, Wisconsin",55091,263,0,False
+"Pierce County, Wisconsin",55093,131,0,True
+"Polk County, Wisconsin",55095,174,0,False
+"Portage County, Wisconsin",55097,190,0,False
+"Price County, Wisconsin",55099,37,1,False
+"Racine County, Wisconsin",55101,666,0,True
+"Richland County, Wisconsin",55103,163,0,False
+"Rock County, Wisconsin",55105,179,0,True
+"Rusk County, Wisconsin",55107,251,1,False
+"St. Croix County, Wisconsin",55109,438,0,True
+"Sauk County, Wisconsin",55111,279,0,False
+"Sawyer County, Wisconsin",55113,655,1,False
+"Shawano County, Wisconsin",55115,241,0,False
+"Sheboygan County, Wisconsin",55117,420,0,True
+"Taylor County, Wisconsin",55119,153,0,False
+"Trempealeau County, Wisconsin",55121,80,0,False
+"Vernon County, Wisconsin",55123,36,0,True
+"Vilas County, Wisconsin",55125,290,1,False
+"Walworth County, Wisconsin",55127,652,0,False
+"Washburn County, Wisconsin",55129,229,1,False
+"Washington County, Wisconsin",55131,264,0,True
+"Waukesha County, Wisconsin",55133,515,0,True
+"Waupaca County, Wisconsin",55135,231,0,False
+"Waushara County, Wisconsin",55137,103,0,False
+"Winnebago County, Wisconsin",55139,365,0,True
+"Wood County, Wisconsin",55141,262,1,False
+"Albany County, Wyoming",56001,288,1,False
+"Big Horn County, Wyoming",56003,91,0,False
+"Campbell County, Wyoming",56005,142,0,False
+"Carbon County, Wyoming",56007,294,0,False
+"Converse County, Wyoming",56009,36,0,False
+"Crook County, Wyoming",56011,198,0,False
+"Fremont County, Wyoming",56013,293,0,False
+"Goshen County, Wyoming",56015,352,0,False
+"Hot Springs County, Wyoming",56017,163,1,False
+"Johnson County, Wyoming",56019,231,0,False
+"Laramie County, Wyoming",56021,434,0,True
+"Lincoln County, Wyoming",56023,116,0,False
+"Natrona County, Wyoming",56025,183,0,True
+"Niobrara County, Wyoming",56027,172,1,False
+"Park County, Wyoming",56029,303,0,False
+"Platte County, Wyoming",56031,37,1,False
+"Sheridan County, Wyoming",56033,150,1,False
+"Sublette County, Wyoming",56035,113,0,False
+"Sweetwater County, Wyoming",56037,330,0,False
+"Teton County, Wyoming",56039,397,1,False
+"Uinta County, Wyoming",56041,232,0,False
+"Washakie County, Wyoming",56043,35,0,False
+"Weston County, Wyoming",56045,118,0,False
+"Alexandria City, Virginia",51510,2134,1,True
+"Bristol City, Virginia",51520,740,0,True
+"Buena Vista City, Virginia",51530,581,1,False
+"Charlottesville City, Virginia",51540,1400,3,True
+"Chesapeake City, Virginia",51550,1492,1,True
+"Colonial Heights City, Virginia",51570,422,0,True
+"Covington City, Virginia",51580,547,2,False
+"Danville City, Virginia",51590,1403,2,False
+"Emporia City, Virginia",51595,449,2,False
+"Fairfax City, Virginia",51600,581,0,True
+"Falls Church City, Virginia",51610,1535,0,True
+"Fredericksburg City, Virginia",51630,1624,1,True
+"Galax City, Virginia",51640,428,0,False
+"Hampton City, Virginia",51650,1329,2,True
+"Harrisonburg City, Virginia",51660,409,2,True
+"Hopewell City, Virginia",51670,504,1,True
+"Lexington City, Virginia",51678,570,1,False
+"Lynchburg City, Virginia",51680,993,1,True
+"Manassas City, Virginia",51683,874,1,True
+"Manassas Park City, Virginia",51685,344,1,True
+"Martinsville City, Virginia",51690,990,2,False
+"Newport News City, Virginia",51700,2321,1,True
+"Norfolk City, Virginia",51710,1574,1,True
+"Norton City, Virginia",51720,383,2,False
+"Petersburg City, Virginia",51730,3705,1,True
+"Poquoson City, Virginia",51735,1063,0,True
+"Portsmouth City, Virginia",51740,523,1,True
+"Radford City, Virginia",51750,105,2,True
+"Richmond City, Virginia",51760,1650,1,True
+"Roanoke City, Virginia",51770,2540,1,True
+"Salem City, Virginia",51775,1031,0,True
+"Staunton City, Virginia",51790,864,2,True
+"Suffolk City, Virginia",51800,718,1,True
+"Virginia Beach City, Virginia",51810,1719,1,True
+"Waynesboro City, Virginia",51820,421,1,True
+"Williamsburg City, Virginia",51830,1617,2,True
+"Winchester City, Virginia",51840,562,1,True
+"Anchorage Municipality, Alaska",02020,2279,1,True
+"Hoonah-Angoon Census Area, Alaska",02105,238,0,False
+"Juneau City and Borough, Alaska",02110,3224,0,False
+"Prince of Wales-Hyder Census Area, Alaska",02198,535,0,False
+"Sitka City and Borough, Alaska",02220,698,1,False
+"Skagway Municipality, Alaska",02230,1629,0,False
+"Wrangell City and Borough, Alaska",02275,1537,0,False
+"Yakutat City and Borough, Alaska",02282,1261,0,False
+"Hawaii County, Hawaii",15001,1033,1,False
+"De Witt County, Illinois",17039,376,1,False
+"Larue County, Kentucky",21123,548,0,True
+"De Soto Parish, Louisiana",22031,361,0,True
+"Nantucket County, Massachusetts",25019,1045,2,False
+"Bronx County, New York",36005,2420,2,True
+"Kings County, New York",36047,2877,1,True
+"New York County, New York",36061,4050,1,True
+"Queens County, New York",36081,1887,1,True
+"Richmond County, New York",36085,2846,1,True
+"Le Flore County, Oklahoma",40079,377,0,False
