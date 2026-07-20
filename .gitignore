@@ -16,3 +16,7 @@ wheels/
 # OS / editor
 .DS_Store
 .claude/
+
+# Ephemeral runtime artifacts
+logs/
+.playwright-mcp/
