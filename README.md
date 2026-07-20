@@ -96,3 +96,17 @@ uv run scripts/ingest_source_d.py
 ```
 
 Output: `data/source_d_faf.parquet` with columns `county_name`, `fips_code`, `total_outbound_tons`, `total_inbound_tons`, `out_partner_hhi`, `in_partner_hhi`, and 5-way commodity-group (`sctg`) tonnage breakdowns per direction (`out_sctg0109`, `out_sctg1014`, `out_sctg1519`, `out_sctg2033`, `out_sctg3499` and the matching `in_sctg*` columns).
+
+## Source E: IRS SOI County Capital-to-Wage Ratio
+
+`ingest_source_e.py` downloads the IRS Statistics of Income pre-aggregated county file and computes each county's ratio of investment income (qualified dividends + net capital gain) to wage income -- the "Capital vs. Wage Income" pillar of `E_macro`, distinguishing counties driven by market/investment performance from those driven by local employment.
+
+Uses the IRS's own pre-aggregated `22incyallnoagi.csv` (Tax Year 2022, the latest published) rather than summing across the 8 per-county AGI brackets manually. Target columns are referenced via a conceptual name-to-SOI-variable-code mapping so a future schema change fails loudly instead of silently misreading a shifted column. Unlike Source B, the IRS file carries no suppression flag -- a suppressed cell and a genuine zero are indistinguishable, and this is shipped as a disclosed limitation rather than papered over.
+
+No credentials are required:
+
+```bash
+uv run scripts/ingest_source_e.py
+```
+
+Output: `data/source_e_irs_soi.parquet` with columns `county_name`, `fips_code`, `num_returns`, `agi_thousands`, `wages_salaries_thousands`, `qualified_dividends_thousands`, `net_cap_gain_thousands`, `capital_to_wage_ratio`.

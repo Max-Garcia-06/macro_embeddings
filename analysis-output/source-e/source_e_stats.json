@@ -1,0 +1,26 @@
+{
+  "total_counties": 3143,
+  "ratio_stats": {
+    "mean": 0.10745513816041805,
+    "median": 0.08224652238595272,
+    "max": 2.798465773124988,
+    "min": 0.0
+  },
+  "top_county": "Teton County, Wyoming",
+  "capital_to_wage_ratio_vs_unemployment_velocity_corr": -0.029661513224496092,
+  "capital_to_wage_ratio_vs_unemployment_velocity_p": 0.112,
+  "capital_to_wage_ratio_vs_gdp_velocity_pct_corr": 0.07052957196710882,
+  "capital_to_wage_ratio_vs_gdp_velocity_pct_p": 0.002,
+  "gdp_velocity_pct_by_capital_quartile": {
+    "1": 0.01605548089460758,
+    "2": 0.018046638435241083,
+    "3": 0.020306659654551536,
+    "4": 0.02282329969173673
+  },
+  "unemployment_velocity_by_capital_quartile": {
+    "1": 0.1771840542832909,
+    "2": 0.19749787955894824,
+    "3": 0.19859872611464968,
+    "4": 0.17039864291772688
+  }
+}
