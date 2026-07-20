@@ -1,0 +1,91 @@
+{
+  "total_counties": 3143,
+  "dominant_sector_counts": {
+    "Manufacturing": 695,
+    "Agriculture, Forestry, Fishing & Hunting": 489,
+    "Mining, Quarrying, Oil & Gas": 367,
+    "Utilities": 268,
+    "Retail Trade": 180,
+    "Construction": 156,
+    "Unclassified": 139,
+    "Transportation & Warehousing": 136,
+    "Wholesale Trade": 126,
+    "Arts, Entertainment & Recreation": 107,
+    "Accommodation & Food Services": 81,
+    "Health Care & Social Assistance": 73,
+    "Educational Services": 71,
+    "Other Services (except Public Administration)": 52,
+    "Management of Companies & Enterprises": 47,
+    "Finance & Insurance": 44,
+    "Real Estate & Rental & Leasing": 29,
+    "Information": 25,
+    "Professional, Scientific & Technical Services": 24,
+    "Administrative & Support & Waste Management": 24,
+    "Not classified": 10
+  },
+  "dominant_sector_rates": {
+    "Manufacturing": 0.22112631244034361,
+    "Agriculture, Forestry, Fishing & Hunting": 0.15558383709831372,
+    "Mining, Quarrying, Oil & Gas": 0.11676741966274261,
+    "Utilities": 0.08526885141584474,
+    "Retail Trade": 0.05727012408526885,
+    "Construction": 0.04963410754056634,
+    "Unclassified": 0.044225262488068726,
+    "Transportation & Warehousing": 0.04327076041998091,
+    "Wholesale Trade": 0.0400890868596882,
+    "Arts, Entertainment & Recreation": 0.03404390709513204,
+    "Accommodation & Food Services": 0.025771555838370982,
+    "Health Care & Social Assistance": 0.02322621699013681,
+    "Educational Services": 0.02258988227807827,
+    "Other Services (except Public Administration)": 0.01654470251352211,
+    "Management of Companies & Enterprises": 0.014953865733375756,
+    "Finance & Insurance": 0.013999363665287942,
+    "Real Estate & Rental & Leasing": 0.00922685332484887,
+    "Information": 0.007954183900731784,
+    "Professional, Scientific & Technical Services": 0.007636016544702514,
+    "Administrative & Support & Waste Management": 0.007636016544702514,
+    "Not classified": 0.003181673560292714
+  },
+  "dominant_lq_stats": {
+    "mean": 5.949932971592722,
+    "median": 2.87,
+    "max": 248.09
+  },
+  "dominant_lq_vs_unemployment_velocity_corr": -0.09501397848541429,
+  "dominant_lq_vs_unemployment_velocity_p": 0.002,
+  "dominant_lq_vs_gdp_velocity_pct_corr": 0.04577006400771735,
+  "dominant_lq_vs_gdp_velocity_pct_p": 0.018,
+  "gdp_velocity_pct_by_specialization_quartile": {
+    "1": 0.019124218319751297,
+    "2": 0.018775393568428774,
+    "3": 0.01813143073583706,
+    "4": 0.021115534894886785
+  },
+  "min_sector_disclosed_count": 100,
+  "top_sector_correlations": [
+    {
+      "naics2": "53",
+      "label": "Real Estate & Rental & Leasing",
+      "corr": 0.20590987816388623,
+      "p": 0.002,
+      "n": 2396,
+      "p_adj": 0.006666666666666667
+    },
+    {
+      "naics2": "42",
+      "label": "Wholesale Trade",
+      "corr": -0.15714984013397895,
+      "p": 0.002,
+      "n": 2307,
+      "p_adj": 0.006666666666666667
+    },
+    {
+      "naics2": "23",
+      "label": "Construction",
+      "corr": 0.1538743078929413,
+      "p": 0.002,
+      "n": 2435,
+      "p_adj": 0.006666666666666667
+    }
+  ]
+}
