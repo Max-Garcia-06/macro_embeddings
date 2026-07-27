@@ -3,10 +3,15 @@
 All 19 failed ingestion because their Census Gazetteer NAME field diverges
 from their Wikipedia article title (8 Alaska boroughs/census areas, 5 NYC
 boroughs, and 6 one-off spelling/diacritic mismatches); see
-`analysis-output/source-a-findings.md` section 7. `INDEPENDENT_CITY_ARTICLE_LOOKUP`
+`analysis-output/source-a/source-a-findings.md` section 7. `INDEPENDENT_CITY_ARTICLE_LOOKUP`
 in `ingest_source_a.py` now maps all 19 to their correct Wikipedia article
 titles. This script re-runs ingestion for just those 19 counties and merges
 the results into the existing parquet, leaving all other rows untouched.
+
+Historical: this was a one-shot repair run, already applied. It is retained
+as a record of the fix, not as part of the pipeline -- the lookup table it
+depended on now lives in `ingest_source_a.py`, and
+`data/source_a_embeddings.parquet` is no longer regenerated (see README).
 """
 
 from __future__ import annotations

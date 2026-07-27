@@ -1,8 +1,31 @@
-# wiki_embedding
+# MacroEmbeddings (`E_macro`)
 
-Source A of a planned multi-source ("A-F") macro/geo embedding dataset: Wikipedia introductory-text embeddings for U.S. counties.
+A six-pillar county-level macro/geo dataset for the ~3,143 U.S. counties and county-equivalents. Each pillar (Sources A-F) is an independent federal or public data source, ingested by its own script into a single `data/*.parquet` file keyed on `fips_code`:
 
-## What it does
+| Source | Pillar | Data |
+|---|---|---|
+| A | Place Identity | Wikipedia lead-section text |
+| B | Industrial Core | BLS QCEW Location Quotients |
+| C | Economic Velocity | FRED unemployment & real GDP slopes |
+| D | Trade Logistics | BTS FAF5 freight flows |
+| E | Capital Flow | IRS SOI capital-to-wage ratio |
+| F | Structural Resilience | USDA ERS county typology |
+
+All six are ingested and analyzed; a cross-pillar crossvalidation sweep and per-pillar findings reports are in `analysis-output/`. Planning docs for the sources that had one are in `docs/plans/`.
+
+## Setup
+
+Requires Python 3.12 and [`uv`](https://docs.astral.sh/uv/).
+
+```bash
+uv sync
+```
+
+Sources A and C need credentials in a `.env` file (see their sections below); B, D, E, and F need none.
+
+## Source A: Wikipedia County Text
+
+### What it does
 
 `ingest_source_a.py` runs an end-to-end ingestion pipeline:
 
@@ -19,7 +42,7 @@ This pipeline previously embedded each intro with `BAAI/bge-m3` (1024-dim) and w
 
 `data/source_a_embeddings.parquet` is **retained** and still backs Source A's own EDA scripts (`analyze_source_a_*.py`, `visualize_source_a.py`); it is simply no longer regenerated. The new ingestion writes to a separate path so a re-run cannot clobber it.
 
-## Output
+### Output
 
 `data/source_a_text_features.parquet` with columns:
 
@@ -31,28 +54,34 @@ This pipeline previously embedded each intro with `BAAI/bge-m3` (1024-dim) and w
 | `embedding_text` | str | `raw_intro_text` with self-references and boilerplate phrasing stripped |
 | `content_length` | int | character count of `embedding_text` |
 
-## Setup
+### Running
 
-Requires Python 3.12 and [`uv`](https://docs.astral.sh/uv/).
-
-```bash
-uv sync
-```
-
-Create a `.env` file with Wikimedia Enterprise credentials:
+Add Wikimedia Enterprise credentials to `.env`:
 
 ```
 WIKIMEDIA_USERNAME=...
 WIKIMEDIA_PASSWORD=...
 ```
 
-## Running
-
 ```bash
 uv run --env-file .env scripts/ingest_source_a.py
 ```
 
 No model download is needed -- the pipeline is now HTTP fetching plus text cleaning, so a full run is bounded by the Wikimedia Enterprise API rather than by CPU inference.
+
+## Source B: BLS QCEW Location Quotients (Industrial Core)
+
+`ingest_source_b.py` downloads BLS's Quarterly Census of Employment and Wages bulk quarterly file and extracts pre-calculated Location Quotients (LQ) across the 20 primary 2-digit NAICS sectors for all counties -- the "Industrial Core" pillar of `E_macro`. An LQ of 2.0 means twice the national-average concentration of jobs in that sector, regardless of the county's absolute size, distinguishing *what kind* of growth or decline a county is experiencing rather than just its direction.
+
+Scoped to **private ownership only** (`own_code="5"`) and the most recent fully-published quarter. BLS suppresses LQ cells in counties where small employer counts could expose individual company operations (~30% of county x sector cells nationally); these are left as null (with a matching `disclosure_*` flag) rather than backfilled -- tested state-level and proportional-allocation fallbacks and neither meaningfully beat a flat null (r=0.33-0.34, barely above guessing the national average).
+
+No credentials are required (downloads the public bulk singlefile, ~2.2GB uncompressed, streamed and filtered locally):
+
+```bash
+uv run scripts/ingest_source_b.py
+```
+
+Output: `data/source_b_qcew.parquet` with columns `county_name`, `fips_code`, `lq_emp_{naics2}` (20 columns, one per 2-digit NAICS sector) and `disclosure_{naics2}` (20 matching boolean suppression flags).
 
 ## Source C: FRED Time-Series Slope Derivatives
 
@@ -78,20 +107,6 @@ uv run --env-file .env scripts/ingest_source_c.py
 Output: `data/source_c_fred.parquet` with columns `county_name`, `fips_code`, `unemployment_velocity`, `unemployment_rate_latest`, `unemployment_latest_year`, `gdp_velocity`, `gdp_velocity_pct`, `gdp_latest`, `gdp_latest_year`.
 
 `gdp_velocity` is denominated in chained 2017 dollars, so any ranking built on it returns the largest metro economies rather than the fastest-moving counties -- the raw and normalized top-10 lists share zero counties. **Use `gdp_velocity_pct` (= `gdp_velocity` / `gdp_latest`) for anything comparative.** Three analysis scripts were recomputing this locally before it was added to the parquet.
-
-## Source B: BLS QCEW Location Quotients (Industrial Core)
-
-`ingest_source_b.py` downloads BLS's Quarterly Census of Employment and Wages bulk quarterly file and extracts pre-calculated Location Quotients (LQ) across the 20 primary 2-digit NAICS sectors for all counties -- the "Industrial Core" pillar of `E_macro`. An LQ of 2.0 means twice the national-average concentration of jobs in that sector, regardless of the county's absolute size, distinguishing *what kind* of growth or decline a county is experiencing rather than just its direction.
-
-Scoped to **private ownership only** (`own_code="5"`) and the most recent fully-published quarter. BLS suppresses LQ cells in counties where small employer counts could expose individual company operations (~30% of county x sector cells nationally); these are left as null (with a matching `disclosure_*` flag) rather than backfilled -- tested state-level and proportional-allocation fallbacks and neither meaningfully beat a flat null (r=0.33-0.34, barely above guessing the national average).
-
-No credentials are required (downloads the public bulk singlefile, ~2.2GB uncompressed, streamed and filtered locally):
-
-```bash
-uv run scripts/ingest_source_b.py
-```
-
-Output: `data/source_b_qcew.parquet` with columns `county_name`, `fips_code`, `lq_emp_{naics2}` (20 columns, one per 2-digit NAICS sector) and `disclosure_{naics2}` (20 matching boolean suppression flags).
 
 ## Source D: BTS FAF5 Freight Trade Flows
 

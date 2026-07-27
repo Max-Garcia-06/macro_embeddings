@@ -1,7 +1,7 @@
 [project]
 name = "macroembeddings"
 version = "0.1.0"
-description = "Add your description here"
+description = "Six-pillar county-level macro/geo dataset (E_macro) for US counties"
 requires-python = ">=3.12"
 dependencies = [
     "beautifulsoup4>=4.15.0",

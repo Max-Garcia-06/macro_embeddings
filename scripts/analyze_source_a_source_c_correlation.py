@@ -2,7 +2,7 @@
 
 `E_macro_extendedProposal.pdf`'s justification for Source A claims Wikipedia
 intro-text embeddings carry distinctive economic-transition narrative. Source
-A's own findings report (`analysis-output/source-a-findings.md` §8, §10)
+A's own findings report (`analysis-output/source-a/source-a-findings.md` §8, §10)
 flags this as untested: everything checked there was embedding similarity
 against *geography*, not against real economic variables. Source C now
 provides those variables (unemployment and GDP velocity per county), so this
@@ -11,7 +11,7 @@ script runs the same Mantel-test methodology
 of geographic distance.
 
 GDP velocity is measured in absolute dollars, which Source C's own report
-(`analysis-output/source-c-findings.md` §5) flags as confounded with economy
+(`analysis-output/source-c/source-c-findings.md` §5) flags as confounded with economy
 size rather than growth rate. To avoid that confound leaking into this
 correlation test, economic distance here standardizes unemployment velocity
 alongside a locally-computed `gdp_velocity_pct` (`gdp_velocity / gdp_latest`)

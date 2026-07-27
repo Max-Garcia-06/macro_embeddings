@@ -200,7 +200,7 @@ INDEPENDENT_CITY_ARTICLE_LOOKUP: dict[str, str] = {
     "Williamsburg City, Virginia": "Williamsburg, Virginia",
     "Winchester City, Virginia": "Winchester, Virginia",
     # Remaining 19 Census-Gazetteer-name-vs-Wikipedia-title mismatches (see
-    # analysis-output/source-a-findings.md section 7): Alaska boroughs/census
+    # analysis-output/source-a/source-a-findings.md section 7): Alaska boroughs/census
     # areas use "City and Borough"/"Municipality" in the Gazetteer but a
     # bare place name on Wikipedia (or an en dash "–" instead of a
     # hyphen); NYC's 5 boroughs are indexed by borough name, not "County";

@@ -2,11 +2,16 @@
 
 These all failed ingestion with 404s (wrong article title) or a 429 rate-limit
 (Richmond City, Roanoke City) in the original run; see
-`analysis-output/source-a-findings.md` section 7.
+`analysis-output/source-a/source-a-findings.md` section 7.
 `INDEPENDENT_CITY_ARTICLE_LOOKUP` in `ingest_source_a.py` now maps all 37 to
 their correct Wikipedia article titles. This script re-runs ingestion for
 just those 37 counties and merges the results into the existing parquet,
 leaving all other rows untouched.
+
+Historical: this was a one-shot repair run, already applied. It is retained
+as a record of the fix, not as part of the pipeline -- the lookup table it
+depended on now lives in `ingest_source_a.py`, and
+`data/source_a_embeddings.parquet` is no longer regenerated (see README).
 """
 
 from __future__ import annotations

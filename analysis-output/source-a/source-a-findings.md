@@ -506,9 +506,16 @@ the §3.6 permutation test).
 - Ingestion log: `ingest_run.log` (untracked).
 - Reproduction (coverage backfill): `uv run --env-file .env backfill_virginia_cities.py`,
   then `uv run --env-file .env backfill_remaining_19.py`.
-- Reproduction (LLM adoption): `uv run --env-file .env reembed_source_a_llm.py`,
-  then `uv run compare_llm_cleaning_full_corpus.py` to re-check the gate,
-  then re-run the EDA/insights scripts below.
+- Reproduction (LLM adoption): **no longer runnable as written (2026-07-27).**
+  `reembed_source_a_llm.py` and `compare_llm_cleaning_full_corpus.py` were
+  deleted from `scripts/` once the embedding step itself was retired (see
+  `analysis-output/E_macro_key_findings.ipynb` §2); their intermediate,
+  `data/source_a_embeddings_llm.parquet`, was never kept either. Every
+  reference to those two scripts below and in §12 is a record of what was
+  run at the time, not a live path. Recover them from git history
+  (`git log -- scripts/reembed_source_a_llm.py`) if this needs re-running.
+  The adopted output survives as `data/source_a_embeddings.parquet`, with
+  the superseded regex version at `data/source_a_embeddings_regex_baseline.parquet`.
 - Reproduction (EDA/insights, run after either of the above):
   `uv run generate_source_a_insights.py`, `uv run visualize_source_a.py`,
   `uv run analyze_source_a_similarity.py`,

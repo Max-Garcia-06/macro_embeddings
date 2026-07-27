@@ -1,6 +1,6 @@
 """Cross-validate Source F's demographic distress flags against Source C's velocity.
 
-Source C's own findings (`analysis-output/source-c-findings.md` SS7) flag
+Source C's own findings (`analysis-output/source-c/source-c-findings.md` SS7) flag
 that no cross-source validation had been done yet -- this is the first: does
 a county's static/structural demographic distress classification (population
 loss, persistent poverty, etc.) actually track its short-term economic

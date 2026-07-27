@@ -1,6 +1,6 @@
 """Cross-seed K-means stability and cluster-coherence permutation test for Source A.
 
-Round-0 insights (`analysis-output/source-a-findings.md`, section 3) flagged
+Round-0 insights (`analysis-output/source-a/source-a-findings.md`, section 3) flagged
 two open gaps in `analyze_source_a_clusters.py`'s k=2
 finding: (1) the k=2 solution's stability was only checked at a single seed,
 and (2) the ~10% intra-cluster distance deviation from the corpus mean was
