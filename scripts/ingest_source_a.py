@@ -22,11 +22,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import numpy as np
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from sentence_transformers import SentenceTransformer
 
 # --------------------------------------------------------------------------
 # Configuration
@@ -37,11 +35,15 @@ WIKIMEDIA_ARTICLES_URL_TEMPLATE: str = "https://api.enterprise.wikimedia.com/v2/
 WIKIMEDIA_PROJECT_FILTER: str = "enwiki"
 REQUEST_TIMEOUT_SECONDS: int = 30
 
-EMBEDDING_MODEL_NAME: str = "BAAI/bge-m3"
-EMBEDDING_DIM: int = 1024
 
 DATA_DIR: Path = Path(__file__).resolve().parent.parent / "data"
-OUTPUT_PARQUET_PATH: Path = DATA_DIR / "source_a_embeddings.parquet"
+# Writes to a distinct path from the legacy `source_a_embeddings.parquet`: the
+# bge-m3 embedding step was removed from this pipeline (the 1024-dim vector
+# correlated with economic distance at |r| = 0.041 while de-boilerplated text
+# length correlated with metro status at |r| = 0.247), and re-running this
+# script must not overwrite the existing embeddings that Source A's own EDA
+# scripts still read.
+OUTPUT_PARQUET_PATH: Path = DATA_DIR / "source_a_text_features.parquet"
 
 logger = logging.getLogger(__name__)
 
@@ -538,58 +540,6 @@ def strip_boilerplate_phrasing(text: str) -> str:
 
 
 # --------------------------------------------------------------------------
-# Embedding generation
-# --------------------------------------------------------------------------
-
-
-class BgeM3EmbeddingGenerator:
-    """Wraps the BAAI/bge-m3 sentence-transformers model for dense embedding generation."""
-
-    def __init__(self, model_name: str = EMBEDDING_MODEL_NAME, device: str | None = None) -> None:
-        """Load the embedding model once at construction.
-
-        Args:
-            model_name: Hugging Face model identifier.
-            device: Optional device override (e.g. "cpu", "cuda"); auto-detected if None.
-        """
-        logger.info("Loading embedding model '%s'...", model_name)
-        self._model = SentenceTransformer(model_name, device=device)
-
-    def encode(self, text: str) -> np.ndarray:
-        """Encode text into a dense, non-normalized embedding vector.
-
-        Relies on the tokenizer's native truncation at the model's max sequence
-        length (bge-m3 supports up to 8,192 tokens); no manual chunking is applied.
-
-        Args:
-            text: Cleaned narrative text to embed.
-
-        Returns:
-            Raw (non-normalized) embedding vector of shape (EMBEDDING_DIM,).
-        """
-        vector = self._model.encode(text, normalize_embeddings=False)
-        return np.asarray(vector, dtype=np.float32)
-
-    @staticmethod
-    def l2_normalize(vector: np.ndarray) -> np.ndarray:
-        """Explicitly apply L2 normalization, mapping the vector onto the unit hypersphere.
-
-        Args:
-            vector: Raw embedding vector.
-
-        Returns:
-            L2-normalized embedding vector.
-
-        Raises:
-            ValueError: If the vector has zero norm.
-        """
-        norm = np.linalg.norm(vector)
-        if norm == 0:
-            raise ValueError("Cannot L2-normalize a zero-norm vector.")
-        return vector / norm
-
-
-# --------------------------------------------------------------------------
 # Result types
 # --------------------------------------------------------------------------
 
@@ -601,7 +551,8 @@ class CountyIngestionResult:
     county_name: str
     fips_code: str | None
     raw_intro_text: str
-    embedding: list[float]
+    embedding_text: str
+    content_length: int
 
 
 @dataclass
@@ -634,17 +585,15 @@ def get_fips_code(county_name: str) -> str | None:
 def process_county(
     county_name: str,
     client: WikimediaEnterpriseClient,
-    embedder: BgeM3EmbeddingGenerator,
 ) -> CountyIngestionResult:
     """Run the full ingestion pipeline for a single county.
 
     Args:
         county_name: County display name, e.g. "Allegheny County, Pennsylvania".
         client: Authenticated Wikimedia Enterprise client.
-        embedder: Loaded embedding generator.
 
     Returns:
-        CountyIngestionResult with cleaned text and normalized embedding.
+        CountyIngestionResult with cleaned text and its de-boilerplated length.
 
     Raises:
         ArticleNotFoundError: If the Wikipedia article cannot be found.
@@ -655,31 +604,27 @@ def process_county(
     article_json = client.get_article(article_name)
     article_html = extract_article_html(article_json)
     intro_text = clean_intro_text(article_html)
-    embedding_text = strip_self_reference(intro_text, county_name)
-    embedding_text = strip_boilerplate_phrasing(embedding_text)
-
-    raw_vector = embedder.encode(embedding_text)
-    normalized_vector = embedder.l2_normalize(raw_vector)
+    narrative_text = strip_self_reference(intro_text, county_name)
+    narrative_text = strip_boilerplate_phrasing(narrative_text)
 
     return CountyIngestionResult(
         county_name=county_name,
         fips_code=get_fips_code(county_name),
         raw_intro_text=intro_text,
-        embedding=normalized_vector.tolist(),
+        embedding_text=narrative_text,
+        content_length=len(narrative_text),
     )
 
 
 def run_pipeline(
     county_names: list[str],
     client: WikimediaEnterpriseClient,
-    embedder: BgeM3EmbeddingGenerator,
 ) -> tuple[list[CountyIngestionResult], IngestionSummary]:
     """Process all counties, isolating per-county failures from the batch.
 
     Args:
         county_names: List of county display names to process.
         client: Authenticated Wikimedia Enterprise client.
-        embedder: Loaded embedding generator.
 
     Returns:
         Tuple of (successful results, run summary).
@@ -693,7 +638,7 @@ def run_pipeline(
     for county_name in county_names:
         logger.info("Processing '%s'...", county_name)
         try:
-            result = process_county(county_name, client, embedder)
+            result = process_county(county_name, client)
         except (ArticleNotFoundError, EmptyIntroError) as exc:
             logger.warning("Skipping '%s': %s", county_name, exc)
             summary.failed[county_name] = str(exc)
@@ -723,14 +668,16 @@ def build_dataframe(results: list[CountyIngestionResult]) -> pd.DataFrame:
         results: List of per-county ingestion results.
 
     Returns:
-        DataFrame with columns: county_name, fips_code, raw_intro_text, embedding.
+        DataFrame with columns: county_name, fips_code, raw_intro_text,
+        embedding_text, content_length.
     """
     return pd.DataFrame(
         {
             "county_name": [r.county_name for r in results],
             "fips_code": [r.fips_code for r in results],
             "raw_intro_text": [r.raw_intro_text for r in results],
-            "embedding": [r.embedding for r in results],
+            "embedding_text": [r.embedding_text for r in results],
+            "content_length": [r.content_length for r in results],
         }
     )
 
@@ -768,10 +715,8 @@ def main() -> None:
         logger.error("Authentication failed; aborting: %s", exc)
         sys.exit(1)
 
-    embedder = BgeM3EmbeddingGenerator(device="cpu")
-
     try:
-        results, summary = run_pipeline(ALL_COUNTIES, client, embedder)
+        results, summary = run_pipeline(ALL_COUNTIES, client)
     except WikimediaAuthError as exc:
         logger.error("Authentication rejected mid-run; aborting: %s", exc)
         sys.exit(1)

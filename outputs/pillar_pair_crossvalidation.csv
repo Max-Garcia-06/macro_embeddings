@@ -1,0 +1,42 @@
+pillar_pair,feature_x,feature_y,label_x,label_y,r,p,n,q,significant,abs_r,r_size_controlled,size_confounded
+DxF,log_total_tons,metro_2023,D freight tonnage (log10),F metro status,0.4950505375749271,0.002,3144,0.003565217391304348,True,0.4950505375749271,-0.0569293774715008,True
+BxE,lq_emp_53,capital_to_wage_ratio,B Real Estate & Rental & Leasing LQ,E capital-to-wage ratio,0.39367619512148566,0.002,2453,0.003565217391304348,True,0.39367619512148566,0.38187325459342025,False
+DxF,mean_partner_hhi,metro_2023,D trade partner concentration,F metro status,0.2843628010721919,0.002,3144,0.003565217391304348,True,0.2843628010721919,0.10532584660646375,True
+AxD,content_length,log_total_tons,A intro-text length,D freight tonnage (log10),0.27504559202854884,0.002,3144,0.003565217391304348,True,0.27504559202854884,-0.07422572136165649,True
+BxD,lq_emp_53,log_total_tons,B Real Estate & Rental & Leasing LQ,D freight tonnage (log10),0.2546882595190262,0.002,2453,0.003565217391304348,True,0.2546882595190262,-0.03966358689880745,True
+AxF,content_length,metro_2023,A intro-text length,F metro status,0.24765465764710848,0.002,3144,0.003565217391304348,True,0.24765465764710848,0.046875083703732216,True
+AxD,content_length,mean_partner_hhi,A intro-text length,D trade partner concentration,0.23461323776723098,0.002,3144,0.003565217391304348,True,0.23461323776723098,0.12788924555561085,False
+DxF,log_total_tons,distress_count,D freight tonnage (log10),F demographic distress count,-0.21714697998269028,0.002,3144,0.003565217391304348,True,0.21714697998269028,-0.10038194222160952,True
+AxB,content_length,lq_emp_53,A intro-text length,B Real Estate & Rental & Leasing LQ,0.21453728970312938,0.002,2453,0.003565217391304348,True,0.21453728970312938,0.10070917051398581,True
+BxC,lq_emp_53,gdp_velocity_pct,B Real Estate & Rental & Leasing LQ,C GDP velocity (normalized),0.20590987816388623,0.002,2396,0.003565217391304348,True,0.20590987816388623,0.1785058935148195,False
+BxD,lq_emp_53,mean_partner_hhi,B Real Estate & Rental & Leasing LQ,D trade partner concentration,0.19330761843135097,0.002,2453,0.003565217391304348,True,0.19330761843135097,0.07590146639676458,True
+BxF,lq_emp_53,metro_2023,B Real Estate & Rental & Leasing LQ,F metro status,0.1869594399123175,0.002,2453,0.003565217391304348,True,0.1869594399123175,-0.006997579332138072,True
+BxF,dominant_lq,metro_2023,B dominant sector LQ,F metro status,-0.13618253859381615,0.002,3133,0.003565217391304348,True,0.13618253859381615,0.0017442037283007983,True
+DxE,mean_partner_hhi,capital_to_wage_ratio,D trade partner concentration,E capital-to-wage ratio,0.1055071354983089,0.002,3143,0.003565217391304348,True,0.1055071354983089,0.09779407321978521,False
+BxD,dominant_lq,log_total_tons,B dominant sector LQ,D freight tonnage (log10),-0.10356835181779753,0.002,3133,0.003565217391304348,True,0.10356835181779753,0.20197315861392637,False
+BxC,dominant_lq,unemployment_velocity,B dominant sector LQ,C unemployment velocity,-0.09501397848541429,0.002,3133,0.003565217391304348,True,0.09501397848541429,-0.08017443259622159,False
+BxF,lq_emp_53,distress_count,B Real Estate & Rental & Leasing LQ,F demographic distress count,0.08003156392422241,0.002,2453,0.003565217391304348,True,0.08003156392422241,0.13888794893583384,False
+CxD,gdp_velocity_pct,log_total_tons,C GDP velocity (normalized),D freight tonnage (log10),0.07653846121500077,0.002,3080,0.003565217391304348,True,0.07653846121500077,-0.012665155200716061,True
+CxF,gdp_velocity_pct,metro_2023,C GDP velocity (normalized),F metro status,0.07278602057246401,0.002,3080,0.003565217391304348,True,0.07278602057246401,0.020133532079482225,True
+CxE,gdp_velocity_pct,capital_to_wage_ratio,C GDP velocity (normalized),E capital-to-wage ratio,0.07052957196710884,0.002,3080,0.003565217391304348,True,0.07052957196710884,0.06749655326678491,False
+CxD,gdp_velocity_pct,mean_partner_hhi,C GDP velocity (normalized),D trade partner concentration,0.06880769610503741,0.002,3080,0.003565217391304348,True,0.06880769610503741,0.03904835437340694,False
+AxE,content_length,capital_to_wage_ratio,A intro-text length,E capital-to-wage ratio,0.06764627319506807,0.008,3143,0.012615384615384615,True,0.06764627319506807,0.057192629017885195,False
+AxC,content_length,unemployment_velocity,A intro-text length,C unemployment velocity,0.06258324875326007,0.002,3143,0.003565217391304348,True,0.06258324875326007,0.0384352060828874,False
+AxB,content_length,dominant_lq,A intro-text length,B dominant sector LQ,-0.05462425158990281,0.004,3133,0.006833333333333334,True,0.05462425158990281,0.030893990061420802,False
+DxF,mean_partner_hhi,distress_count,D trade partner concentration,F demographic distress count,-0.05249573339511786,0.002,3144,0.003565217391304348,True,0.05249573339511786,0.01472820836873353,True
+CxD,unemployment_velocity,log_total_tons,C unemployment velocity,D freight tonnage (log10),0.049778960960116685,0.008,3143,0.012615384615384615,True,0.049778960960116685,-0.031932350168851355,False
+BxC,dominant_lq,gdp_velocity_pct,B dominant sector LQ,C GDP velocity (normalized),0.04577006400771735,0.018,3070,0.027333333333333334,True,0.04577006400771735,0.07035838620658671,False
+DxE,log_total_tons,capital_to_wage_ratio,D freight tonnage (log10),E capital-to-wage ratio,0.040610877854172646,0.032,3143,0.04685714285714286,True,0.040610877854172646,0.011762545494712411,True
+ExF,capital_to_wage_ratio,distress_count,E capital-to-wage ratio,F demographic distress count,-0.0368409216643221,0.046,3143,0.06503448275862068,False,0.0368409216643221,-0.02967080596309825,False
+AxF,content_length,distress_count,A intro-text length,F demographic distress count,0.035529464390005795,0.06,3144,0.082,False,0.035529464390005795,0.11403972393400155,False
+CxF,unemployment_velocity,metro_2023,C unemployment velocity,F metro status,0.030726635634838878,0.08,3143,0.10580645161290324,False,0.030726635634838878,-0.017589271639679584,False
+CxE,unemployment_velocity,capital_to_wage_ratio,C unemployment velocity,E capital-to-wage ratio,-0.029661513224496096,0.088,3143,0.11274999999999999,False,0.029661513224496096,-0.03278811553132333,False
+CxD,unemployment_velocity,mean_partner_hhi,C unemployment velocity,D trade partner concentration,-0.026106799593700016,0.19,3143,0.23606060606060605,False,0.026106799593700016,-0.0553346861053044,False
+CxF,gdp_velocity_pct,distress_count,C GDP velocity (normalized),F demographic distress count,-0.018940006233683516,0.284,3080,0.3424705882352941,False,0.018940006233683516,-0.000512560847414089,True
+AxC,content_length,gdp_velocity_pct,A intro-text length,C GDP velocity (normalized),0.018261987653191262,0.304,3080,0.3561142857142857,False,0.018261987653191262,-0.017770734476652728,False
+BxE,dominant_lq,capital_to_wage_ratio,B dominant sector LQ,E capital-to-wage ratio,0.017673303042915315,0.32,3133,0.36444444444444446,False,0.017673303042915315,0.028494488106867197,False
+BxF,dominant_lq,distress_count,B dominant sector LQ,F demographic distress count,0.01577517026943062,0.386,3133,0.4277297297297297,False,0.01577517026943062,-0.03033919517754424,False
+ExF,capital_to_wage_ratio,metro_2023,E capital-to-wage ratio,F metro status,-0.010392290845584075,0.562,3143,0.6063684210526317,False,0.010392290845584075,-0.042673747080232714,False
+CxF,unemployment_velocity,distress_count,C unemployment velocity,F demographic distress count,0.00646059353682839,0.75,3143,0.7884615384615384,False,0.00646059353682839,0.02150416701692183,False
+BxC,lq_emp_53,unemployment_velocity,B Real Estate & Rental & Leasing LQ,C unemployment velocity,-0.004119496566864748,0.846,2453,0.86715,False,0.004119496566864748,-0.023293213825646447,False
+BxD,dominant_lq,mean_partner_hhi,B dominant sector LQ,D trade partner concentration,-0.001487775136780404,0.924,3133,0.924,False,0.001487775136780404,0.08582219888837397,False

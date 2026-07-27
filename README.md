@@ -9,21 +9,27 @@ Source A of a planned multi-source ("A-F") macro/geo embedding dataset: Wikipedi
 1. Authenticates against the **Wikimedia Enterprise API**.
 2. Fetches the full article for each of the ~3,222 US counties, county-equivalents, and Puerto Rico municipios in `ALL_COUNTIES` (derived from the Census Gazetteer counties file, cached in `county_crosswalk.parquet`).
 3. Isolates the **lead/introductory section** only (drops infobox, later sections, and citation markers) — Wikimedia Enterprise returns a full HTML document whose body is split into `<section data-mw-section-id="N">` blocks per MediaWiki's Parsoid model; section `0` is the lead.
-4. Embeds the cleaned intro text with `BAAI/bge-m3` (1024-dim) via `sentence-transformers`, running on **CPU** (MPS/GPU auto-selection caused severe per-call slowdowns on this model for short inputs).
-5. L2-normalizes each embedding and writes the results to `data/source_a_embeddings.parquet`.
+4. Strips self-references and boilerplate phrasing, then writes the cleaned text and its character count to `data/source_a_text_features.parquet`.
 
 Per-county failures (article not found, empty intro) are logged and skipped rather than aborting the run; only an authentication failure stops the whole pipeline.
 
+### The embedding step was removed
+
+This pipeline previously embedded each intro with `BAAI/bge-m3` (1024-dim) and wrote `data/source_a_embeddings.parquet`. That step was cut: the embedding correlates with economic distance at |r| = 0.041 (Mantel, n = 2,786) and k-means over it peaks at a silhouette of 0.028, meaning no recoverable cluster structure. See `analysis-output/E_macro_key_findings.ipynb` §2.
+
+`data/source_a_embeddings.parquet` is **retained** and still backs Source A's own EDA scripts (`analyze_source_a_*.py`, `visualize_source_a.py`); it is simply no longer regenerated. The new ingestion writes to a separate path so a re-run cannot clobber it.
+
 ## Output
 
-`data/source_a_embeddings.parquet` with columns:
+`data/source_a_text_features.parquet` with columns:
 
 | column | type | notes |
 |---|---|---|
 | `county_name` | str | e.g. `"Allegheny County, Pennsylvania"` |
 | `fips_code` | str \| None | from `FIPS_CROSSWALK`; `None` only if a county_name is somehow missing from the crosswalk |
 | `raw_intro_text` | str | cleaned lead-section text |
-| `embedding` | list[float] | 1024-dim, L2-normalized |
+| `embedding_text` | str | `raw_intro_text` with self-references and boilerplate phrasing stripped |
+| `content_length` | int | character count of `embedding_text` |
 
 ## Setup
 
@@ -46,7 +52,7 @@ WIKIMEDIA_PASSWORD=...
 uv run --env-file .env scripts/ingest_source_a.py
 ```
 
-First run downloads the `bge-m3` model (~2.2GB) from Hugging Face and caches it locally; subsequent runs reuse the cache.
+No model download is needed -- the pipeline is now HTTP fetching plus text cleaning, so a full run is bounded by the Wikimedia Enterprise API rather than by CPU inference.
 
 ## Source C: FRED Time-Series Slope Derivatives
 
@@ -69,7 +75,9 @@ FRED_API_KEY=...
 uv run --env-file .env scripts/ingest_source_c.py
 ```
 
-Output: `data/source_c_fred.parquet` with columns `county_name`, `fips_code`, `unemployment_velocity`, `unemployment_rate_latest`, `unemployment_latest_year`, `gdp_velocity`, `gdp_latest`, `gdp_latest_year`.
+Output: `data/source_c_fred.parquet` with columns `county_name`, `fips_code`, `unemployment_velocity`, `unemployment_rate_latest`, `unemployment_latest_year`, `gdp_velocity`, `gdp_velocity_pct`, `gdp_latest`, `gdp_latest_year`.
+
+`gdp_velocity` is denominated in chained 2017 dollars, so any ranking built on it returns the largest metro economies rather than the fastest-moving counties -- the raw and normalized top-10 lists share zero counties. **Use `gdp_velocity_pct` (= `gdp_velocity` / `gdp_latest`) for anything comparative.** Three analysis scripts were recomputing this locally before it was added to the parquet.
 
 ## Source B: BLS QCEW Location Quotients (Industrial Core)
 
@@ -109,7 +117,9 @@ No credentials are required:
 uv run scripts/ingest_source_e.py
 ```
 
-Output: `data/source_e_irs_soi.parquet` with columns `county_name`, `fips_code`, `num_returns`, `agi_thousands`, `wages_salaries_thousands`, `qualified_dividends_thousands`, `net_cap_gain_thousands`, `capital_to_wage_ratio`.
+Output: `data/source_e_irs_soi.parquet` with columns `county_name`, `fips_code`, `num_returns`, `agi_thousands`, `wages_salaries_thousands`, `qualified_dividends_thousands`, `net_cap_gain_thousands`, `capital_to_wage_ratio`, `low_return_flag`.
+
+`low_return_flag` marks counties under 2,200 total returns (325 of 3,143, against a national median of ~11,700). In that tail the ratio is driven by a handful of one-time transactions -- typically farm or ranch land sales -- rather than a sustained investment-income base, so downstream consumers should weight by `num_returns` or exclude flagged counties rather than reading every high ratio as an investment-driven economy.
 
 ## Source F: USDA ERS County Typology Codes
 
@@ -124,3 +134,21 @@ uv run scripts/ingest_source_f.py
 ```
 
 Output: `data/source_f_usda_typology.parquet` with columns `county_name`, `fips_code`, `metro_2023`, `high_farming`, `high_mining`, `high_manufacturing`, `high_government`, `high_recreation`, `nonspecialized`, `low_postsecondary_ed`, `low_employment`, `population_loss`, `housing_stress`, `retirement_destination`, `persistent_poverty`, and the six `industry_dependence_*` one-hot columns.
+
+## Cross-pillar crossvalidation
+
+`analyze_pillar_pair_crossvalidation.py` runs the full pillar-to-pillar sweep: representative scalar features from all six pillars against each other (41 feature pairs spanning all 15 pillar pairs), each permutation-tested at 499 permutations with one Benjamini-Hochberg correction across the whole sweep. Earlier crossvalidation rounds only ever tested each pillar against Source C.
+
+Every correlation is then recomputed as a partial correlation controlling for county size (log tax returns), because large counties simultaneously move more freight, carry longer Wikipedia articles, hold more capital, and are classified metro.
+
+```bash
+uv run scripts/analyze_pillar_pair_crossvalidation.py
+```
+
+Outputs `outputs/pillar_pair_crossvalidation.csv` (per feature pair) and `analysis-output/cross-source/pillar_pair_stats.json` (sweep-level counts plus the best link per pillar pair).
+
+**The size control matters:** 15 of 41 tests lose more than half their effect size once it is applied. The largest raw effect in the sweep, Source D freight tonnage against Source F metro status at r = 0.495, falls to -0.057. The strongest surviving link is Source B's Real Estate & Rental & Leasing LQ against Source E's capital-to-wage ratio -- r = 0.394 raw, 0.382 size-controlled -- two independent federal sources identifying the same underlying economy.
+
+## Findings
+
+`analysis-output/E_macro_key_findings.ipynb` consolidates all six pillars into one keep/cut/fix decision per pillar, with the evidence behind each. Per-pillar detail lives in `analysis-output/source-{a..f}/`.

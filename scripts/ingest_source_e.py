@@ -54,6 +54,13 @@ SOI_COLUMN_MAP: dict[str, str] = {
     "net_cap_gain_thousands": "A01000",
 }
 
+# Below this return count, `capital_to_wage_ratio` is dominated by a handful of
+# one-time transactions (typically farm/ranch land sales) rather than a
+# sustained investment-income base -- see source-e-findings.md finding 3, where
+# seven of the top-25 highest-ratio counties fall under this threshold against a
+# national median of ~11,700 returns.
+LOW_RETURN_THRESHOLD: int = 2_200
+
 DATA_DIR: Path = Path(__file__).resolve().parent.parent / "data"
 OUTPUT_PARQUET_PATH: Path = DATA_DIR / "source_e_irs_soi.parquet"
 COUNTY_CROSSWALK_CACHE_PATH: Path = DATA_DIR / "county_crosswalk.parquet"
@@ -130,8 +137,8 @@ def transform(raw: pd.DataFrame) -> pd.DataFrame:
         raw: DataFrame from download_county_csv.
 
     Returns:
-        DataFrame with `fips_code`, conceptual income columns, and
-        `capital_to_wage_ratio`.
+        DataFrame with `fips_code`, conceptual income columns,
+        `capital_to_wage_ratio`, and `low_return_flag`.
     """
     counties = raw.loc[raw["COUNTYFIPS"] != STATE_TOTAL_COUNTYFIPS].copy()
     counties["fips_code"] = counties["STATEFIPS"] + counties["COUNTYFIPS"]
@@ -142,8 +149,11 @@ def transform(raw: pd.DataFrame) -> pd.DataFrame:
     counties["capital_to_wage_ratio"] = (
         counties["net_cap_gain_thousands"] + counties["qualified_dividends_thousands"]
     ) / counties["wages_salaries_thousands"]
+    counties["low_return_flag"] = counties["num_returns"] < LOW_RETURN_THRESHOLD
 
-    return counties[["fips_code", *SOI_COLUMN_MAP.keys(), "capital_to_wage_ratio"]]
+    return counties[
+        ["fips_code", *SOI_COLUMN_MAP.keys(), "capital_to_wage_ratio", "low_return_flag"]
+    ]
 
 
 def join_county_names(transformed: pd.DataFrame, crosswalk: pd.DataFrame) -> pd.DataFrame:

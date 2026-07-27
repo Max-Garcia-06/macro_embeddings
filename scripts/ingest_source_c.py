@@ -375,9 +375,9 @@ def build_dataframe(results: list[CountyVelocityResult]) -> pd.DataFrame:
     Returns:
         DataFrame with columns: county_name, fips_code, unemployment_velocity,
         unemployment_rate_latest, unemployment_latest_year, gdp_velocity,
-        gdp_latest, gdp_latest_year.
+        gdp_velocity_pct, gdp_latest, gdp_latest_year.
     """
-    return pd.DataFrame(
+    df = pd.DataFrame(
         {
             "county_name": [r.county_name for r in results],
             "fips_code": [r.fips_code for r in results],
@@ -389,6 +389,28 @@ def build_dataframe(results: list[CountyVelocityResult]) -> pd.DataFrame:
             "gdp_latest_year": [r.gdp_latest_year for r in results],
         }
     )
+    df["gdp_velocity_pct"] = compute_gdp_velocity_pct(df)
+    return df
+
+
+def compute_gdp_velocity_pct(df: pd.DataFrame) -> pd.Series:
+    """Normalize dollar-denominated GDP velocity by GDP level.
+
+    Raw `gdp_velocity` is in chained 2017 dollars per year, so it ranks counties
+    by economy size rather than by growth speed -- the largest metros dominate
+    any ranking built on it. Dividing by `gdp_latest` yields a size-invariant
+    growth rate, which every downstream analysis was previously recomputing
+    locally instead of reading from this file.
+
+    Args:
+        df: DataFrame with `gdp_velocity` and `gdp_latest` columns.
+
+    Returns:
+        Float Series of GDP velocity as a fraction of GDP level per year; null
+        where either input is null or `gdp_latest` is zero.
+    """
+    level = df["gdp_latest"].replace(0, pd.NA)
+    return df["gdp_velocity"] / level
 
 
 def export_to_parquet(df: pd.DataFrame, output_path: Path) -> None:
