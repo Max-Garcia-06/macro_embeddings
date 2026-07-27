@@ -104,9 +104,24 @@ def permutation_test_cluster_coherence(
         n_permutations: Number of label permutations for the null distribution.
         seed: Random seed for permutations.
 
+    **The returned p-values are raw and uncorrected.** This emits 2k of them
+    (both tails, per cluster), and the caller reads all of them, so they are a
+    multiple-comparison family in exactly the sense
+    `stats_utils.benjamini_hochberg` exists to handle -- the rest of the
+    codebase (`analyze_pillar_pair_crossvalidation`,
+    `analyze_source_b_source_c_correlation`) BH-corrects families of this
+    shape, and this function does not. At the k=2 this script is run at that
+    is 4 tests, so the correction is small; it would matter if the candidate
+    range ever widened. Treat a single cluster's p < 0.05 here as weaker
+    evidence than the same number elsewhere in the codebase.
+
+    Note also that the two tails are complementary views of one statistic, not
+    independent tests -- a cluster cannot be both tighter and looser than
+    chance -- so the effective family is nearer k than 2k.
+
     Returns:
         Mapping of cluster id to a dict with `observed_km`, `p_tighter_than_chance`,
-        `p_looser_than_chance`.
+        `p_looser_than_chance`. Both p-values are raw; see above.
     """
     unique_labels = np.unique(labels)
     rng = np.random.default_rng(seed)

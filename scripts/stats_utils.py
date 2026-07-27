@@ -57,9 +57,30 @@ def benjamini_hochberg(p_values: list[float]) -> list[float]:
     p-value is valid on its own, but selecting the top few by magnitude out
     of a larger family inflates apparent significance without a correction.
 
+    BH controls the false discovery rate (expected share of false positives
+    among the calls), not the family-wise error rate. That is the right
+    target for the screening sweeps here, and Bonferroni is not merely
+    conservative but unusable in this codebase: `permutation_test_corr` at
+    499 permutations has a hard p-value floor of 1/500 = 0.002, while
+    Bonferroni over the 41-test pillar-pair sweep demands p < 0.05/41 =
+    0.0012 -- a threshold no result could clear at any effect size.
+
+    **Assumption, unverified at both call sites**: BH holds under
+    independence or positive regression dependence (PRDS). Neither caller
+    has independent tests. The 20 NAICS sector LQs are compositional (a
+    county over-concentrated in one sector is mechanically under-concentrated
+    in others), and the pillar-pair sweep reuses the same feature columns
+    across multiple pairs. Positive dependence is the plausible regime, which
+    is the case BH still covers, so the q-values are defensible -- but this
+    is an assumption, not a guarantee. The arbitrary-dependence variant
+    (Benjamini-Yekutieli) costs a sum-of-reciprocals factor, ~4.3x at m=41,
+    which against the 0.002 p-value floor would leave almost nothing
+    significant. Raise `n_permutations` before reaching for BY.
+
     Args:
-        p_values: Raw p-values from independent tests, order corresponds to
-            the caller's own list of results.
+        p_values: Raw p-values, order corresponds to the caller's own list of
+            results. See the dependence note above -- these need not be
+            independent, but they are assumed not to be negatively dependent.
 
     Returns:
         Adjusted q-values in the same order as `p_values`.

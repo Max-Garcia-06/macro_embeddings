@@ -215,6 +215,22 @@ def mantel_test(
     matrix fixed) to build a null distribution for the correlation between
     geographic distance and embedding similarity.
 
+    **Why this rather than `stats_utils.permutation_test_corr`**: the two
+    inputs are pairwise matrices, so the n(n-1)/2 upper-triangle entries this
+    flattens are not independent observations -- every county appears in n-1
+    of them, and moving one county perturbs a whole row and column at once.
+    Feeding those flattened vectors to an ordinary correlation test would
+    treat ~4M dependent pairs (at n=2,849) as ~4M independent draws and return
+    a p-value orders of magnitude too small. Permuting *county labels* --
+    `perm[row_idx], perm[col_idx]`, which relabels the matrix coherently
+    rather than shuffling pair rows independently -- is what preserves that
+    dependence structure under the null. Use `permutation_test_corr` for flat
+    per-county vectors; use this whenever both inputs are pairwise matrices.
+
+    Caveat: the statistic is still Pearson r on the flattened triangles, so it
+    measures linear association only, and Mantel tests are known to have low
+    power against spatially structured alternatives.
+
     Args:
         similarity_matrix: (n, n) pairwise cosine similarity matrix.
         distance_matrix: (n, n) pairwise haversine distance matrix.

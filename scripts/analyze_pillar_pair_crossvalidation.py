@@ -208,14 +208,21 @@ def partial_correlation(x: pd.Series, y: pd.Series, control: pd.Series) -> float
     accounted for -- the obvious confound, since large counties simultaneously
     move more freight, carry longer Wikipedia articles, and are classified metro.
 
+    The control is removed **linearly** (OLS on `[1, control]`). Any size
+    confounding that is nonlinear in the control survives into the residuals,
+    so a link that looks size-robust here may still be size-driven. Callers
+    pass `log_num_returns` rather than raw counts partly for this reason.
+
     Args:
         x: First variable.
         y: Second variable.
         control: Variable to partial out of both.
 
     Returns:
-        Partial correlation coefficient. Returns 0.0 if either residual series
-        is constant.
+        Partial correlation coefficient. **Returns 0.0 if either residual
+        series is constant** -- note that 0.0 is also a legitimate result, so
+        a caller cannot distinguish a degenerate input from a genuine null
+        from the return value alone.
     """
     design = np.column_stack([np.ones(len(control)), control.to_numpy(dtype=float)])
     residuals = []
@@ -235,6 +242,26 @@ def add_size_controlled_correlations(results: pd.DataFrame, panel: pd.DataFrame)
     `num_returns` (Source E's tax-return count) is used as the size proxy: it is
     available for 3,143 of 3,144 counties and tracks population far more closely
     than any other column already in the panel.
+
+    **`r_size_controlled` carries no significance test.** `run_sweep`
+    permutation-tests and BH-corrects the *raw* correlation only; the
+    size-controlled value is a point estimate with no `p`, no `q`, and no
+    entry in the FDR family. Anything reported off it -- including the
+    headline claim that a link "survives" the size control -- is an effect-size
+    statement, not a significance claim. Testing it properly means
+    permutation-testing each partial correlation and extending the BH family
+    to cover them, which would change which links come out significant.
+
+    `size_confounded` is likewise a **heuristic, not a test**: the 0.5 cutoff
+    is a convention chosen here, so a pair just either side of it is not
+    meaningfully different from its neighbour.
+
+    Reading the output: 14 of 41 pairs currently *flip sign* under the
+    control, the largest being Source D freight tonnage against Source F metro
+    status (r = 0.495 raw, -0.057 controlled). A sign reversal is a
+    suppression / Simpson's-paradox signature, not simply "the effect went
+    away" -- the within-size-stratum relationship genuinely runs opposite to
+    the pooled one, and is worth inspecting stratified rather than dismissing.
 
     Args:
         results: Output of run_sweep.
