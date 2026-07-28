@@ -1,0 +1,18 @@
+{
+  "n_targets": 28,
+  "n_folds": 5,
+  "n_components": 50,
+  "random_seed": 42,
+  "mean_lift_length": 0.0009795773432980301,
+  "mean_lift_pca50": 0.001714279942577767,
+  "mean_lift_full": 0.0027276119781683822,
+  "mean_lift_best_embedding": 0.0030146150627428014,
+  "median_lift_length": 0.0006505847657925501,
+  "median_lift_best_embedding": 0.0018176235741792501,
+  "n_embedding_wins": 23,
+  "mean_difference": 0.002035037719444771,
+  "wilcoxon_statistic": 37.0,
+  "wilcoxon_p": 4.2110681533813477e-05,
+  "best_target": "lq_emp_51",
+  "best_embedding_lift": 0.01188167376964222
+}
