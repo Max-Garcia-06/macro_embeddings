@@ -1,0 +1,96 @@
+# Project Goal
+
+Orientation doc for anyone (human or agent) picking this repo up cold. Sources of
+truth: `docs/geo embedding strategy rev0.2.pdf` (why `E_macro` exists),
+`docs/macro_pre_scoping_spec.pdf` (what this stage is scoped to), and
+`analysis-output/E_macro_key_findings.ipynb` (where the evidence stands).
+
+## What this repo is
+
+`E_macro` — the **regional/macro tier** of a three-tier geospatial embedding stack:
+
+| Tier | Captures | Where it lives |
+|---|---|---|
+| `E_local` | Physical "vibe" — H3 res-8 + OpenStreetMap features | not this repo |
+| `E_census` | Official demographics — Census/Overture joins | not this repo |
+| **`E_macro`** | **Regional economic climate, county-level** | **this repo** |
+
+The three are built as independent sub-embeddings and served from a feature store,
+so a downstream model can select one or all. Deliberately *not* fused into a single
+vector — OSM is current-but-indirect, Census is direct-but-stale, and training them
+together would blend those failure modes.
+
+`E_macro`'s specific job: distinguish physically identical places sitting in
+different economic climates — a suburb outside New York versus one outside
+Cleveland. It is keyed on `fips_code` at N ≈ 3,143 US counties and equivalents.
+
+## Why six independent sources
+
+Each pillar is a separate federal or public source, ingested by its own script into
+its own `data/*.parquet`. Independence is the point: when two pillars agree, that's
+two agencies with different methodologies corroborating the same underlying economy,
+not one source echoing itself.
+
+| Source | Pillar | Signal |
+|---|---|---|
+| A | Place Identity | Wikipedia lead-section text |
+| B | Industrial Core | BLS QCEW location quotients |
+| C | Economic Velocity | FRED unemployment & real GDP slopes |
+| D | Trade Logistics | BTS FAF5 freight flows |
+| E | Capital Flow | IRS SOI capital-to-wage ratio |
+| F | Structural Resilience | USDA ERS county typology |
+
+Update cadence spans continuous (A) to decennial (F), which is why ingestion is
+offline/asynchronous batch — downstream consumers are isolated from API bottlenecks.
+
+## Current stage: validation, not modeling
+
+The pre-scoping spec scopes this phase to documenting boundaries and flagging risks,
+not shipping the final tensor. Repo state matches that:
+
+- All six sources ingested, coverage 3,143–3,144 counties on five of six.
+- Per-pillar findings in `analysis-output/source-{a..f}/`.
+- Full 15-pillar-pair crossvalidation sweep: 41 feature pairs, 499 permutations,
+  one Benjamini-Hochberg correction across the sweep, every correlation recomputed
+  as a partial correlation controlling for county size.
+- **The fusion/assembly step does not exist yet.** By design.
+
+Operating principle: every pillar must earn its slot on evidence before anything is
+fused. Applied already — Source A's `bge-m3` embedding step was cut (|r| = 0.041
+Mantel, k-means silhouette 0.028), and 15 of 41 significant correlations lost more
+than half their effect once size was controlled.
+
+## Where the evidence stands
+
+Verdict per pillar (detail in `analysis-output/E_macro_key_findings.ipynb`):
+
+- **A** — cut the embedding, keep the text source. Done.
+- **B** — keep, change the feature: ship the 20-dim LQ vector, not a scalar.
+- **C** — keep, fix the metric: use `gdp_velocity_pct`, not dollar-denominated
+  `gdp_velocity`. Done.
+- **D, E** — keep both. Weak, but clean and independent.
+- **F** — keep, reclassify as a structural anchor rather than a hub-tested pillar.
+
+Strongest surviving link: Source B Real Estate & Rental & Leasing LQ against
+Source E capital-to-wage ratio, r = 0.394 raw / 0.382 size-controlled. Largest raw
+effect in the sweep — D freight tonnage against F metro status, r = 0.495 — collapses
+to −0.057 once size is controlled.
+
+## Open decisions blocking the next phase
+
+1. **Is county size a control or a feature?** If `E_macro` must distinguish counties
+   *beyond* how big they are, size gets regressed out of every pillar before fusion,
+   which shrinks most of the cross-pillar structure found so far. If size is part of
+   the target, the raw correlations stand but the project is partly a population
+   model. Everything downstream hangs on this.
+2. **Does B ↔ E get privileged weight?** It is roughly five times stronger than
+   anything else surviving the size control.
+3. **Confirm the Source A cut.** Reinstating is a `git revert`; re-running costs a
+   2.2GB model download plus CPU inference over 3,144 articles.
+
+## Next work, in order
+
+1. Extend the sweep beyond single scalars — full 20-column B LQ vector against E.
+2. Re-run the size control with Census population instead of the tax-return proxy.
+3. Build the fusion — **only after** the size question is settled, or the confound
+   gets baked into the output.

@@ -13,6 +13,8 @@ A six-pillar county-level macro/geo dataset for the ~3,143 U.S. counties and cou
 
 All six are ingested and analyzed; a cross-pillar crossvalidation sweep and per-pillar findings reports are in `analysis-output/`. Planning docs for the sources that had one are in `docs/plans/`.
 
+**Start here for context:** `docs/PROJECT_GOAL.md` — what `E_macro` is for, what stage the project is in, and the open decisions blocking the fusion step.
+
 ## Setup
 
 Requires Python 3.12 and [`uv`](https://docs.astral.sh/uv/).
