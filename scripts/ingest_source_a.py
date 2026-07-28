@@ -2,8 +2,9 @@
 
 Queries the English Wikimedia Enterprise API for county Wikipedia articles,
 isolates the lead/introductory section (excluding infobox, body sections, and
-metadata), embeds the cleaned text with BAAI/bge-m3, L2-normalizes the
-resulting vector, and stores the result set as a local Parquet file.
+metadata), and stores the cleaned text plus its character count as a local
+Parquet file. The BAAI/bge-m3 embedding step was removed -- see the comment on
+OUTPUT_PARQUET_PATH below.
 
 Requires WIKIMEDIA_USERNAME and WIKIMEDIA_PASSWORD environment variables set
 to valid Wikimedia Enterprise credentials.
