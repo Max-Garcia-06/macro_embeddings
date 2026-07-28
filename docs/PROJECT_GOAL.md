@@ -24,6 +24,24 @@ together would blend those failure modes.
 different economic climates — a suburb outside New York versus one outside
 Cleveland. It is keyed on `fips_code` at N ≈ 3,143 US counties and equivalents.
 
+## Who consumes it
+
+**This feeds downstream ML models at Comcast.** `E_macro` is not the deliverable
+on its own — it is a geospatial feature layer those models pull from, so the bar
+is production feature-store quality, not a one-off analysis: stable schema keyed
+on `fips_code`, documented coverage and null semantics, and every feature
+defensible on evidence rather than plausibility.
+
+Two consequences that shape decisions in this repo:
+
+- **Suppression and sentinel values stay explicit.** BLS suppresses ~30% of county
+  × sector LQ cells and those stay null with a matching `disclosure_*` flag; IRS
+  ships no suppression flag at all and that limitation is disclosed rather than
+  papered over. A downstream model must be able to tell "missing" from "zero."
+- **Nothing ships that hasn't earned its slot.** A feature that correlates with
+  nothing, or only with county size, is a liability once it is in a production
+  model — hence the validation-first stage below.
+
 ## Why six independent sources
 
 Each pillar is a separate federal or public source, ingested by its own script into
@@ -94,3 +112,5 @@ to −0.057 once size is controlled.
 2. Re-run the size control with Census population instead of the tax-return proxy.
 3. Build the fusion — **only after** the size question is settled, or the confound
    gets baked into the output.
+4. Hand off to the Comcast downstream models: publish the pillar parquets behind
+   the feature store with a frozen schema and documented null semantics.
