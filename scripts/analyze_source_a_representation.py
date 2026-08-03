@@ -164,6 +164,11 @@ VARIANTS: tuple[Variant, ...] = (
         "typed features + economy section",
         len(VARIANT_COLUMNS["extracted_sections"]),
     ),
+    Variant(
+        "sections_x_tier",
+        "typed features x content tier",
+        len(TIER_LABELS) * (1 + len(VARIANT_COLUMNS["extracted_sections"])),
+    ),
     Variant("pca50", f"bge-m3, {N_COMPONENTS} principal components", N_COMPONENTS),
     Variant("full", "bge-m3, all 1024 dimensions", 1024),
 )
@@ -182,6 +187,12 @@ EXTRACTED_KEYS: tuple[str, ...] = (
     "extracted_full",
     "extracted_sections",
 )
+
+# The tier-interaction variant and the block it crosses with tier membership.
+# Built from the best flat variant so the comparison isolates one thing: whether
+# letting coefficients vary by tier buys anything over a single global fit.
+TIER_INTERACTION_KEY: str = "sections_x_tier"
+TIER_INTERACTION_BASE: str = "extracted_sections"
 
 
 def configure_logging() -> None:
@@ -357,8 +368,38 @@ def _alone_oof_r2(block: np.ndarray, y: np.ndarray, folds: KFold, n_components: 
     return float(r2_score(y, cross_val_predict(_residual_pipeline(n_components), block, y, cv=folds)))
 
 
+def build_tier_interaction_block(
+    features: np.ndarray, row_tiers: np.ndarray
+) -> np.ndarray:
+    """Cross a feature block with tier membership, giving each tier its own slope.
+
+    Every county's features are placed in the slot belonging to its tier and
+    zeroed elsewhere, so the ridge fits a separate coefficient per (feature,
+    tier) pair. This is the modeling-layer form of "treat the tiers
+    differently": one schema, one training set, one penalty, but no requirement
+    that a feature mean the same thing in a two-sentence stub as in a long
+    article. Tier dummies are prepended so the intercept can shift per tier too.
+
+    Fitting separate models per tier would express the same idea but train each
+    on a quarter of the rows; this keeps the full sample behind every estimate
+    and lets the shared penalty shrink tiers that have nothing to say.
+
+    Args:
+        features: Feature array for the rows being scored.
+        row_tiers: Tier label per row, same length as `features`.
+
+    Returns:
+        Array of shape (n_rows, n_tiers + n_tiers * n_features).
+    """
+    indicators = [(row_tiers == tier).astype("float64")[:, None] for tier in TIER_LABELS]
+    return np.hstack([*indicators, *(features * indicator for indicator in indicators)])
+
+
 def build_variant_blocks(
-    matrix: pd.DataFrame, embeddings: np.ndarray, rows: np.ndarray
+    matrix: pd.DataFrame,
+    embeddings: np.ndarray,
+    rows: np.ndarray,
+    row_tiers: np.ndarray,
 ) -> dict[str, tuple[np.ndarray, int | None]]:
     """Assemble every variant's feature array for one target's usable rows.
 
@@ -366,6 +407,7 @@ def build_variant_blocks(
         matrix: Feature matrix from `build_matrix`.
         embeddings: Aligned embedding array.
         rows: Boolean mask of rows where the target is observed.
+        row_tiers: Tier label per usable row.
 
     Returns:
         Mapping of variant key to (feature array, PCA components or None).
@@ -379,6 +421,11 @@ def build_variant_blocks(
     for key in EXTRACTED_KEYS:
         columns = list(VARIANT_COLUMNS[key])
         blocks[key] = (matrix.loc[rows, columns].to_numpy(dtype="float64"), None)
+
+    blocks[TIER_INTERACTION_KEY] = (
+        build_tier_interaction_block(blocks[TIER_INTERACTION_BASE][0], row_tiers),
+        None,
+    )
     return blocks
 
 
@@ -424,7 +471,7 @@ def score_target(
     }
     tier_records: list[dict[str, float | str | int]] = []
 
-    blocks = build_variant_blocks(matrix, embeddings, rows)
+    blocks = build_variant_blocks(matrix, embeddings, rows, row_tiers)
     for variant in VARIANTS:
         block, n_components = blocks[variant.key]
         predictions = _residual_oof_predictions(base_design, block, y, folds, n_components)

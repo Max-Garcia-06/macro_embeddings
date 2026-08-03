@@ -1058,3 +1058,50 @@ beats the 1024-dim embedding in all three non-stub tiers.
   steps must follow), then `extract_source_a_features.py`,
   `extract_source_a_section_features.py`, `analyze_source_a_tiers.py`,
   `analyze_source_a_representation.py`. Seed 42 throughout.
+
+## 15. Should the Tiers Branch the Model? No — Tested Both Ways (2026-08-03)
+
+**Context**: the tiers in §13.1 were used to decide *what to extract* and to break
+out results, but every county runs through one schema and one model. The original
+framing behind this experiment line was stronger: split counties into groups and
+handle each group differently. That stronger version was never tested, so the
+question stayed open — does letting the tiers change the model buy anything?
+
+Two forms, both scored on the same 28 targets, same folds, same seed, against the
+flat 29-column `extracted_sections` block:
+
+| approach | width | mean R² lift |
+|---|---|---|
+| one model, one global coefficient per feature | 29 | **+0.00320** |
+| one model, coefficients free to vary by tier | 120 | +0.00265 |
+| four independent models, one per tier | 29 × 4 fits | **−0.01595** |
+
+**Both branching forms lose, and the loss scales with how much branching there
+is.** Tier-specific slopes cost 17% of the lift. Fully separate per-tier models
+go negative — worse than dropping Source A entirely — because each trains on
+roughly a quarter of the rows and overfits, with no shared penalty to restrain it.
+
+The mechanism is ordinary bias-variance. Crossing 29 features with 4 tiers puts
+120 columns against targets whose smallest sample is n ≈ 1,026, and the ridge
+penalty large enough to control that width also over-shrinks the coefficients
+that were doing the work in the flat model. Splitting the fit entirely removes
+even the shared penalty's protection.
+
+**Interpretation, stated carefully because it is easy to get backwards**: the tier
+structure is real and it mattered — §13.1's 23× industry gradient is what
+identified industry as the feature family worth building, and §14.1's per-tier
+yield is what justified the section refetch. The tiers were the right
+*diagnostic*. They are not the right *architecture*. Heterogeneity in the corpus
+is best handled by features that are simply absent when a county has nothing to
+say, not by fitting each group separately — sparsity already encodes the tier, and
+the model has more data to learn from when it is not partitioned.
+
+- **Allowed wording**: "content tiers guided which features to build and where to
+  look for yield, but branching the model on them — whether by tier-specific
+  coefficients or by separate per-tier fits — reduced out-of-fold lift, so the
+  shipped configuration uses one uniform schema and one model."
+- **Forbidden wording**: "the tiers do not matter" — they determined the feature
+  set and the refetch decision; only the modeling split failed.
+- **Status**: resolved. `sections_x_tier` is retained as a scored variant in
+  `analyze_source_a_representation.py` so the negative result stays reproducible
+  rather than becoming folklore.

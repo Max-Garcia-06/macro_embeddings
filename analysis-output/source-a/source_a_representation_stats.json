@@ -64,6 +64,15 @@
       "wilcoxon_statistic": 126.0,
       "wilcoxon_p": 0.08145394921302795
     },
+    "sections_x_tier": {
+      "mean_lift": 0.0026536358369286727,
+      "median_lift": 0.0016647902323446706,
+      "mean_r2_alone": 0.041756155075323716,
+      "n_wins_vs_incumbent": 19,
+      "mean_difference": 0.001479805494069639,
+      "wilcoxon_statistic": 122.0,
+      "wilcoxon_p": 0.06623983383178711
+    },
     "pca50": {
       "mean_lift": 0.001714279942577767,
       "median_lift": 0.0005744649119221457,
@@ -125,6 +134,12 @@
       "rich": 0.0027700456,
       "stub": 0.0009154143,
       "thin": 0.0020214293
+    },
+    "sections_x_tier": {
+      "mid": 0.0007283424,
+      "rich": 0.0054131973,
+      "stub": 0.0050702273,
+      "thin": 0.0024298526
     }
   }
 }
