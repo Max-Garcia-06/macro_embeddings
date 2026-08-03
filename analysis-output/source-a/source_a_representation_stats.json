@@ -4,112 +4,127 @@
   "n_components": 50,
   "random_seed": 42,
   "incumbent": "length",
-  "mean_lift_length": 0.0009795773432980301,
+  "mean_lift_length": 0.0011738303428590335,
   "mean_lift_pca50": 0.001714279942577767,
   "mean_lift_full": 0.0027276119781683822,
   "mean_lift_best_embedding": 0.0030146150627428014,
-  "median_lift_length": 0.0006505847657925501,
+  "median_lift_length": 0.0009333074097592209,
   "median_lift_best_embedding": 0.0018176235741792501,
-  "n_embedding_wins": 23,
-  "mean_difference": 0.002035037719444771,
-  "wilcoxon_statistic": 37.0,
-  "wilcoxon_p": 4.2110681533813477e-05,
-  "best_target": "distress_count",
+  "n_embedding_wins": 21,
+  "mean_difference": 0.0018407847198837677,
+  "wilcoxon_statistic": 72.0,
+  "wilcoxon_p": 0.0020434409379959106,
+  "best_target": "lq_emp_72",
   "best_embedding_lift": 0.01188167376964222,
-  "mean_lift_best_extracted": 0.003706455080399288,
-  "n_extracted_wins": 20,
+  "mean_lift_best_extracted": 0.004682231046894485,
+  "n_extracted_wins": 24,
   "variants": {
     "length": {
-      "mean_lift": 0.0009795773432980301,
-      "median_lift": 0.0006505847657925501,
-      "mean_r2_alone": 0.019209683015517242,
+      "mean_lift": 0.0011738303428590335,
+      "median_lift": 0.0009333074097592209,
+      "mean_r2_alone": 0.01982269537491265,
       "n_wins_vs_incumbent": 0,
       "mean_difference": 0.0,
       "wilcoxon_statistic": NaN,
       "wilcoxon_p": NaN
     },
     "extracted_min": {
-      "mean_lift": 0.002230907274442318,
-      "median_lift": 0.0005628567616214331,
-      "mean_r2_alone": 0.040808836045098974,
-      "n_wins_vs_incumbent": 14,
-      "mean_difference": 0.001251329931144288,
+      "mean_lift": 0.0025443082597403238,
+      "median_lift": 0.0006615436957950194,
+      "mean_r2_alone": 0.04237586699524069,
+      "n_wins_vs_incumbent": 13,
+      "mean_difference": 0.00137047791688129,
       "wilcoxon_statistic": 172.0,
       "wilcoxon_p": 0.49323366582393646
     },
     "extracted_mid": {
-      "mean_lift": 0.002309135432307632,
-      "median_lift": 0.0008343745586202878,
-      "mean_r2_alone": 0.04083723388804144,
-      "n_wins_vs_incumbent": 17,
-      "mean_difference": 0.0013295580890096018,
-      "wilcoxon_statistic": 118.0,
-      "wilcoxon_p": 0.053377434611320496
+      "mean_lift": 0.0024329278417814437,
+      "median_lift": 0.0006425237266197703,
+      "mean_r2_alone": 0.042032096264105215,
+      "n_wins_vs_incumbent": 19,
+      "mean_difference": 0.00125909749892241,
+      "wilcoxon_statistic": 122.0,
+      "wilcoxon_p": 0.06623983383178711
     },
     "extracted_full": {
-      "mean_lift": 0.0025692368430261,
-      "median_lift": 0.0005041589699835702,
-      "mean_r2_alone": 0.04388340241731087,
+      "mean_lift": 0.002632157612297554,
+      "median_lift": 0.000747914432617458,
+      "mean_r2_alone": 0.04435919530937825,
       "n_wins_vs_incumbent": 16,
-      "mean_difference": 0.0015896594997280697,
-      "wilcoxon_statistic": 154.0,
-      "wilcoxon_p": 0.27407141774892807
+      "mean_difference": 0.0014583272694385205,
+      "wilcoxon_statistic": 160.0,
+      "wilcoxon_p": 0.33856552094221115
+    },
+    "extracted_sections": {
+      "mean_lift": 0.0032024206367143987,
+      "median_lift": 0.0014469070413200558,
+      "mean_r2_alone": 0.0477118206826728,
+      "n_wins_vs_incumbent": 19,
+      "mean_difference": 0.002028590293855365,
+      "wilcoxon_statistic": 126.0,
+      "wilcoxon_p": 0.08145394921302795
     },
     "pca50": {
       "mean_lift": 0.001714279942577767,
       "median_lift": 0.0005744649119221457,
-      "mean_r2_alone": 0.08502386008472493,
+      "mean_r2_alone": 0.08502386008472491,
       "n_wins_vs_incumbent": 13,
-      "mean_difference": 0.0007347025992797367,
-      "wilcoxon_statistic": 174.0,
-      "wilcoxon_p": 0.5221440717577934
+      "mean_difference": 0.0005404495997187334,
+      "wilcoxon_statistic": 184.0,
+      "wilcoxon_p": 0.6781789660453796
     },
     "full": {
       "mean_lift": 0.0027276119781683822,
       "median_lift": 0.001665884535412443,
       "mean_r2_alone": 0.11221388191630095,
-      "n_wins_vs_incumbent": 21,
-      "mean_difference": 0.0017480346348703521,
-      "wilcoxon_statistic": 62.0,
-      "wilcoxon_p": 0.0007921457290649414
+      "n_wins_vs_incumbent": 19,
+      "mean_difference": 0.001553781635309349,
+      "wilcoxon_statistic": 96.0,
+      "wilcoxon_p": 0.01362369954586029
     }
   },
   "mean_lift_by_tier": {
     "extracted_full": {
-      "mid": 0.0010372217,
-      "rich": 0.0050134037,
-      "stub": -7.28064e-05,
-      "thin": 0.0024291555
+      "mid": 0.0009753731,
+      "rich": 0.0054178821,
+      "stub": -8.06193e-05,
+      "thin": 0.0024185868
     },
     "extracted_mid": {
-      "mid": 0.0008697198,
-      "rich": 0.0041467136,
-      "stub": -0.0017245577,
-      "thin": 0.0027523383
+      "mid": 0.0005635929,
+      "rich": 0.0045904015,
+      "stub": -0.0005797855,
+      "thin": 0.0028336057
     },
     "extracted_min": {
-      "mid": 0.0013476751,
-      "rich": 0.0041892871,
-      "stub": -0.0020646629,
-      "thin": 0.0024716138
+      "mid": 0.0012505406,
+      "rich": 0.0046633507,
+      "stub": -0.0005573286,
+      "thin": 0.0026597263
+    },
+    "extracted_sections": {
+      "mid": 0.0018797387,
+      "rich": 0.0059416419,
+      "stub": 0.0009359763,
+      "thin": 0.0028518918
     },
     "full": {
-      "mid": 0.0005411,
-      "rich": 0.0054485448,
-      "stub": 0.0010298564,
-      "thin": 0.0023607297
+      "mid": 0.0006491219,
+      "rich": 0.0053913602,
+      "stub": 0.0008466014,
+      "thin": 0.0023502265
     },
     "length": {
-      "mid": 8.37255e-05,
-      "rich": 0.0033096841,
-      "stub": 0.0005952983,
-      "thin": 0.0003874484
+      "mid": 4.86217e-05,
+      "rich": 0.0039013845,
+      "stub": 0.0006057232,
+      "thin": 0.0003732764
     },
     "pca50": {
-      "mid": -5.23527e-05,
-      "rich": 0.0027425147,
-      "stub": 0.0010521013,
-      "thin": 0.0020563998
+      "mid": 7.4164e-06,
+      "rich": 0.0027700456,
+      "stub": 0.0009154143,
+      "thin": 0.0020214293
     }
   }
 }

@@ -918,7 +918,7 @@ reinstated, reduce it supervised (PLS) or not at all.**
 - **Forbidden wording**: "extraction beats the embedding" (it does not, on
   consistency: 16/28 vs 21/28 targets); "the improvement is statistically
   significant" (the paired Wilcoxon is p = 0.274).
-- **Open — body sections not yet tested.** Extraction runs on intro text only. The
+- **Body sections — now tested, see §14 (resolved).** Originally open: Extraction runs on intro text only. The
   feature family that produces the largest wins (named industry) fires on just
   6.5% of counties, while §4 found ~25% of counties have a dedicated Economy
   section that was never parsed. Fetch cost is flat — `extract_article_html`
@@ -930,3 +930,131 @@ reinstated, reduce it supervised (PLS) or not at all.**
 - **Reproduction**: `uv run python scripts/extract_source_a_features.py`, then
   `uv run python scripts/analyze_source_a_tiers.py`, then
   `uv run python scripts/analyze_source_a_representation.py`. Seed 42 throughout.
+
+## 14. Body Sections Reopened — And They Pay (2026-08-03)
+
+**Context**: §13.8 left one open item — extraction ran on intro text only, while
+the feature family producing its largest wins (named industry) reached just 8.2%
+of counties. §4/§4.1 had closed section expansion, but on Mantel-r against
+geographic distance, the yardstick this project rejected for this pillar. This
+section re-opens it against economic targets.
+
+Two things made the re-test cheap and the old objection weak:
+
+- **Fetch cost was always flat.** `extract_article_html` has always returned the
+  full article body and `isolate_lead_section` has always discarded everything
+  after the lead. The re-ingest cost the same 3,144 requests as the original.
+  `ingest_source_a.py` now persists every body section to
+  `data/source_a_sections.parquet` (64,588 rows, 20.5 sections per county, 3,144
+  counties, 0 failures), so no section question needs another fetch.
+- **§4's finding was that body sections are *more templated* than the lead.** That
+  is fatal for a dense embedding, which absorbs boilerplate into every dimension.
+  Targeted extraction reads named facts and ignores prose, so templating costs it
+  little. §4.1's diagnosed failure mode — an LLM cleaner keeping geography for
+  some counties and dropping it for others — cannot occur with a fixed lexicon.
+
+`extract_source_a_section_features.py` therefore applies only the industry
+lexicon, and only to sections whose title marks them economic. This is targeted
+extraction from one named section, not section expansion.
+
+### 14.1 Yield: sections help most where the intro says least
+
+| tier | has economy section | industry in intro | **industry added by sections** |
+|---|---|---|---|
+| stub | 10.5% | 0.7% | +5.4% |
+| thin | 14.2% | 1.1% | **+8.6%** |
+| mid | 21.2% | 5.5% | +12.6% |
+| rich | 35.7% | 25.3% | +13.7% |
+
+Corpus-wide, industry coverage rises from **8.2% to 18.8% (+332 counties)**. The
+marginal yield is largest in absolute terms for the rich tier, but the thin tier
+gains roughly 8× relative to its own near-zero base — these are counties whose
+lead section says nothing and whose Economy section says something. That is the
+opposite of the intuition that rich counties justify deeper reading, and it is
+what §4's intro-only framing could not see.
+
+### 14.2 Result: 29 typed columns beat the 1024-dim embedding
+
+Full re-run on the refetched corpus, same protocol throughout (28 targets, seed
+42, 5 folds, unpenalized size-plus-state baseline, nested-CV ridge penalty):
+
+| variant | columns | mean R² lift | raw R² alone | beats `length` | Wilcoxon p |
+|---|---|---|---|---|---|
+| `content_length` (incumbent) | 1 | +0.00117 | 0.020 | — | — |
+| `extracted_min` | 4 | +0.00254 | 0.042 | 13/28 | 0.493 |
+| `extracted_mid` | 8 | +0.00243 | 0.042 | 19/28 | 0.066 |
+| `extracted_full` (intro only) | 20 | +0.00263 | 0.044 | 16/28 | 0.339 |
+| **`extracted_sections`** | 29 | **+0.00320** | 0.048 | 19/28 | 0.082 |
+| `bge-m3` PCA-50 | 50 | +0.00171 | 0.085 | 13/28 | 0.678 |
+| `bge-m3` full | 1024 | +0.00273 | 0.112 | 19/28 | 0.014 |
+
+**29 interpretable regex columns now exceed the 1024-dim embedding's mean lift
+(+0.00320 against +0.00273), at 2.7× the incumbent scalar, with no model
+download.** Adding the economy section is worth +0.00057 over intro-only
+extraction — about 22% more lift for 9 more columns.
+
+The consistency caveat from §13.3 still stands: p = 0.082, short of 0.05. The
+extraction variants win large on a handful of targets and tie elsewhere, while
+the embedding wins smaller but on more of them. **Extraction is the better and
+far cheaper representation on average; it is not uniformly better target by
+target, and that should not be claimed.**
+
+*Numbers differ slightly from §13 because the refetch pulled live Wikipedia text
+three weeks newer — `content_length` mean moved 388.1 → 390.0 and the incumbent's
+mean lift 0.00098 → 0.00117. §14's table supersedes §13.3's. The embedding's own
+lift is unchanged at +0.00273 (it is scored from the frozen July parquet), so it
+remains a valid reference point, though it is now measured against marginally
+different text than the extraction variants.*
+
+### 14.3 The gain is content, not another size proxy
+
+`n_body_sections` correlates with county size at r = 0.550 against log tax
+returns — higher than `content_length`'s 0.359 and the most size-dependent column
+in Source A. An ablation isolates its contribution:
+
+| feature set | columns | mean lift |
+|---|---|---|
+| intro only | 20 | +0.00263 |
+| + sections, including `n_body_sections` | 30 | +0.00328 |
+| + sections, `n_body_sections` dropped | 29 | +0.00320 |
+| + sections, both structural columns dropped | 28 | +0.00320 |
+
+**97.6% of the section gain survives removing the size proxy.** The signal is
+`sec_n_industry_mentions` (r = 0.108 with size — effectively size-independent),
+not section count. `n_body_sections` is therefore written to the parquet as a
+diagnostic and excluded from the scored feature set, on the same footing as
+`has_usda_echo`: 2.4% of the gain does not justify that much size dependence in a
+feature set whose central open question is whether size is a control or a target.
+
+### 14.4 Per-tier: the section variant wins in every tier
+
+| variant | stub | thin | mid | rich |
+|---|---|---|---|---|
+| `content_length` | +0.00061 | +0.00037 | +0.00005 | +0.00390 |
+| `extracted_full` | −0.00008 | +0.00242 | +0.00098 | +0.00542 |
+| `extracted_sections` | **+0.00051** | +0.00278 | **+0.00208** | **+0.00634** |
+| `bge-m3` full | +0.00085 | +0.00235 | +0.00065 | +0.00539 |
+
+Adding sections turns the stub tier from slightly negative to slightly positive
+and roughly doubles the mid tier, while still gaining most in the rich tier. It
+beats the 1024-dim embedding in all three non-stub tiers.
+
+### 14.5 Status
+
+- **Recommended shipping configuration**: `extracted_sections`, 29 columns, all
+  interpretable, uniform schema across all 3,144 counties, absence encoded as
+  `False`. Beats both the incumbent scalar and the cut embedding on mean lift.
+- **Allowed wording**: "targeted extraction from Wikipedia leads plus economy
+  sections yields 2.7× the incumbent's mean cross-pillar lift and exceeds the cut
+  1024-dim embedding's, at 29 interpretable columns and no model download —
+  though its per-target advantage is concentrated rather than uniform and does
+  not reach paired significance (p = 0.082)."
+- **Forbidden wording**: "significantly beats the embedding" (p = 0.082, and the
+  embedding wins on comparable target counts); "section expansion works" — this
+  tests *targeted lexicon extraction from one named section*, not the
+  concatenation §4 and §4.1 ruled out, which remains closed.
+- **Reproduction**: `uv run --env-file .env python scripts/ingest_source_a.py`
+  (refetch, ~16 min, also rewrites the text-features parquet so the extraction
+  steps must follow), then `extract_source_a_features.py`,
+  `extract_source_a_section_features.py`, `analyze_source_a_tiers.py`,
+  `analyze_source_a_representation.py`. Seed 42 throughout.

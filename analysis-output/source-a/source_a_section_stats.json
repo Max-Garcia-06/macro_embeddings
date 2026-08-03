@@ -1,0 +1,43 @@
+{
+  "n_counties": 3144,
+  "share_economy_section": 0.2099236641221374,
+  "mean_body_sections": 20.543256997455472,
+  "share_intro_industry": 0.08206106870229007,
+  "share_section_industry": 0.13040712468193386,
+  "share_industry_added": 0.10559796437659033,
+  "n_industry_added": 332,
+  "by_tier": {
+    "stub": {
+      "n_counties": 294,
+      "share_economy_section": 0.1054421769,
+      "mean_body_sections": 17.3605442177,
+      "share_intro_industry": 0.0068027211,
+      "share_section_industry": 0.0544217687,
+      "share_industry_added": 0.0544217687
+    },
+    "thin": {
+      "n_counties": 1274,
+      "share_economy_section": 0.1420722135,
+      "mean_body_sections": 18.806122449,
+      "share_intro_industry": 0.010989011,
+      "share_section_industry": 0.0879120879,
+      "share_industry_added": 0.0855572998
+    },
+    "mid": {
+      "n_counties": 788,
+      "share_economy_section": 0.211928934,
+      "mean_body_sections": 20.0012690355,
+      "share_intro_industry": 0.0545685279,
+      "share_section_industry": 0.1408629442,
+      "share_industry_added": 0.1256345178
+    },
+    "rich": {
+      "n_counties": 788,
+      "share_economy_section": 0.3565989848,
+      "mean_body_sections": 25.0812182741,
+      "share_intro_industry": 0.2525380711,
+      "share_section_industry": 0.2170050761,
+      "share_industry_added": 0.1370558376
+    }
+  }
+}

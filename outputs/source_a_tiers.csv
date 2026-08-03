@@ -45,7 +45,7 @@ fips_code,county_name,content_length,tier
 01087,"Macon County, Alabama",347,mid
 01089,"Madison County, Alabama",583,rich
 01091,"Marengo County, Alabama",218,thin
-01093,"Marion County, Alabama",715,rich
+01093,"Marion County, Alabama",650,rich
 01095,"Marshall County, Alabama",441,mid
 01097,"Mobile County, Alabama",1111,rich
 01099,"Monroe County, Alabama",884,rich
@@ -60,7 +60,7 @@ fips_code,county_name,content_length,tier
 01117,"Shelby County, Alabama",331,mid
 01119,"Sumter County, Alabama",199,thin
 01121,"Talladega County, Alabama",300,mid
-01123,"Tallapoosa County, Alabama",75,stub
+01123,"Tallapoosa County, Alabama",868,rich
 01125,"Tuscaloosa County, Alabama",622,rich
 01127,"Walker County, Alabama",194,thin
 01129,"Washington County, Alabama",537,rich
@@ -68,6 +68,7 @@ fips_code,county_name,content_length,tier
 01133,"Winston County, Alabama",396,mid
 02013,"Aleutians East Borough, Alaska",95,stub
 02016,"Aleutians West Census Area, Alaska",426,mid
+02020,"Anchorage Municipality, Alaska",2264,rich
 02050,"Bethel Census Area, Alaska",228,thin
 02060,"Bristol Bay Borough, Alaska",494,rich
 02063,"Chugach Census Area, Alaska",361,mid
@@ -76,6 +77,8 @@ fips_code,county_name,content_length,tier
 02070,"Dillingham Census Area, Alaska",253,thin
 02090,"Fairbanks North Star Borough, Alaska",366,mid
 02100,"Haines Borough, Alaska",50,stub
+02105,"Hoonah-Angoon Census Area, Alaska",238,thin
+02110,"Juneau City and Borough, Alaska",3224,rich
 02122,"Kenai Peninsula Borough, Alaska",312,mid
 02130,"Ketchikan Gateway Borough, Alaska",232,thin
 02150,"Kodiak Island Borough, Alaska",81,stub
@@ -86,13 +89,18 @@ fips_code,county_name,content_length,tier
 02185,"North Slope Borough, Alaska",408,mid
 02188,"Northwest Arctic Borough, Alaska",119,thin
 02195,"Petersburg Borough, Alaska",58,stub
+02198,"Prince of Wales-Hyder Census Area, Alaska",535,rich
+02220,"Sitka City and Borough, Alaska",698,rich
+02230,"Skagway Municipality, Alaska",1629,rich
 02240,"Southeast Fairbanks Census Area, Alaska",197,thin
+02275,"Wrangell City and Borough, Alaska",1537,rich
+02282,"Yakutat City and Borough, Alaska",1261,rich
 02290,"Yukon-Koyukuk Census Area, Alaska",598,rich
 04001,"Apache County, Arizona",265,thin
 04003,"Cochise County, Arizona",377,mid
 04005,"Coconino County, Arizona",827,rich
 04007,"Gila County, Arizona",279,thin
-04009,"Graham County, Arizona",447,mid
+04009,"Graham County, Arizona",795,rich
 04011,"Greenlee County, Arizona",312,mid
 04012,"La Paz County, Arizona",419,mid
 04013,"Maricopa County, Arizona",886,rich
@@ -101,7 +109,7 @@ fips_code,county_name,content_length,tier
 04019,"Pima County, Arizona",1211,rich
 04021,"Pinal County, Arizona",792,rich
 04023,"Santa Cruz County, Arizona",128,thin
-04025,"Yavapai County, Arizona",316,mid
+04025,"Yavapai County, Arizona",315,mid
 04027,"Yuma County, Arizona",419,mid
 05001,"Arkansas County, Arkansas",896,rich
 05003,"Ashley County, Arkansas",2054,rich
@@ -147,7 +155,7 @@ fips_code,county_name,content_length,tier
 05083,"Logan County, Arkansas",102,thin
 05085,"Lonoke County, Arkansas",241,thin
 05087,"Madison County, Arkansas",253,thin
-05089,"Marion County, Arkansas",1309,rich
+05089,"Marion County, Arkansas",1265,rich
 05091,"Miller County, Arkansas",149,thin
 05093,"Mississippi County, Arkansas",331,mid
 05095,"Monroe County, Arkansas",1538,rich
@@ -172,9 +180,9 @@ fips_code,county_name,content_length,tier
 05133,"Sevier County, Arkansas",277,thin
 05135,"Sharp County, Arkansas",140,thin
 05137,"Stone County, Arkansas",1252,rich
-05139,"Union County, Arkansas",743,rich
+05139,"Union County, Arkansas",785,rich
 05141,"Van Buren County, Arkansas",450,mid
-05143,"Washington County, Arkansas",2016,rich
+05143,"Washington County, Arkansas",1946,rich
 05145,"White County, Arkansas",606,rich
 05147,"Woodruff County, Arkansas",1176,rich
 05149,"Yell County, Arkansas",504,rich
@@ -195,13 +203,13 @@ fips_code,county_name,content_length,tier
 06029,"Kern County, California",976,rich
 06031,"Kings County, California",263,thin
 06033,"Lake County, California",622,rich
-06035,"Lassen County, California",419,mid
+06035,"Lassen County, California",417,mid
 06037,"Los Angeles County, California",727,rich
 06039,"Madera County, California",769,rich
 06041,"Marin County, California",998,rich
 06043,"Mariposa County, California",683,rich
 06045,"Mendocino County, California",1075,rich
-06047,"Merced County, California",373,mid
+06047,"Merced County, California",387,mid
 06049,"Modoc County, California",714,rich
 06051,"Mono County, California",738,rich
 06053,"Monterey County, California",1058,rich
@@ -212,16 +220,16 @@ fips_code,county_name,content_length,tier
 06063,"Plumas County, California",327,mid
 06065,"Riverside County, California",1438,rich
 06067,"Sacramento County, California",723,rich
-06069,"San Benito County, California",539,rich
+06069,"San Benito County, California",607,rich
 06071,"San Bernardino County, California",1190,rich
 06073,"San Diego County, California",1832,rich
 06075,"San Francisco County, California",3860,rich
-06077,"San Joaquin County, California",1038,rich
-06079,"San Luis Obispo County, California",2040,rich
+06077,"San Joaquin County, California",1050,rich
+06079,"San Luis Obispo County, California",2207,rich
 06081,"San Mateo County, California",718,rich
 06083,"Santa Barbara County, California",645,rich
-06085,"Santa Clara County, California",1233,rich
-06087,"Santa Cruz County, California",473,rich
+06085,"Santa Clara County, California",1348,rich
+06087,"Santa Cruz County, California",520,rich
 06089,"Shasta County, California",528,rich
 06091,"Sierra County, California",233,thin
 06093,"Siskiyou County, California",347,mid
@@ -271,16 +279,16 @@ fips_code,county_name,content_length,tier
 08063,"Kit Carson County, Colorado",141,thin
 08065,"Lake County, Colorado",385,mid
 08067,"La Plata County, Colorado",336,mid
-08069,"Larimer County, Colorado",299,mid
+08069,"Larimer County, Colorado",483,rich
 08071,"Las Animas County, Colorado",239,thin
 08073,"Lincoln County, Colorado",237,thin
-08075,"Logan County, Colorado",157,thin
+08075,"Logan County, Colorado",175,thin
 08077,"Mesa County, Colorado",512,rich
 08079,"Mineral County, Colorado",376,mid
 08081,"Moffat County, Colorado",287,mid
 08083,"Montezuma County, Colorado",449,mid
-08085,"Montrose County, Colorado",128,thin
-08087,"Morgan County, Colorado",226,thin
+08085,"Montrose County, Colorado",145,thin
+08087,"Morgan County, Colorado",278,thin
 08089,"Otero County, Colorado",282,thin
 08091,"Ouray County, Colorado",139,thin
 08093,"Park County, Colorado",518,rich
@@ -306,19 +314,19 @@ fips_code,county_name,content_length,tier
 09140,"Naugatuck Valley Planning Region, Connecticut",243,thin
 09150,"Northeastern Connecticut Planning Region, Connecticut",240,thin
 09160,"Northwest Hills Planning Region, Connecticut",242,thin
-09170,"South Central Connecticut Planning Region, Connecticut",327,mid
+09170,"South Central Connecticut Planning Region, Connecticut",1082,rich
 09180,"Southeastern Connecticut Planning Region, Connecticut",239,thin
 09190,"Western Connecticut Planning Region, Connecticut",730,rich
 10001,"Kent County, Delaware",328,mid
 10003,"New Castle County, Delaware",664,rich
 10005,"Sussex County, Delaware",414,mid
-11001,District of Columbia,4074,rich
+11001,District of Columbia,4086,rich
 12001,"Alachua County, Florida",113,thin
 12003,"Baker County, Florida",312,mid
 12005,"Bay County, Florida",141,thin
 12007,"Bradford County, Florida",198,thin
 12009,"Brevard County, Florida",379,mid
-12011,"Broward County, Florida",673,rich
+12011,"Broward County, Florida",665,rich
 12013,"Calhoun County, Florida",87,stub
 12015,"Charlotte County, Florida",233,thin
 12017,"Citrus County, Florida",175,thin
@@ -353,9 +361,9 @@ fips_code,county_name,content_length,tier
 12077,"Liberty County, Florida",339,mid
 12079,"Madison County, Florida",36,stub
 12081,"Manatee County, Florida",344,mid
-12083,"Marion County, Florida",209,thin
+12083,"Marion County, Florida",178,thin
 12085,"Martin County, Florida",119,thin
-12086,"Miami-Dade County, Florida",2412,rich
+12086,"Miami-Dade County, Florida",2406,rich
 12087,"Monroe County, Florida",407,mid
 12089,"Nassau County, Florida",965,rich
 12091,"Okaloosa County, Florida",190,thin
@@ -384,11 +392,11 @@ fips_code,county_name,content_length,tier
 13003,"Atkinson County, Georgia",270,thin
 13005,"Bacon County, Georgia",33,stub
 13007,"Baker County, Georgia",628,rich
-13009,"Baldwin County, Georgia",148,thin
+13009,"Baldwin County, Georgia",283,thin
 13011,"Banks County, Georgia",229,thin
 13013,"Barrow County, Georgia",116,thin
 13015,"Bartow County, Georgia",478,rich
-13017,"Ben Hill County, Georgia",301,mid
+13017,"Ben Hill County, Georgia",410,mid
 13019,"Berrien County, Georgia",215,thin
 13021,"Bibb County, Georgia",506,rich
 13023,"Bleckley County, Georgia",36,stub
@@ -436,10 +444,10 @@ fips_code,county_name,content_length,tier
 13109,"Evans County, Georgia",1390,rich
 13111,"Fannin County, Georgia",325,mid
 13113,"Fayette County, Georgia",927,rich
-13115,"Floyd County, Georgia",85,stub
+13115,"Floyd County, Georgia",84,stub
 13117,"Forsyth County, Georgia",1955,rich
 13119,"Franklin County, Georgia",490,rich
-13121,"Fulton County, Georgia",345,mid
+13121,"Fulton County, Georgia",339,mid
 13123,"Gilmer County, Georgia",562,rich
 13125,"Glascock County, Georgia",212,thin
 13127,"Glynn County, Georgia",155,thin
@@ -448,7 +456,7 @@ fips_code,county_name,content_length,tier
 13133,"Greene County, Georgia",165,thin
 13135,"Gwinnett County, Georgia",672,rich
 13137,"Habersham County, Georgia",234,thin
-13139,"Hall County, Georgia",239,thin
+13139,"Hall County, Georgia",224,thin
 13141,"Hancock County, Georgia",154,thin
 13143,"Haralson County, Georgia",245,thin
 13145,"Harris County, Georgia",675,rich
@@ -500,7 +508,7 @@ fips_code,county_name,content_length,tier
 13239,"Quitman County, Georgia",399,mid
 13241,"Rabun County, Georgia",650,rich
 13243,"Randolph County, Georgia",262,thin
-13245,"Richmond County, Georgia",537,rich
+13245,"Richmond County, Georgia",510,rich
 13247,"Rockdale County, Georgia",90,stub
 13249,"Schley County, Georgia",198,thin
 13251,"Screven County, Georgia",37,stub
@@ -539,8 +547,9 @@ fips_code,county_name,content_length,tier
 13317,"Wilkes County, Georgia",289,mid
 13319,"Wilkinson County, Georgia",127,thin
 13321,"Worth County, Georgia",85,stub
+15001,"Hawaii County, Hawaii",1000,rich
 15003,"Honolulu County, Hawaii",1249,rich
-15005,"Kalawao County, Hawaii",720,rich
+15005,"Kalawao County, Hawaii",696,rich
 15007,"Kauai County, Hawaii",264,thin
 15009,"Maui County, Hawaii",375,mid
 16001,"Ada County, Idaho",576,rich
@@ -577,7 +586,7 @@ fips_code,county_name,content_length,tier
 16063,"Lincoln County, Idaho",233,thin
 16065,"Madison County, Idaho",162,thin
 16067,"Minidoka County, Idaho",94,stub
-16069,"Nez Perce County, Idaho",179,thin
+16069,"Nez Perce County, Idaho",198,thin
 16071,"Oneida County, Idaho",136,thin
 16073,"Owyhee County, Idaho",517,rich
 16075,"Payette County, Idaho",119,thin
@@ -600,12 +609,13 @@ fips_code,county_name,content_length,tier
 17021,"Christian County, Illinois",86,stub
 17023,"Clark County, Illinois",164,thin
 17025,"Clay County, Illinois",191,thin
-17027,"Clinton County, Illinois",190,thin
+17027,"Clinton County, Illinois",250,thin
 17029,"Coles County, Illinois",175,thin
-17031,"Cook County, Illinois",2797,rich
+17031,"Cook County, Illinois",2803,rich
 17033,"Crawford County, Illinois",37,stub
 17035,"Cumberland County, Illinois",108,thin
 17037,"DeKalb County, Illinois",120,thin
+17039,"De Witt County, Illinois",376,mid
 17041,"Douglas County, Illinois",36,stub
 17043,"DuPage County, Illinois",1022,rich
 17045,"Edgar County, Illinois",34,stub
@@ -613,7 +623,7 @@ fips_code,county_name,content_length,tier
 17049,"Effingham County, Illinois",298,mid
 17051,"Fayette County, Illinois",182,thin
 17053,"Ford County, Illinois",222,thin
-17055,"Franklin County, Illinois",156,thin
+17055,"Franklin County, Illinois",185,thin
 17057,"Fulton County, Illinois",200,thin
 17059,"Gallatin County, Illinois",342,mid
 17061,"Greene County, Illinois",298,mid
@@ -626,14 +636,14 @@ fips_code,county_name,content_length,tier
 17075,"Iroquois County, Illinois",198,thin
 17077,"Jackson County, Illinois",494,rich
 17079,"Jasper County, Illinois",38,stub
-17081,"Jefferson County, Illinois",369,mid
+17081,"Jefferson County, Illinois",415,mid
 17083,"Jersey County, Illinois",277,thin
 17085,"Jo Daviess County, Illinois",407,mid
 17087,"Johnson County, Illinois",115,thin
 17089,"Kane County, Illinois",263,thin
 17091,"Kankakee County, Illinois",101,thin
 17093,"Kendall County, Illinois",296,mid
-17095,"Knox County, Illinois",102,thin
+17095,"Knox County, Illinois",122,thin
 17097,"Lake County, Illinois",1710,rich
 17099,"LaSalle County, Illinois",698,rich
 17101,"Lawrence County, Illinois",91,stub
@@ -645,8 +655,8 @@ fips_code,county_name,content_length,tier
 17113,"McLean County, Illinois",223,thin
 17115,"Macon County, Illinois",144,thin
 17117,"Macoupin County, Illinois",147,thin
-17119,"Madison County, Illinois",785,rich
-17121,"Marion County, Illinois",198,thin
+17119,"Madison County, Illinois",810,rich
+17121,"Marion County, Illinois",257,thin
 17123,"Marshall County, Illinois",80,stub
 17125,"Mason County, Illinois",193,thin
 17127,"Massac County, Illinois",288,mid
@@ -666,10 +676,10 @@ fips_code,county_name,content_length,tier
 17155,"Putnam County, Illinois",325,mid
 17157,"Randolph County, Illinois",403,mid
 17159,"Richland County, Illinois",83,stub
-17161,"Rock Island County, Illinois",327,mid
-17163,"St. Clair County, Illinois",935,rich
+17161,"Rock Island County, Illinois",322,mid
+17163,"St. Clair County, Illinois",960,rich
 17165,"Saline County, Illinois",374,mid
-17167,"Sangamon County, Illinois",132,thin
+17167,"Sangamon County, Illinois",169,thin
 17169,"Schuyler County, Illinois",41,stub
 17171,"Scott County, Illinois",253,thin
 17173,"Shelby County, Illinois",75,stub
@@ -706,7 +716,7 @@ fips_code,county_name,content_length,tier
 18031,"Decatur County, Indiana",87,stub
 18033,"DeKalb County, Indiana",35,stub
 18035,"Delaware County, Indiana",162,thin
-18037,"Dubois County, Indiana",116,thin
+18037,"Dubois County, Indiana",290,mid
 18039,"Elkhart County, Indiana",586,rich
 18041,"Fayette County, Indiana",970,rich
 18043,"Floyd County, Indiana",441,mid
@@ -718,7 +728,7 @@ fips_code,county_name,content_length,tier
 18055,"Greene County, Indiana",156,thin
 18057,"Hamilton County, Indiana",1246,rich
 18059,"Hancock County, Indiana",164,thin
-18061,"Harrison County, Indiana",1853,rich
+18061,"Harrison County, Indiana",1854,rich
 18063,"Hendricks County, Indiana",198,thin
 18065,"Henry County, Indiana",220,thin
 18067,"Howard County, Indiana",231,thin
@@ -790,7 +800,7 @@ fips_code,county_name,content_length,tier
 19015,"Boone County, Iowa",184,thin
 19017,"Bremer County, Iowa",190,thin
 19019,"Buchanan County, Iowa",165,thin
-19021,"Buena Vista County, Iowa",281,thin
+19021,"Buena Vista County, Iowa",297,mid
 19023,"Butler County, Iowa",111,thin
 19025,"Calhoun County, Iowa",80,stub
 19027,"Carroll County, Iowa",144,thin
@@ -842,14 +852,14 @@ fips_code,county_name,content_length,tier
 19119,"Lyon County, Iowa",444,mid
 19121,"Madison County, Iowa",358,mid
 19123,"Mahaska County, Iowa",98,stub
-19125,"Marion County, Iowa",212,thin
+19125,"Marion County, Iowa",147,thin
 19127,"Marshall County, Iowa",337,mid
 19129,"Mills County, Iowa",257,thin
 19131,"Mitchell County, Iowa",34,stub
 19133,"Monona County, Iowa",33,stub
 19135,"Monroe County, Iowa",361,mid
 19137,"Montgomery County, Iowa",654,rich
-19139,"Muscatine County, Iowa",239,thin
+19139,"Muscatine County, Iowa",346,mid
 19141,"O'Brien County, Iowa",37,stub
 19143,"Osceola County, Iowa",286,mid
 19145,"Page County, Iowa",168,thin
@@ -861,7 +871,7 @@ fips_code,county_name,content_length,tier
 19157,"Poweshiek County, Iowa",226,thin
 19159,"Ringgold County, Iowa",376,mid
 19161,"Sac County, Iowa",510,rich
-19163,"Scott County, Iowa",254,thin
+19163,"Scott County, Iowa",218,thin
 19165,"Shelby County, Iowa",178,thin
 19167,"Sioux County, Iowa",77,stub
 19169,"Story County, Iowa",381,mid
@@ -1045,6 +1055,7 @@ fips_code,county_name,content_length,tier
 21117,"Kenton County, Kentucky",544,rich
 21119,"Knott County, Kentucky",309,mid
 21121,"Knox County, Kentucky",244,thin
+21123,"Larue County, Kentucky",548,rich
 21125,"Laurel County, Kentucky",290,mid
 21127,"Lawrence County, Kentucky",461,mid
 21129,"Lee County, Kentucky",1235,rich
@@ -1060,7 +1071,7 @@ fips_code,county_name,content_length,tier
 21149,"McLean County, Kentucky",233,thin
 21151,"Madison County, Kentucky",1004,rich
 21153,"Magoffin County, Kentucky",202,thin
-21155,"Marion County, Kentucky",231,thin
+21155,"Marion County, Kentucky",166,thin
 21157,"Marshall County, Kentucky",363,mid
 21159,"Martin County, Kentucky",115,thin
 21161,"Mason County, Kentucky",391,mid
@@ -1118,6 +1129,7 @@ fips_code,county_name,content_length,tier
 22025,"Catahoula Parish, Louisiana",225,thin
 22027,"Claiborne Parish, Louisiana",167,thin
 22029,"Concordia Parish, Louisiana",657,rich
+22031,"De Soto Parish, Louisiana",361,mid
 22033,"East Baton Rouge Parish, Louisiana",247,thin
 22035,"East Carroll Parish, Louisiana",295,mid
 22037,"East Feliciana Parish, Louisiana",379,mid
@@ -1129,7 +1141,7 @@ fips_code,county_name,content_length,tier
 22049,"Jackson Parish, Louisiana",353,mid
 22051,"Jefferson Parish, Louisiana",201,thin
 22053,"Jefferson Davis Parish, Louisiana",206,thin
-22055,"Lafayette Parish, Louisiana",251,thin
+22055,"Lafayette Parish, Louisiana",379,mid
 22057,"Lafourche Parish, Louisiana",1105,rich
 22059,"LaSalle Parish, Louisiana",158,thin
 22061,"Lincoln Parish, Louisiana",694,rich
@@ -1167,7 +1179,7 @@ fips_code,county_name,content_length,tier
 22125,"West Feliciana Parish, Louisiana",708,rich
 22127,"Winn Parish, Louisiana",277,thin
 23001,"Androscoggin County, Maine",376,mid
-23003,"Aroostook County, Maine",1458,rich
+23003,"Aroostook County, Maine",1449,rich
 23005,"Cumberland County, Maine",653,rich
 23007,"Franklin County, Maine",179,thin
 23009,"Hancock County, Maine",361,mid
@@ -1203,7 +1215,7 @@ fips_code,county_name,content_length,tier
 24039,"Somerset County, Maryland",722,rich
 24041,"Talbot County, Maryland",556,rich
 24043,"Washington County, Maryland",631,rich
-24045,"Wicomico County, Maryland",530,rich
+24045,"Wicomico County, Maryland",529,rich
 24047,"Worcester County, Maryland",1148,rich
 24510,"Baltimore City, Maryland",2926,rich
 25001,"Barnstable County, Massachusetts",481,rich
@@ -1215,6 +1227,7 @@ fips_code,county_name,content_length,tier
 25013,"Hampden County, Massachusetts",330,mid
 25015,"Hampshire County, Massachusetts",471,rich
 25017,"Middlesex County, Massachusetts",1238,rich
+25019,"Nantucket County, Massachusetts",1045,rich
 25021,"Norfolk County, Massachusetts",431,mid
 25023,"Plymouth County, Massachusetts",402,mid
 25025,"Suffolk County, Massachusetts",738,rich
@@ -1330,7 +1343,7 @@ fips_code,county_name,content_length,tier
 27051,"Grant County, Minnesota",38,stub
 27053,"Hennepin County, Minnesota",670,rich
 27055,"Houston County, Minnesota",145,thin
-27057,"Hubbard County, Minnesota",140,thin
+27057,"Hubbard County, Minnesota",143,thin
 27059,"Isanti County, Minnesota",78,stub
 27061,"Itasca County, Minnesota",333,mid
 27063,"Jackson County, Minnesota",35,stub
@@ -1408,7 +1421,7 @@ fips_code,county_name,content_length,tier
 28033,"DeSoto County, Mississippi",336,mid
 28035,"Forrest County, Mississippi",296,mid
 28037,"Franklin County, Mississippi",272,thin
-28039,"George County, Mississippi",206,thin
+28039,"George County, Mississippi",95,stub
 28041,"Greene County, Mississippi",147,thin
 28043,"Grenada County, Mississippi",259,thin
 28045,"Hancock County, Mississippi",516,rich
@@ -1466,42 +1479,42 @@ fips_code,county_name,content_length,tier
 28149,"Warren County, Mississippi",487,rich
 28151,"Washington County, Mississippi",304,mid
 28153,"Wayne County, Mississippi",99,stub
-28155,"Webster County, Mississippi",527,rich
+28155,"Webster County, Mississippi",457,mid
 28157,"Wilkinson County, Mississippi",260,thin
 28159,"Winston County, Mississippi",490,rich
 28161,"Yalobusha County, Mississippi",128,thin
 28163,"Yazoo County, Mississippi",225,thin
-29001,"Adair County, Missouri",208,thin
+29001,"Adair County, Missouri",236,thin
 29003,"Andrew County, Missouri",320,mid
 29005,"Atchison County, Missouri",302,mid
-29007,"Audrain County, Missouri",193,thin
+29007,"Audrain County, Missouri",227,thin
 29009,"Barry County, Missouri",262,thin
 29011,"Barton County, Missouri",221,thin
 29013,"Bates County, Missouri",384,mid
 29015,"Benton County, Missouri",129,thin
-29017,"Bollinger County, Missouri",611,rich
+29017,"Bollinger County, Missouri",696,rich
 29019,"Boone County, Missouri",820,rich
-29021,"Buchanan County, Missouri",389,mid
+29021,"Buchanan County, Missouri",428,mid
 29023,"Butler County, Missouri",451,mid
 29025,"Caldwell County, Missouri",744,rich
 29027,"Callaway County, Missouri",837,rich
 29029,"Camden County, Missouri",296,mid
-29031,"Cape Girardeau County, Missouri",671,rich
+29031,"Cape Girardeau County, Missouri",640,rich
 29033,"Carroll County, Missouri",211,thin
 29035,"Carter County, Missouri",258,thin
 29037,"Cass County, Missouri",370,mid
 29039,"Cedar County, Missouri",218,thin
-29041,"Chariton County, Missouri",148,thin
+29041,"Chariton County, Missouri",186,thin
 29043,"Christian County, Missouri",482,rich
 29045,"Clark County, Missouri",411,mid
 29047,"Clay County, Missouri",550,rich
-29049,"Clinton County, Missouri",419,mid
+29049,"Clinton County, Missouri",380,mid
 29051,"Cole County, Missouri",413,mid
 29053,"Cooper County, Missouri",299,mid
 29055,"Crawford County, Missouri",363,mid
 29057,"Dade County, Missouri",279,thin
 29059,"Dallas County, Missouri",233,thin
-29061,"Daviess County, Missouri",318,mid
+29061,"Daviess County, Missouri",349,mid
 29063,"DeKalb County, Missouri",339,mid
 29065,"Dent County, Missouri",253,thin
 29067,"Douglas County, Missouri",253,thin
@@ -1524,7 +1537,7 @@ fips_code,county_name,content_length,tier
 29101,"Johnson County, Missouri",325,mid
 29103,"Knox County, Missouri",181,thin
 29105,"Laclede County, Missouri",198,thin
-29107,"Lafayette County, Missouri",480,rich
+29107,"Lafayette County, Missouri",519,rich
 29109,"Lawrence County, Missouri",787,rich
 29111,"Lewis County, Missouri",293,mid
 29113,"Lincoln County, Missouri",276,thin
@@ -1533,12 +1546,12 @@ fips_code,county_name,content_length,tier
 29119,"McDonald County, Missouri",78,stub
 29121,"Macon County, Missouri",164,thin
 29123,"Madison County, Missouri",360,mid
-29125,"Maries County, Missouri",225,thin
-29127,"Marion County, Missouri",619,rich
+29125,"Maries County, Missouri",256,thin
+29127,"Marion County, Missouri",590,rich
 29129,"Mercer County, Missouri",193,thin
 29131,"Miller County, Missouri",154,thin
 29133,"Mississippi County, Missouri",234,thin
-29135,"Moniteau County, Missouri",285,mid
+29135,"Moniteau County, Missouri",320,mid
 29137,"Monroe County, Missouri",97,stub
 29139,"Montgomery County, Missouri",313,mid
 29141,"Morgan County, Missouri",153,thin
@@ -1546,7 +1559,7 @@ fips_code,county_name,content_length,tier
 29145,"Newton County, Missouri",194,thin
 29147,"Nodaway County, Missouri",338,mid
 29149,"Oregon County, Missouri",969,rich
-29151,"Osage County, Missouri",448,mid
+29151,"Osage County, Missouri",480,rich
 29153,"Ozark County, Missouri",293,mid
 29155,"Pemiscot County, Missouri",763,rich
 29157,"Perry County, Missouri",227,thin
@@ -1556,7 +1569,7 @@ fips_code,county_name,content_length,tier
 29165,"Platte County, Missouri",557,rich
 29167,"Polk County, Missouri",157,thin
 29169,"Pulaski County, Missouri",361,mid
-29171,"Putnam County, Missouri",1563,rich
+29171,"Putnam County, Missouri",1559,rich
 29173,"Ralls County, Missouri",273,thin
 29175,"Randolph County, Missouri",313,mid
 29177,"Ray County, Missouri",232,thin
@@ -1567,8 +1580,8 @@ fips_code,county_name,content_length,tier
 29186,"Ste. Genevieve County, Missouri",527,rich
 29187,"St. Francois County, Missouri",864,rich
 29189,"St. Louis County, Missouri",1332,rich
-29195,"Saline County, Missouri",636,rich
-29197,"Schuyler County, Missouri",394,mid
+29195,"Saline County, Missouri",668,rich
+29197,"Schuyler County, Missouri",426,mid
 29199,"Scotland County, Missouri",195,thin
 29201,"Scott County, Missouri",305,mid
 29203,"Shannon County, Missouri",547,rich
@@ -1576,7 +1589,7 @@ fips_code,county_name,content_length,tier
 29207,"Stoddard County, Missouri",210,thin
 29209,"Stone County, Missouri",151,thin
 29211,"Sullivan County, Missouri",155,thin
-29213,"Taney County, Missouri",547,rich
+29213,"Taney County, Missouri",724,rich
 29215,"Texas County, Missouri",292,mid
 29217,"Vernon County, Missouri",379,mid
 29219,"Warren County, Missouri",564,rich
@@ -1585,7 +1598,7 @@ fips_code,county_name,content_length,tier
 29225,"Webster County, Missouri",220,thin
 29227,"Worth County, Missouri",604,rich
 29229,"Wright County, Missouri",349,mid
-29510,"St. Louis City, Missouri",89,stub
+29510,"St. Louis City, Missouri",2782,rich
 30001,"Beaverhead County, Montana",355,mid
 30003,"Big Horn County, Montana",378,mid
 30005,"Blaine County, Montana",228,thin
@@ -1762,21 +1775,21 @@ fips_code,county_name,content_length,tier
 33015,"Rockingham County, New Hampshire",532,rich
 33017,"Strafford County, New Hampshire",727,rich
 33019,"Sullivan County, New Hampshire",164,thin
-34001,"Atlantic County, New Jersey",919,rich
-34003,"Bergen County, New Jersey",1988,rich
+34001,"Atlantic County, New Jersey",949,rich
+34003,"Bergen County, New Jersey",1997,rich
 34005,"Burlington County, New Jersey",1133,rich
 34007,"Camden County, New Jersey",1140,rich
 34009,"Cape May County, New Jersey",2884,rich
 34011,"Cumberland County, New Jersey",841,rich
 34013,"Essex County, New Jersey",954,rich
-34015,"Gloucester County, New Jersey",1209,rich
+34015,"Gloucester County, New Jersey",1256,rich
 34017,"Hudson County, New Jersey",1446,rich
 34019,"Hunterdon County, New Jersey",1464,rich
 34021,"Mercer County, New Jersey",2058,rich
-34023,"Middlesex County, New Jersey",2929,rich
-34025,"Monmouth County, New Jersey",3462,rich
+34023,"Middlesex County, New Jersey",2959,rich
+34025,"Monmouth County, New Jersey",3558,rich
 34027,"Morris County, New Jersey",1362,rich
-34029,"Ocean County, New Jersey",1928,rich
+34029,"Ocean County, New Jersey",1976,rich
 34031,"Passaic County, New Jersey",906,rich
 34033,"Salem County, New Jersey",1047,rich
 34035,"Somerset County, New Jersey",1766,rich
@@ -1818,6 +1831,7 @@ fips_code,county_name,content_length,tier
 35061,"Valencia County, New Mexico",271,thin
 36001,"Albany County, New York",819,rich
 36003,"Allegany County, New York",705,rich
+36005,"Bronx County, New York",2420,rich
 36007,"Broome County, New York",383,mid
 36009,"Cattaraugus County, New York",592,rich
 36011,"Cayuga County, New York",337,mid
@@ -1838,22 +1852,26 @@ fips_code,county_name,content_length,tier
 36041,"Hamilton County, New York",579,rich
 36043,"Herkimer County, New York",403,mid
 36045,"Jefferson County, New York",734,rich
+36047,"Kings County, New York",2877,rich
 36049,"Lewis County, New York",1571,rich
 36051,"Livingston County, New York",280,thin
 36053,"Madison County, New York",365,mid
 36055,"Monroe County, New York",348,mid
 36057,"Montgomery County, New York",733,rich
 36059,"Nassau County, New York",2598,rich
+36061,"New York County, New York",4052,rich
 36063,"Niagara County, New York",559,rich
 36065,"Oneida County, New York",586,rich
-36067,"Onondaga County, New York",412,mid
-36069,"Ontario County, New York",147,thin
+36067,"Onondaga County, New York",410,mid
+36069,"Ontario County, New York",159,thin
 36071,"Orange County, New York",449,mid
 36073,"Orleans County, New York",452,mid
 36075,"Oswego County, New York",346,mid
 36077,"Otsego County, New York",222,thin
 36079,"Putnam County, New York",890,rich
+36081,"Queens County, New York",1873,rich
 36083,"Rensselaer County, New York",369,mid
+36085,"Richmond County, New York",2846,rich
 36087,"Rockland County, New York",1352,rich
 36089,"St. Lawrence County, New York",455,mid
 36091,"Saratoga County, New York",2222,rich
@@ -1862,7 +1880,7 @@ fips_code,county_name,content_length,tier
 36097,"Schuyler County, New York",306,mid
 36099,"Seneca County, New York",714,rich
 36101,"Steuben County, New York",497,rich
-36103,"Suffolk County, New York",1481,rich
+36103,"Suffolk County, New York",1479,rich
 36105,"Sullivan County, New York",572,rich
 36107,"Tioga County, New York",267,thin
 36109,"Tompkins County, New York",355,mid
@@ -1871,8 +1889,8 @@ fips_code,county_name,content_length,tier
 36115,"Washington County, New York",195,thin
 36117,"Wayne County, New York",1076,rich
 36119,"Westchester County, New York",2317,rich
-36121,"Wyoming County, New York",403,mid
-36123,"Yates County, New York",295,mid
+36121,"Wyoming County, New York",413,mid
+36123,"Yates County, New York",245,thin
 37001,"Alamance County, North Carolina",440,mid
 37003,"Alexander County, North Carolina",126,thin
 37005,"Alleghany County, North Carolina",102,thin
@@ -1889,7 +1907,7 @@ fips_code,county_name,content_length,tier
 37027,"Caldwell County, North Carolina",177,thin
 37029,"Camden County, North Carolina",166,thin
 37031,"Carteret County, North Carolina",568,rich
-37033,"Caswell County, North Carolina",1315,rich
+37033,"Caswell County, North Carolina",1341,rich
 37035,"Catawba County, North Carolina",201,thin
 37037,"Chatham County, North Carolina",407,mid
 37039,"Cherokee County, North Carolina",143,thin
@@ -1913,7 +1931,7 @@ fips_code,county_name,content_length,tier
 37075,"Graham County, North Carolina",121,thin
 37077,"Granville County, North Carolina",147,thin
 37079,"Greene County, North Carolina",38,stub
-37081,"Guilford County, North Carolina",407,mid
+37081,"Guilford County, North Carolina",411,mid
 37083,"Halifax County, North Carolina",202,thin
 37085,"Harnett County, North Carolina",182,thin
 37087,"Haywood County, North Carolina",148,thin
@@ -2038,7 +2056,7 @@ fips_code,county_name,content_length,tier
 39019,"Carroll County, Ohio",375,mid
 39021,"Champaign County, Ohio",382,mid
 39023,"Clark County, Ohio",318,mid
-39025,"Clermont County, Ohio",454,mid
+39025,"Clermont County, Ohio",453,mid
 39027,"Clinton County, Ohio",271,thin
 39029,"Columbiana County, Ohio",851,rich
 39031,"Coshocton County, Ohio",521,rich
@@ -2066,17 +2084,17 @@ fips_code,county_name,content_length,tier
 39075,"Holmes County, Ohio",577,rich
 39077,"Huron County, Ohio",296,mid
 39079,"Jackson County, Ohio",204,thin
-39081,"Jefferson County, Ohio",309,mid
+39081,"Jefferson County, Ohio",335,mid
 39083,"Knox County, Ohio",318,mid
 39085,"Lake County, Ohio",378,mid
 39087,"Lawrence County, Ohio",298,mid
 39089,"Licking County, Ohio",502,rich
-39091,"Logan County, Ohio",271,thin
+39091,"Logan County, Ohio",306,mid
 39093,"Lorain County, Ohio",280,thin
 39095,"Lucas County, Ohio",526,rich
 39097,"Madison County, Ohio",204,thin
 39099,"Mahoning County, Ohio",381,mid
-39101,"Marion County, Ohio",410,mid
+39101,"Marion County, Ohio",379,mid
 39103,"Medina County, Ohio",346,mid
 39105,"Meigs County, Ohio",132,thin
 39107,"Mercer County, Ohio",260,thin
@@ -2109,7 +2127,7 @@ fips_code,county_name,content_length,tier
 39161,"Van Wert County, Ohio",367,mid
 39163,"Vinton County, Ohio",174,thin
 39165,"Warren County, Ohio",489,rich
-39167,"Washington County, Ohio",290,mid
+39167,"Washington County, Ohio",287,mid
 39169,"Wayne County, Ohio",215,thin
 39171,"Williams County, Ohio",114,thin
 39173,"Wood County, Ohio",366,mid
@@ -2153,12 +2171,13 @@ fips_code,county_name,content_length,tier
 40073,"Kingfisher County, Oklahoma",230,thin
 40075,"Kiowa County, Oklahoma",124,thin
 40077,"Latimer County, Oklahoma",318,mid
+40079,"Le Flore County, Oklahoma",377,mid
 40081,"Lincoln County, Oklahoma",197,thin
 40083,"Logan County, Oklahoma",182,thin
 40085,"Love County, Oklahoma",286,mid
 40087,"McClain County, Oklahoma",216,thin
 40089,"McCurtain County, Oklahoma",362,mid
-40091,"McIntosh County, Oklahoma",383,mid
+40091,"McIntosh County, Oklahoma",486,rich
 40093,"Major County, Oklahoma",397,mid
 40095,"Marshall County, Oklahoma",364,mid
 40097,"Mayes County, Oklahoma",200,thin
@@ -2213,7 +2232,7 @@ fips_code,county_name,content_length,tier
 41041,"Lincoln County, Oregon",170,thin
 41043,"Linn County, Oregon",503,rich
 41045,"Malheur County, Oregon",443,mid
-41047,"Marion County, Oregon",667,rich
+41047,"Marion County, Oregon",629,rich
 41049,"Morrow County, Oregon",555,rich
 41051,"Multnomah County, Oregon",233,thin
 41053,"Polk County, Oregon",311,mid
@@ -2261,7 +2280,7 @@ fips_code,county_name,content_length,tier
 42065,"Jefferson County, Pennsylvania",390,mid
 42067,"Juniata County, Pennsylvania",1348,rich
 42069,"Lackawanna County, Pennsylvania",824,rich
-42071,"Lancaster County, Pennsylvania",806,rich
+42071,"Lancaster County, Pennsylvania",836,rich
 42073,"Lawrence County, Pennsylvania",196,thin
 42075,"Lebanon County, Pennsylvania",525,rich
 42077,"Lehigh County, Pennsylvania",1391,rich
@@ -2281,7 +2300,7 @@ fips_code,county_name,content_length,tier
 42105,"Potter County, Pennsylvania",407,mid
 42107,"Schuylkill County, Pennsylvania",875,rich
 42109,"Snyder County, Pennsylvania",299,mid
-42111,"Somerset County, Pennsylvania",894,rich
+42111,"Somerset County, Pennsylvania",893,rich
 42113,"Sullivan County, Pennsylvania",255,thin
 42115,"Susquehanna County, Pennsylvania",235,thin
 42117,"Tioga County, Pennsylvania",233,thin
@@ -2296,12 +2315,12 @@ fips_code,county_name,content_length,tier
 44001,"Bristol County, Rhode Island",370,mid
 44003,"Kent County, Rhode Island",473,rich
 44005,"Newport County, Rhode Island",507,rich
-44007,"Providence County, Rhode Island",462,rich
+44007,"Providence County, Rhode Island",474,rich
 44009,"Washington County, Rhode Island",429,mid
 45001,"Abbeville County, South Carolina",256,thin
 45003,"Aiken County, South Carolina",320,mid
 45005,"Allendale County, South Carolina",78,stub
-45007,"Anderson County, South Carolina",633,rich
+45007,"Anderson County, South Carolina",667,rich
 45009,"Bamberg County, South Carolina",278,thin
 45011,"Barnwell County, South Carolina",88,stub
 45013,"Beaufort County, South Carolina",871,rich
@@ -2331,15 +2350,15 @@ fips_code,county_name,content_length,tier
 45061,"Lee County, South Carolina",87,stub
 45063,"Lexington County, South Carolina",404,mid
 45065,"McCormick County, South Carolina",177,thin
-45067,"Marion County, South Carolina",101,thin
+45067,"Marion County, South Carolina",70,stub
 45069,"Marlboro County, South Carolina",694,rich
 45071,"Newberry County, South Carolina",272,thin
 45073,"Oconee County, South Carolina",436,mid
 45075,"Orangeburg County, South Carolina",461,mid
-45077,"Pickens County, South Carolina",149,thin
+45077,"Pickens County, South Carolina",205,thin
 45079,"Richland County, South Carolina",524,rich
 45081,"Saluda County, South Carolina",170,thin
-45083,"Spartanburg County, South Carolina",265,thin
+45083,"Spartanburg County, South Carolina",326,mid
 45085,"Sumter County, South Carolina",796,rich
 45087,"Union County, South Carolina",227,thin
 45089,"Williamsburg County, South Carolina",153,thin
@@ -2384,7 +2403,7 @@ fips_code,county_name,content_length,tier
 46077,"Kingsbury County, South Dakota",364,mid
 46079,"Lake County, South Dakota",67,stub
 46081,"Lawrence County, South Dakota",276,thin
-46083,"Lincoln County, South Dakota",483,rich
+46083,"Lincoln County, South Dakota",477,rich
 46085,"Lyman County, South Dakota",259,thin
 46087,"McCook County, South Dakota",249,thin
 46089,"McPherson County, South Dakota",33,stub
@@ -2446,7 +2465,7 @@ fips_code,county_name,content_length,tier
 47067,"Hancock County, Tennessee",86,stub
 47069,"Hardeman County, Tennessee",36,stub
 47071,"Hardin County, Tennessee",456,mid
-47073,"Hawkins County, Tennessee",226,thin
+47073,"Hawkins County, Tennessee",225,thin
 47075,"Haywood County, Tennessee",188,thin
 47077,"Henderson County, Tennessee",164,thin
 47079,"Henry County, Tennessee",480,rich
@@ -2484,7 +2503,7 @@ fips_code,county_name,content_length,tier
 47143,"Rhea County, Tennessee",208,thin
 47145,"Roane County, Tennessee",86,stub
 47147,"Robertson County, Tennessee",393,mid
-47149,"Rutherford County, Tennessee",436,mid
+47149,"Rutherford County, Tennessee",437,mid
 47151,"Scott County, Tennessee",271,thin
 47153,"Sequatchie County, Tennessee",82,stub
 47155,"Sevier County, Tennessee",226,thin
@@ -2494,7 +2513,7 @@ fips_code,county_name,content_length,tier
 47163,"Sullivan County, Tennessee",466,rich
 47165,"Sumner County, Tennessee",500,rich
 47167,"Tipton County, Tennessee",155,thin
-47169,"Trousdale County, Tennessee",1352,rich
+47169,"Trousdale County, Tennessee",1366,rich
 47171,"Unicoi County, Tennessee",336,mid
 47173,"Union County, Tennessee",90,stub
 47175,"Van Buren County, Tennessee",83,stub
@@ -2535,7 +2554,7 @@ fips_code,county_name,content_length,tier
 48055,"Caldwell County, Texas",398,mid
 48057,"Calhoun County, Texas",284,mid
 48059,"Callahan County, Texas",220,thin
-48061,"Cameron County, Texas",753,rich
+48061,"Cameron County, Texas",742,rich
 48063,"Camp County, Texas",171,thin
 48065,"Carson County, Texas",250,thin
 48067,"Cass County, Texas",179,thin
@@ -2550,7 +2569,7 @@ fips_code,county_name,content_length,tier
 48085,"Collin County, Texas",296,mid
 48087,"Collingsworth County, Texas",413,mid
 48089,"Colorado County, Texas",137,thin
-48091,"Comal County, Texas",1022,rich
+48091,"Comal County, Texas",478,rich
 48093,"Comanche County, Texas",177,thin
 48095,"Concho County, Texas",142,thin
 48097,"Cooke County, Texas",425,mid
@@ -2565,7 +2584,7 @@ fips_code,county_name,content_length,tier
 48115,"Dawson County, Texas",284,mid
 48117,"Deaf Smith County, Texas",213,thin
 48119,"Delta County, Texas",379,mid
-48121,"Denton County, Texas",320,mid
+48121,"Denton County, Texas",286,mid
 48123,"DeWitt County, Texas",130,thin
 48125,"Dickens County, Texas",188,thin
 48127,"Dimmit County, Texas",334,mid
@@ -2577,7 +2596,7 @@ fips_code,county_name,content_length,tier
 48139,"Ellis County, Texas",291,mid
 48141,"El Paso County, Texas",856,rich
 48143,"Erath County, Texas",475,rich
-48145,"Falls County, Texas",513,rich
+48145,"Falls County, Texas",498,rich
 48147,"Fannin County, Texas",287,mid
 48149,"Fayette County, Texas",250,thin
 48151,"Fisher County, Texas",314,mid
@@ -2613,7 +2632,7 @@ fips_code,county_name,content_length,tier
 48211,"Hemphill County, Texas",448,mid
 48213,"Henderson County, Texas",499,rich
 48215,"Hidalgo County, Texas",1325,rich
-48217,"Hill County, Texas",216,thin
+48217,"Hill County, Texas",217,thin
 48219,"Hockley County, Texas",311,mid
 48221,"Hood County, Texas",266,thin
 48223,"Hopkins County, Texas",413,mid
@@ -2662,7 +2681,7 @@ fips_code,county_name,content_length,tier
 48309,"McLennan County, Texas",286,mid
 48311,"McMullen County, Texas",455,mid
 48313,"Madison County, Texas",472,rich
-48315,"Marion County, Texas",232,thin
+48315,"Marion County, Texas",167,thin
 48317,"Martin County, Texas",199,thin
 48319,"Mason County, Texas",103,thin
 48321,"Matagorda County, Texas",389,mid
@@ -2694,14 +2713,14 @@ fips_code,county_name,content_length,tier
 48373,"Polk County, Texas",502,rich
 48375,"Potter County, Texas",263,thin
 48377,"Presidio County, Texas",311,mid
-48379,"Rains County, Texas",214,thin
+48379,"Rains County, Texas",221,thin
 48381,"Randall County, Texas",539,rich
 48383,"Reagan County, Texas",253,thin
 48385,"Real County, Texas",318,mid
 48387,"Red River County, Texas",351,mid
-48389,"Reeves County, Texas",333,mid
+48389,"Reeves County, Texas",332,mid
 48391,"Refugio County, Texas",182,thin
-48393,"Roberts County, Texas",312,mid
+48393,"Roberts County, Texas",309,mid
 48395,"Robertson County, Texas",303,mid
 48397,"Rockwall County, Texas",559,rich
 48399,"Runnels County, Texas",152,thin
@@ -2714,7 +2733,7 @@ fips_code,county_name,content_length,tier
 48413,"Schleicher County, Texas",212,thin
 48415,"Scurry County, Texas",468,rich
 48417,"Shackelford County, Texas",557,rich
-48419,"Shelby County, Texas",276,thin
+48419,"Shelby County, Texas",265,thin
 48421,"Sherman County, Texas",298,mid
 48423,"Smith County, Texas",284,mid
 48425,"Somervell County, Texas",274,thin
@@ -2736,7 +2755,7 @@ fips_code,county_name,content_length,tier
 48457,"Tyler County, Texas",341,mid
 48459,"Upshur County, Texas",270,thin
 48461,"Upton County, Texas",194,thin
-48463,"Uvalde County, Texas",361,mid
+48463,"Uvalde County, Texas",358,mid
 48465,"Val Verde County, Texas",744,rich
 48467,"Van Zandt County, Texas",243,thin
 48469,"Victoria County, Texas",169,thin
@@ -2745,7 +2764,7 @@ fips_code,county_name,content_length,tier
 48475,"Ward County, Texas",154,thin
 48477,"Washington County, Texas",921,rich
 48479,"Webb County, Texas",983,rich
-48481,"Wharton County, Texas",398,mid
+48481,"Wharton County, Texas",394,mid
 48483,"Wheeler County, Texas",605,rich
 48485,"Wichita County, Texas",204,thin
 48487,"Wilbarger County, Texas",327,mid
@@ -2760,7 +2779,7 @@ fips_code,county_name,content_length,tier
 48505,"Zapata County, Texas",445,mid
 48507,"Zavala County, Texas",100,thin
 49001,"Beaver County, Utah",175,thin
-49003,"Box Elder County, Utah",466,rich
+49003,"Box Elder County, Utah",444,mid
 49005,"Cache County, Utah",265,thin
 49007,"Carbon County, Utah",96,stub
 49009,"Daggett County, Utah",328,mid
@@ -2785,7 +2804,7 @@ fips_code,county_name,content_length,tier
 49047,"Uintah County, Utah",539,rich
 49049,"Utah County, Utah",981,rich
 49051,"Wasatch County, Utah",307,mid
-49053,"Washington County, Utah",583,rich
+49053,"Washington County, Utah",513,rich
 49055,"Wayne County, Utah",160,thin
 49057,"Weber County, Utah",334,mid
 50001,"Addison County, Vermont",85,stub
@@ -2797,7 +2816,7 @@ fips_code,county_name,content_length,tier
 50013,"Grand Isle County, Vermont",480,rich
 50015,"Lamoille County, Vermont",393,mid
 50017,"Orange County, Vermont",116,thin
-50019,"Orleans County, Vermont",324,mid
+50019,"Orleans County, Vermont",362,mid
 50021,"Rutland County, Vermont",216,thin
 50023,"Washington County, Vermont",575,rich
 50025,"Windham County, Vermont",128,thin
@@ -2808,8 +2827,8 @@ fips_code,county_name,content_length,tier
 51007,"Amelia County, Virginia",372,mid
 51009,"Amherst County, Virginia",570,rich
 51011,"Appomattox County, Virginia",295,mid
-51013,"Arlington County, Virginia",3751,rich
-51015,"Augusta County, Virginia",641,rich
+51013,"Arlington County, Virginia",3756,rich
+51015,"Augusta County, Virginia",563,rich
 51017,"Bath County, Virginia",375,mid
 51019,"Bedford County, Virginia",477,rich
 51021,"Bland County, Virginia",379,mid
@@ -2876,11 +2895,11 @@ fips_code,county_name,content_length,tier
 51149,"Prince George County, Virginia",223,thin
 51153,"Prince William County, Virginia",403,mid
 51155,"Pulaski County, Virginia",97,stub
-51157,"Rappahannock County, Virginia",505,rich
+51157,"Rappahannock County, Virginia",435,mid
 51159,"Richmond County, Virginia",224,thin
 51161,"Roanoke County, Virginia",637,rich
 51163,"Rockbridge County, Virginia",248,thin
-51165,"Rockingham County, Virginia",191,thin
+51165,"Rockingham County, Virginia",225,thin
 51167,"Russell County, Virginia",60,stub
 51169,"Scott County, Virginia",463,rich
 51171,"Shenandoah County, Virginia",115,thin
@@ -2897,7 +2916,44 @@ fips_code,county_name,content_length,tier
 51195,"Wise County, Virginia",146,thin
 51197,"Wythe County, Virginia",55,stub
 51199,"York County, Virginia",1663,rich
+51510,"Alexandria City, Virginia",2260,rich
+51520,"Bristol City, Virginia",740,rich
+51530,"Buena Vista City, Virginia",581,rich
+51540,"Charlottesville City, Virginia",1400,rich
+51550,"Chesapeake City, Virginia",1492,rich
+51570,"Colonial Heights City, Virginia",422,mid
+51580,"Covington City, Virginia",547,rich
+51590,"Danville City, Virginia",1402,rich
+51595,"Emporia City, Virginia",449,mid
+51600,"Fairfax City, Virginia",581,rich
+51610,"Falls Church City, Virginia",1535,rich
 51620,"Franklin City, Virginia",67,stub
+51630,"Fredericksburg City, Virginia",1624,rich
+51640,"Galax City, Virginia",428,mid
+51650,"Hampton City, Virginia",1337,rich
+51660,"Harrisonburg City, Virginia",409,mid
+51670,"Hopewell City, Virginia",504,rich
+51678,"Lexington City, Virginia",570,rich
+51680,"Lynchburg City, Virginia",993,rich
+51683,"Manassas City, Virginia",874,rich
+51685,"Manassas Park City, Virginia",344,mid
+51690,"Martinsville City, Virginia",990,rich
+51700,"Newport News City, Virginia",2321,rich
+51710,"Norfolk City, Virginia",1578,rich
+51720,"Norton City, Virginia",383,mid
+51730,"Petersburg City, Virginia",3705,rich
+51735,"Poquoson City, Virginia",1063,rich
+51740,"Portsmouth City, Virginia",523,rich
+51750,"Radford City, Virginia",105,thin
+51760,"Richmond City, Virginia",1650,rich
+51770,"Roanoke City, Virginia",2540,rich
+51775,"Salem City, Virginia",1031,rich
+51790,"Staunton City, Virginia",864,rich
+51800,"Suffolk City, Virginia",718,rich
+51810,"Virginia Beach City, Virginia",1735,rich
+51820,"Waynesboro City, Virginia",421,mid
+51830,"Williamsburg City, Virginia",1617,rich
+51840,"Winchester City, Virginia",562,rich
 53001,"Adams County, Washington",510,rich
 53003,"Asotin County, Washington",373,mid
 53005,"Benton County, Washington",321,mid
@@ -2961,7 +3017,7 @@ fips_code,county_name,content_length,tier
 54043,"Lincoln County, West Virginia",174,thin
 54045,"Logan County, West Virginia",196,thin
 54047,"McDowell County, West Virginia",737,rich
-54049,"Marion County, West Virginia",321,mid
+54049,"Marion County, West Virginia",290,mid
 54051,"Marshall County, West Virginia",624,rich
 54053,"Mason County, West Virginia",284,mid
 54055,"Mercer County, West Virginia",269,thin
@@ -3017,7 +3073,7 @@ fips_code,county_name,content_length,tier
 55045,"Green County, Wisconsin",99,stub
 55047,"Green Lake County, Wisconsin",121,thin
 55049,"Iowa County, Wisconsin",152,thin
-55051,"Iron County, Wisconsin",369,mid
+55051,"Iron County, Wisconsin",402,mid
 55053,"Jackson County, Wisconsin",131,thin
 55055,"Jefferson County, Wisconsin",208,thin
 55057,"Juneau County, Wisconsin",134,thin
@@ -3059,7 +3115,7 @@ fips_code,county_name,content_length,tier
 55127,"Walworth County, Wisconsin",652,rich
 55129,"Washburn County, Wisconsin",229,thin
 55131,"Washington County, Wisconsin",264,thin
-55133,"Waukesha County, Wisconsin",515,rich
+55133,"Waukesha County, Wisconsin",445,mid
 55135,"Waupaca County, Wisconsin",231,thin
 55137,"Waushara County, Wisconsin",103,thin
 55139,"Winnebago County, Wisconsin",365,mid
@@ -3087,59 +3143,3 @@ fips_code,county_name,content_length,tier
 56041,"Uinta County, Wyoming",232,thin
 56043,"Washakie County, Wyoming",35,stub
 56045,"Weston County, Wyoming",118,thin
-51510,"Alexandria City, Virginia",2134,rich
-51520,"Bristol City, Virginia",740,rich
-51530,"Buena Vista City, Virginia",581,rich
-51540,"Charlottesville City, Virginia",1400,rich
-51550,"Chesapeake City, Virginia",1492,rich
-51570,"Colonial Heights City, Virginia",422,mid
-51580,"Covington City, Virginia",547,rich
-51590,"Danville City, Virginia",1403,rich
-51595,"Emporia City, Virginia",449,mid
-51600,"Fairfax City, Virginia",581,rich
-51610,"Falls Church City, Virginia",1535,rich
-51630,"Fredericksburg City, Virginia",1624,rich
-51640,"Galax City, Virginia",428,mid
-51650,"Hampton City, Virginia",1329,rich
-51660,"Harrisonburg City, Virginia",409,mid
-51670,"Hopewell City, Virginia",504,rich
-51678,"Lexington City, Virginia",570,rich
-51680,"Lynchburg City, Virginia",993,rich
-51683,"Manassas City, Virginia",874,rich
-51685,"Manassas Park City, Virginia",344,mid
-51690,"Martinsville City, Virginia",990,rich
-51700,"Newport News City, Virginia",2321,rich
-51710,"Norfolk City, Virginia",1574,rich
-51720,"Norton City, Virginia",383,mid
-51730,"Petersburg City, Virginia",3705,rich
-51735,"Poquoson City, Virginia",1063,rich
-51740,"Portsmouth City, Virginia",523,rich
-51750,"Radford City, Virginia",105,thin
-51760,"Richmond City, Virginia",1650,rich
-51770,"Roanoke City, Virginia",2540,rich
-51775,"Salem City, Virginia",1031,rich
-51790,"Staunton City, Virginia",864,rich
-51800,"Suffolk City, Virginia",718,rich
-51810,"Virginia Beach City, Virginia",1719,rich
-51820,"Waynesboro City, Virginia",421,mid
-51830,"Williamsburg City, Virginia",1617,rich
-51840,"Winchester City, Virginia",562,rich
-02020,"Anchorage Municipality, Alaska",2279,rich
-02105,"Hoonah-Angoon Census Area, Alaska",238,thin
-02110,"Juneau City and Borough, Alaska",3224,rich
-02198,"Prince of Wales-Hyder Census Area, Alaska",535,rich
-02220,"Sitka City and Borough, Alaska",698,rich
-02230,"Skagway Municipality, Alaska",1629,rich
-02275,"Wrangell City and Borough, Alaska",1537,rich
-02282,"Yakutat City and Borough, Alaska",1261,rich
-15001,"Hawaii County, Hawaii",1033,rich
-17039,"De Witt County, Illinois",376,mid
-21123,"Larue County, Kentucky",548,rich
-22031,"De Soto Parish, Louisiana",361,mid
-25019,"Nantucket County, Massachusetts",1045,rich
-36005,"Bronx County, New York",2420,rich
-36047,"Kings County, New York",2877,rich
-36061,"New York County, New York",4050,rich
-36081,"Queens County, New York",1887,rich
-36085,"Richmond County, New York",2846,rich
-40079,"Le Flore County, Oklahoma",377,mid

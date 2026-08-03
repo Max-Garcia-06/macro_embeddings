@@ -46,6 +46,22 @@ DATA_DIR: Path = Path(__file__).resolve().parent.parent / "data"
 # scripts still read.
 OUTPUT_PARQUET_PATH: Path = DATA_DIR / "source_a_text_features.parquet"
 
+# Every article's non-lead sections, one row per (county, section). The API has
+# always returned the full article body and `isolate_lead_section` has always
+# thrown the rest away, so this costs no extra requests -- only the decision to
+# keep what was already downloaded. Persisting it means section-level questions
+# never require another 3,144-article fetch.
+SECTIONS_PARQUET_PATH: Path = DATA_DIR / "source_a_sections.parquet"
+
+# Sections that carry no county-specific prose. Dropped at ingestion because they
+# would otherwise be the bulk of the rows and none of the content.
+SKIPPED_SECTION_TITLES: frozenset[str] = frozenset(
+    {
+        "references", "external links", "further reading", "see also",
+        "notes", "bibliography", "citations", "sources", "footnotes",
+    }
+)
+
 logger = logging.getLogger(__name__)
 
 GAZETTEER_URL: str = (
@@ -441,6 +457,46 @@ def isolate_lead_section(article_html: str) -> str:
     return str(lead_section) if lead_section is not None else article_html
 
 
+def extract_body_sections(article_html: str) -> list[tuple[int, str, str]]:
+    """Extract plain text for every non-lead section of an article.
+
+    Parsoid splits the body into top-level `<section data-mw-section-id="N">`
+    elements; section 0 is the lead, which `isolate_lead_section` already
+    handles. This returns the rest, so that a later analysis can ask whether a
+    county's Economy or History section carries facts its lead does not.
+
+    Args:
+        article_html: Full article body HTML.
+
+    Returns:
+        List of (section_id, section_title, section_text), excluding the lead,
+        excluding the reference-style sections in SKIPPED_SECTION_TITLES, and
+        excluding any section whose text is empty after cleaning.
+    """
+    soup = BeautifulSoup(article_html, "html.parser")
+    sections: list[tuple[int, str, str]] = []
+
+    for section in soup.find_all("section", attrs={"data-mw-section-id": True}):
+        try:
+            section_id = int(section["data-mw-section-id"])
+        except (TypeError, ValueError):
+            continue
+        if section_id <= 0:
+            continue
+
+        heading = section.find(["h2", "h3"])
+        title = heading.get_text(separator=" ").strip() if heading is not None else ""
+        if title.lower() in SKIPPED_SECTION_TITLES:
+            continue
+
+        section_soup = strip_non_narrative_elements(BeautifulSoup(str(section), "html.parser"))
+        text = normalize_article_text(section_soup.get_text(separator=" "))
+        if text:
+            sections.append((section_id, title, text))
+
+    return sections
+
+
 def strip_non_narrative_elements(lead_soup: BeautifulSoup) -> BeautifulSoup:
     """Remove infobox tables, citation markers, and non-content tags in place.
 
@@ -453,6 +509,23 @@ def strip_non_narrative_elements(lead_soup: BeautifulSoup) -> BeautifulSoup:
     for tag in lead_soup.find_all(["table", "sup", "style", "script"]):
         tag.decompose()
     return lead_soup
+
+
+def normalize_article_text(text: str) -> str:
+    """Unwrap wiki links, drop citation brackets, and collapse whitespace.
+
+    Shared by the lead-section and body-section paths so both produce text in
+    the same shape.
+
+    Args:
+        text: Raw text extracted from parsed article HTML.
+
+    Returns:
+        Normalized text, stripped of leading and trailing whitespace.
+    """
+    text = _WIKI_LINK_PATTERN.sub(r"\2", text)
+    text = _CITATION_BRACKET_PATTERN.sub("", text)
+    return _WHITESPACE_PATTERN.sub(" ", text).strip()
 
 
 def clean_intro_text(article_html: str) -> str:
@@ -471,10 +544,7 @@ def clean_intro_text(article_html: str) -> str:
     lead_soup = BeautifulSoup(lead_html, "html.parser")
     lead_soup = strip_non_narrative_elements(lead_soup)
 
-    text = lead_soup.get_text(separator=" ")
-    text = _WIKI_LINK_PATTERN.sub(r"\2", text)
-    text = _CITATION_BRACKET_PATTERN.sub("", text)
-    text = _WHITESPACE_PATTERN.sub(" ", text).strip()
+    text = normalize_article_text(lead_soup.get_text(separator=" "))
 
     if not text:
         raise EmptyIntroError("Cleaned introduction text is empty.")
@@ -554,6 +624,11 @@ class CountyIngestionResult:
     raw_intro_text: str
     embedding_text: str
     content_length: int
+    # Non-lead sections as (section_id, title, text). Carried alongside the lead
+    # rather than folded into it: §4 of the findings established that appending
+    # body text to the lead makes counties *more* alike, so these are kept
+    # separately for targeted extraction, not for concatenation.
+    sections: list[tuple[int, str, str]]
 
 
 @dataclass
@@ -614,6 +689,7 @@ def process_county(
         raw_intro_text=intro_text,
         embedding_text=narrative_text,
         content_length=len(narrative_text),
+        sections=extract_body_sections(article_html),
     )
 
 
@@ -683,6 +759,35 @@ def build_dataframe(results: list[CountyIngestionResult]) -> pd.DataFrame:
     )
 
 
+def build_sections_dataframe(results: list[CountyIngestionResult]) -> pd.DataFrame:
+    """Assemble every county's body sections into a long-format DataFrame.
+
+    Long rather than wide because section titles are not standardized across
+    articles -- a county may have "Economy", "Economy and industry", or none at
+    all -- so a wide layout would be mostly empty columns.
+
+    Args:
+        results: List of per-county ingestion results.
+
+    Returns:
+        DataFrame with columns: fips_code, county_name, section_id,
+        section_title, section_text. One row per (county, section).
+    """
+    return pd.DataFrame(
+        [
+            {
+                "fips_code": result.fips_code,
+                "county_name": result.county_name,
+                "section_id": section_id,
+                "section_title": title,
+                "section_text": text,
+            }
+            for result in results
+            for section_id, title, text in result.sections
+        ]
+    )
+
+
 def export_to_parquet(df: pd.DataFrame, output_path: Path) -> None:
     """Write the ingestion DataFrame to a local Parquet file.
 
@@ -724,6 +829,15 @@ def main() -> None:
 
     df = build_dataframe(results)
     export_to_parquet(df, OUTPUT_PARQUET_PATH)
+
+    sections = build_sections_dataframe(results)
+    export_to_parquet(sections, SECTIONS_PARQUET_PATH)
+    logger.info(
+        "Sections: %d rows across %d counties (%.1f per county)",
+        len(sections),
+        sections["fips_code"].nunique() if len(sections) else 0,
+        len(sections) / len(results) if results else 0.0,
+    )
 
     logger.info("Succeeded: %d, Failed: %d", len(summary.succeeded), len(summary.failed))
     for county, reason in summary.failed.items():

@@ -99,7 +99,16 @@ from analyze_pillar_matrix_signal import (
 )
 from analyze_source_a_tiers import TIER_LABELS, assign_tiers
 from extract_source_a_features import VARIANT_COLUMNS
+from extract_source_a_section_features import section_feature_columns
 from pillar_matrix import DATA_DIR, build_matrix
+
+# The widest variant: everything extracted from the lead, plus the industry
+# lexicon applied to the article's economy section. Assembled here rather than in
+# either extraction module, so neither has to know about the other.
+VARIANT_COLUMNS["extracted_sections"] = (
+    *VARIANT_COLUMNS["extracted_full"],
+    *section_feature_columns(),
+)
 
 # Principal components retained for the reduced variant. 50 keeps roughly the
 # same order of magnitude as Source B's 20-column block, so "the embedding" is
@@ -150,6 +159,11 @@ VARIANTS: tuple[Variant, ...] = (
     Variant("extracted_min", "typed features, 4 columns", len(VARIANT_COLUMNS["extracted_min"])),
     Variant("extracted_mid", "typed features, 8 columns", len(VARIANT_COLUMNS["extracted_mid"])),
     Variant("extracted_full", "typed features, all columns", len(VARIANT_COLUMNS["extracted_full"])),
+    Variant(
+        "extracted_sections",
+        "typed features + economy section",
+        len(VARIANT_COLUMNS["extracted_sections"]),
+    ),
     Variant("pca50", f"bge-m3, {N_COMPONENTS} principal components", N_COMPONENTS),
     Variant("full", "bge-m3, all 1024 dimensions", 1024),
 )
@@ -162,7 +176,12 @@ INCUMBENT: str = "length"
 # separate because the headline comparison is extraction against the incumbent;
 # the embedding columns are retained for reference at a cost the pillar no longer
 # pays.
-EXTRACTED_KEYS: tuple[str, ...] = ("extracted_min", "extracted_mid", "extracted_full")
+EXTRACTED_KEYS: tuple[str, ...] = (
+    "extracted_min",
+    "extracted_mid",
+    "extracted_full",
+    "extracted_sections",
+)
 
 
 def configure_logging() -> None:
@@ -559,8 +578,17 @@ def main() -> None:
     from analyze_source_b_industry_mix import NAICS2_LABELS
 
     matrix, blocks = build_matrix()
-    if "n_industry_mentions" not in matrix.columns:
-        raise ValueError("Extracted columns absent -- run extract_source_a_features.py first.")
+    missing = [
+        column
+        for key in EXTRACTED_KEYS
+        for column in VARIANT_COLUMNS[key]
+        if column not in matrix.columns
+    ]
+    if missing:
+        raise ValueError(
+            f"Extracted columns absent ({sorted(set(missing))[:4]}...) -- run "
+            "extract_source_a_features.py and extract_source_a_section_features.py first."
+        )
 
     embeddings = load_embeddings(matrix["fips_code"])
     tiers = assign_tiers(matrix["content_length"])

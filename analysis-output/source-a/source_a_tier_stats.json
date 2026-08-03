@@ -17,160 +17,160 @@
       "min_length": 33,
       "max_length": 99,
       "mean_length": 63.8,
-      "share_any_industry": 0.0102,
-      "mean_industry_mentions": 0.014,
-      "mean_proper_nouns": 2.04,
-      "share_founding_year": 0.0578
+      "share_any_industry": 0.0068,
+      "mean_industry_mentions": 0.01,
+      "mean_proper_nouns": 1.81,
+      "share_founding_year": 0.0544
     },
     "thin": {
-      "n_counties": 1281,
+      "n_counties": 1274,
       "min_length": 100,
       "max_length": 283,
-      "mean_length": 191.2,
-      "share_any_industry": 0.0109,
+      "mean_length": 191.4,
+      "share_any_industry": 0.011,
       "mean_industry_mentions": 0.013,
-      "mean_proper_nouns": 5.18,
-      "share_founding_year": 0.3286
+      "mean_proper_nouns": 5.17,
+      "share_founding_year": 0.3297
     },
     "mid": {
-      "n_counties": 784,
+      "n_counties": 788,
       "min_length": 284,
       "max_length": 461,
-      "mean_length": 359.0,
-      "share_any_industry": 0.0548,
+      "mean_length": 359.4,
+      "share_any_industry": 0.0546,
       "mean_industry_mentions": 0.066,
-      "mean_proper_nouns": 8.75,
-      "share_founding_year": 0.5242
+      "mean_proper_nouns": 8.7,
+      "share_founding_year": 0.5228
     },
     "rich": {
-      "n_counties": 785,
+      "n_counties": 788,
       "min_length": 462,
       "max_length": 4403,
-      "mean_length": 859.9,
-      "share_any_industry": 0.2522,
+      "mean_length": 863.2,
+      "share_any_industry": 0.2525,
       "mean_industry_mentions": 0.35,
-      "mean_proper_nouns": 17.76,
-      "share_founding_year": 0.465
+      "mean_proper_nouns": 17.83,
+      "share_founding_year": 0.4645
     }
   },
   "composition": {
     "has_manufacturing": {
-      "stub": 0.0068027211,
-      "thin": 0.0015612802,
-      "mid": 0.0051020408,
-      "rich": 0.0394904459,
+      "stub": 0.0034013605,
+      "thin": 0.0015698587,
+      "mid": 0.0050761421,
+      "rich": 0.0406091371,
       "corpus": 0.0124045802
     },
     "has_mining": {
       "stub": 0.0068027211,
-      "thin": 0.0031225605,
-      "mid": 0.0140306122,
-      "rich": 0.0292993631,
+      "thin": 0.0031397174,
+      "mid": 0.0139593909,
+      "rich": 0.0291878173,
       "corpus": 0.0127226463
     },
     "has_oil_gas": {
       "stub": 0.0,
-      "thin": 0.0007806401,
-      "mid": 0.0038265306,
-      "rich": 0.0165605096,
+      "thin": 0.0007849294,
+      "mid": 0.0038071066,
+      "rich": 0.0164974619,
       "corpus": 0.0054071247
     },
     "has_agriculture": {
       "stub": 0.0,
-      "thin": 0.006245121,
-      "mid": 0.0216836735,
-      "rich": 0.1248407643,
+      "thin": 0.0062794349,
+      "mid": 0.0215736041,
+      "rich": 0.1243654822,
       "corpus": 0.0391221374
     },
     "has_tourism": {
       "stub": 0.0,
-      "thin": 0.0007806401,
-      "mid": 0.0178571429,
-      "rich": 0.0955414013,
+      "thin": 0.0007849294,
+      "mid": 0.0177664975,
+      "rich": 0.095177665,
       "corpus": 0.0286259542
     },
     "has_timber": {
       "stub": 0.0,
-      "thin": 0.0007806401,
-      "mid": 0.0038265306,
-      "rich": 0.0305732484,
+      "thin": 0.0007849294,
+      "mid": 0.0038071066,
+      "rich": 0.0304568528,
       "corpus": 0.0089058524
     },
     "has_logistics": {
       "stub": 0.0,
       "thin": 0.0,
       "mid": 0.0,
-      "rich": 0.0140127389,
+      "rich": 0.0139593909,
       "corpus": 0.0034987277
     },
     "has_university": {
-      "stub": 0.0034013605,
-      "thin": 0.0140515222,
-      "mid": 0.0369897959,
-      "rich": 0.0917197452,
-      "corpus": 0.0381679389
+      "stub": 0.0,
+      "thin": 0.0141287284,
+      "mid": 0.0368020305,
+      "rich": 0.0939086294,
+      "corpus": 0.0384860051
     },
     "has_military_base": {
       "stub": 0.0,
-      "thin": 0.0015612802,
-      "mid": 0.0012755102,
-      "rich": 0.0229299363,
+      "thin": 0.0015698587,
+      "mid": 0.0012690355,
+      "rich": 0.0228426396,
       "corpus": 0.0066793893
     },
     "has_protected_land": {
       "stub": 0.0,
-      "thin": 0.0046838407,
-      "mid": 0.0216836735,
-      "rich": 0.0738853503,
+      "thin": 0.0047095761,
+      "mid": 0.0228426396,
+      "rich": 0.0723350254,
       "corpus": 0.0257633588
     },
     "has_tribal_land": {
       "stub": 0.0,
-      "thin": 0.0156128025,
-      "mid": 0.0255102041,
-      "rich": 0.0496815287,
+      "thin": 0.0156985871,
+      "mid": 0.0228426396,
+      "rich": 0.0520304569,
       "corpus": 0.0251272265
     },
     "has_river": {
-      "stub": 0.0340136054,
-      "thin": 0.0780640125,
-      "mid": 0.1492346939,
-      "rich": 0.3324840764,
-      "corpus": 0.155216285
+      "stub": 0.0306122449,
+      "thin": 0.0784929356,
+      "mid": 0.1484771574,
+      "rich": 0.3337563452,
+      "corpus": 0.1555343511
     },
     "has_interstate": {
       "stub": 0.0,
-      "thin": 0.0070257611,
-      "mid": 0.0038265306,
-      "rich": 0.0585987261,
+      "thin": 0.0070643642,
+      "mid": 0.0038071066,
+      "rich": 0.0583756345,
       "corpus": 0.0184478372
     },
     "has_port": {
       "stub": 0.0,
-      "thin": 0.0007806401,
-      "mid": 0.0012755102,
-      "rich": 0.0203821656,
+      "thin": 0.0007849294,
+      "mid": 0.0012690355,
+      "rich": 0.0203045685,
       "corpus": 0.0057251908
     },
     "has_metro_attachment": {
-      "stub": 0.1394557823,
-      "thin": 0.4387197502,
-      "mid": 0.6084183673,
-      "rich": 0.6649681529,
-      "corpus": 0.5095419847
+      "stub": 0.1360544218,
+      "thin": 0.4364207221,
+      "mid": 0.6116751269,
+      "rich": 0.6662436548,
+      "corpus": 0.5098600509
     },
     "has_namesake": {
       "stub": 0.0680272109,
-      "thin": 0.4246682279,
-      "mid": 0.5369897959,
-      "rich": 0.5171974522,
+      "thin": 0.4254317111,
+      "mid": 0.5355329949,
+      "rich": 0.5164974619,
       "corpus": 0.4424300254
     },
     "has_usda_echo": {
-      "stub": 0.0034013605,
-      "thin": 0.0046838407,
-      "mid": 0.006377551,
-      "rich": 0.0050955414,
+      "stub": 0.0,
+      "thin": 0.0047095761,
+      "mid": 0.0063451777,
+      "rich": 0.0063451777,
       "corpus": 0.0050890585
     }
   }
