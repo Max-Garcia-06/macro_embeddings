@@ -1,0 +1,29 @@
+{
+  "n_counties": 3144,
+  "n_features": 20,
+  "flag_rates": {
+    "has_manufacturing": 0.012404580152671756,
+    "has_mining": 0.01272264631043257,
+    "has_oil_gas": 0.005407124681933842,
+    "has_agriculture": 0.039122137404580155,
+    "has_tourism": 0.02862595419847328,
+    "has_timber": 0.008905852417302799,
+    "has_logistics": 0.003498727735368957,
+    "has_university": 0.03816793893129771,
+    "has_military_base": 0.006679389312977099,
+    "has_protected_land": 0.025763358778625955,
+    "has_tribal_land": 0.025127226463104325,
+    "has_river": 0.15521628498727735,
+    "has_interstate": 0.018447837150127225,
+    "has_port": 0.0057251908396946565,
+    "has_metro_attachment": 0.5095419847328244,
+    "has_namesake": 0.44243002544529264,
+    "has_usda_echo": 0.005089058524173028
+  },
+  "mean_industry_mentions": 0.11068702290076336,
+  "share_any_industry": 0.08206106870229007,
+  "mean_distinct_proper_nouns": 8.919211195928753,
+  "n_founding_year_present": 1214,
+  "n_usda_echo": 16,
+  "n_all_flags_empty": 25
+}

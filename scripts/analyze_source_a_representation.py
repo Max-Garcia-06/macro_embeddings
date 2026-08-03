@@ -49,6 +49,27 @@ trustworthy. The third one reversed this script's result once already:
 the vector -- so the interesting quantity is not whether the embedding knows
 length. It is whether it knows anything *else* that the other pillars care
 about.
+
+**Extended 2026-08-03** with the typed features from `extract_source_a_features.py`,
+which are the actual candidate replacement for the cut embedding: they cost one
+regex pass rather than a 2.2GB model, and they stay interpretable at the feature
+store. Three nested widths are scored (`extracted_min` / `_mid` / `_full`) so the
+reduction question is answered as "which columns earn their slot" rather than "how
+many principal components" -- PCA on this corpus is a measured dead end, retaining
+only 42% of the full embedding's advantage, because its highest-variance direction
+is the Texas founding-narrative artifact documented in §3.2 of the findings.
+
+Two reporting additions, both requested as decision inputs for the open question of
+whether county size is a control or part of the target:
+
+- **Raw alongside size-controlled.** Every variant is additionally scored alone,
+  with no size or state controls, so the raw explanatory power is visible next to
+  the controlled lift rather than inferred from it.
+- **Lift broken out per content tier.** Source A's corpus is extremely uneven --
+  25.2% of the richest quartile names an industry against 1.1% of the thin tier --
+  so a mean lift across all counties can hide a gain that exists only where there
+  was text to read. The breakout reuses the same out-of-fold predictions rather
+  than refitting per tier, so it adds no model and no extra penalty selection.
 """
 
 from __future__ import annotations
@@ -76,6 +97,8 @@ from analyze_pillar_matrix_signal import (
     Target,
     build_baseline_design,
 )
+from analyze_source_a_tiers import TIER_LABELS, assign_tiers
+from extract_source_a_features import VARIANT_COLUMNS
 from pillar_matrix import DATA_DIR, build_matrix
 
 # Principal components retained for the reduced variant. 50 keeps roughly the
@@ -96,7 +119,13 @@ OUTPUTS_DIR: Path = REPO_ROOT / "outputs"
 ANALYSIS_DIR: Path = REPO_ROOT / "analysis-output" / "source-a"
 
 OUTPUT_CSV_PATH: Path = OUTPUTS_DIR / "source_a_representation.csv"
+OUTPUT_TIER_CSV_PATH: Path = OUTPUTS_DIR / "source_a_representation_by_tier.csv"
 OUTPUT_STATS_PATH: Path = ANALYSIS_DIR / "source_a_representation_stats.json"
+
+# Minimum rows a tier must contribute to a target before its lift is reported.
+# Below this an out-of-fold R2 on a subset is dominated by which rows happened to
+# land in it, and reporting it would invite reading noise as a tier effect.
+MIN_TIER_OBSERVATIONS: int = 150
 
 logger = logging.getLogger(__name__)
 
@@ -118,9 +147,22 @@ class Variant:
 
 VARIANTS: tuple[Variant, ...] = (
     Variant("length", "content_length (scalar)", 1),
+    Variant("extracted_min", "typed features, 4 columns", len(VARIANT_COLUMNS["extracted_min"])),
+    Variant("extracted_mid", "typed features, 8 columns", len(VARIANT_COLUMNS["extracted_mid"])),
+    Variant("extracted_full", "typed features, all columns", len(VARIANT_COLUMNS["extracted_full"])),
     Variant("pca50", f"bge-m3, {N_COMPONENTS} principal components", N_COMPONENTS),
     Variant("full", "bge-m3, all 1024 dimensions", 1024),
 )
+
+# The variant the pillar is judged against. `content_length` is what Source A
+# currently ships, so beating it is the whole question.
+INCUMBENT: str = "length"
+
+# Variants built from the typed extraction rather than the embedding. Kept
+# separate because the headline comparison is extraction against the incumbent;
+# the embedding columns are retained for reference at a cost the pillar no longer
+# pays.
+EXTRACTED_KEYS: tuple[str, ...] = ("extracted_min", "extracted_mid", "extracted_full")
 
 
 def configure_logging() -> None:
@@ -220,8 +262,13 @@ def _residual_pipeline(n_components: int | None) -> Pipeline:
     return Pipeline(steps)
 
 
-def _baseline_oof_r2(base_design: np.ndarray, y: np.ndarray, folds: KFold) -> float:
-    """Out-of-fold R2 of the controls alone.
+def _baseline_oof_predictions(base_design: np.ndarray, y: np.ndarray, folds: KFold) -> np.ndarray:
+    """Out-of-fold predictions from the controls alone.
+
+    Predictions rather than a score, because the per-tier breakout needs to
+    re-evaluate the same predictions on row subsets. Refitting per tier would
+    change both the training set and the selected penalty, which would confound
+    "this tier is more predictable" with "this tier got its own model."
 
     Args:
         base_design: Size-plus-state control array.
@@ -229,19 +276,19 @@ def _baseline_oof_r2(base_design: np.ndarray, y: np.ndarray, folds: KFold) -> fl
         folds: Crossvalidation splitter.
 
     Returns:
-        R2 over the concatenated out-of-fold predictions.
+        Out-of-fold prediction per row.
     """
-    return float(r2_score(y, cross_val_predict(_baseline_pipeline(), base_design, y, cv=folds)))
+    return cross_val_predict(_baseline_pipeline(), base_design, y, cv=folds)
 
 
-def _residual_oof_r2(
+def _residual_oof_predictions(
     base_design: np.ndarray,
     block: np.ndarray,
     y: np.ndarray,
     folds: KFold,
     n_components: int | None,
-) -> float:
-    """Out-of-fold R2 of controls plus one Source A representation.
+) -> np.ndarray:
+    """Out-of-fold predictions from controls plus one Source A representation.
 
     Within each fold the controls are fitted on the training rows, their
     residuals become the target for the ridge, and the two predictions are
@@ -257,7 +304,7 @@ def _residual_oof_r2(
         n_components: PCA components to retain, or None to skip reduction.
 
     Returns:
-        R2 over the concatenated out-of-fold predictions.
+        Out-of-fold prediction per row.
     """
     predictions = np.empty(len(y))
     for train_idx, test_idx in folds.split(base_design):
@@ -267,38 +314,87 @@ def _residual_oof_r2(
         predictions[test_idx] = controls.predict(base_design[test_idx]) + residual_model.predict(
             block[test_idx]
         )
-    return float(r2_score(y, predictions))
+    return predictions
+
+
+def _alone_oof_r2(block: np.ndarray, y: np.ndarray, folds: KFold, n_components: int | None) -> float:
+    """Out-of-fold R2 of one representation with no size or state controls.
+
+    This is the "raw" number: what Source A explains before any confound is
+    removed. It is reported beside the controlled lift because whether county
+    size is a control or part of the target is still an open decision for this
+    project, and the two framings give very different pictures of the same
+    pillar.
+
+    Args:
+        block: Source A representation.
+        y: Target vector.
+        folds: Crossvalidation splitter.
+        n_components: PCA components to retain, or None to skip reduction.
+
+    Returns:
+        R2 over the concatenated out-of-fold predictions.
+    """
+    return float(r2_score(y, cross_val_predict(_residual_pipeline(n_components), block, y, cv=folds)))
+
+
+def build_variant_blocks(
+    matrix: pd.DataFrame, embeddings: np.ndarray, rows: np.ndarray
+) -> dict[str, tuple[np.ndarray, int | None]]:
+    """Assemble every variant's feature array for one target's usable rows.
+
+    Args:
+        matrix: Feature matrix from `build_matrix`.
+        embeddings: Aligned embedding array.
+        rows: Boolean mask of rows where the target is observed.
+
+    Returns:
+        Mapping of variant key to (feature array, PCA components or None).
+    """
+    embedding = embeddings[rows]
+    blocks: dict[str, tuple[np.ndarray, int | None]] = {
+        "length": (matrix.loc[rows, ["content_length"]].to_numpy(dtype="float64"), None),
+        "pca50": (embedding, N_COMPONENTS),
+        "full": (embedding, None),
+    }
+    for key in EXTRACTED_KEYS:
+        columns = list(VARIANT_COLUMNS[key])
+        blocks[key] = (matrix.loc[rows, columns].to_numpy(dtype="float64"), None)
+    return blocks
 
 
 def score_target(
     matrix: pd.DataFrame,
     embeddings: np.ndarray,
     baseline: pd.DataFrame,
+    tiers: pd.Series,
     target: Target,
-) -> dict[str, float | str | int]:
-    """Score every Source A variant against one target.
+) -> tuple[dict[str, float | str | int], list[dict[str, float | str | int]]]:
+    """Score every Source A variant against one target, overall and per tier.
 
     Each representation is fitted to the controls' residuals, so the size and
-    state terms are identical across all three variants and none of them can
-    degrade the controls.
+    state terms are identical across variants and none of them can degrade the
+    controls. Tier lifts re-score the same out-of-fold predictions on row
+    subsets, so every tier is judged by a model trained on the whole corpus.
 
     Args:
         matrix: Feature matrix from `build_matrix`.
         embeddings: Aligned embedding array.
         baseline: Size-plus-state design.
+        tiers: Content tier per county, aligned to `matrix`.
         target: The column to predict.
 
     Returns:
-        Result record with one lift column per variant.
+        Tuple of (overall record, per-tier records).
     """
     rows = matrix[target.column].notna().to_numpy()
     y = matrix.loc[rows, target.column].to_numpy(dtype="float64")
     base_design = baseline.loc[rows].to_numpy(dtype="float64")
-    length = matrix.loc[rows, ["content_length"]].to_numpy(dtype="float64")
-    embedding = embeddings[rows]
+    row_tiers = tiers[rows].to_numpy()
 
     folds = KFold(n_splits=N_FOLDS, shuffle=True, random_state=RANDOM_SEED)
-    r2_baseline = _baseline_oof_r2(base_design, y, folds)
+    baseline_predictions = _baseline_oof_predictions(base_design, y, folds)
+    r2_baseline = float(r2_score(y, baseline_predictions))
 
     record: dict[str, float | str | int] = {
         "pillar": target.pillar,
@@ -307,68 +403,133 @@ def score_target(
         "n": int(rows.sum()),
         "r2_baseline": r2_baseline,
     }
+    tier_records: list[dict[str, float | str | int]] = []
 
-    blocks = {"length": (length, None), "pca50": (embedding, N_COMPONENTS), "full": (embedding, None)}
+    blocks = build_variant_blocks(matrix, embeddings, rows)
     for variant in VARIANTS:
         block, n_components = blocks[variant.key]
-        record[f"lift_{variant.key}"] = (
-            _residual_oof_r2(base_design, block, y, folds, n_components) - r2_baseline
-        )
+        predictions = _residual_oof_predictions(base_design, block, y, folds, n_components)
+        record[f"lift_{variant.key}"] = float(r2_score(y, predictions)) - r2_baseline
+        record[f"r2_alone_{variant.key}"] = _alone_oof_r2(block, y, folds, n_components)
 
-    return record
+        for tier in TIER_LABELS:
+            mask = row_tiers == tier
+            if mask.sum() < MIN_TIER_OBSERVATIONS:
+                continue
+            tier_records.append(
+                {
+                    "pillar": target.pillar,
+                    "column": target.column,
+                    "variant": variant.key,
+                    "tier": tier,
+                    "n": int(mask.sum()),
+                    "r2_baseline": float(r2_score(y[mask], baseline_predictions[mask])),
+                    "lift": float(r2_score(y[mask], predictions[mask]))
+                    - float(r2_score(y[mask], baseline_predictions[mask])),
+                }
+            )
+
+    return record, tier_records
 
 
 def run_sweep(
-    matrix: pd.DataFrame, embeddings: np.ndarray, targets: list[Target]
-) -> pd.DataFrame:
+    matrix: pd.DataFrame, embeddings: np.ndarray, tiers: pd.Series, targets: list[Target]
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Score every target against every Source A variant.
 
     Args:
         matrix: Feature matrix from `build_matrix`.
         embeddings: Aligned embedding array.
+        tiers: Content tier per county, aligned to `matrix`.
         targets: Targets to score.
 
     Returns:
-        One row per target, sorted by the best embedding lift descending.
+        Tuple of (per-target results sorted by best extracted lift, per-tier
+        results in long format).
     """
     baseline = build_baseline_design(matrix)
     records = []
+    tier_records: list[dict[str, float | str | int]] = []
     for target in targets:
-        record = score_target(matrix, embeddings, baseline, target)
+        record, target_tier_records = score_target(matrix, embeddings, baseline, tiers, target)
         records.append(record)
+        tier_records.extend(target_tier_records)
         logger.info(
-            "%s %-28s n=%4d  length=%+.4f  pca50=%+.4f  full=%+.4f",
+            "%s %-28s n=%4d  length=%+.4f  ext_min=%+.4f  ext_full=%+.4f  emb_full=%+.4f",
             record["pillar"],
             record["column"],
             record["n"],
             record["lift_length"],
-            record["lift_pca50"],
+            record["lift_extracted_min"],
+            record["lift_extracted_full"],
             record["lift_full"],
         )
 
     results = pd.DataFrame(records)
     results["best_embedding_lift"] = results[["lift_pca50", "lift_full"]].max(axis=1)
     results["embedding_beats_length"] = results["best_embedding_lift"] > results["lift_length"]
-    return results.sort_values("best_embedding_lift", ascending=False).reset_index(drop=True)
+    results["best_extracted_lift"] = results[[f"lift_{k}" for k in EXTRACTED_KEYS]].max(axis=1)
+    results["extracted_beats_length"] = results["best_extracted_lift"] > results["lift_length"]
+    results = results.sort_values("best_extracted_lift", ascending=False).reset_index(drop=True)
+    return results, pd.DataFrame(tier_records)
 
 
-def summarize(results: pd.DataFrame) -> dict[str, object]:
-    """Run the paired comparison and collapse results to reportable numbers.
+def _paired_test(results: pd.DataFrame, key: str) -> dict[str, float | int]:
+    """Compare one variant against the incumbent across every target.
+
+    The paired test across targets is the headline rather than any single row:
+    with 28 targets and six variants, some row wins by chance, and the question
+    is whether a representation is better in general.
 
     Args:
         results: Output of `run_sweep`.
+        key: Variant key to test.
 
     Returns:
-        JSON-serializable summary including the Wilcoxon signed-rank test of
-        embedding lift against `content_length` lift across targets.
+        Mean lift, mean paired difference, win count, and the Wilcoxon
+        signed-rank p-value against the incumbent.
+    """
+    differences = results[f"lift_{key}"] - results[f"lift_{INCUMBENT}"]
+    # The incumbent against itself is all zeros, which Wilcoxon cannot rank.
+    statistic, p_value = (float("nan"), float("nan")) if key == INCUMBENT else wilcoxon(differences)
+    return {
+        "mean_lift": float(results[f"lift_{key}"].mean()),
+        "median_lift": float(results[f"lift_{key}"].median()),
+        "mean_r2_alone": float(results[f"r2_alone_{key}"].mean()),
+        "n_wins_vs_incumbent": int((differences > 0).sum()),
+        "mean_difference": float(differences.mean()),
+        "wilcoxon_statistic": float(statistic),
+        "wilcoxon_p": float(p_value),
+    }
+
+
+def summarize(results: pd.DataFrame, tier_results: pd.DataFrame) -> dict[str, object]:
+    """Run the paired comparisons and collapse results to reportable numbers.
+
+    Args:
+        results: Per-target output of `run_sweep`.
+        tier_results: Per-tier output of `run_sweep`.
+
+    Returns:
+        JSON-serializable summary. Every variant is tested against the incumbent
+        `content_length`; the embedding keys are retained so the numbers stay
+        comparable to the 2026-07-27 run that decided the cut.
     """
     differences = results["best_embedding_lift"] - results["lift_length"]
     statistic, p_value = wilcoxon(differences)
+
+    tier_means = (
+        tier_results.groupby(["variant", "tier"], observed=True)["lift"].mean().unstack()
+        if len(tier_results)
+        else pd.DataFrame()
+    )
+
     return {
         "n_targets": int(len(results)),
         "n_folds": N_FOLDS,
         "n_components": N_COMPONENTS,
         "random_seed": RANDOM_SEED,
+        "incumbent": INCUMBENT,
         "mean_lift_length": float(results["lift_length"].mean()),
         "mean_lift_pca50": float(results["lift_pca50"].mean()),
         "mean_lift_full": float(results["lift_full"].mean()),
@@ -380,7 +541,11 @@ def summarize(results: pd.DataFrame) -> dict[str, object]:
         "wilcoxon_statistic": float(statistic),
         "wilcoxon_p": float(p_value),
         "best_target": results.iloc[0]["column"],
-        "best_embedding_lift": float(results.iloc[0]["best_embedding_lift"]),
+        "best_embedding_lift": float(results["best_embedding_lift"].max()),
+        "mean_lift_best_extracted": float(results["best_extracted_lift"].mean()),
+        "n_extracted_wins": int(results["extracted_beats_length"].sum()),
+        "variants": {variant.key: _paired_test(results, variant.key) for variant in VARIANTS},
+        "mean_lift_by_tier": json.loads(tier_means.to_json(orient="index")) if len(tier_means) else {},
     }
 
 
@@ -394,29 +559,39 @@ def main() -> None:
     from analyze_source_b_industry_mix import NAICS2_LABELS
 
     matrix, blocks = build_matrix()
+    if "n_industry_mentions" not in matrix.columns:
+        raise ValueError("Extracted columns absent -- run extract_source_a_features.py first.")
+
     embeddings = load_embeddings(matrix["fips_code"])
+    tiers = assign_tiers(matrix["content_length"])
     targets = build_non_a_targets(blocks, NAICS2_LABELS)
     logger.info("scoring %d non-Source-A targets against %d variants", len(targets), len(VARIANTS))
 
-    results = run_sweep(matrix, embeddings, targets)
-    stats = summarize(results)
+    results, tier_results = run_sweep(matrix, embeddings, tiers, targets)
+    stats = summarize(results, tier_results)
 
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
     results.to_csv(OUTPUT_CSV_PATH, index=False)
+    tier_results.to_csv(OUTPUT_TIER_CSV_PATH, index=False)
     OUTPUT_STATS_PATH.write_text(json.dumps(stats, indent=2))
 
     logger.info("wrote %s", OUTPUT_CSV_PATH)
+    logger.info("wrote %s", OUTPUT_TIER_CSV_PATH)
     logger.info("wrote %s", OUTPUT_STATS_PATH)
-    logger.info(
-        "embedding beats content_length on %d of %d targets | mean lift %+.4f (best "
-        "embedding) vs %+.4f (length) | Wilcoxon p = %.4f",
-        stats["n_embedding_wins"],
-        stats["n_targets"],
-        stats["mean_lift_best_embedding"],
-        stats["mean_lift_length"],
-        stats["wilcoxon_p"],
-    )
+    for variant in VARIANTS:
+        test = stats["variants"][variant.key]
+        logger.info(
+            "%-15s (%4d cols) mean lift %+.5f | raw R2 alone %.4f | beats %s on %2d/%d | p=%.4f",
+            variant.key,
+            variant.n_features,
+            test["mean_lift"],
+            test["mean_r2_alone"],
+            INCUMBENT,
+            test["n_wins_vs_incumbent"],
+            stats["n_targets"],
+            test["wilcoxon_p"],
+        )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,3145 @@
+fips_code,county_name,content_length,tier
+01001,"Autauga County, Alabama",85,stub
+01003,"Baldwin County, Alabama",713,rich
+01005,"Barbour County, Alabama",178,thin
+01007,"Bibb County, Alabama",748,rich
+01009,"Blount County, Alabama",577,rich
+01011,"Bullock County, Alabama",430,mid
+01013,"Butler County, Alabama",175,thin
+01015,"Calhoun County, Alabama",177,thin
+01017,"Chambers County, Alabama",294,mid
+01019,"Cherokee County, Alabama",79,stub
+01021,"Chilton County, Alabama",706,rich
+01023,"Choctaw County, Alabama",138,thin
+01025,"Clarke County, Alabama",329,mid
+01027,"Clay County, Alabama",365,mid
+01029,"Cleburne County, Alabama",224,thin
+01031,"Coffee County, Alabama",925,rich
+01033,"Colbert County, Alabama",532,rich
+01035,"Conecuh County, Alabama",146,thin
+01037,"Coosa County, Alabama",317,mid
+01039,"Covington County, Alabama",184,thin
+01041,"Crenshaw County, Alabama",160,thin
+01043,"Cullman County, Alabama",590,rich
+01045,"Dale County, Alabama",554,rich
+01047,"Dallas County, Alabama",206,thin
+01049,"DeKalb County, Alabama",176,thin
+01051,"Elmore County, Alabama",132,thin
+01053,"Escambia County, Alabama",550,rich
+01055,"Etowah County, Alabama",235,thin
+01057,"Fayette County, Alabama",178,thin
+01059,"Franklin County, Alabama",193,thin
+01061,"Geneva County, Alabama",266,thin
+01063,"Greene County, Alabama",726,rich
+01065,"Hale County, Alabama",152,thin
+01067,"Henry County, Alabama",161,thin
+01069,"Houston County, Alabama",151,thin
+01071,"Jackson County, Alabama",652,rich
+01073,"Jefferson County, Alabama",354,mid
+01075,"Lamar County, Alabama",274,thin
+01077,"Lauderdale County, Alabama",220,thin
+01079,"Lawrence County, Alabama",271,thin
+01081,"Lee County, Alabama",426,mid
+01083,"Limestone County, Alabama",139,thin
+01085,"Lowndes County, Alabama",448,mid
+01087,"Macon County, Alabama",347,mid
+01089,"Madison County, Alabama",583,rich
+01091,"Marengo County, Alabama",218,thin
+01093,"Marion County, Alabama",715,rich
+01095,"Marshall County, Alabama",441,mid
+01097,"Mobile County, Alabama",1111,rich
+01099,"Monroe County, Alabama",884,rich
+01101,"Montgomery County, Alabama",157,thin
+01103,"Morgan County, Alabama",499,rich
+01105,"Perry County, Alabama",298,mid
+01107,"Pickens County, Alabama",268,thin
+01109,"Pike County, Alabama",230,thin
+01111,"Randolph County, Alabama",223,thin
+01113,"Russell County, Alabama",429,mid
+01115,"St. Clair County, Alabama",320,mid
+01117,"Shelby County, Alabama",331,mid
+01119,"Sumter County, Alabama",199,thin
+01121,"Talladega County, Alabama",300,mid
+01123,"Tallapoosa County, Alabama",75,stub
+01125,"Tuscaloosa County, Alabama",622,rich
+01127,"Walker County, Alabama",194,thin
+01129,"Washington County, Alabama",537,rich
+01131,"Wilcox County, Alabama",35,stub
+01133,"Winston County, Alabama",396,mid
+02013,"Aleutians East Borough, Alaska",95,stub
+02016,"Aleutians West Census Area, Alaska",426,mid
+02050,"Bethel Census Area, Alaska",228,thin
+02060,"Bristol Bay Borough, Alaska",494,rich
+02063,"Chugach Census Area, Alaska",361,mid
+02066,"Copper River Census Area, Alaska",426,mid
+02068,"Denali Borough, Alaska",807,rich
+02070,"Dillingham Census Area, Alaska",253,thin
+02090,"Fairbanks North Star Borough, Alaska",366,mid
+02100,"Haines Borough, Alaska",50,stub
+02122,"Kenai Peninsula Borough, Alaska",312,mid
+02130,"Ketchikan Gateway Borough, Alaska",232,thin
+02150,"Kodiak Island Borough, Alaska",81,stub
+02158,"Kusilvak Census Area, Alaska",610,rich
+02164,"Lake and Peninsula Borough, Alaska",502,rich
+02170,"Matanuska-Susitna Borough, Alaska",512,rich
+02180,"Nome Census Area, Alaska",221,thin
+02185,"North Slope Borough, Alaska",408,mid
+02188,"Northwest Arctic Borough, Alaska",119,thin
+02195,"Petersburg Borough, Alaska",58,stub
+02240,"Southeast Fairbanks Census Area, Alaska",197,thin
+02290,"Yukon-Koyukuk Census Area, Alaska",598,rich
+04001,"Apache County, Arizona",265,thin
+04003,"Cochise County, Arizona",377,mid
+04005,"Coconino County, Arizona",827,rich
+04007,"Gila County, Arizona",279,thin
+04009,"Graham County, Arizona",447,mid
+04011,"Greenlee County, Arizona",312,mid
+04012,"La Paz County, Arizona",419,mid
+04013,"Maricopa County, Arizona",886,rich
+04015,"Mohave County, Arizona",650,rich
+04017,"Navajo County, Arizona",250,thin
+04019,"Pima County, Arizona",1211,rich
+04021,"Pinal County, Arizona",792,rich
+04023,"Santa Cruz County, Arizona",128,thin
+04025,"Yavapai County, Arizona",316,mid
+04027,"Yuma County, Arizona",419,mid
+05001,"Arkansas County, Arkansas",896,rich
+05003,"Ashley County, Arkansas",2054,rich
+05005,"Baxter County, Arkansas",1929,rich
+05007,"Benton County, Arkansas",1189,rich
+05009,"Boone County, Arkansas",170,thin
+05011,"Bradley County, Arkansas",408,mid
+05013,"Calhoun County, Arkansas",265,thin
+05015,"Carroll County, Arkansas",250,thin
+05017,"Chicot County, Arkansas",556,rich
+05019,"Clark County, Arkansas",108,thin
+05021,"Clay County, Arkansas",217,thin
+05023,"Cleburne County, Arkansas",325,mid
+05025,"Cleveland County, Arkansas",256,thin
+05027,"Columbia County, Arkansas",286,mid
+05029,"Conway County, Arkansas",569,rich
+05031,"Craighead County, Arkansas",365,mid
+05033,"Crawford County, Arkansas",955,rich
+05035,"Crittenden County, Arkansas",342,mid
+05037,"Cross County, Arkansas",1919,rich
+05039,"Dallas County, Arkansas",208,thin
+05041,"Desha County, Arkansas",155,thin
+05043,"Drew County, Arkansas",626,rich
+05045,"Faulkner County, Arkansas",854,rich
+05047,"Franklin County, Arkansas",319,mid
+05049,"Fulton County, Arkansas",180,thin
+05051,"Garland County, Arkansas",421,mid
+05053,"Grant County, Arkansas",159,thin
+05055,"Greene County, Arkansas",135,thin
+05057,"Hempstead County, Arkansas",531,rich
+05059,"Hot Spring County, Arkansas",714,rich
+05061,"Howard County, Arkansas",149,thin
+05063,"Independence County, Arkansas",297,mid
+05065,"Izard County, Arkansas",226,thin
+05067,"Jackson County, Arkansas",1044,rich
+05069,"Jefferson County, Arkansas",706,rich
+05071,"Johnson County, Arkansas",217,thin
+05073,"Lafayette County, Arkansas",314,mid
+05075,"Lawrence County, Arkansas",204,thin
+05077,"Lee County, Arkansas",383,mid
+05079,"Lincoln County, Arkansas",1454,rich
+05081,"Little River County, Arkansas",161,thin
+05083,"Logan County, Arkansas",102,thin
+05085,"Lonoke County, Arkansas",241,thin
+05087,"Madison County, Arkansas",253,thin
+05089,"Marion County, Arkansas",1309,rich
+05091,"Miller County, Arkansas",149,thin
+05093,"Mississippi County, Arkansas",331,mid
+05095,"Monroe County, Arkansas",1538,rich
+05097,"Montgomery County, Arkansas",160,thin
+05099,"Nevada County, Arkansas",485,rich
+05101,"Newton County, Arkansas",238,thin
+05103,"Ouachita County, Arkansas",310,mid
+05105,"Perry County, Arkansas",283,thin
+05107,"Phillips County, Arkansas",550,rich
+05109,"Pike County, Arkansas",216,thin
+05111,"Poinsett County, Arkansas",106,thin
+05113,"Polk County, Arkansas",152,thin
+05115,"Pope County, Arkansas",885,rich
+05117,"Prairie County, Arkansas",1038,rich
+05119,"Pulaski County, Arkansas",771,rich
+05121,"Randolph County, Arkansas",526,rich
+05123,"St. Francis County, Arkansas",194,thin
+05125,"Saline County, Arkansas",308,mid
+05127,"Scott County, Arkansas",204,thin
+05129,"Searcy County, Arkansas",362,mid
+05131,"Sebastian County, Arkansas",181,thin
+05133,"Sevier County, Arkansas",277,thin
+05135,"Sharp County, Arkansas",140,thin
+05137,"Stone County, Arkansas",1252,rich
+05139,"Union County, Arkansas",743,rich
+05141,"Van Buren County, Arkansas",450,mid
+05143,"Washington County, Arkansas",2016,rich
+05145,"White County, Arkansas",606,rich
+05147,"Woodruff County, Arkansas",1176,rich
+05149,"Yell County, Arkansas",504,rich
+06001,"Alameda County, California",709,rich
+06003,"Alpine County, California",188,thin
+06005,"Amador County, California",222,thin
+06007,"Butte County, California",434,mid
+06009,"Calaveras County, California",1455,rich
+06011,"Colusa County, California",147,thin
+06013,"Contra Costa County, California",460,mid
+06015,"Del Norte County, California",912,rich
+06017,"El Dorado County, California",879,rich
+06019,"Fresno County, California",509,rich
+06021,"Glenn County, California",215,thin
+06023,"Humboldt County, California",1539,rich
+06025,"Imperial County, California",1449,rich
+06027,"Inyo County, California",773,rich
+06029,"Kern County, California",976,rich
+06031,"Kings County, California",263,thin
+06033,"Lake County, California",622,rich
+06035,"Lassen County, California",419,mid
+06037,"Los Angeles County, California",727,rich
+06039,"Madera County, California",769,rich
+06041,"Marin County, California",998,rich
+06043,"Mariposa County, California",683,rich
+06045,"Mendocino County, California",1075,rich
+06047,"Merced County, California",373,mid
+06049,"Modoc County, California",714,rich
+06051,"Mono County, California",738,rich
+06053,"Monterey County, California",1058,rich
+06055,"Napa County, California",693,rich
+06057,"Nevada County, California",313,mid
+06059,"Orange County, California",1995,rich
+06061,"Placer County, California",433,mid
+06063,"Plumas County, California",327,mid
+06065,"Riverside County, California",1438,rich
+06067,"Sacramento County, California",723,rich
+06069,"San Benito County, California",539,rich
+06071,"San Bernardino County, California",1190,rich
+06073,"San Diego County, California",1832,rich
+06075,"San Francisco County, California",3860,rich
+06077,"San Joaquin County, California",1038,rich
+06079,"San Luis Obispo County, California",2040,rich
+06081,"San Mateo County, California",718,rich
+06083,"Santa Barbara County, California",645,rich
+06085,"Santa Clara County, California",1233,rich
+06087,"Santa Cruz County, California",473,rich
+06089,"Shasta County, California",528,rich
+06091,"Sierra County, California",233,thin
+06093,"Siskiyou County, California",347,mid
+06095,"Solano County, California",301,mid
+06097,"Sonoma County, California",1175,rich
+06099,"Stanislaus County, California",349,mid
+06101,"Sutter County, California",282,thin
+06103,"Tehama County, California",259,thin
+06105,"Trinity County, California",543,rich
+06107,"Tulare County, California",766,rich
+06109,"Tuolumne County, California",422,mid
+06111,"Ventura County, California",521,rich
+06113,"Yolo County, California",274,thin
+06115,"Yuba County, California",383,mid
+08001,"Adams County, Colorado",200,thin
+08003,"Alamosa County, Colorado",115,thin
+08005,"Arapahoe County, Colorado",424,mid
+08007,"Archuleta County, Colorado",179,thin
+08009,"Baca County, Colorado",150,thin
+08011,"Bent County, Colorado",155,thin
+08013,"Boulder County, Colorado",230,thin
+08014,"Broomfield County, Colorado",492,rich
+08015,"Chaffee County, Colorado",35,stub
+08017,"Cheyenne County, Colorado",77,stub
+08019,"Clear Creek County, Colorado",38,stub
+08021,"Conejos County, Colorado",174,thin
+08023,"Costilla County, Colorado",102,thin
+08025,"Crowley County, Colorado",76,stub
+08027,"Custer County, Colorado",50,stub
+08029,"Delta County, Colorado",131,thin
+08031,"Denver County, Colorado",1947,rich
+08033,"Dolores County, Colorado",38,stub
+08035,"Douglas County, Colorado",587,rich
+08037,"Eagle County, Colorado",187,thin
+08039,"Elbert County, Colorado",173,thin
+08041,"El Paso County, Colorado",246,thin
+08043,"Fremont County, Colorado",782,rich
+08045,"Garfield County, Colorado",419,mid
+08047,"Gilpin County, Colorado",322,mid
+08049,"Grand County, Colorado",160,thin
+08051,"Gunnison County, Colorado",216,thin
+08053,"Hinsdale County, Colorado",473,rich
+08055,"Huerfano County, Colorado",453,mid
+08057,"Jackson County, Colorado",224,thin
+08059,"Jefferson County, Colorado",1034,rich
+08061,"Kiowa County, Colorado",155,thin
+08063,"Kit Carson County, Colorado",141,thin
+08065,"Lake County, Colorado",385,mid
+08067,"La Plata County, Colorado",336,mid
+08069,"Larimer County, Colorado",299,mid
+08071,"Las Animas County, Colorado",239,thin
+08073,"Lincoln County, Colorado",237,thin
+08075,"Logan County, Colorado",157,thin
+08077,"Mesa County, Colorado",512,rich
+08079,"Mineral County, Colorado",376,mid
+08081,"Moffat County, Colorado",287,mid
+08083,"Montezuma County, Colorado",449,mid
+08085,"Montrose County, Colorado",128,thin
+08087,"Morgan County, Colorado",226,thin
+08089,"Otero County, Colorado",282,thin
+08091,"Ouray County, Colorado",139,thin
+08093,"Park County, Colorado",518,rich
+08095,"Phillips County, Colorado",159,thin
+08097,"Pitkin County, Colorado",245,thin
+08099,"Prowers County, Colorado",149,thin
+08101,"Pueblo County, Colorado",273,thin
+08103,"Rio Blanco County, Colorado",159,thin
+08105,"Rio Grande County, Colorado",146,thin
+08107,"Routt County, Colorado",167,thin
+08109,"Saguache County, Colorado",69,stub
+08111,"San Juan County, Colorado",602,rich
+08113,"San Miguel County, Colorado",109,thin
+08115,"Sedgwick County, Colorado",233,thin
+08117,"Summit County, Colorado",156,thin
+08119,"Teller County, Colorado",135,thin
+08121,"Washington County, Colorado",180,thin
+08123,"Weld County, Colorado",213,thin
+08125,"Yuma County, Colorado",54,stub
+09110,"Capitol Planning Region, Connecticut",424,mid
+09120,"Greater Bridgeport Planning Region, Connecticut",242,thin
+09130,"Lower Connecticut River Valley Planning Region, Connecticut",242,thin
+09140,"Naugatuck Valley Planning Region, Connecticut",243,thin
+09150,"Northeastern Connecticut Planning Region, Connecticut",240,thin
+09160,"Northwest Hills Planning Region, Connecticut",242,thin
+09170,"South Central Connecticut Planning Region, Connecticut",327,mid
+09180,"Southeastern Connecticut Planning Region, Connecticut",239,thin
+09190,"Western Connecticut Planning Region, Connecticut",730,rich
+10001,"Kent County, Delaware",328,mid
+10003,"New Castle County, Delaware",664,rich
+10005,"Sussex County, Delaware",414,mid
+11001,District of Columbia,4074,rich
+12001,"Alachua County, Florida",113,thin
+12003,"Baker County, Florida",312,mid
+12005,"Bay County, Florida",141,thin
+12007,"Bradford County, Florida",198,thin
+12009,"Brevard County, Florida",379,mid
+12011,"Broward County, Florida",673,rich
+12013,"Calhoun County, Florida",87,stub
+12015,"Charlotte County, Florida",233,thin
+12017,"Citrus County, Florida",175,thin
+12019,"Clay County, Florida",1960,rich
+12021,"Collier County, Florida",567,rich
+12023,"Columbia County, Florida",237,thin
+12027,"DeSoto County, Florida",181,thin
+12029,"Dixie County, Florida",39,stub
+12031,"Duval County, Florida",404,mid
+12033,"Escambia County, Florida",482,rich
+12035,"Flagler County, Florida",364,mid
+12037,"Franklin County, Florida",328,mid
+12039,"Gadsden County, Florida",212,thin
+12041,"Gilchrist County, Florida",228,thin
+12043,"Glades County, Florida",406,mid
+12045,"Gulf County, Florida",109,thin
+12047,"Hamilton County, Florida",54,stub
+12049,"Hardee County, Florida",95,stub
+12051,"Hendry County, Florida",428,mid
+12053,"Hernando County, Florida",253,thin
+12055,"Highlands County, Florida",382,mid
+12057,"Hillsborough County, Florida",517,rich
+12059,"Holmes County, Florida",55,stub
+12061,"Indian River County, Florida",559,rich
+12063,"Jackson County, Florida",91,stub
+12065,"Jefferson County, Florida",194,thin
+12067,"Lafayette County, Florida",154,thin
+12069,"Lake County, Florida",149,thin
+12071,"Lee County, Florida",976,rich
+12073,"Leon County, Florida",602,rich
+12075,"Levy County, Florida",173,thin
+12077,"Liberty County, Florida",339,mid
+12079,"Madison County, Florida",36,stub
+12081,"Manatee County, Florida",344,mid
+12083,"Marion County, Florida",209,thin
+12085,"Martin County, Florida",119,thin
+12086,"Miami-Dade County, Florida",2412,rich
+12087,"Monroe County, Florida",407,mid
+12089,"Nassau County, Florida",965,rich
+12091,"Okaloosa County, Florida",190,thin
+12093,"Okeechobee County, Florida",73,stub
+12095,"Orange County, Florida",1321,rich
+12097,"Osceola County, Florida",370,mid
+12099,"Palm Beach County, Florida",1494,rich
+12101,"Pasco County, Florida",987,rich
+12103,"Pinellas County, Florida",539,rich
+12105,"Polk County, Florida",579,rich
+12107,"Putnam County, Florida",293,mid
+12109,"St. Johns County, Florida",808,rich
+12111,"St. Lucie County, Florida",273,thin
+12113,"Santa Rosa County, Florida",350,mid
+12115,"Sarasota County, Florida",1340,rich
+12117,"Seminole County, Florida",246,thin
+12119,"Sumter County, Florida",369,mid
+12121,"Suwannee County, Florida",162,thin
+12123,"Taylor County, Florida",200,thin
+12125,"Union County, Florida",75,stub
+12127,"Volusia County, Florida",573,rich
+12129,"Wakulla County, Florida",347,mid
+12131,"Walton County, Florida",270,thin
+12133,"Washington County, Florida",119,thin
+13001,"Appling County, Georgia",35,stub
+13003,"Atkinson County, Georgia",270,thin
+13005,"Bacon County, Georgia",33,stub
+13007,"Baker County, Georgia",628,rich
+13009,"Baldwin County, Georgia",148,thin
+13011,"Banks County, Georgia",229,thin
+13013,"Barrow County, Georgia",116,thin
+13015,"Bartow County, Georgia",478,rich
+13017,"Ben Hill County, Georgia",301,mid
+13019,"Berrien County, Georgia",215,thin
+13021,"Bibb County, Georgia",506,rich
+13023,"Bleckley County, Georgia",36,stub
+13025,"Brantley County, Georgia",82,stub
+13027,"Brooks County, Georgia",412,mid
+13029,"Bryan County, Georgia",165,thin
+13031,"Bulloch County, Georgia",672,rich
+13033,"Burke County, Georgia",136,thin
+13035,"Butts County, Georgia",252,thin
+13037,"Calhoun County, Georgia",44,stub
+13039,"Camden County, Georgia",441,mid
+13043,"Candler County, Georgia",122,thin
+13045,"Carroll County, Georgia",190,thin
+13047,"Catoosa County, Georgia",346,mid
+13049,"Charlton County, Georgia",87,stub
+13051,"Chatham County, Georgia",668,rich
+13053,"Chattahoochee County, Georgia",353,mid
+13055,"Chattooga County, Georgia",355,mid
+13057,"Cherokee County, Georgia",176,thin
+13059,"Clarke County, Georgia",301,mid
+13061,"Clay County, Georgia",86,stub
+13063,"Clayton County, Georgia",461,mid
+13065,"Clinch County, Georgia",124,thin
+13067,"Cobb County, Georgia",1411,rich
+13069,"Coffee County, Georgia",108,thin
+13071,"Colquitt County, Georgia",199,thin
+13073,"Columbia County, Georgia",204,thin
+13075,"Cook County, Georgia",283,thin
+13077,"Coweta County, Georgia",166,thin
+13079,"Crawford County, Georgia",122,thin
+13081,"Crisp County, Georgia",207,thin
+13083,"Dade County, Georgia",559,rich
+13085,"Dawson County, Georgia",242,thin
+13087,"Decatur County, Georgia",190,thin
+13089,"DeKalb County, Georgia",678,rich
+13091,"Dodge County, Georgia",317,mid
+13093,"Dooly County, Georgia",410,mid
+13095,"Dougherty County, Georgia",331,mid
+13097,"Douglas County, Georgia",297,mid
+13099,"Early County, Georgia",246,thin
+13101,"Echols County, Georgia",351,mid
+13103,"Effingham County, Georgia",315,mid
+13105,"Elbert County, Georgia",143,thin
+13107,"Emanuel County, Georgia",39,stub
+13109,"Evans County, Georgia",1390,rich
+13111,"Fannin County, Georgia",325,mid
+13113,"Fayette County, Georgia",927,rich
+13115,"Floyd County, Georgia",85,stub
+13117,"Forsyth County, Georgia",1955,rich
+13119,"Franklin County, Georgia",490,rich
+13121,"Fulton County, Georgia",345,mid
+13123,"Gilmer County, Georgia",562,rich
+13125,"Glascock County, Georgia",212,thin
+13127,"Glynn County, Georgia",155,thin
+13129,"Gordon County, Georgia",175,thin
+13131,"Grady County, Georgia",34,stub
+13133,"Greene County, Georgia",165,thin
+13135,"Gwinnett County, Georgia",672,rich
+13137,"Habersham County, Georgia",234,thin
+13139,"Hall County, Georgia",239,thin
+13141,"Hancock County, Georgia",154,thin
+13143,"Haralson County, Georgia",245,thin
+13145,"Harris County, Georgia",675,rich
+13147,"Hart County, Georgia",188,thin
+13149,"Heard County, Georgia",163,thin
+13151,"Henry County, Georgia",323,mid
+13153,"Houston County, Georgia",855,rich
+13155,"Irwin County, Georgia",334,mid
+13157,"Jackson County, Georgia",203,thin
+13159,"Jasper County, Georgia",114,thin
+13161,"Jeff Davis County, Georgia",176,thin
+13163,"Jefferson County, Georgia",222,thin
+13165,"Jenkins County, Georgia",111,thin
+13167,"Johnson County, Georgia",98,stub
+13169,"Jones County, Georgia",128,thin
+13171,"Lamar County, Georgia",40,stub
+13173,"Lanier County, Georgia",194,thin
+13175,"Laurens County, Georgia",302,mid
+13177,"Lee County, Georgia",123,thin
+13179,"Liberty County, Georgia",156,thin
+13181,"Lincoln County, Georgia",356,mid
+13183,"Long County, Georgia",419,mid
+13185,"Lowndes County, Georgia",462,rich
+13187,"Lumpkin County, Georgia",120,thin
+13189,"McDuffie County, Georgia",233,thin
+13191,"McIntosh County, Georgia",148,thin
+13193,"Macon County, Georgia",80,stub
+13195,"Madison County, Georgia",284,mid
+13197,"Marion County, Georgia",274,thin
+13199,"Meriwether County, Georgia",293,mid
+13201,"Miller County, Georgia",188,thin
+13205,"Mitchell County, Georgia",70,stub
+13207,"Monroe County, Georgia",162,thin
+13209,"Montgomery County, Georgia",100,thin
+13211,"Morgan County, Georgia",240,thin
+13213,"Murray County, Georgia",197,thin
+13215,"Muscogee County, Georgia",799,rich
+13217,"Newton County, Georgia",94,stub
+13219,"Oconee County, Georgia",141,thin
+13221,"Oglethorpe County, Georgia",263,thin
+13223,"Paulding County, Georgia",59,stub
+13225,"Peach County, Georgia",387,mid
+13227,"Pickens County, Georgia",113,thin
+13229,"Pierce County, Georgia",97,stub
+13231,"Pike County, Georgia",36,stub
+13233,"Polk County, Georgia",275,thin
+13235,"Pulaski County, Georgia",40,stub
+13237,"Putnam County, Georgia",285,mid
+13239,"Quitman County, Georgia",399,mid
+13241,"Rabun County, Georgia",650,rich
+13243,"Randolph County, Georgia",262,thin
+13245,"Richmond County, Georgia",537,rich
+13247,"Rockdale County, Georgia",90,stub
+13249,"Schley County, Georgia",198,thin
+13251,"Screven County, Georgia",37,stub
+13253,"Seminole County, Georgia",99,stub
+13255,"Spalding County, Georgia",213,thin
+13257,"Stephens County, Georgia",224,thin
+13259,"Stewart County, Georgia",80,stub
+13261,"Sumter County, Georgia",138,thin
+13263,"Talbot County, Georgia",57,stub
+13265,"Taliaferro County, Georgia",280,thin
+13267,"Tattnall County, Georgia",295,mid
+13269,"Taylor County, Georgia",34,stub
+13271,"Telfair County, Georgia",686,rich
+13273,"Terrell County, Georgia",81,stub
+13275,"Thomas County, Georgia",102,thin
+13277,"Tift County, Georgia",89,stub
+13279,"Toombs County, Georgia",164,thin
+13281,"Towns County, Georgia",146,thin
+13283,"Treutlen County, Georgia",184,thin
+13285,"Troup County, Georgia",243,thin
+13287,"Turner County, Georgia",163,thin
+13289,"Twiggs County, Georgia",257,thin
+13291,"Union County, Georgia",52,stub
+13293,"Upson County, Georgia",225,thin
+13295,"Walker County, Georgia",235,thin
+13297,"Walton County, Georgia",403,mid
+13299,"Ware County, Georgia",141,thin
+13301,"Warren County, Georgia",194,thin
+13303,"Washington County, Georgia",238,thin
+13305,"Wayne County, Georgia",118,thin
+13307,"Webster County, Georgia",120,thin
+13309,"Wheeler County, Georgia",33,stub
+13311,"White County, Georgia",340,mid
+13313,"Whitfield County, Georgia",336,mid
+13315,"Wilcox County, Georgia",37,stub
+13317,"Wilkes County, Georgia",289,mid
+13319,"Wilkinson County, Georgia",127,thin
+13321,"Worth County, Georgia",85,stub
+15003,"Honolulu County, Hawaii",1249,rich
+15005,"Kalawao County, Hawaii",720,rich
+15007,"Kauai County, Hawaii",264,thin
+15009,"Maui County, Hawaii",375,mid
+16001,"Ada County, Idaho",576,rich
+16003,"Adams County, Idaho",294,mid
+16005,"Bannock County, Idaho",475,rich
+16007,"Bear Lake County, Idaho",370,mid
+16009,"Benewah County, Idaho",409,mid
+16011,"Bingham County, Idaho",182,thin
+16013,"Blaine County, Idaho",478,rich
+16015,"Boise County, Idaho",573,rich
+16017,"Bonner County, Idaho",205,thin
+16019,"Bonneville County, Idaho",541,rich
+16021,"Boundary County, Idaho",652,rich
+16023,"Butte County, Idaho",275,thin
+16025,"Camas County, Idaho",453,mid
+16027,"Canyon County, Idaho",246,thin
+16029,"Caribou County, Idaho",52,stub
+16031,"Cassia County, Idaho",109,thin
+16033,"Clark County, Idaho",82,stub
+16035,"Clearwater County, Idaho",453,mid
+16037,"Custer County, Idaho",370,mid
+16039,"Elmore County, Idaho",239,thin
+16041,"Franklin County, Idaho",328,mid
+16043,"Fremont County, Idaho",237,thin
+16045,"Gem County, Idaho",109,thin
+16047,"Gooding County, Idaho",221,thin
+16049,"Idaho County, Idaho",239,thin
+16051,"Jefferson County, Idaho",181,thin
+16053,"Jerome County, Idaho",530,rich
+16055,"Kootenai County, Idaho",487,rich
+16057,"Latah County, Idaho",924,rich
+16059,"Lemhi County, Idaho",235,thin
+16061,"Lewis County, Idaho",576,rich
+16063,"Lincoln County, Idaho",233,thin
+16065,"Madison County, Idaho",162,thin
+16067,"Minidoka County, Idaho",94,stub
+16069,"Nez Perce County, Idaho",179,thin
+16071,"Oneida County, Idaho",136,thin
+16073,"Owyhee County, Idaho",517,rich
+16075,"Payette County, Idaho",119,thin
+16077,"Power County, Idaho",233,thin
+16079,"Shoshone County, Idaho",352,mid
+16081,"Teton County, Idaho",478,rich
+16083,"Twin Falls County, Idaho",1069,rich
+16085,"Valley County, Idaho",497,rich
+16087,"Washington County, Idaho",197,thin
+17001,"Adams County, Illinois",146,thin
+17003,"Alexander County, Illinois",294,mid
+17005,"Bond County, Illinois",109,thin
+17007,"Boone County, Illinois",87,stub
+17009,"Brown County, Illinois",102,thin
+17011,"Bureau County, Illinois",171,thin
+17013,"Calhoun County, Illinois",537,rich
+17015,"Carroll County, Illinois",42,stub
+17017,"Cass County, Illinois",114,thin
+17019,"Champaign County, Illinois",267,thin
+17021,"Christian County, Illinois",86,stub
+17023,"Clark County, Illinois",164,thin
+17025,"Clay County, Illinois",191,thin
+17027,"Clinton County, Illinois",190,thin
+17029,"Coles County, Illinois",175,thin
+17031,"Cook County, Illinois",2797,rich
+17033,"Crawford County, Illinois",37,stub
+17035,"Cumberland County, Illinois",108,thin
+17037,"DeKalb County, Illinois",120,thin
+17041,"Douglas County, Illinois",36,stub
+17043,"DuPage County, Illinois",1022,rich
+17045,"Edgar County, Illinois",34,stub
+17047,"Edwards County, Illinois",34,stub
+17049,"Effingham County, Illinois",298,mid
+17051,"Fayette County, Illinois",182,thin
+17053,"Ford County, Illinois",222,thin
+17055,"Franklin County, Illinois",156,thin
+17057,"Fulton County, Illinois",200,thin
+17059,"Gallatin County, Illinois",342,mid
+17061,"Greene County, Illinois",298,mid
+17063,"Grundy County, Illinois",516,rich
+17065,"Hamilton County, Illinois",126,thin
+17067,"Hancock County, Illinois",215,thin
+17069,"Hardin County, Illinois",299,mid
+17071,"Henderson County, Illinois",151,thin
+17073,"Henry County, Illinois",179,thin
+17075,"Iroquois County, Illinois",198,thin
+17077,"Jackson County, Illinois",494,rich
+17079,"Jasper County, Illinois",38,stub
+17081,"Jefferson County, Illinois",369,mid
+17083,"Jersey County, Illinois",277,thin
+17085,"Jo Daviess County, Illinois",407,mid
+17087,"Johnson County, Illinois",115,thin
+17089,"Kane County, Illinois",263,thin
+17091,"Kankakee County, Illinois",101,thin
+17093,"Kendall County, Illinois",296,mid
+17095,"Knox County, Illinois",102,thin
+17097,"Lake County, Illinois",1710,rich
+17099,"LaSalle County, Illinois",698,rich
+17101,"Lawrence County, Illinois",91,stub
+17103,"Lee County, Illinois",100,thin
+17105,"Livingston County, Illinois",266,thin
+17107,"Logan County, Illinois",191,thin
+17109,"McDonough County, Illinois",144,thin
+17111,"McHenry County, Illinois",452,mid
+17113,"McLean County, Illinois",223,thin
+17115,"Macon County, Illinois",144,thin
+17117,"Macoupin County, Illinois",147,thin
+17119,"Madison County, Illinois",785,rich
+17121,"Marion County, Illinois",198,thin
+17123,"Marshall County, Illinois",80,stub
+17125,"Mason County, Illinois",193,thin
+17127,"Massac County, Illinois",288,mid
+17129,"Menard County, Illinois",136,thin
+17131,"Mercer County, Illinois",147,thin
+17133,"Monroe County, Illinois",192,thin
+17135,"Montgomery County, Illinois",87,stub
+17137,"Morgan County, Illinois",204,thin
+17139,"Moultrie County, Illinois",229,thin
+17141,"Ogle County, Illinois",266,thin
+17143,"Peoria County, Illinois",148,thin
+17145,"Perry County, Illinois",131,thin
+17147,"Piatt County, Illinois",157,thin
+17149,"Pike County, Illinois",159,thin
+17151,"Pope County, Illinois",313,mid
+17153,"Pulaski County, Illinois",183,thin
+17155,"Putnam County, Illinois",325,mid
+17157,"Randolph County, Illinois",403,mid
+17159,"Richland County, Illinois",83,stub
+17161,"Rock Island County, Illinois",327,mid
+17163,"St. Clair County, Illinois",935,rich
+17165,"Saline County, Illinois",374,mid
+17167,"Sangamon County, Illinois",132,thin
+17169,"Schuyler County, Illinois",41,stub
+17171,"Scott County, Illinois",253,thin
+17173,"Shelby County, Illinois",75,stub
+17175,"Stark County, Illinois",115,thin
+17177,"Stephenson County, Illinois",242,thin
+17179,"Tazewell County, Illinois",219,thin
+17181,"Union County, Illinois",163,thin
+17183,"Vermilion County, Illinois",375,mid
+17185,"Wabash County, Illinois",121,thin
+17187,"Warren County, Illinois",41,stub
+17189,"Washington County, Illinois",168,thin
+17191,"Wayne County, Illinois",118,thin
+17193,"White County, Illinois",145,thin
+17195,"Whiteside County, Illinois",315,mid
+17197,"Will County, Illinois",382,mid
+17199,"Williamson County, Illinois",141,thin
+17201,"Winnebago County, Illinois",207,thin
+17203,"Woodford County, Illinois",282,thin
+18001,"Adams County, Indiana",653,rich
+18003,"Allen County, Indiana",1038,rich
+18005,"Bartholomew County, Indiana",279,thin
+18007,"Benton County, Indiana",357,mid
+18009,"Blackford County, Indiana",2675,rich
+18011,"Boone County, Indiana",48,stub
+18013,"Brown County, Indiana",130,thin
+18015,"Carroll County, Indiana",198,thin
+18017,"Cass County, Indiana",100,thin
+18019,"Clark County, Indiana",196,thin
+18021,"Clay County, Indiana",113,thin
+18023,"Clinton County, Indiana",50,stub
+18025,"Crawford County, Indiana",48,stub
+18027,"Daviess County, Indiana",164,thin
+18029,"Dearborn County, Indiana",290,mid
+18031,"Decatur County, Indiana",87,stub
+18033,"DeKalb County, Indiana",35,stub
+18035,"Delaware County, Indiana",162,thin
+18037,"Dubois County, Indiana",116,thin
+18039,"Elkhart County, Indiana",586,rich
+18041,"Fayette County, Indiana",970,rich
+18043,"Floyd County, Indiana",441,mid
+18045,"Fountain County, Indiana",621,rich
+18047,"Franklin County, Indiana",254,thin
+18049,"Fulton County, Indiana",51,stub
+18051,"Gibson County, Indiana",62,stub
+18053,"Grant County, Indiana",238,thin
+18055,"Greene County, Indiana",156,thin
+18057,"Hamilton County, Indiana",1246,rich
+18059,"Hancock County, Indiana",164,thin
+18061,"Harrison County, Indiana",1853,rich
+18063,"Hendricks County, Indiana",198,thin
+18065,"Henry County, Indiana",220,thin
+18067,"Howard County, Indiana",231,thin
+18069,"Huntington County, Indiana",343,mid
+18071,"Jackson County, Indiana",51,stub
+18073,"Jasper County, Indiana",98,stub
+18075,"Jay County, Indiana",49,stub
+18077,"Jefferson County, Indiana",48,stub
+18079,"Jennings County, Indiana",47,stub
+18081,"Johnson County, Indiana",139,thin
+18083,"Knox County, Indiana",448,mid
+18085,"Kosciusko County, Indiana",341,mid
+18087,"LaGrange County, Indiana",609,rich
+18089,"Lake County, Indiana",419,mid
+18091,"LaPorte County, Indiana",312,mid
+18093,"Lawrence County, Indiana",106,thin
+18095,"Madison County, Indiana",249,thin
+18097,"Marion County, Indiana",433,mid
+18099,"Marshall County, Indiana",96,stub
+18101,"Martin County, Indiana",148,thin
+18103,"Miami County, Indiana",91,stub
+18105,"Monroe County, Indiana",192,thin
+18107,"Montgomery County, Indiana",186,thin
+18109,"Morgan County, Indiana",446,mid
+18111,"Newton County, Indiana",195,thin
+18113,"Noble County, Indiana",255,thin
+18115,"Ohio County, Indiana",596,rich
+18117,"Orange County, Indiana",361,mid
+18119,"Owen County, Indiana",202,thin
+18121,"Parke County, Indiana",752,rich
+18123,"Perry County, Indiana",952,rich
+18125,"Pike County, Indiana",125,thin
+18127,"Porter County, Indiana",330,mid
+18129,"Posey County, Indiana",661,rich
+18131,"Pulaski County, Indiana",111,thin
+18133,"Putnam County, Indiana",227,thin
+18135,"Randolph County, Indiana",84,stub
+18137,"Ripley County, Indiana",39,stub
+18139,"Rush County, Indiana",108,thin
+18141,"St. Joseph County, Indiana",333,mid
+18143,"Scott County, Indiana",51,stub
+18145,"Shelby County, Indiana",119,thin
+18147,"Spencer County, Indiana",189,thin
+18149,"Starke County, Indiana",139,thin
+18151,"Steuben County, Indiana",149,thin
+18153,"Sullivan County, Indiana",268,thin
+18155,"Switzerland County, Indiana",169,thin
+18157,"Tippecanoe County, Indiana",721,rich
+18159,"Tipton County, Indiana",673,rich
+18161,"Union County, Indiana",171,thin
+18163,"Vanderburgh County, Indiana",301,mid
+18165,"Vermillion County, Indiana",570,rich
+18167,"Vigo County, Indiana",773,rich
+18169,"Wabash County, Indiana",47,stub
+18171,"Warren County, Indiana",1269,rich
+18173,"Warrick County, Indiana",321,mid
+18175,"Washington County, Indiana",153,thin
+18177,"Wayne County, Indiana",252,thin
+18179,"Wells County, Indiana",188,thin
+18181,"White County, Indiana",118,thin
+18183,"Whitley County, Indiana",388,mid
+19001,"Adair County, Iowa",38,stub
+19003,"Adams County, Iowa",71,stub
+19005,"Allamakee County, Iowa",115,thin
+19007,"Appanoose County, Iowa",40,stub
+19009,"Audubon County, Iowa",152,thin
+19011,"Benton County, Iowa",176,thin
+19013,"Black Hawk County, Iowa",137,thin
+19015,"Boone County, Iowa",184,thin
+19017,"Bremer County, Iowa",190,thin
+19019,"Buchanan County, Iowa",165,thin
+19021,"Buena Vista County, Iowa",281,thin
+19023,"Butler County, Iowa",111,thin
+19025,"Calhoun County, Iowa",80,stub
+19027,"Carroll County, Iowa",144,thin
+19029,"Cass County, Iowa",123,thin
+19031,"Cedar County, Iowa",283,thin
+19033,"Cerro Gordo County, Iowa",276,thin
+19035,"Cherokee County, Iowa",141,thin
+19037,"Chickasaw County, Iowa",119,thin
+19039,"Clarke County, Iowa",216,thin
+19041,"Clay County, Iowa",366,mid
+19043,"Clayton County, Iowa",111,thin
+19045,"Clinton County, Iowa",277,thin
+19047,"Crawford County, Iowa",199,thin
+19049,"Dallas County, Iowa",487,rich
+19051,"Davis County, Iowa",102,thin
+19053,"Decatur County, Iowa",133,thin
+19055,"Delaware County, Iowa",100,thin
+19057,"Des Moines County, Iowa",710,rich
+19059,"Dickinson County, Iowa",212,thin
+19061,"Dubuque County, Iowa",250,thin
+19063,"Emmet County, Iowa",79,stub
+19065,"Fayette County, Iowa",39,stub
+19067,"Floyd County, Iowa",81,stub
+19069,"Franklin County, Iowa",114,thin
+19071,"Fremont County, Iowa",210,thin
+19073,"Greene County, Iowa",96,stub
+19075,"Grundy County, Iowa",252,thin
+19077,"Guthrie County, Iowa",242,thin
+19079,"Hamilton County, Iowa",206,thin
+19081,"Hancock County, Iowa",186,thin
+19083,"Hardin County, Iowa",149,thin
+19085,"Harrison County, Iowa",190,thin
+19087,"Henry County, Iowa",123,thin
+19089,"Howard County, Iowa",187,thin
+19091,"Humboldt County, Iowa",235,thin
+19093,"Ida County, Iowa",318,mid
+19095,"Iowa County, Iowa",352,mid
+19097,"Jackson County, Iowa",38,stub
+19099,"Jasper County, Iowa",185,thin
+19101,"Jefferson County, Iowa",189,thin
+19103,"Johnson County, Iowa",353,mid
+19105,"Jones County, Iowa",246,thin
+19107,"Keokuk County, Iowa",117,thin
+19109,"Kossuth County, Iowa",98,stub
+19111,"Lee County, Iowa",289,mid
+19113,"Linn County, Iowa",295,mid
+19115,"Louisa County, Iowa",169,thin
+19117,"Lucas County, Iowa",128,thin
+19119,"Lyon County, Iowa",444,mid
+19121,"Madison County, Iowa",358,mid
+19123,"Mahaska County, Iowa",98,stub
+19125,"Marion County, Iowa",212,thin
+19127,"Marshall County, Iowa",337,mid
+19129,"Mills County, Iowa",257,thin
+19131,"Mitchell County, Iowa",34,stub
+19133,"Monona County, Iowa",33,stub
+19135,"Monroe County, Iowa",361,mid
+19137,"Montgomery County, Iowa",654,rich
+19139,"Muscatine County, Iowa",239,thin
+19141,"O'Brien County, Iowa",37,stub
+19143,"Osceola County, Iowa",286,mid
+19145,"Page County, Iowa",168,thin
+19147,"Palo Alto County, Iowa",135,thin
+19149,"Plymouth County, Iowa",253,thin
+19151,"Pocahontas County, Iowa",164,thin
+19153,"Polk County, Iowa",281,thin
+19155,"Pottawattamie County, Iowa",356,mid
+19157,"Poweshiek County, Iowa",226,thin
+19159,"Ringgold County, Iowa",376,mid
+19161,"Sac County, Iowa",510,rich
+19163,"Scott County, Iowa",254,thin
+19165,"Shelby County, Iowa",178,thin
+19167,"Sioux County, Iowa",77,stub
+19169,"Story County, Iowa",381,mid
+19171,"Tama County, Iowa",81,stub
+19173,"Taylor County, Iowa",168,thin
+19175,"Union County, Iowa",249,thin
+19177,"Van Buren County, Iowa",237,thin
+19179,"Wapello County, Iowa",263,thin
+19181,"Warren County, Iowa",128,thin
+19183,"Washington County, Iowa",135,thin
+19185,"Wayne County, Iowa",134,thin
+19187,"Webster County, Iowa",345,mid
+19189,"Winnebago County, Iowa",189,thin
+19191,"Winneshiek County, Iowa",36,stub
+19193,"Woodbury County, Iowa",219,thin
+19195,"Worth County, Iowa",261,thin
+19197,"Wright County, Iowa",223,thin
+20001,"Allen County, Kansas",146,thin
+20003,"Anderson County, Kansas",230,thin
+20005,"Atchison County, Kansas",170,thin
+20007,"Barber County, Kansas",172,thin
+20009,"Barton County, Kansas",198,thin
+20011,"Bourbon County, Kansas",161,thin
+20013,"Brown County, Kansas",315,mid
+20015,"Butler County, Kansas",248,thin
+20017,"Chase County, Kansas",446,mid
+20019,"Chautauqua County, Kansas",230,thin
+20021,"Cherokee County, Kansas",241,thin
+20023,"Cheyenne County, Kansas",94,stub
+20025,"Clark County, Kansas",85,stub
+20027,"Clay County, Kansas",127,thin
+20029,"Cloud County, Kansas",125,thin
+20031,"Coffey County, Kansas",172,thin
+20033,"Comanche County, Kansas",92,stub
+20035,"Cowley County, Kansas",209,thin
+20037,"Crawford County, Kansas",237,thin
+20039,"Decatur County, Kansas",285,mid
+20041,"Dickinson County, Kansas",180,thin
+20043,"Doniphan County, Kansas",325,mid
+20045,"Douglas County, Kansas",391,mid
+20047,"Edwards County, Kansas",212,thin
+20049,"Elk County, Kansas",82,stub
+20051,"Ellis County, Kansas",255,thin
+20053,"Ellsworth County, Kansas",88,stub
+20055,"Finney County, Kansas",263,thin
+20057,"Ford County, Kansas",135,thin
+20059,"Franklin County, Kansas",216,thin
+20061,"Geary County, Kansas",199,thin
+20063,"Gove County, Kansas",255,thin
+20065,"Graham County, Kansas",336,mid
+20067,"Grant County, Kansas",177,thin
+20069,"Gray County, Kansas",111,thin
+20071,"Greeley County, Kansas",384,mid
+20073,"Greenwood County, Kansas",144,thin
+20075,"Hamilton County, Kansas",149,thin
+20077,"Harper County, Kansas",152,thin
+20079,"Harvey County, Kansas",125,thin
+20081,"Haskell County, Kansas",129,thin
+20083,"Hodgeman County, Kansas",121,thin
+20085,"Jackson County, Kansas",313,mid
+20087,"Jefferson County, Kansas",131,thin
+20089,"Jewell County, Kansas",354,mid
+20091,"Johnson County, Kansas",433,mid
+20093,"Kearny County, Kansas",201,thin
+20095,"Kingman County, Kansas",147,thin
+20097,"Kiowa County, Kansas",89,stub
+20099,"Labette County, Kansas",476,rich
+20101,"Lane County, Kansas",271,thin
+20103,"Leavenworth County, Kansas",202,thin
+20105,"Lincoln County, Kansas",135,thin
+20107,"Linn County, Kansas",193,thin
+20109,"Logan County, Kansas",526,rich
+20111,"Lyon County, Kansas",165,thin
+20113,"McPherson County, Kansas",117,thin
+20115,"Marion County, Kansas",214,thin
+20117,"Marshall County, Kansas",169,thin
+20119,"Meade County, Kansas",147,thin
+20121,"Miami County, Kansas",180,thin
+20123,"Mitchell County, Kansas",84,stub
+20125,"Montgomery County, Kansas",230,thin
+20127,"Morris County, Kansas",141,thin
+20129,"Morton County, Kansas",128,thin
+20131,"Nemaha County, Kansas",85,stub
+20133,"Neosho County, Kansas",152,thin
+20135,"Ness County, Kansas",111,thin
+20137,"Norton County, Kansas",237,thin
+20139,"Osage County, Kansas",224,thin
+20141,"Osborne County, Kansas",120,thin
+20143,"Ottawa County, Kansas",91,stub
+20145,"Pawnee County, Kansas",356,mid
+20147,"Phillips County, Kansas",166,thin
+20149,"Pottawatomie County, Kansas",95,stub
+20151,"Pratt County, Kansas",445,mid
+20153,"Rawlins County, Kansas",112,thin
+20155,"Reno County, Kansas",109,thin
+20157,"Republic County, Kansas",319,mid
+20159,"Rice County, Kansas",191,thin
+20161,"Riley County, Kansas",190,thin
+20163,"Rooks County, Kansas",248,thin
+20165,"Rush County, Kansas",85,stub
+20167,"Russell County, Kansas",204,thin
+20169,"Saline County, Kansas",122,thin
+20171,"Scott County, Kansas",186,thin
+20173,"Sedgwick County, Kansas",270,thin
+20175,"Seward County, Kansas",196,thin
+20177,"Shawnee County, Kansas",300,mid
+20179,"Sheridan County, Kansas",130,thin
+20181,"Sherman County, Kansas",166,thin
+20183,"Smith County, Kansas",281,thin
+20185,"Stafford County, Kansas",194,thin
+20187,"Stanton County, Kansas",137,thin
+20189,"Stevens County, Kansas",131,thin
+20191,"Sumner County, Kansas",161,thin
+20193,"Thomas County, Kansas",122,thin
+20195,"Trego County, Kansas",81,stub
+20197,"Wabaunsee County, Kansas",108,thin
+20199,"Wallace County, Kansas",622,rich
+20201,"Washington County, Kansas",130,thin
+20203,"Wichita County, Kansas",87,stub
+20205,"Wilson County, Kansas",156,thin
+20207,"Woodson County, Kansas",137,thin
+20209,"Wyandotte County, Kansas",289,mid
+21001,"Adair County, Kentucky",276,thin
+21003,"Allen County, Kentucky",481,rich
+21005,"Anderson County, Kentucky",1036,rich
+21007,"Ballard County, Kentucky",289,mid
+21009,"Barren County, Kentucky",490,rich
+21011,"Bath County, Kentucky",241,thin
+21013,"Bell County, Kentucky",384,mid
+21015,"Boone County, Kentucky",507,rich
+21017,"Bourbon County, Kentucky",216,thin
+21019,"Boyd County, Kentucky",356,mid
+21021,"Boyle County, Kentucky",324,mid
+21023,"Bracken County, Kentucky",153,thin
+21025,"Breathitt County, Kentucky",270,thin
+21027,"Breckinridge County, Kentucky",378,mid
+21029,"Bullitt County, Kentucky",462,rich
+21031,"Butler County, Kentucky",149,thin
+21033,"Caldwell County, Kentucky",328,mid
+21035,"Calloway County, Kentucky",347,mid
+21037,"Campbell County, Kentucky",415,mid
+21039,"Carlisle County, Kentucky",323,mid
+21041,"Carroll County, Kentucky",204,thin
+21043,"Carter County, Kentucky",154,thin
+21045,"Casey County, Kentucky",335,mid
+21047,"Christian County, Kentucky",145,thin
+21049,"Clark County, Kentucky",236,thin
+21051,"Clay County, Kentucky",332,mid
+21053,"Clinton County, Kentucky",233,thin
+21055,"Crittenden County, Kentucky",173,thin
+21057,"Cumberland County, Kentucky",207,thin
+21059,"Daviess County, Kentucky",336,mid
+21061,"Edmonson County, Kentucky",350,mid
+21063,"Elliott County, Kentucky",805,rich
+21065,"Estill County, Kentucky",1037,rich
+21067,"Fayette County, Kentucky",295,mid
+21069,"Fleming County, Kentucky",243,thin
+21071,"Floyd County, Kentucky",115,thin
+21073,"Franklin County, Kentucky",572,rich
+21075,"Fulton County, Kentucky",742,rich
+21077,"Gallatin County, Kentucky",275,thin
+21079,"Garrard County, Kentucky",1135,rich
+21081,"Grant County, Kentucky",700,rich
+21083,"Graves County, Kentucky",693,rich
+21085,"Grayson County, Kentucky",321,mid
+21087,"Green County, Kentucky",103,thin
+21089,"Greenup County, Kentucky",187,thin
+21091,"Hancock County, Kentucky",591,rich
+21093,"Hardin County, Kentucky",398,mid
+21095,"Harlan County, Kentucky",753,rich
+21097,"Harrison County, Kentucky",182,thin
+21099,"Hart County, Kentucky",154,thin
+21101,"Henderson County, Kentucky",416,mid
+21103,"Henry County, Kentucky",534,rich
+21105,"Hickman County, Kentucky",204,thin
+21107,"Hopkins County, Kentucky",711,rich
+21109,"Jackson County, Kentucky",980,rich
+21111,"Jefferson County, Kentucky",550,rich
+21113,"Jessamine County, Kentucky",366,mid
+21115,"Johnson County, Kentucky",430,mid
+21117,"Kenton County, Kentucky",544,rich
+21119,"Knott County, Kentucky",309,mid
+21121,"Knox County, Kentucky",244,thin
+21125,"Laurel County, Kentucky",290,mid
+21127,"Lawrence County, Kentucky",461,mid
+21129,"Lee County, Kentucky",1235,rich
+21131,"Leslie County, Kentucky",171,thin
+21133,"Letcher County, Kentucky",159,thin
+21135,"Lewis County, Kentucky",90,stub
+21137,"Lincoln County, Kentucky",137,thin
+21139,"Livingston County, Kentucky",575,rich
+21141,"Logan County, Kentucky",114,thin
+21143,"Lyon County, Kentucky",140,thin
+21145,"McCracken County, Kentucky",695,rich
+21147,"McCreary County, Kentucky",255,thin
+21149,"McLean County, Kentucky",233,thin
+21151,"Madison County, Kentucky",1004,rich
+21153,"Magoffin County, Kentucky",202,thin
+21155,"Marion County, Kentucky",231,thin
+21157,"Marshall County, Kentucky",363,mid
+21159,"Martin County, Kentucky",115,thin
+21161,"Mason County, Kentucky",391,mid
+21163,"Meade County, Kentucky",332,mid
+21165,"Menifee County, Kentucky",414,mid
+21167,"Mercer County, Kentucky",254,thin
+21169,"Metcalfe County, Kentucky",295,mid
+21171,"Monroe County, Kentucky",165,thin
+21173,"Montgomery County, Kentucky",443,mid
+21175,"Morgan County, Kentucky",41,stub
+21177,"Muhlenberg County, Kentucky",108,thin
+21179,"Nelson County, Kentucky",219,thin
+21181,"Nicholas County, Kentucky",195,thin
+21183,"Ohio County, Kentucky",264,thin
+21185,"Oldham County, Kentucky",646,rich
+21187,"Owen County, Kentucky",243,thin
+21189,"Owsley County, Kentucky",599,rich
+21191,"Pendleton County, Kentucky",162,thin
+21193,"Perry County, Kentucky",179,thin
+21195,"Pike County, Kentucky",334,mid
+21197,"Powell County, Kentucky",400,mid
+21199,"Pulaski County, Kentucky",334,mid
+21201,"Robertson County, Kentucky",179,thin
+21203,"Rockcastle County, Kentucky",345,mid
+21205,"Rowan County, Kentucky",453,mid
+21207,"Russell County, Kentucky",831,rich
+21209,"Scott County, Kentucky",106,thin
+21211,"Shelby County, Kentucky",294,mid
+21213,"Simpson County, Kentucky",43,stub
+21215,"Spencer County, Kentucky",493,rich
+21217,"Taylor County, Kentucky",435,mid
+21219,"Todd County, Kentucky",163,thin
+21221,"Trigg County, Kentucky",527,rich
+21223,"Trimble County, Kentucky",125,thin
+21225,"Union County, Kentucky",338,mid
+21227,"Warren County, Kentucky",387,mid
+21229,"Washington County, Kentucky",751,rich
+21231,"Wayne County, Kentucky",367,mid
+21233,"Webster County, Kentucky",564,rich
+21235,"Whitley County, Kentucky",235,thin
+21237,"Wolfe County, Kentucky",215,thin
+21239,"Woodford County, Kentucky",203,thin
+22001,"Acadia Parish, Louisiana",387,mid
+22003,"Allen Parish, Louisiana",313,mid
+22005,"Ascension Parish, Louisiana",698,rich
+22007,"Assumption Parish, Louisiana",353,mid
+22009,"Avoyelles Parish, Louisiana",704,rich
+22011,"Beauregard Parish, Louisiana",275,thin
+22013,"Bienville Parish, Louisiana",494,rich
+22015,"Bossier Parish, Louisiana",726,rich
+22017,"Caddo Parish, Louisiana",366,mid
+22019,"Calcasieu Parish, Louisiana",974,rich
+22021,"Caldwell Parish, Louisiana",48,stub
+22023,"Cameron Parish, Louisiana",332,mid
+22025,"Catahoula Parish, Louisiana",225,thin
+22027,"Claiborne Parish, Louisiana",167,thin
+22029,"Concordia Parish, Louisiana",657,rich
+22033,"East Baton Rouge Parish, Louisiana",247,thin
+22035,"East Carroll Parish, Louisiana",295,mid
+22037,"East Feliciana Parish, Louisiana",379,mid
+22039,"Evangeline Parish, Louisiana",78,stub
+22041,"Franklin Parish, Louisiana",329,mid
+22043,"Grant Parish, Louisiana",784,rich
+22045,"Iberia Parish, Louisiana",680,rich
+22047,"Iberville Parish, Louisiana",92,stub
+22049,"Jackson Parish, Louisiana",353,mid
+22051,"Jefferson Parish, Louisiana",201,thin
+22053,"Jefferson Davis Parish, Louisiana",206,thin
+22055,"Lafayette Parish, Louisiana",251,thin
+22057,"Lafourche Parish, Louisiana",1105,rich
+22059,"LaSalle Parish, Louisiana",158,thin
+22061,"Lincoln Parish, Louisiana",694,rich
+22063,"Livingston Parish, Louisiana",616,rich
+22065,"Madison Parish, Louisiana",608,rich
+22067,"Morehouse Parish, Louisiana",314,mid
+22069,"Natchitoches Parish, Louisiana",1235,rich
+22071,"Orleans Parish, Louisiana",218,thin
+22073,"Ouachita Parish, Louisiana",432,mid
+22075,"Plaquemines Parish, Louisiana",618,rich
+22077,"Pointe Coupee Parish, Louisiana",269,thin
+22079,"Rapides Parish, Louisiana",418,mid
+22081,"Red River Parish, Louisiana",1121,rich
+22083,"Richland Parish, Louisiana",229,thin
+22085,"Sabine Parish, Louisiana",376,mid
+22087,"St. Bernard Parish, Louisiana",629,rich
+22089,"St. Charles Parish, Louisiana",671,rich
+22091,"St. Helena Parish, Louisiana",208,thin
+22093,"St. James Parish, Louisiana",295,mid
+22095,"St. John the Baptist Parish, Louisiana",135,thin
+22097,"St. Landry Parish, Louisiana",347,mid
+22099,"St. Martin Parish, Louisiana",235,thin
+22101,"St. Mary Parish, Louisiana",262,thin
+22103,"St. Tammany Parish, Louisiana",1146,rich
+22105,"Tangipahoa Parish, Louisiana",615,rich
+22107,"Tensas Parish, Louisiana",472,rich
+22109,"Terrebonne Parish, Louisiana",417,mid
+22111,"Union Parish, Louisiana",308,mid
+22113,"Vermilion Parish, Louisiana",384,mid
+22115,"Vernon Parish, Louisiana",790,rich
+22117,"Washington Parish, Louisiana",434,mid
+22119,"Webster Parish, Louisiana",1659,rich
+22121,"West Baton Rouge Parish, Louisiana",558,rich
+22123,"West Carroll Parish, Louisiana",566,rich
+22125,"West Feliciana Parish, Louisiana",708,rich
+22127,"Winn Parish, Louisiana",277,thin
+23001,"Androscoggin County, Maine",376,mid
+23003,"Aroostook County, Maine",1458,rich
+23005,"Cumberland County, Maine",653,rich
+23007,"Franklin County, Maine",179,thin
+23009,"Hancock County, Maine",361,mid
+23011,"Kennebec County, Maine",411,mid
+23013,"Knox County, Maine",458,mid
+23015,"Lincoln County, Maine",577,rich
+23017,"Oxford County, Maine",266,thin
+23019,"Penobscot County, Maine",340,mid
+23021,"Piscataquis County, Maine",936,rich
+23023,"Sagadahoc County, Maine",193,thin
+23025,"Somerset County, Maine",53,stub
+23027,"Waldo County, Maine",336,mid
+23029,"Washington County, Maine",669,rich
+23031,"York County, Maine",562,rich
+24001,"Allegany County, Maryland",401,mid
+24003,"Anne Arundel County, Maryland",619,rich
+24005,"Baltimore County, Maryland",643,rich
+24009,"Calvert County, Maryland",605,rich
+24011,"Caroline County, Maryland",293,mid
+24013,"Carroll County, Maryland",298,mid
+24015,"Cecil County, Maryland",570,rich
+24017,"Charles County, Maryland",364,mid
+24019,"Dorchester County, Maryland",783,rich
+24021,"Frederick County, Maryland",506,rich
+24023,"Garrett County, Maryland",1590,rich
+24025,"Harford County, Maryland",277,thin
+24027,"Howard County, Maryland",1251,rich
+24029,"Kent County, Maryland",369,mid
+24031,"Montgomery County, Maryland",855,rich
+24033,"Prince George's County, Maryland",862,rich
+24035,"Queen Anne's County, Maryland",777,rich
+24037,"St. Mary's County, Maryland",1148,rich
+24039,"Somerset County, Maryland",722,rich
+24041,"Talbot County, Maryland",556,rich
+24043,"Washington County, Maryland",631,rich
+24045,"Wicomico County, Maryland",530,rich
+24047,"Worcester County, Maryland",1148,rich
+24510,"Baltimore City, Maryland",2926,rich
+25001,"Barnstable County, Massachusetts",481,rich
+25003,"Berkshire County, Massachusetts",713,rich
+25005,"Bristol County, Massachusetts",553,rich
+25007,"Dukes County, Massachusetts",379,mid
+25009,"Essex County, Massachusetts",1082,rich
+25011,"Franklin County, Massachusetts",392,mid
+25013,"Hampden County, Massachusetts",330,mid
+25015,"Hampshire County, Massachusetts",471,rich
+25017,"Middlesex County, Massachusetts",1238,rich
+25021,"Norfolk County, Massachusetts",431,mid
+25023,"Plymouth County, Massachusetts",402,mid
+25025,"Suffolk County, Massachusetts",738,rich
+25027,"Worcester County, Massachusetts",413,mid
+26001,"Alcona County, Michigan",165,thin
+26003,"Alger County, Michigan",394,mid
+26005,"Allegan County, Michigan",1095,rich
+26007,"Alpena County, Michigan",171,thin
+26009,"Antrim County, Michigan",392,mid
+26011,"Arenac County, Michigan",72,stub
+26013,"Baraga County, Michigan",296,mid
+26015,"Barry County, Michigan",37,stub
+26017,"Bay County, Michigan",230,thin
+26019,"Benzie County, Michigan",526,rich
+26021,"Berrien County, Michigan",402,mid
+26023,"Branch County, Michigan",281,thin
+26025,"Calhoun County, Michigan",414,mid
+26027,"Cass County, Michigan",184,thin
+26029,"Charlevoix County, Michigan",295,mid
+26031,"Cheboygan County, Michigan",339,mid
+26033,"Chippewa County, Michigan",560,rich
+26035,"Clare County, Michigan",113,thin
+26037,"Clinton County, Michigan",232,thin
+26039,"Crawford County, Michigan",396,mid
+26041,"Delta County, Michigan",470,rich
+26043,"Dickinson County, Michigan",326,mid
+26045,"Eaton County, Michigan",292,mid
+26047,"Emmet County, Michigan",501,rich
+26049,"Genesee County, Michigan",761,rich
+26051,"Gladwin County, Michigan",36,stub
+26053,"Gogebic County, Michigan",408,mid
+26055,"Grand Traverse County, Michigan",921,rich
+26057,"Gratiot County, Michigan",570,rich
+26059,"Hillsdale County, Michigan",402,mid
+26061,"Houghton County, Michigan",476,rich
+26063,"Huron County, Michigan",582,rich
+26065,"Ingham County, Michigan",504,rich
+26067,"Ionia County, Michigan",218,thin
+26069,"Iosco County, Michigan",122,thin
+26071,"Iron County, Michigan",122,thin
+26073,"Isabella County, Michigan",265,thin
+26075,"Jackson County, Michigan",481,rich
+26077,"Kalamazoo County, Michigan",173,thin
+26079,"Kalkaska County, Michigan",239,thin
+26081,"Kent County, Michigan",688,rich
+26083,"Keweenaw County, Michigan",748,rich
+26085,"Lake County, Michigan",73,stub
+26087,"Lapeer County, Michigan",280,thin
+26089,"Leelanau County, Michigan",779,rich
+26091,"Lenawee County, Michigan",399,mid
+26093,"Livingston County, Michigan",1111,rich
+26095,"Luce County, Michigan",420,mid
+26097,"Mackinac County, Michigan",666,rich
+26099,"Macomb County, Michigan",554,rich
+26101,"Manistee County, Michigan",248,thin
+26103,"Marquette County, Michigan",296,mid
+26105,"Mason County, Michigan",98,stub
+26107,"Mecosta County, Michigan",1071,rich
+26109,"Menominee County, Michigan",449,mid
+26111,"Midland County, Michigan",537,rich
+26113,"Missaukee County, Michigan",217,thin
+26115,"Monroe County, Michigan",290,mid
+26117,"Montcalm County, Michigan",435,mid
+26119,"Montmorency County, Michigan",369,mid
+26121,"Muskegon County, Michigan",386,mid
+26123,"Newaygo County, Michigan",266,thin
+26125,"Oakland County, Michigan",841,rich
+26127,"Oceana County, Michigan",463,rich
+26129,"Ogemaw County, Michigan",129,thin
+26131,"Ontonagon County, Michigan",572,rich
+26133,"Osceola County, Michigan",81,stub
+26135,"Oscoda County, Michigan",246,thin
+26137,"Otsego County, Michigan",190,thin
+26139,"Ottawa County, Michigan",802,rich
+26141,"Presque Isle County, Michigan",763,rich
+26143,"Roscommon County, Michigan",200,thin
+26145,"Saginaw County, Michigan",706,rich
+26147,"St. Clair County, Michigan",525,rich
+26149,"St. Joseph County, Michigan",146,thin
+26151,"Sanilac County, Michigan",453,mid
+26153,"Schoolcraft County, Michigan",444,mid
+26155,"Shiawassee County, Michigan",287,mid
+26157,"Tuscola County, Michigan",473,rich
+26159,"Van Buren County, Michigan",90,stub
+26161,"Washtenaw County, Michigan",419,mid
+26163,"Wayne County, Michigan",493,rich
+26165,"Wexford County, Michigan",498,rich
+27001,"Aitkin County, Minnesota",261,thin
+27003,"Anoka County, Minnesota",1552,rich
+27005,"Becker County, Minnesota",147,thin
+27007,"Beltrami County, Minnesota",579,rich
+27009,"Benton County, Minnesota",170,thin
+27011,"Big Stone County, Minnesota",38,stub
+27013,"Blue Earth County, Minnesota",218,thin
+27015,"Brown County, Minnesota",326,mid
+27017,"Carlton County, Minnesota",179,thin
+27019,"Carver County, Minnesota",275,thin
+27021,"Cass County, Minnesota",232,thin
+27023,"Chippewa County, Minnesota",138,thin
+27025,"Chisago County, Minnesota",517,rich
+27027,"Clay County, Minnesota",139,thin
+27029,"Clearwater County, Minnesota",179,thin
+27031,"Cook County, Minnesota",218,thin
+27033,"Cottonwood County, Minnesota",35,stub
+27035,"Crow Wing County, Minnesota",159,thin
+27037,"Dakota County, Minnesota",761,rich
+27039,"Dodge County, Minnesota",103,thin
+27041,"Douglas County, Minnesota",198,thin
+27043,"Faribault County, Minnesota",217,thin
+27045,"Fillmore County, Minnesota",85,stub
+27047,"Freeborn County, Minnesota",96,stub
+27049,"Goodhue County, Minnesota",279,thin
+27051,"Grant County, Minnesota",38,stub
+27053,"Hennepin County, Minnesota",670,rich
+27055,"Houston County, Minnesota",145,thin
+27057,"Hubbard County, Minnesota",140,thin
+27059,"Isanti County, Minnesota",78,stub
+27061,"Itasca County, Minnesota",333,mid
+27063,"Jackson County, Minnesota",35,stub
+27065,"Kanabec County, Minnesota",73,stub
+27067,"Kandiyohi County, Minnesota",191,thin
+27069,"Kittson County, Minnesota",109,thin
+27071,"Koochiching County, Minnesota",273,thin
+27073,"Lac qui Parle County, Minnesota",123,thin
+27075,"Lake County, Minnesota",40,stub
+27077,"Lake of the Woods County, Minnesota",691,rich
+27079,"Le Sueur County, Minnesota",160,thin
+27081,"Lincoln County, Minnesota",35,stub
+27083,"Lyon County, Minnesota",92,stub
+27085,"McLeod County, Minnesota",209,thin
+27087,"Mahnomen County, Minnesota",304,mid
+27089,"Marshall County, Minnesota",34,stub
+27091,"Martin County, Minnesota",69,stub
+27093,"Meeker County, Minnesota",39,stub
+27095,"Mille Lacs County, Minnesota",278,thin
+27097,"Morrison County, Minnesota",121,thin
+27099,"Mower County, Minnesota",235,thin
+27101,"Murray County, Minnesota",36,stub
+27103,"Nicollet County, Minnesota",145,thin
+27105,"Nobles County, Minnesota",102,thin
+27107,"Norman County, Minnesota",155,thin
+27109,"Olmsted County, Minnesota",212,thin
+27111,"Otter Tail County, Minnesota",251,thin
+27113,"Pennington County, Minnesota",46,stub
+27115,"Pine County, Minnesota",192,thin
+27117,"Pipestone County, Minnesota",37,stub
+27119,"Polk County, Minnesota",186,thin
+27121,"Pope County, Minnesota",90,stub
+27123,"Ramsey County, Minnesota",516,rich
+27125,"Red Lake County, Minnesota",89,stub
+27127,"Redwood County, Minnesota",338,mid
+27129,"Renville County, Minnesota",35,stub
+27131,"Rice County, Minnesota",196,thin
+27133,"Rock County, Minnesota",78,stub
+27135,"Roseau County, Minnesota",182,thin
+27137,"St. Louis County, Minnesota",662,rich
+27139,"Scott County, Minnesota",1312,rich
+27141,"Sherburne County, Minnesota",161,thin
+27143,"Sibley County, Minnesota",36,stub
+27145,"Stearns County, Minnesota",369,mid
+27147,"Steele County, Minnesota",92,stub
+27149,"Stevens County, Minnesota",34,stub
+27151,"Swift County, Minnesota",140,thin
+27153,"Todd County, Minnesota",41,stub
+27155,"Traverse County, Minnesota",195,thin
+27157,"Wabasha County, Minnesota",84,stub
+27159,"Wadena County, Minnesota",119,thin
+27161,"Waseca County, Minnesota",60,stub
+27163,"Washington County, Minnesota",394,mid
+27165,"Watonwan County, Minnesota",38,stub
+27167,"Wilkin County, Minnesota",314,mid
+27169,"Winona County, Minnesota",88,stub
+27171,"Wright County, Minnesota",287,mid
+27173,"Yellow Medicine County, Minnesota",361,mid
+28001,"Adams County, Mississippi",341,mid
+28003,"Alcorn County, Mississippi",155,thin
+28005,"Amite County, Mississippi",226,thin
+28007,"Attala County, Mississippi",210,thin
+28009,"Benton County, Mississippi",395,mid
+28011,"Bolivar County, Mississippi",623,rich
+28013,"Calhoun County, Mississippi",145,thin
+28015,"Carroll County, Mississippi",531,rich
+28017,"Chickasaw County, Mississippi",296,mid
+28019,"Choctaw County, Mississippi",477,rich
+28021,"Claiborne County, Mississippi",953,rich
+28023,"Clarke County, Mississippi",178,thin
+28025,"Clay County, Mississippi",506,rich
+28027,"Coahoma County, Mississippi",376,mid
+28029,"Copiah County, Mississippi",134,thin
+28031,"Covington County, Mississippi",114,thin
+28033,"DeSoto County, Mississippi",336,mid
+28035,"Forrest County, Mississippi",296,mid
+28037,"Franklin County, Mississippi",272,thin
+28039,"George County, Mississippi",206,thin
+28041,"Greene County, Mississippi",147,thin
+28043,"Grenada County, Mississippi",259,thin
+28045,"Hancock County, Mississippi",516,rich
+28047,"Harrison County, Mississippi",545,rich
+28049,"Hinds County, Mississippi",796,rich
+28051,"Holmes County, Mississippi",2272,rich
+28053,"Humphreys County, Mississippi",792,rich
+28055,"Issaquena County, Mississippi",739,rich
+28057,"Itawamba County, Mississippi",300,mid
+28059,"Jackson County, Mississippi",729,rich
+28061,"Jasper County, Mississippi",618,rich
+28063,"Jefferson County, Mississippi",927,rich
+28065,"Jefferson Davis County, Mississippi",270,thin
+28067,"Jones County, Mississippi",167,thin
+28069,"Kemper County, Mississippi",611,rich
+28071,"Lafayette County, Mississippi",480,rich
+28073,"Lamar County, Mississippi",267,thin
+28075,"Lauderdale County, Mississippi",217,thin
+28077,"Lawrence County, Mississippi",95,stub
+28079,"Leake County, Mississippi",189,thin
+28081,"Lee County, Mississippi",92,stub
+28083,"Leflore County, Mississippi",1009,rich
+28085,"Lincoln County, Mississippi",501,rich
+28087,"Lowndes County, Mississippi",282,thin
+28089,"Madison County, Mississippi",272,thin
+28091,"Marion County, Mississippi",138,thin
+28093,"Marshall County, Mississippi",228,thin
+28095,"Monroe County, Mississippi",55,stub
+28097,"Montgomery County, Mississippi",578,rich
+28099,"Neshoba County, Mississippi",837,rich
+28101,"Newton County, Mississippi",50,stub
+28103,"Noxubee County, Mississippi",105,thin
+28105,"Oktibbeha County, Mississippi",489,rich
+28107,"Panola County, Mississippi",523,rich
+28109,"Pearl River County, Mississippi",364,mid
+28111,"Perry County, Mississippi",581,rich
+28113,"Pike County, Mississippi",133,thin
+28115,"Pontotoc County, Mississippi",375,mid
+28117,"Prentiss County, Mississippi",139,thin
+28119,"Quitman County, Mississippi",213,thin
+28121,"Rankin County, Mississippi",475,rich
+28123,"Scott County, Mississippi",155,thin
+28125,"Sharkey County, Mississippi",287,mid
+28127,"Simpson County, Mississippi",323,mid
+28129,"Smith County, Mississippi",36,stub
+28131,"Stone County, Mississippi",411,mid
+28133,"Sunflower County, Mississippi",342,mid
+28135,"Tallahatchie County, Mississippi",263,thin
+28137,"Tate County, Mississippi",484,rich
+28139,"Tippah County, Mississippi",489,rich
+28141,"Tishomingo County, Mississippi",33,stub
+28143,"Tunica County, Mississippi",489,rich
+28145,"Union County, Mississippi",500,rich
+28147,"Walthall County, Mississippi",127,thin
+28149,"Warren County, Mississippi",487,rich
+28151,"Washington County, Mississippi",304,mid
+28153,"Wayne County, Mississippi",99,stub
+28155,"Webster County, Mississippi",527,rich
+28157,"Wilkinson County, Mississippi",260,thin
+28159,"Winston County, Mississippi",490,rich
+28161,"Yalobusha County, Mississippi",128,thin
+28163,"Yazoo County, Mississippi",225,thin
+29001,"Adair County, Missouri",208,thin
+29003,"Andrew County, Missouri",320,mid
+29005,"Atchison County, Missouri",302,mid
+29007,"Audrain County, Missouri",193,thin
+29009,"Barry County, Missouri",262,thin
+29011,"Barton County, Missouri",221,thin
+29013,"Bates County, Missouri",384,mid
+29015,"Benton County, Missouri",129,thin
+29017,"Bollinger County, Missouri",611,rich
+29019,"Boone County, Missouri",820,rich
+29021,"Buchanan County, Missouri",389,mid
+29023,"Butler County, Missouri",451,mid
+29025,"Caldwell County, Missouri",744,rich
+29027,"Callaway County, Missouri",837,rich
+29029,"Camden County, Missouri",296,mid
+29031,"Cape Girardeau County, Missouri",671,rich
+29033,"Carroll County, Missouri",211,thin
+29035,"Carter County, Missouri",258,thin
+29037,"Cass County, Missouri",370,mid
+29039,"Cedar County, Missouri",218,thin
+29041,"Chariton County, Missouri",148,thin
+29043,"Christian County, Missouri",482,rich
+29045,"Clark County, Missouri",411,mid
+29047,"Clay County, Missouri",550,rich
+29049,"Clinton County, Missouri",419,mid
+29051,"Cole County, Missouri",413,mid
+29053,"Cooper County, Missouri",299,mid
+29055,"Crawford County, Missouri",363,mid
+29057,"Dade County, Missouri",279,thin
+29059,"Dallas County, Missouri",233,thin
+29061,"Daviess County, Missouri",318,mid
+29063,"DeKalb County, Missouri",339,mid
+29065,"Dent County, Missouri",253,thin
+29067,"Douglas County, Missouri",253,thin
+29069,"Dunklin County, Missouri",180,thin
+29071,"Franklin County, Missouri",497,rich
+29073,"Gasconade County, Missouri",556,rich
+29075,"Gentry County, Missouri",170,thin
+29077,"Greene County, Missouri",477,rich
+29079,"Grundy County, Missouri",162,thin
+29081,"Harrison County, Missouri",137,thin
+29083,"Henry County, Missouri",354,mid
+29085,"Hickory County, Missouri",546,rich
+29087,"Holt County, Missouri",204,thin
+29089,"Howard County, Missouri",1785,rich
+29091,"Howell County, Missouri",284,mid
+29093,"Iron County, Missouri",807,rich
+29095,"Jackson County, Missouri",495,rich
+29097,"Jasper County, Missouri",362,mid
+29099,"Jefferson County, Missouri",609,rich
+29101,"Johnson County, Missouri",325,mid
+29103,"Knox County, Missouri",181,thin
+29105,"Laclede County, Missouri",198,thin
+29107,"Lafayette County, Missouri",480,rich
+29109,"Lawrence County, Missouri",787,rich
+29111,"Lewis County, Missouri",293,mid
+29113,"Lincoln County, Missouri",276,thin
+29115,"Linn County, Missouri",126,thin
+29117,"Livingston County, Missouri",140,thin
+29119,"McDonald County, Missouri",78,stub
+29121,"Macon County, Missouri",164,thin
+29123,"Madison County, Missouri",360,mid
+29125,"Maries County, Missouri",225,thin
+29127,"Marion County, Missouri",619,rich
+29129,"Mercer County, Missouri",193,thin
+29131,"Miller County, Missouri",154,thin
+29133,"Mississippi County, Missouri",234,thin
+29135,"Moniteau County, Missouri",285,mid
+29137,"Monroe County, Missouri",97,stub
+29139,"Montgomery County, Missouri",313,mid
+29141,"Morgan County, Missouri",153,thin
+29143,"New Madrid County, Missouri",991,rich
+29145,"Newton County, Missouri",194,thin
+29147,"Nodaway County, Missouri",338,mid
+29149,"Oregon County, Missouri",969,rich
+29151,"Osage County, Missouri",448,mid
+29153,"Ozark County, Missouri",293,mid
+29155,"Pemiscot County, Missouri",763,rich
+29157,"Perry County, Missouri",227,thin
+29159,"Pettis County, Missouri",268,thin
+29161,"Phelps County, Missouri",976,rich
+29163,"Pike County, Missouri",480,rich
+29165,"Platte County, Missouri",557,rich
+29167,"Polk County, Missouri",157,thin
+29169,"Pulaski County, Missouri",361,mid
+29171,"Putnam County, Missouri",1563,rich
+29173,"Ralls County, Missouri",273,thin
+29175,"Randolph County, Missouri",313,mid
+29177,"Ray County, Missouri",232,thin
+29179,"Reynolds County, Missouri",333,mid
+29181,"Ripley County, Missouri",782,rich
+29183,"St. Charles County, Missouri",824,rich
+29185,"St. Clair County, Missouri",613,rich
+29186,"Ste. Genevieve County, Missouri",527,rich
+29187,"St. Francois County, Missouri",864,rich
+29189,"St. Louis County, Missouri",1332,rich
+29195,"Saline County, Missouri",636,rich
+29197,"Schuyler County, Missouri",394,mid
+29199,"Scotland County, Missouri",195,thin
+29201,"Scott County, Missouri",305,mid
+29203,"Shannon County, Missouri",547,rich
+29205,"Shelby County, Missouri",167,thin
+29207,"Stoddard County, Missouri",210,thin
+29209,"Stone County, Missouri",151,thin
+29211,"Sullivan County, Missouri",155,thin
+29213,"Taney County, Missouri",547,rich
+29215,"Texas County, Missouri",292,mid
+29217,"Vernon County, Missouri",379,mid
+29219,"Warren County, Missouri",564,rich
+29221,"Washington County, Missouri",210,thin
+29223,"Wayne County, Missouri",289,mid
+29225,"Webster County, Missouri",220,thin
+29227,"Worth County, Missouri",604,rich
+29229,"Wright County, Missouri",349,mid
+29510,"St. Louis City, Missouri",89,stub
+30001,"Beaverhead County, Montana",355,mid
+30003,"Big Horn County, Montana",378,mid
+30005,"Blaine County, Montana",228,thin
+30007,"Broadwater County, Montana",141,thin
+30009,"Carbon County, Montana",111,thin
+30011,"Carter County, Montana",84,stub
+30013,"Cascade County, Montana",202,thin
+30015,"Chouteau County, Montana",419,mid
+30017,"Custer County, Montana",848,rich
+30019,"Daniels County, Montana",116,thin
+30021,"Dawson County, Montana",36,stub
+30023,"Deer Lodge County, Montana",204,thin
+30025,"Fallon County, Montana",237,thin
+30027,"Fergus County, Montana",156,thin
+30029,"Flathead County, Montana",399,mid
+30031,"Gallatin County, Montana",712,rich
+30033,"Garfield County, Montana",254,thin
+30035,"Glacier County, Montana",580,rich
+30037,"Golden Valley County, Montana",80,stub
+30039,"Granite County, Montana",149,thin
+30041,"Hill County, Montana",252,thin
+30043,"Jefferson County, Montana",201,thin
+30045,"Judith Basin County, Montana",48,stub
+30047,"Lake County, Montana",35,stub
+30049,"Lewis and Clark County, Montana",608,rich
+30051,"Liberty County, Montana",304,mid
+30053,"Lincoln County, Montana",449,mid
+30055,"McCone County, Montana",182,thin
+30057,"Madison County, Montana",116,thin
+30059,"Meagher County, Montana",223,thin
+30061,"Mineral County, Montana",36,stub
+30063,"Missoula County, Montana",248,thin
+30065,"Musselshell County, Montana",66,stub
+30067,"Park County, Montana",120,thin
+30069,"Petroleum County, Montana",240,thin
+30071,"Phillips County, Montana",330,mid
+30073,"Pondera County, Montana",76,stub
+30075,"Powder River County, Montana",35,stub
+30077,"Powell County, Montana",38,stub
+30079,"Prairie County, Montana",362,mid
+30081,"Ravalli County, Montana",500,rich
+30083,"Richland County, Montana",222,thin
+30085,"Roosevelt County, Montana",205,thin
+30087,"Rosebud County, Montana",114,thin
+30089,"Sanders County, Montana",222,thin
+30091,"Sheridan County, Montana",154,thin
+30093,"Silver Bow County, Montana",305,mid
+30095,"Stillwater County, Montana",36,stub
+30097,"Sweet Grass County, Montana",70,stub
+30099,"Teton County, Montana",67,stub
+30101,"Toole County, Montana",334,mid
+30103,"Treasure County, Montana",189,thin
+30105,"Valley County, Montana",167,thin
+30107,"Wheatland County, Montana",239,thin
+30109,"Wibaux County, Montana",111,thin
+30111,"Yellowstone County, Montana",618,rich
+31001,"Adams County, Nebraska",367,mid
+31003,"Antelope County, Nebraska",384,mid
+31005,"Arthur County, Nebraska",657,rich
+31007,"Banner County, Nebraska",502,rich
+31009,"Blaine County, Nebraska",396,mid
+31011,"Boone County, Nebraska",304,mid
+31013,"Box Butte County, Nebraska",268,thin
+31015,"Boyd County, Nebraska",298,mid
+31017,"Brown County, Nebraska",307,mid
+31019,"Buffalo County, Nebraska",396,mid
+31021,"Burt County, Nebraska",359,mid
+31023,"Butler County, Nebraska",381,mid
+31025,"Cass County, Nebraska",371,mid
+31027,"Cedar County, Nebraska",309,mid
+31029,"Chase County, Nebraska",209,thin
+31031,"Cherry County, Nebraska",307,mid
+31033,"Cheyenne County, Nebraska",302,mid
+31035,"Clay County, Nebraska",424,mid
+31037,"Colfax County, Nebraska",308,mid
+31039,"Cuming County, Nebraska",228,thin
+31041,"Custer County, Nebraska",367,mid
+31043,"Dakota County, Nebraska",625,rich
+31045,"Dawes County, Nebraska",305,mid
+31047,"Dawson County, Nebraska",358,mid
+31049,"Deuel County, Nebraska",355,mid
+31051,"Dixon County, Nebraska",355,mid
+31053,"Dodge County, Nebraska",485,rich
+31055,"Douglas County, Nebraska",673,rich
+31057,"Dundy County, Nebraska",233,thin
+31059,"Fillmore County, Nebraska",283,thin
+31061,"Franklin County, Nebraska",313,mid
+31063,"Frontier County, Nebraska",367,mid
+31065,"Furnas County, Nebraska",324,mid
+31067,"Gage County, Nebraska",438,mid
+31069,"Garden County, Nebraska",338,mid
+31071,"Garfield County, Nebraska",331,mid
+31073,"Gosper County, Nebraska",407,mid
+31075,"Grant County, Nebraska",415,mid
+31077,"Greeley County, Nebraska",259,thin
+31079,"Hall County, Nebraska",408,mid
+31081,"Hamilton County, Nebraska",424,mid
+31083,"Harlan County, Nebraska",257,thin
+31085,"Hayes County, Nebraska",377,mid
+31087,"Hitchcock County, Nebraska",231,thin
+31089,"Holt County, Nebraska",307,mid
+31091,"Hooker County, Nebraska",424,mid
+31093,"Howard County, Nebraska",355,mid
+31095,"Jefferson County, Nebraska",325,mid
+31097,"Johnson County, Nebraska",397,mid
+31099,"Kearney County, Nebraska",402,mid
+31101,"Keith County, Nebraska",231,thin
+31103,"Keya Paha County, Nebraska",343,mid
+31105,"Kimball County, Nebraska",305,mid
+31107,"Knox County, Nebraska",287,mid
+31109,"Lancaster County, Nebraska",640,rich
+31111,"Lincoln County, Nebraska",462,rich
+31113,"Logan County, Nebraska",366,mid
+31115,"Loup County, Nebraska",379,mid
+31117,"McPherson County, Nebraska",444,mid
+31119,"Madison County, Nebraska",397,mid
+31121,"Merrick County, Nebraska",88,stub
+31123,"Morrill County, Nebraska",224,thin
+31125,"Nance County, Nebraska",232,thin
+31127,"Nemaha County, Nebraska",230,thin
+31129,"Nuckolls County, Nebraska",221,thin
+31131,"Otoe County, Nebraska",33,stub
+31133,"Pawnee County, Nebraska",234,thin
+31135,"Perkins County, Nebraska",230,thin
+31137,"Phelps County, Nebraska",416,mid
+31139,"Pierce County, Nebraska",361,mid
+31141,"Platte County, Nebraska",402,mid
+31143,"Polk County, Nebraska",323,mid
+31145,"Red Willow County, Nebraska",230,thin
+31147,"Richardson County, Nebraska",527,rich
+31149,"Rock County, Nebraska",305,mid
+31151,"Saline County, Nebraska",264,thin
+31153,"Sarpy County, Nebraska",828,rich
+31155,"Saunders County, Nebraska",365,mid
+31157,"Scotts Bluff County, Nebraska",403,mid
+31159,"Seward County, Nebraska",354,mid
+31161,"Sheridan County, Nebraska",298,mid
+31163,"Sherman County, Nebraska",361,mid
+31165,"Sioux County, Nebraska",365,mid
+31167,"Stanton County, Nebraska",498,rich
+31169,"Thayer County, Nebraska",387,mid
+31171,"Thomas County, Nebraska",288,mid
+31173,"Thurston County, Nebraska",354,mid
+31175,"Valley County, Nebraska",218,thin
+31177,"Washington County, Nebraska",391,mid
+31179,"Wayne County, Nebraska",219,thin
+31181,"Webster County, Nebraska",309,mid
+31183,"Wheeler County, Nebraska",305,mid
+31185,"York County, Nebraska",304,mid
+32001,"Churchill County, Nevada",318,mid
+32003,"Clark County, Nevada",1623,rich
+32005,"Douglas County, Nevada",199,thin
+32007,"Elko County, Nevada",896,rich
+32009,"Esmeralda County, Nevada",769,rich
+32011,"Eureka County, Nevada",134,thin
+32013,"Humboldt County, Nevada",1525,rich
+32015,"Lander County, Nevada",43,stub
+32017,"Lincoln County, Nevada",223,thin
+32019,"Lyon County, Nevada",80,stub
+32021,"Mineral County, Nevada",84,stub
+32023,"Nye County, Nevada",1255,rich
+32027,"Pershing County, Nevada",223,thin
+32029,"Storey County, Nevada",531,rich
+32031,"Washoe County, Nevada",273,thin
+32033,"White Pine County, Nevada",768,rich
+32510,"Carson City, Nevada",1314,rich
+33001,"Belknap County, New Hampshire",974,rich
+33003,"Carroll County, New Hampshire",338,mid
+33005,"Cheshire County, New Hampshire",308,mid
+33007,"Coos County, New Hampshire",1048,rich
+33009,"Grafton County, New Hampshire",618,rich
+33011,"Hillsborough County, New Hampshire",499,rich
+33013,"Merrimack County, New Hampshire",666,rich
+33015,"Rockingham County, New Hampshire",532,rich
+33017,"Strafford County, New Hampshire",727,rich
+33019,"Sullivan County, New Hampshire",164,thin
+34001,"Atlantic County, New Jersey",919,rich
+34003,"Bergen County, New Jersey",1988,rich
+34005,"Burlington County, New Jersey",1133,rich
+34007,"Camden County, New Jersey",1140,rich
+34009,"Cape May County, New Jersey",2884,rich
+34011,"Cumberland County, New Jersey",841,rich
+34013,"Essex County, New Jersey",954,rich
+34015,"Gloucester County, New Jersey",1209,rich
+34017,"Hudson County, New Jersey",1446,rich
+34019,"Hunterdon County, New Jersey",1464,rich
+34021,"Mercer County, New Jersey",2058,rich
+34023,"Middlesex County, New Jersey",2929,rich
+34025,"Monmouth County, New Jersey",3462,rich
+34027,"Morris County, New Jersey",1362,rich
+34029,"Ocean County, New Jersey",1928,rich
+34031,"Passaic County, New Jersey",906,rich
+34033,"Salem County, New Jersey",1047,rich
+34035,"Somerset County, New Jersey",1766,rich
+34037,"Sussex County, New Jersey",1141,rich
+34039,"Union County, New Jersey",1343,rich
+34041,"Warren County, New Jersey",1672,rich
+35001,"Bernalillo County, New Mexico",250,thin
+35003,"Catron County, New Mexico",107,thin
+35005,"Chaves County, New Mexico",355,mid
+35006,"Cibola County, New Mexico",334,mid
+35007,"Colfax County, New Mexico",382,mid
+35009,"Curry County, New Mexico",357,mid
+35011,"De Baca County, New Mexico",165,thin
+35013,"Doña Ana County, New Mexico",1092,rich
+35015,"Eddy County, New Mexico",341,mid
+35017,"Grant County, New Mexico",260,thin
+35019,"Guadalupe County, New Mexico",140,thin
+35021,"Harding County, New Mexico",475,rich
+35023,"Hidalgo County, New Mexico",603,rich
+35025,"Lea County, New Mexico",166,thin
+35027,"Lincoln County, New Mexico",79,stub
+35028,"Los Alamos County, New Mexico",739,rich
+35029,"Luna County, New Mexico",202,thin
+35031,"McKinley County, New Mexico",153,thin
+35033,"Mora County, New Mexico",515,rich
+35035,"Otero County, New Mexico",288,mid
+35037,"Quay County, New Mexico",265,thin
+35039,"Rio Arriba County, New Mexico",278,thin
+35041,"Roosevelt County, New Mexico",379,mid
+35043,"Sandoval County, New Mexico",170,thin
+35045,"San Juan County, New Mexico",421,mid
+35047,"San Miguel County, New Mexico",221,thin
+35049,"Santa Fe County, New Mexico",370,mid
+35051,"Sierra County, New Mexico",84,stub
+35053,"Socorro County, New Mexico",1070,rich
+35055,"Taos County, New Mexico",167,thin
+35057,"Torrance County, New Mexico",240,thin
+35059,"Union County, New Mexico",264,thin
+35061,"Valencia County, New Mexico",271,thin
+36001,"Albany County, New York",819,rich
+36003,"Allegany County, New York",705,rich
+36007,"Broome County, New York",383,mid
+36009,"Cattaraugus County, New York",592,rich
+36011,"Cayuga County, New York",337,mid
+36013,"Chautauqua County, New York",604,rich
+36015,"Chemung County, New York",482,rich
+36017,"Chenango County, New York",176,thin
+36019,"Clinton County, New York",531,rich
+36021,"Columbia County, New York",292,mid
+36023,"Cortland County, New York",459,mid
+36025,"Delaware County, New York",246,thin
+36027,"Dutchess County, New York",366,mid
+36029,"Erie County, New York",741,rich
+36031,"Essex County, New York",274,thin
+36033,"Franklin County, New York",807,rich
+36035,"Fulton County, New York",321,mid
+36037,"Genesee County, New York",478,rich
+36039,"Greene County, New York",192,thin
+36041,"Hamilton County, New York",579,rich
+36043,"Herkimer County, New York",403,mid
+36045,"Jefferson County, New York",734,rich
+36049,"Lewis County, New York",1571,rich
+36051,"Livingston County, New York",280,thin
+36053,"Madison County, New York",365,mid
+36055,"Monroe County, New York",348,mid
+36057,"Montgomery County, New York",733,rich
+36059,"Nassau County, New York",2598,rich
+36063,"Niagara County, New York",559,rich
+36065,"Oneida County, New York",586,rich
+36067,"Onondaga County, New York",412,mid
+36069,"Ontario County, New York",147,thin
+36071,"Orange County, New York",449,mid
+36073,"Orleans County, New York",452,mid
+36075,"Oswego County, New York",346,mid
+36077,"Otsego County, New York",222,thin
+36079,"Putnam County, New York",890,rich
+36083,"Rensselaer County, New York",369,mid
+36087,"Rockland County, New York",1352,rich
+36089,"St. Lawrence County, New York",455,mid
+36091,"Saratoga County, New York",2222,rich
+36093,"Schenectady County, New York",704,rich
+36095,"Schoharie County, New York",373,mid
+36097,"Schuyler County, New York",306,mid
+36099,"Seneca County, New York",714,rich
+36101,"Steuben County, New York",497,rich
+36103,"Suffolk County, New York",1481,rich
+36105,"Sullivan County, New York",572,rich
+36107,"Tioga County, New York",267,thin
+36109,"Tompkins County, New York",355,mid
+36111,"Ulster County, New York",196,thin
+36113,"Warren County, New York",253,thin
+36115,"Washington County, New York",195,thin
+36117,"Wayne County, New York",1076,rich
+36119,"Westchester County, New York",2317,rich
+36121,"Wyoming County, New York",403,mid
+36123,"Yates County, New York",295,mid
+37001,"Alamance County, North Carolina",440,mid
+37003,"Alexander County, North Carolina",126,thin
+37005,"Alleghany County, North Carolina",102,thin
+37007,"Anson County, North Carolina",38,stub
+37009,"Ashe County, North Carolina",59,stub
+37011,"Avery County, North Carolina",248,thin
+37013,"Beaufort County, North Carolina",400,mid
+37015,"Bertie County, North Carolina",155,thin
+37017,"Bladen County, North Carolina",150,thin
+37019,"Brunswick County, North Carolina",1402,rich
+37021,"Buncombe County, North Carolina",236,thin
+37023,"Burke County, North Carolina",270,thin
+37025,"Cabarrus County, North Carolina",1403,rich
+37027,"Caldwell County, North Carolina",177,thin
+37029,"Camden County, North Carolina",166,thin
+37031,"Carteret County, North Carolina",568,rich
+37033,"Caswell County, North Carolina",1315,rich
+37035,"Catawba County, North Carolina",201,thin
+37037,"Chatham County, North Carolina",407,mid
+37039,"Cherokee County, North Carolina",143,thin
+37041,"Chowan County, North Carolina",207,thin
+37043,"Clay County, North Carolina",106,thin
+37045,"Cleveland County, North Carolina",192,thin
+37047,"Columbus County, North Carolina",39,stub
+37049,"Craven County, North Carolina",423,mid
+37051,"Cumberland County, North Carolina",152,thin
+37053,"Currituck County, North Carolina",802,rich
+37055,"Dare County, North Carolina",433,mid
+37057,"Davidson County, North Carolina",290,mid
+37059,"Davie County, North Carolina",210,thin
+37061,"Duplin County, North Carolina",77,stub
+37063,"Durham County, North Carolina",709,rich
+37065,"Edgecombe County, North Carolina",160,thin
+37067,"Forsyth County, North Carolina",346,mid
+37069,"Franklin County, North Carolina",247,thin
+37071,"Gaston County, North Carolina",652,rich
+37073,"Gates County, North Carolina",256,thin
+37075,"Graham County, North Carolina",121,thin
+37077,"Granville County, North Carolina",147,thin
+37079,"Greene County, North Carolina",38,stub
+37081,"Guilford County, North Carolina",407,mid
+37083,"Halifax County, North Carolina",202,thin
+37085,"Harnett County, North Carolina",182,thin
+37087,"Haywood County, North Carolina",148,thin
+37089,"Henderson County, North Carolina",105,thin
+37091,"Hertford County, North Carolina",230,thin
+37093,"Hoke County, North Carolina",103,thin
+37095,"Hyde County, North Carolina",211,thin
+37097,"Iredell County, North Carolina",445,mid
+37099,"Jackson County, North Carolina",775,rich
+37101,"Johnston County, North Carolina",251,thin
+37103,"Jones County, North Carolina",634,rich
+37105,"Lee County, North Carolina",230,thin
+37107,"Lenoir County, North Carolina",196,thin
+37109,"Lincoln County, North Carolina",177,thin
+37111,"McDowell County, North Carolina",175,thin
+37113,"Macon County, North Carolina",218,thin
+37115,"Madison County, North Carolina",110,thin
+37117,"Martin County, North Carolina",40,stub
+37119,"Mecklenburg County, North Carolina",766,rich
+37121,"Mitchell County, North Carolina",411,mid
+37123,"Montgomery County, North Carolina",33,stub
+37125,"Moore County, North Carolina",755,rich
+37127,"Nash County, North Carolina",102,thin
+37129,"New Hanover County, North Carolina",412,mid
+37131,"Northampton County, North Carolina",250,thin
+37133,"Onslow County, North Carolina",260,thin
+37135,"Orange County, North Carolina",258,thin
+37137,"Pamlico County, North Carolina",136,thin
+37139,"Pasquotank County, North Carolina",258,thin
+37141,"Pender County, North Carolina",98,stub
+37143,"Perquimans County, North Carolina",151,thin
+37145,"Person County, North Carolina",252,thin
+37147,"Pitt County, North Carolina",209,thin
+37149,"Polk County, North Carolina",37,stub
+37151,"Randolph County, North Carolina",291,mid
+37153,"Richmond County, North Carolina",172,thin
+37155,"Robeson County, North Carolina",2591,rich
+37157,"Rockingham County, North Carolina",78,stub
+37159,"Rowan County, North Carolina",566,rich
+37161,"Rutherford County, North Carolina",105,thin
+37163,"Sampson County, North Carolina",37,stub
+37165,"Scotland County, North Carolina",949,rich
+37167,"Stanly County, North Carolina",272,thin
+37169,"Stokes County, North Carolina",205,thin
+37171,"Surry County, North Carolina",241,thin
+37173,"Swain County, North Carolina",506,rich
+37175,"Transylvania County, North Carolina",185,thin
+37177,"Tyrrell County, North Carolina",189,thin
+37179,"Union County, North Carolina",121,thin
+37181,"Vance County, North Carolina",241,thin
+37183,"Wake County, North Carolina",718,rich
+37185,"Warren County, North Carolina",245,thin
+37187,"Washington County, North Carolina",240,thin
+37189,"Watauga County, North Carolina",359,mid
+37191,"Wayne County, North Carolina",159,thin
+37193,"Wilkes County, North Carolina",209,thin
+37195,"Wilson County, North Carolina",206,thin
+37197,"Yadkin County, North Carolina",209,thin
+37199,"Yancey County, North Carolina",39,stub
+38001,"Adams County, North Dakota",76,stub
+38003,"Barnes County, North Dakota",120,thin
+38005,"Benson County, North Dakota",78,stub
+38007,"Billings County, North Dakota",626,rich
+38009,"Bottineau County, North Dakota",709,rich
+38011,"Bowman County, North Dakota",113,thin
+38013,"Burke County, North Dakota",213,thin
+38015,"Burleigh County, North Dakota",340,mid
+38017,"Cass County, North Dakota",637,rich
+38019,"Cavalier County, North Dakota",308,mid
+38021,"Dickey County, North Dakota",105,thin
+38023,"Divide County, North Dakota",113,thin
+38025,"Dunn County, North Dakota",107,thin
+38027,"Eddy County, North Dakota",184,thin
+38029,"Emmons County, North Dakota",113,thin
+38031,"Foster County, North Dakota",117,thin
+38033,"Golden Valley County, North Dakota",262,thin
+38035,"Grand Forks County, North Dakota",343,mid
+38037,"Grant County, North Dakota",64,stub
+38039,"Griggs County, North Dakota",79,stub
+38041,"Hettinger County, North Dakota",235,thin
+38043,"Kidder County, North Dakota",73,stub
+38045,"LaMoure County, North Dakota",114,thin
+38047,"Logan County, North Dakota",166,thin
+38049,"McHenry County, North Dakota",102,thin
+38051,"McIntosh County, North Dakota",293,mid
+38053,"McKenzie County, North Dakota",340,mid
+38055,"McLean County, North Dakota",143,thin
+38057,"Mercer County, North Dakota",105,thin
+38059,"Morton County, North Dakota",238,thin
+38061,"Mountrail County, North Dakota",495,rich
+38063,"Nelson County, North Dakota",73,stub
+38065,"Oliver County, North Dakota",121,thin
+38067,"Pembina County, North Dakota",238,thin
+38069,"Pierce County, North Dakota",112,thin
+38071,"Ramsey County, North Dakota",120,thin
+38073,"Ransom County, North Dakota",113,thin
+38075,"Renville County, North Dakota",246,thin
+38077,"Richland County, North Dakota",262,thin
+38079,"Rolette County, North Dakota",112,thin
+38081,"Sargent County, North Dakota",555,rich
+38083,"Sheridan County, North Dakota",162,thin
+38085,"Sioux County, North Dakota",122,thin
+38087,"Slope County, North Dakota",199,thin
+38089,"Stark County, North Dakota",266,thin
+38091,"Steele County, North Dakota",161,thin
+38093,"Stutsman County, North Dakota",219,thin
+38095,"Towner County, North Dakota",123,thin
+38097,"Traill County, North Dakota",108,thin
+38099,"Walsh County, North Dakota",116,thin
+38101,"Ward County, North Dakota",260,thin
+38103,"Wells County, North Dakota",107,thin
+38105,"Williams County, North Dakota",461,mid
+39001,"Adams County, Ohio",161,thin
+39003,"Allen County, Ohio",339,mid
+39005,"Ashland County, Ohio",362,mid
+39007,"Ashtabula County, Ohio",1066,rich
+39009,"Athens County, Ohio",343,mid
+39011,"Auglaize County, Ohio",257,thin
+39013,"Belmont County, Ohio",270,thin
+39015,"Brown County, Ohio",272,thin
+39017,"Butler County, Ohio",353,mid
+39019,"Carroll County, Ohio",375,mid
+39021,"Champaign County, Ohio",382,mid
+39023,"Clark County, Ohio",318,mid
+39025,"Clermont County, Ohio",454,mid
+39027,"Clinton County, Ohio",271,thin
+39029,"Columbiana County, Ohio",851,rich
+39031,"Coshocton County, Ohio",521,rich
+39033,"Crawford County, Ohio",331,mid
+39035,"Cuyahoga County, Ohio",727,rich
+39037,"Darke County, Ohio",323,mid
+39039,"Defiance County, Ohio",267,thin
+39041,"Delaware County, Ohio",545,rich
+39043,"Erie County, Ohio",369,mid
+39045,"Fairfield County, Ohio",207,thin
+39047,"Fayette County, Ohio",540,rich
+39049,"Franklin County, Ohio",1047,rich
+39051,"Fulton County, Ohio",239,thin
+39053,"Gallia County, Ohio",348,mid
+39055,"Geauga County, Ohio",462,rich
+39057,"Greene County, Ohio",298,mid
+39059,"Guernsey County, Ohio",308,mid
+39061,"Hamilton County, Ohio",309,mid
+39063,"Hancock County, Ohio",237,thin
+39065,"Hardin County, Ohio",165,thin
+39067,"Harrison County, Ohio",224,thin
+39069,"Henry County, Ohio",229,thin
+39071,"Highland County, Ohio",243,thin
+39073,"Hocking County, Ohio",348,mid
+39075,"Holmes County, Ohio",577,rich
+39077,"Huron County, Ohio",296,mid
+39079,"Jackson County, Ohio",204,thin
+39081,"Jefferson County, Ohio",309,mid
+39083,"Knox County, Ohio",318,mid
+39085,"Lake County, Ohio",378,mid
+39087,"Lawrence County, Ohio",298,mid
+39089,"Licking County, Ohio",502,rich
+39091,"Logan County, Ohio",271,thin
+39093,"Lorain County, Ohio",280,thin
+39095,"Lucas County, Ohio",526,rich
+39097,"Madison County, Ohio",204,thin
+39099,"Mahoning County, Ohio",381,mid
+39101,"Marion County, Ohio",410,mid
+39103,"Medina County, Ohio",346,mid
+39105,"Meigs County, Ohio",132,thin
+39107,"Mercer County, Ohio",260,thin
+39109,"Miami County, Ohio",127,thin
+39111,"Monroe County, Ohio",185,thin
+39113,"Montgomery County, Ohio",356,mid
+39115,"Morgan County, Ohio",229,thin
+39117,"Morrow County, Ohio",1179,rich
+39119,"Muskingum County, Ohio",696,rich
+39121,"Noble County, Ohio",195,thin
+39123,"Ottawa County, Ohio",317,mid
+39125,"Paulding County, Ohio",204,thin
+39127,"Perry County, Ohio",410,mid
+39129,"Pickaway County, Ohio",222,thin
+39131,"Pike County, Ohio",88,stub
+39133,"Portage County, Ohio",719,rich
+39135,"Preble County, Ohio",340,mid
+39137,"Putnam County, Ohio",369,mid
+39139,"Richland County, Ohio",370,mid
+39141,"Ross County, Ohio",328,mid
+39143,"Sandusky County, Ohio",376,mid
+39145,"Scioto County, Ohio",285,mid
+39147,"Seneca County, Ohio",411,mid
+39149,"Shelby County, Ohio",274,thin
+39151,"Stark County, Ohio",376,mid
+39153,"Summit County, Ohio",474,rich
+39155,"Trumbull County, Ohio",220,thin
+39157,"Tuscarawas County, Ohio",345,mid
+39159,"Union County, Ohio",218,thin
+39161,"Van Wert County, Ohio",367,mid
+39163,"Vinton County, Ohio",174,thin
+39165,"Warren County, Ohio",489,rich
+39167,"Washington County, Ohio",290,mid
+39169,"Wayne County, Ohio",215,thin
+39171,"Williams County, Ohio",114,thin
+39173,"Wood County, Ohio",366,mid
+39175,"Wyandot County, Ohio",460,mid
+40001,"Adair County, Oklahoma",258,thin
+40003,"Alfalfa County, Oklahoma",344,mid
+40005,"Atoka County, Oklahoma",199,thin
+40007,"Beaver County, Oklahoma",181,thin
+40009,"Beckham County, Oklahoma",270,thin
+40011,"Blaine County, Oklahoma",344,mid
+40013,"Bryan County, Oklahoma",470,rich
+40015,"Caddo County, Oklahoma",448,mid
+40017,"Canadian County, Oklahoma",501,rich
+40019,"Carter County, Oklahoma",221,thin
+40021,"Cherokee County, Oklahoma",149,thin
+40023,"Choctaw County, Oklahoma",395,mid
+40025,"Cimarron County, Oklahoma",716,rich
+40027,"Cleveland County, Oklahoma",192,thin
+40029,"Coal County, Oklahoma",36,stub
+40031,"Comanche County, Oklahoma",1268,rich
+40033,"Cotton County, Oklahoma",293,mid
+40035,"Craig County, Oklahoma",188,thin
+40037,"Creek County, Oklahoma",77,stub
+40039,"Custer County, Oklahoma",176,thin
+40041,"Delaware County, Oklahoma",417,mid
+40043,"Dewey County, Oklahoma",169,thin
+40045,"Ellis County, Oklahoma",178,thin
+40047,"Garfield County, Oklahoma",891,rich
+40049,"Garvin County, Oklahoma",363,mid
+40051,"Grady County, Oklahoma",171,thin
+40053,"Grant County, Oklahoma",245,thin
+40055,"Greer County, Oklahoma",507,rich
+40057,"Harmon County, Oklahoma",164,thin
+40059,"Harper County, Oklahoma",235,thin
+40061,"Haskell County, Oklahoma",113,thin
+40063,"Hughes County, Oklahoma",145,thin
+40065,"Jackson County, Oklahoma",418,mid
+40067,"Jefferson County, Oklahoma",122,thin
+40069,"Johnston County, Oklahoma",196,thin
+40071,"Kay County, Oklahoma",326,mid
+40073,"Kingfisher County, Oklahoma",230,thin
+40075,"Kiowa County, Oklahoma",124,thin
+40077,"Latimer County, Oklahoma",318,mid
+40081,"Lincoln County, Oklahoma",197,thin
+40083,"Logan County, Oklahoma",182,thin
+40085,"Love County, Oklahoma",286,mid
+40087,"McClain County, Oklahoma",216,thin
+40089,"McCurtain County, Oklahoma",362,mid
+40091,"McIntosh County, Oklahoma",383,mid
+40093,"Major County, Oklahoma",397,mid
+40095,"Marshall County, Oklahoma",364,mid
+40097,"Mayes County, Oklahoma",200,thin
+40099,"Murray County, Oklahoma",163,thin
+40101,"Muskogee County, Oklahoma",412,mid
+40103,"Noble County, Oklahoma",400,mid
+40105,"Nowata County, Oklahoma",198,thin
+40107,"Okfuskee County, Oklahoma",180,thin
+40109,"Oklahoma County, Oklahoma",520,rich
+40111,"Okmulgee County, Oklahoma",295,mid
+40113,"Osage County, Oklahoma",482,rich
+40115,"Ottawa County, Oklahoma",595,rich
+40117,"Pawnee County, Oklahoma",201,thin
+40119,"Payne County, Oklahoma",452,mid
+40121,"Pittsburg County, Oklahoma",305,mid
+40123,"Pontotoc County, Oklahoma",468,rich
+40125,"Pottawatomie County, Oklahoma",170,thin
+40127,"Pushmataha County, Oklahoma",572,rich
+40129,"Roger Mills County, Oklahoma",304,mid
+40131,"Rogers County, Oklahoma",449,mid
+40133,"Seminole County, Oklahoma",648,rich
+40135,"Sequoyah County, Oklahoma",215,thin
+40137,"Stephens County, Oklahoma",284,mid
+40139,"Texas County, Oklahoma",521,rich
+40141,"Tillman County, Oklahoma",223,thin
+40143,"Tulsa County, Oklahoma",542,rich
+40145,"Wagoner County, Oklahoma",81,stub
+40147,"Washington County, Oklahoma",408,mid
+40149,"Washita County, Oklahoma",126,thin
+40151,"Woods County, Oklahoma",108,thin
+40153,"Woodward County, Oklahoma",739,rich
+41001,"Baker County, Oregon",564,rich
+41003,"Benton County, Oregon",342,mid
+41005,"Clackamas County, Oregon",405,mid
+41007,"Clatsop County, Oregon",357,mid
+41009,"Columbia County, Oregon",39,stub
+41011,"Coos County, Oregon",266,thin
+41013,"Crook County, Oregon",298,mid
+41015,"Curry County, Oregon",261,thin
+41017,"Deschutes County, Oregon",441,mid
+41019,"Douglas County, Oregon",337,mid
+41021,"Gilliam County, Oregon",250,thin
+41023,"Grant County, Oregon",321,mid
+41025,"Harney County, Oregon",2461,rich
+41027,"Hood River County, Oregon",489,rich
+41029,"Jackson County, Oregon",320,mid
+41031,"Jefferson County, Oregon",112,thin
+41033,"Josephine County, Oregon",322,mid
+41035,"Klamath County, Oregon",289,mid
+41037,"Lake County, Oregon",814,rich
+41039,"Lane County, Oregon",319,mid
+41041,"Lincoln County, Oregon",170,thin
+41043,"Linn County, Oregon",503,rich
+41045,"Malheur County, Oregon",443,mid
+41047,"Marion County, Oregon",667,rich
+41049,"Morrow County, Oregon",555,rich
+41051,"Multnomah County, Oregon",233,thin
+41053,"Polk County, Oregon",311,mid
+41055,"Sherman County, Oregon",228,thin
+41057,"Tillamook County, Oregon",268,thin
+41059,"Umatilla County, Oregon",430,mid
+41061,"Union County, Oregon",146,thin
+41063,"Wallowa County, Oregon",612,rich
+41065,"Wasco County, Oregon",269,thin
+41067,"Washington County, Oregon",1378,rich
+41069,"Wheeler County, Oregon",219,thin
+41071,"Yamhill County, Oregon",224,thin
+42001,"Adams County, Pennsylvania",608,rich
+42003,"Allegheny County, Pennsylvania",884,rich
+42005,"Armstrong County, Pennsylvania",365,mid
+42007,"Beaver County, Pennsylvania",145,thin
+42009,"Bedford County, Pennsylvania",100,thin
+42011,"Berks County, Pennsylvania",906,rich
+42013,"Blair County, Pennsylvania",412,mid
+42015,"Bradford County, Pennsylvania",604,rich
+42017,"Bucks County, Pennsylvania",753,rich
+42019,"Butler County, Pennsylvania",253,thin
+42021,"Cambria County, Pennsylvania",454,mid
+42023,"Cameron County, Pennsylvania",283,thin
+42025,"Carbon County, Pennsylvania",619,rich
+42027,"Centre County, Pennsylvania",185,thin
+42029,"Chester County, Pennsylvania",998,rich
+42031,"Clarion County, Pennsylvania",252,thin
+42033,"Clearfield County, Pennsylvania",340,mid
+42035,"Clinton County, Pennsylvania",249,thin
+42037,"Columbia County, Pennsylvania",330,mid
+42039,"Crawford County, Pennsylvania",344,mid
+42041,"Cumberland County, Pennsylvania",177,thin
+42043,"Dauphin County, Pennsylvania",565,rich
+42045,"Delaware County, Pennsylvania",667,rich
+42047,"Elk County, Pennsylvania",471,rich
+42049,"Erie County, Pennsylvania",337,mid
+42051,"Fayette County, Pennsylvania",501,rich
+42053,"Forest County, Pennsylvania",211,thin
+42055,"Franklin County, Pennsylvania",263,thin
+42057,"Fulton County, Pennsylvania",272,thin
+42059,"Greene County, Pennsylvania",144,thin
+42061,"Huntingdon County, Pennsylvania",563,rich
+42063,"Indiana County, Pennsylvania",903,rich
+42065,"Jefferson County, Pennsylvania",390,mid
+42067,"Juniata County, Pennsylvania",1348,rich
+42069,"Lackawanna County, Pennsylvania",824,rich
+42071,"Lancaster County, Pennsylvania",806,rich
+42073,"Lawrence County, Pennsylvania",196,thin
+42075,"Lebanon County, Pennsylvania",525,rich
+42077,"Lehigh County, Pennsylvania",1391,rich
+42079,"Luzerne County, Pennsylvania",1625,rich
+42081,"Lycoming County, Pennsylvania",318,mid
+42083,"McKean County, Pennsylvania",840,rich
+42085,"Mercer County, Pennsylvania",241,thin
+42087,"Mifflin County, Pennsylvania",317,mid
+42089,"Monroe County, Pennsylvania",1344,rich
+42091,"Montgomery County, Pennsylvania",924,rich
+42093,"Montour County, Pennsylvania",388,mid
+42095,"Northampton County, Pennsylvania",1288,rich
+42097,"Northumberland County, Pennsylvania",901,rich
+42099,"Perry County, Pennsylvania",624,rich
+42101,"Philadelphia County, Pennsylvania",4403,rich
+42103,"Pike County, Pennsylvania",160,thin
+42105,"Potter County, Pennsylvania",407,mid
+42107,"Schuylkill County, Pennsylvania",875,rich
+42109,"Snyder County, Pennsylvania",299,mid
+42111,"Somerset County, Pennsylvania",894,rich
+42113,"Sullivan County, Pennsylvania",255,thin
+42115,"Susquehanna County, Pennsylvania",235,thin
+42117,"Tioga County, Pennsylvania",233,thin
+42119,"Union County, Pennsylvania",546,rich
+42121,"Venango County, Pennsylvania",332,mid
+42123,"Warren County, Pennsylvania",344,mid
+42125,"Washington County, Pennsylvania",601,rich
+42127,"Wayne County, Pennsylvania",377,mid
+42129,"Westmoreland County, Pennsylvania",278,thin
+42131,"Wyoming County, Pennsylvania",288,mid
+42133,"York County, Pennsylvania",1491,rich
+44001,"Bristol County, Rhode Island",370,mid
+44003,"Kent County, Rhode Island",473,rich
+44005,"Newport County, Rhode Island",507,rich
+44007,"Providence County, Rhode Island",462,rich
+44009,"Washington County, Rhode Island",429,mid
+45001,"Abbeville County, South Carolina",256,thin
+45003,"Aiken County, South Carolina",320,mid
+45005,"Allendale County, South Carolina",78,stub
+45007,"Anderson County, South Carolina",633,rich
+45009,"Bamberg County, South Carolina",278,thin
+45011,"Barnwell County, South Carolina",88,stub
+45013,"Beaufort County, South Carolina",871,rich
+45015,"Berkeley County, South Carolina",214,thin
+45017,"Calhoun County, South Carolina",737,rich
+45019,"Charleston County, South Carolina",570,rich
+45021,"Cherokee County, South Carolina",375,mid
+45023,"Chester County, South Carolina",85,stub
+45025,"Chesterfield County, South Carolina",186,thin
+45027,"Clarendon County, South Carolina",920,rich
+45029,"Colleton County, South Carolina",228,thin
+45031,"Darlington County, South Carolina",336,mid
+45033,"Dillon County, South Carolina",44,stub
+45035,"Dorchester County, South Carolina",241,thin
+45037,"Edgefield County, South Carolina",326,mid
+45039,"Fairfield County, South Carolina",83,stub
+45041,"Florence County, South Carolina",87,stub
+45043,"Georgetown County, South Carolina",273,thin
+45045,"Greenville County, South Carolina",556,rich
+45047,"Greenwood County, South Carolina",177,thin
+45049,"Hampton County, South Carolina",185,thin
+45051,"Horry County, South Carolina",445,mid
+45053,"Jasper County, South Carolina",428,mid
+45055,"Kershaw County, South Carolina",346,mid
+45057,"Lancaster County, South Carolina",265,thin
+45059,"Laurens County, South Carolina",117,thin
+45061,"Lee County, South Carolina",87,stub
+45063,"Lexington County, South Carolina",404,mid
+45065,"McCormick County, South Carolina",177,thin
+45067,"Marion County, South Carolina",101,thin
+45069,"Marlboro County, South Carolina",694,rich
+45071,"Newberry County, South Carolina",272,thin
+45073,"Oconee County, South Carolina",436,mid
+45075,"Orangeburg County, South Carolina",461,mid
+45077,"Pickens County, South Carolina",149,thin
+45079,"Richland County, South Carolina",524,rich
+45081,"Saluda County, South Carolina",170,thin
+45083,"Spartanburg County, South Carolina",265,thin
+45085,"Sumter County, South Carolina",796,rich
+45087,"Union County, South Carolina",227,thin
+45089,"Williamsburg County, South Carolina",153,thin
+45091,"York County, South Carolina",253,thin
+46003,"Aurora County, South Dakota",84,stub
+46005,"Beadle County, South Dakota",189,thin
+46007,"Bennett County, South Dakota",835,rich
+46009,"Bon Homme County, South Dakota",96,stub
+46011,"Brookings County, South Dakota",244,thin
+46013,"Brown County, South Dakota",285,mid
+46015,"Brule County, South Dakota",39,stub
+46017,"Buffalo County, South Dakota",865,rich
+46019,"Butte County, South Dakota",179,thin
+46021,"Campbell County, South Dakota",255,thin
+46023,"Charles Mix County, South Dakota",550,rich
+46025,"Clark County, South Dakota",157,thin
+46027,"Clay County, South Dakota",422,mid
+46029,"Codington County, South Dakota",271,thin
+46031,"Corson County, South Dakota",549,rich
+46033,"Custer County, South Dakota",352,mid
+46035,"Davison County, South Dakota",264,thin
+46037,"Day County, South Dakota",123,thin
+46039,"Deuel County, South Dakota",172,thin
+46041,"Dewey County, South Dakota",437,mid
+46043,"Douglas County, South Dakota",153,thin
+46045,"Edmunds County, South Dakota",227,thin
+46047,"Fall River County, South Dakota",125,thin
+46049,"Faulk County, South Dakota",170,thin
+46051,"Grant County, South Dakota",161,thin
+46053,"Gregory County, South Dakota",136,thin
+46055,"Haakon County, South Dakota",34,stub
+46057,"Hamlin County, South Dakota",154,thin
+46059,"Hand County, South Dakota",34,stub
+46061,"Hanson County, South Dakota",362,mid
+46063,"Harding County, South Dakota",750,rich
+46065,"Hughes County, South Dakota",458,mid
+46067,"Hutchinson County, South Dakota",151,thin
+46069,"Hyde County, South Dakota",244,thin
+46071,"Jackson County, South Dakota",186,thin
+46073,"Jerauld County, South Dakota",46,stub
+46075,"Jones County, South Dakota",310,mid
+46077,"Kingsbury County, South Dakota",364,mid
+46079,"Lake County, South Dakota",67,stub
+46081,"Lawrence County, South Dakota",276,thin
+46083,"Lincoln County, South Dakota",483,rich
+46085,"Lyman County, South Dakota",259,thin
+46087,"McCook County, South Dakota",249,thin
+46089,"McPherson County, South Dakota",33,stub
+46091,"Marshall County, South Dakota",142,thin
+46093,"Meade County, South Dakota",301,mid
+46095,"Mellette County, South Dakota",623,rich
+46097,"Miner County, South Dakota",88,stub
+46099,"Minnehaha County, South Dakota",485,rich
+46101,"Moody County, South Dakota",95,stub
+46102,"Oglala Lakota County, South Dakota",932,rich
+46103,"Pennington County, South Dakota",441,mid
+46105,"Perkins County, South Dakota",146,thin
+46107,"Potter County, South Dakota",92,stub
+46109,"Roberts County, South Dakota",220,thin
+46111,"Sanborn County, South Dakota",197,thin
+46115,"Spink County, South Dakota",120,thin
+46117,"Stanley County, South Dakota",266,thin
+46119,"Sully County, South Dakota",944,rich
+46121,"Todd County, South Dakota",862,rich
+46123,"Tripp County, South Dakota",345,mid
+46125,"Turner County, South Dakota",180,thin
+46127,"Union County, South Dakota",497,rich
+46129,"Walworth County, South Dakota",1001,rich
+46135,"Yankton County, South Dakota",138,thin
+46137,"Ziebach County, South Dakota",305,mid
+47001,"Anderson County, Tennessee",159,thin
+47003,"Bedford County, Tennessee",196,thin
+47005,"Benton County, Tennessee",477,rich
+47007,"Bledsoe County, Tennessee",38,stub
+47009,"Blount County, Tennessee",129,thin
+47011,"Bradley County, Tennessee",396,mid
+47013,"Campbell County, Tennessee",142,thin
+47015,"Cannon County, Tennessee",129,thin
+47017,"Carroll County, Tennessee",156,thin
+47019,"Carter County, Tennessee",363,mid
+47021,"Cheatham County, Tennessee",200,thin
+47023,"Chester County, Tennessee",140,thin
+47025,"Claiborne County, Tennessee",71,stub
+47027,"Clay County, Tennessee",240,thin
+47029,"Cocke County, Tennessee",182,thin
+47031,"Coffee County, Tennessee",220,thin
+47033,"Crockett County, Tennessee",82,stub
+47035,"Cumberland County, Tennessee",100,thin
+47037,"Davidson County, Tennessee",752,rich
+47039,"Decatur County, Tennessee",41,stub
+47041,"DeKalb County, Tennessee",182,thin
+47043,"Dickson County, Tennessee",379,mid
+47045,"Dyer County, Tennessee",98,stub
+47047,"Fayette County, Tennessee",339,mid
+47049,"Fentress County, Tennessee",38,stub
+47051,"Franklin County, Tennessee",291,mid
+47053,"Gibson County, Tennessee",221,thin
+47055,"Giles County, Tennessee",36,stub
+47057,"Grainger County, Tennessee",140,thin
+47059,"Greene County, Tennessee",102,thin
+47061,"Grundy County, Tennessee",127,thin
+47063,"Hamblen County, Tennessee",321,mid
+47065,"Hamilton County, Tennessee",815,rich
+47067,"Hancock County, Tennessee",86,stub
+47069,"Hardeman County, Tennessee",36,stub
+47071,"Hardin County, Tennessee",456,mid
+47073,"Hawkins County, Tennessee",226,thin
+47075,"Haywood County, Tennessee",188,thin
+47077,"Henderson County, Tennessee",164,thin
+47079,"Henry County, Tennessee",480,rich
+47081,"Hickman County, Tennessee",187,thin
+47083,"Houston County, Tennessee",95,stub
+47085,"Humphreys County, Tennessee",190,thin
+47087,"Jackson County, Tennessee",106,thin
+47089,"Jefferson County, Tennessee",317,mid
+47091,"Johnson County, Tennessee",91,stub
+47093,"Knox County, Tennessee",394,mid
+47095,"Lake County, Tennessee",909,rich
+47097,"Lauderdale County, Tennessee",163,thin
+47099,"Lawrence County, Tennessee",238,thin
+47101,"Lewis County, Tennessee",157,thin
+47103,"Lincoln County, Tennessee",145,thin
+47105,"Loudon County, Tennessee",217,thin
+47107,"McMinn County, Tennessee",291,mid
+47109,"McNairy County, Tennessee",775,rich
+47111,"Macon County, Tennessee",135,thin
+47113,"Madison County, Tennessee",83,stub
+47115,"Marion County, Tennessee",167,thin
+47117,"Marshall County, Tennessee",555,rich
+47119,"Maury County, Tennessee",133,thin
+47121,"Meigs County, Tennessee",91,stub
+47123,"Monroe County, Tennessee",78,stub
+47125,"Montgomery County, Tennessee",199,thin
+47127,"Moore County, Tennessee",388,mid
+47129,"Morgan County, Tennessee",95,stub
+47131,"Obion County, Tennessee",276,thin
+47133,"Overton County, Tennessee",102,thin
+47135,"Perry County, Tennessee",1677,rich
+47137,"Pickett County, Tennessee",474,rich
+47139,"Polk County, Tennessee",431,mid
+47141,"Putnam County, Tennessee",101,thin
+47143,"Rhea County, Tennessee",208,thin
+47145,"Roane County, Tennessee",86,stub
+47147,"Robertson County, Tennessee",393,mid
+47149,"Rutherford County, Tennessee",436,mid
+47151,"Scott County, Tennessee",271,thin
+47153,"Sequatchie County, Tennessee",82,stub
+47155,"Sevier County, Tennessee",226,thin
+47157,"Shelby County, Tennessee",1023,rich
+47159,"Smith County, Tennessee",349,mid
+47161,"Stewart County, Tennessee",93,stub
+47163,"Sullivan County, Tennessee",466,rich
+47165,"Sumner County, Tennessee",500,rich
+47167,"Tipton County, Tennessee",155,thin
+47169,"Trousdale County, Tennessee",1352,rich
+47171,"Unicoi County, Tennessee",336,mid
+47173,"Union County, Tennessee",90,stub
+47175,"Van Buren County, Tennessee",83,stub
+47177,"Warren County, Tennessee",102,thin
+47179,"Washington County, Tennessee",487,rich
+47181,"Wayne County, Tennessee",234,thin
+47183,"Weakley County, Tennessee",300,mid
+47185,"White County, Tennessee",119,thin
+47187,"Williamson County, Tennessee",516,rich
+47189,"Wilson County, Tennessee",133,thin
+48001,"Anderson County, Texas",239,thin
+48003,"Andrews County, Texas",252,thin
+48005,"Angelina County, Texas",333,mid
+48007,"Aransas County, Texas",151,thin
+48009,"Archer County, Texas",186,thin
+48011,"Armstrong County, Texas",263,thin
+48013,"Atascosa County, Texas",180,thin
+48015,"Austin County, Texas",356,mid
+48017,"Bailey County, Texas",54,stub
+48019,"Bandera County, Texas",410,mid
+48021,"Bastrop County, Texas",148,thin
+48023,"Baylor County, Texas",35,stub
+48025,"Bee County, Texas",271,thin
+48027,"Bell County, Texas",303,mid
+48029,"Bexar County, Texas",674,rich
+48031,"Blanco County, Texas",191,thin
+48033,"Borden County, Texas",351,mid
+48035,"Bosque County, Texas",515,rich
+48037,"Bowie County, Texas",297,mid
+48039,"Brazoria County, Texas",911,rich
+48041,"Brazos County, Texas",438,mid
+48043,"Brewster County, Texas",481,rich
+48045,"Briscoe County, Texas",558,rich
+48047,"Brooks County, Texas",692,rich
+48049,"Brown County, Texas",308,mid
+48051,"Burleson County, Texas",301,mid
+48053,"Burnet County, Texas",480,rich
+48055,"Caldwell County, Texas",398,mid
+48057,"Calhoun County, Texas",284,mid
+48059,"Callahan County, Texas",220,thin
+48061,"Cameron County, Texas",753,rich
+48063,"Camp County, Texas",171,thin
+48065,"Carson County, Texas",250,thin
+48067,"Cass County, Texas",179,thin
+48069,"Castro County, Texas",386,mid
+48071,"Chambers County, Texas",169,thin
+48073,"Cherokee County, Texas",336,mid
+48075,"Childress County, Texas",447,mid
+48077,"Clay County, Texas",456,mid
+48079,"Cochran County, Texas",156,thin
+48081,"Coke County, Texas",268,thin
+48083,"Coleman County, Texas",212,thin
+48085,"Collin County, Texas",296,mid
+48087,"Collingsworth County, Texas",413,mid
+48089,"Colorado County, Texas",137,thin
+48091,"Comal County, Texas",1022,rich
+48093,"Comanche County, Texas",177,thin
+48095,"Concho County, Texas",142,thin
+48097,"Cooke County, Texas",425,mid
+48099,"Coryell County, Texas",234,thin
+48101,"Cottle County, Texas",345,mid
+48103,"Crane County, Texas",236,thin
+48105,"Crockett County, Texas",188,thin
+48107,"Crosby County, Texas",846,rich
+48109,"Culberson County, Texas",480,rich
+48111,"Dallam County, Texas",223,thin
+48113,"Dallas County, Texas",724,rich
+48115,"Dawson County, Texas",284,mid
+48117,"Deaf Smith County, Texas",213,thin
+48119,"Delta County, Texas",379,mid
+48121,"Denton County, Texas",320,mid
+48123,"DeWitt County, Texas",130,thin
+48125,"Dickens County, Texas",188,thin
+48127,"Dimmit County, Texas",334,mid
+48129,"Donley County, Texas",97,stub
+48131,"Duval County, Texas",191,thin
+48133,"Eastland County, Texas",443,mid
+48135,"Ector County, Texas",369,mid
+48137,"Edwards County, Texas",312,mid
+48139,"Ellis County, Texas",291,mid
+48141,"El Paso County, Texas",856,rich
+48143,"Erath County, Texas",475,rich
+48145,"Falls County, Texas",513,rich
+48147,"Fannin County, Texas",287,mid
+48149,"Fayette County, Texas",250,thin
+48151,"Fisher County, Texas",314,mid
+48153,"Floyd County, Texas",300,mid
+48155,"Foard County, Texas",390,mid
+48157,"Fort Bend County, Texas",677,rich
+48159,"Franklin County, Texas",41,stub
+48161,"Freestone County, Texas",98,stub
+48163,"Frio County, Texas",166,thin
+48165,"Gaines County, Texas",107,thin
+48167,"Galveston County, Texas",519,rich
+48169,"Garza County, Texas",338,mid
+48171,"Gillespie County, Texas",695,rich
+48173,"Glasscock County, Texas",370,mid
+48175,"Goliad County, Texas",270,thin
+48177,"Gonzales County, Texas",1274,rich
+48179,"Gray County, Texas",240,thin
+48181,"Grayson County, Texas",440,mid
+48183,"Gregg County, Texas",607,rich
+48185,"Grimes County, Texas",449,mid
+48187,"Guadalupe County, Texas",301,mid
+48189,"Hale County, Texas",221,thin
+48191,"Hall County, Texas",171,thin
+48193,"Hamilton County, Texas",182,thin
+48195,"Hansford County, Texas",155,thin
+48197,"Hardeman County, Texas",435,mid
+48199,"Hardin County, Texas",197,thin
+48201,"Harris County, Texas",655,rich
+48203,"Harrison County, Texas",1063,rich
+48205,"Hartley County, Texas",200,thin
+48207,"Haskell County, Texas",175,thin
+48209,"Hays County, Texas",660,rich
+48211,"Hemphill County, Texas",448,mid
+48213,"Henderson County, Texas",499,rich
+48215,"Hidalgo County, Texas",1325,rich
+48217,"Hill County, Texas",216,thin
+48219,"Hockley County, Texas",311,mid
+48221,"Hood County, Texas",266,thin
+48223,"Hopkins County, Texas",413,mid
+48225,"Houston County, Texas",678,rich
+48227,"Howard County, Texas",241,thin
+48229,"Hudspeth County, Texas",588,rich
+48231,"Hunt County, Texas",322,mid
+48233,"Hutchinson County, Texas",510,rich
+48235,"Irion County, Texas",210,thin
+48237,"Jack County, Texas",208,thin
+48239,"Jackson County, Texas",274,thin
+48241,"Jasper County, Texas",223,thin
+48243,"Jeff Davis County, Texas",793,rich
+48245,"Jefferson County, Texas",821,rich
+48247,"Jim Hogg County, Texas",120,thin
+48249,"Jim Wells County, Texas",328,mid
+48251,"Johnson County, Texas",304,mid
+48253,"Jones County, Texas",251,thin
+48255,"Karnes County, Texas",232,thin
+48257,"Kaufman County, Texas",109,thin
+48259,"Kendall County, Texas",708,rich
+48261,"Kenedy County, Texas",844,rich
+48263,"Kent County, Texas",286,mid
+48265,"Kerr County, Texas",323,mid
+48267,"Kimble County, Texas",283,thin
+48269,"King County, Texas",339,mid
+48271,"Kinney County, Texas",406,mid
+48273,"Kleberg County, Texas",387,mid
+48275,"Knox County, Texas",164,thin
+48277,"Lamar County, Texas",324,mid
+48279,"Lamb County, Texas",327,mid
+48281,"Lampasas County, Texas",184,thin
+48283,"La Salle County, Texas",203,thin
+48285,"Lavaca County, Texas",256,thin
+48287,"Lee County, Texas",121,thin
+48289,"Leon County, Texas",118,thin
+48291,"Liberty County, Texas",385,mid
+48293,"Limestone County, Texas",70,stub
+48295,"Lipscomb County, Texas",213,thin
+48297,"Live Oak County, Texas",128,thin
+48299,"Llano County, Texas",133,thin
+48301,"Loving County, Texas",459,mid
+48303,"Lubbock County, Texas",639,rich
+48305,"Lynn County, Texas",916,rich
+48307,"McCulloch County, Texas",224,thin
+48309,"McLennan County, Texas",286,mid
+48311,"McMullen County, Texas",455,mid
+48313,"Madison County, Texas",472,rich
+48315,"Marion County, Texas",232,thin
+48317,"Martin County, Texas",199,thin
+48319,"Mason County, Texas",103,thin
+48321,"Matagorda County, Texas",389,mid
+48323,"Maverick County, Texas",324,mid
+48325,"Medina County, Texas",545,rich
+48327,"Menard County, Texas",164,thin
+48329,"Midland County, Texas",336,mid
+48331,"Milam County, Texas",216,thin
+48333,"Mills County, Texas",372,mid
+48335,"Mitchell County, Texas",202,thin
+48337,"Montague County, Texas",240,thin
+48339,"Montgomery County, Texas",156,thin
+48341,"Moore County, Texas",277,thin
+48343,"Morris County, Texas",260,thin
+48345,"Motley County, Texas",517,rich
+48347,"Nacogdoches County, Texas",370,mid
+48349,"Navarro County, Texas",360,mid
+48351,"Newton County, Texas",391,mid
+48353,"Nolan County, Texas",226,thin
+48355,"Nueces County, Texas",610,rich
+48357,"Ochiltree County, Texas",464,rich
+48359,"Oldham County, Texas",151,thin
+48361,"Orange County, Texas",180,thin
+48363,"Palo Pinto County, Texas",287,mid
+48365,"Panola County, Texas",297,mid
+48367,"Parker County, Texas",336,mid
+48369,"Parmer County, Texas",294,mid
+48371,"Pecos County, Texas",240,thin
+48373,"Polk County, Texas",502,rich
+48375,"Potter County, Texas",263,thin
+48377,"Presidio County, Texas",311,mid
+48379,"Rains County, Texas",214,thin
+48381,"Randall County, Texas",539,rich
+48383,"Reagan County, Texas",253,thin
+48385,"Real County, Texas",318,mid
+48387,"Red River County, Texas",351,mid
+48389,"Reeves County, Texas",333,mid
+48391,"Refugio County, Texas",182,thin
+48393,"Roberts County, Texas",312,mid
+48395,"Robertson County, Texas",303,mid
+48397,"Rockwall County, Texas",559,rich
+48399,"Runnels County, Texas",152,thin
+48401,"Rusk County, Texas",252,thin
+48403,"Sabine County, Texas",310,mid
+48405,"San Augustine County, Texas",41,stub
+48407,"San Jacinto County, Texas",269,thin
+48409,"San Patricio County, Texas",145,thin
+48411,"San Saba County, Texas",194,thin
+48413,"Schleicher County, Texas",212,thin
+48415,"Scurry County, Texas",468,rich
+48417,"Shackelford County, Texas",557,rich
+48419,"Shelby County, Texas",276,thin
+48421,"Sherman County, Texas",298,mid
+48423,"Smith County, Texas",284,mid
+48425,"Somervell County, Texas",274,thin
+48427,"Starr County, Texas",728,rich
+48429,"Stephens County, Texas",284,mid
+48431,"Sterling County, Texas",257,thin
+48433,"Stonewall County, Texas",170,thin
+48435,"Sutton County, Texas",237,thin
+48437,"Swisher County, Texas",386,mid
+48439,"Tarrant County, Texas",599,rich
+48441,"Taylor County, Texas",344,mid
+48443,"Terrell County, Texas",483,rich
+48445,"Terry County, Texas",324,mid
+48447,"Throckmorton County, Texas",241,thin
+48449,"Titus County, Texas",169,thin
+48451,"Tom Green County, Texas",498,rich
+48453,"Travis County, Texas",475,rich
+48455,"Trinity County, Texas",144,thin
+48457,"Tyler County, Texas",341,mid
+48459,"Upshur County, Texas",270,thin
+48461,"Upton County, Texas",194,thin
+48463,"Uvalde County, Texas",361,mid
+48465,"Val Verde County, Texas",744,rich
+48467,"Van Zandt County, Texas",243,thin
+48469,"Victoria County, Texas",169,thin
+48471,"Walker County, Texas",541,rich
+48473,"Waller County, Texas",286,mid
+48475,"Ward County, Texas",154,thin
+48477,"Washington County, Texas",921,rich
+48479,"Webb County, Texas",983,rich
+48481,"Wharton County, Texas",398,mid
+48483,"Wheeler County, Texas",605,rich
+48485,"Wichita County, Texas",204,thin
+48487,"Wilbarger County, Texas",327,mid
+48489,"Willacy County, Texas",309,mid
+48491,"Williamson County, Texas",686,rich
+48493,"Wilson County, Texas",168,thin
+48495,"Winkler County, Texas",165,thin
+48497,"Wise County, Texas",261,thin
+48499,"Wood County, Texas",109,thin
+48501,"Yoakum County, Texas",734,rich
+48503,"Young County, Texas",157,thin
+48505,"Zapata County, Texas",445,mid
+48507,"Zavala County, Texas",100,thin
+49001,"Beaver County, Utah",175,thin
+49003,"Box Elder County, Utah",466,rich
+49005,"Cache County, Utah",265,thin
+49007,"Carbon County, Utah",96,stub
+49009,"Daggett County, Utah",328,mid
+49011,"Davis County, Utah",359,mid
+49013,"Duchesne County, Utah",108,thin
+49015,"Emery County, Utah",179,thin
+49017,"Garfield County, Utah",323,mid
+49019,"Grand County, Utah",225,thin
+49021,"Iron County, Utah",285,mid
+49023,"Juab County, Utah",250,thin
+49025,"Kane County, Utah",33,stub
+49027,"Millard County, Utah",243,thin
+49029,"Morgan County, Utah",369,mid
+49031,"Piute County, Utah",199,thin
+49033,"Rich County, Utah",666,rich
+49035,"Salt Lake County, Utah",1042,rich
+49037,"San Juan County, Utah",337,mid
+49039,"Sanpete County, Utah",135,thin
+49041,"Sevier County, Utah",489,rich
+49043,"Summit County, Utah",305,mid
+49045,"Tooele County, Utah",1333,rich
+49047,"Uintah County, Utah",539,rich
+49049,"Utah County, Utah",981,rich
+49051,"Wasatch County, Utah",307,mid
+49053,"Washington County, Utah",583,rich
+49055,"Wayne County, Utah",160,thin
+49057,"Weber County, Utah",334,mid
+50001,"Addison County, Vermont",85,stub
+50003,"Bennington County, Vermont",459,mid
+50005,"Caledonia County, Vermont",243,thin
+50007,"Chittenden County, Vermont",1422,rich
+50009,"Essex County, Vermont",346,mid
+50011,"Franklin County, Vermont",196,thin
+50013,"Grand Isle County, Vermont",480,rich
+50015,"Lamoille County, Vermont",393,mid
+50017,"Orange County, Vermont",116,thin
+50019,"Orleans County, Vermont",324,mid
+50021,"Rutland County, Vermont",216,thin
+50023,"Washington County, Vermont",575,rich
+50025,"Windham County, Vermont",128,thin
+50027,"Windsor County, Vermont",144,thin
+51001,"Accomack County, Virginia",684,rich
+51003,"Albemarle County, Virginia",670,rich
+51005,"Alleghany County, Virginia",634,rich
+51007,"Amelia County, Virginia",372,mid
+51009,"Amherst County, Virginia",570,rich
+51011,"Appomattox County, Virginia",295,mid
+51013,"Arlington County, Virginia",3751,rich
+51015,"Augusta County, Virginia",641,rich
+51017,"Bath County, Virginia",375,mid
+51019,"Bedford County, Virginia",477,rich
+51021,"Bland County, Virginia",379,mid
+51023,"Botetourt County, Virginia",689,rich
+51025,"Brunswick County, Virginia",448,mid
+51027,"Buchanan County, Virginia",850,rich
+51029,"Buckingham County, Virginia",455,mid
+51031,"Campbell County, Virginia",750,rich
+51033,"Caroline County, Virginia",873,rich
+51035,"Carroll County, Virginia",497,rich
+51036,"Charles City County, Virginia",915,rich
+51037,"Charlotte County, Virginia",427,mid
+51041,"Chesterfield County, Virginia",586,rich
+51043,"Clarke County, Virginia",395,mid
+51045,"Craig County, Virginia",439,mid
+51047,"Culpeper County, Virginia",431,mid
+51049,"Cumberland County, Virginia",307,mid
+51051,"Dickenson County, Virginia",512,rich
+51053,"Dinwiddie County, Virginia",550,rich
+51057,"Essex County, Virginia",592,rich
+51059,"Fairfax County, Virginia",1682,rich
+51061,"Fauquier County, Virginia",481,rich
+51063,"Floyd County, Virginia",552,rich
+51065,"Fluvanna County, Virginia",190,thin
+51067,"Franklin County, Virginia",207,thin
+51069,"Frederick County, Virginia",332,mid
+51071,"Giles County, Virginia",335,mid
+51073,"Gloucester County, Virginia",1871,rich
+51075,"Goochland County, Virginia",134,thin
+51077,"Grayson County, Virginia",115,thin
+51079,"Greene County, Virginia",296,mid
+51081,"Greensville County, Virginia",126,thin
+51083,"Halifax County, Virginia",36,stub
+51085,"Hanover County, Virginia",80,stub
+51087,"Henrico County, Virginia",1058,rich
+51089,"Henry County, Virginia",473,rich
+51091,"Highland County, Virginia",353,mid
+51093,"Isle of Wight County, Virginia",417,mid
+51095,"James City County, Virginia",1297,rich
+51097,"King and Queen County, Virginia",271,thin
+51099,"King George County, Virginia",604,rich
+51101,"King William County, Virginia",125,thin
+51103,"Lancaster County, Virginia",327,mid
+51105,"Lee County, Virginia",210,thin
+51107,"Loudoun County, Virginia",491,rich
+51109,"Louisa County, Virginia",35,stub
+51111,"Lunenburg County, Virginia",38,stub
+51113,"Madison County, Virginia",129,thin
+51115,"Mathews County, Virginia",160,thin
+51117,"Mecklenburg County, Virginia",36,stub
+51119,"Middlesex County, Virginia",35,stub
+51121,"Montgomery County, Virginia",410,mid
+51125,"Nelson County, Virginia",135,thin
+51127,"New Kent County, Virginia",178,thin
+51131,"Northampton County, Virginia",322,mid
+51133,"Northumberland County, Virginia",174,thin
+51135,"Nottoway County, Virginia",125,thin
+51137,"Orange County, Virginia",322,mid
+51139,"Page County, Virginia",190,thin
+51141,"Patrick County, Virginia",171,thin
+51143,"Pittsylvania County, Virginia",250,thin
+51145,"Powhatan County, Virginia",907,rich
+51147,"Prince Edward County, Virginia",94,stub
+51149,"Prince George County, Virginia",223,thin
+51153,"Prince William County, Virginia",403,mid
+51155,"Pulaski County, Virginia",97,stub
+51157,"Rappahannock County, Virginia",505,rich
+51159,"Richmond County, Virginia",224,thin
+51161,"Roanoke County, Virginia",637,rich
+51163,"Rockbridge County, Virginia",248,thin
+51165,"Rockingham County, Virginia",191,thin
+51167,"Russell County, Virginia",60,stub
+51169,"Scott County, Virginia",463,rich
+51171,"Shenandoah County, Virginia",115,thin
+51173,"Smyth County, Virginia",35,stub
+51175,"Southampton County, Virginia",143,thin
+51177,"Spotsylvania County, Virginia",469,rich
+51179,"Stafford County, Virginia",660,rich
+51181,"Surry County, Virginia",604,rich
+51183,"Sussex County, Virginia",180,thin
+51185,"Tazewell County, Virginia",303,mid
+51187,"Warren County, Virginia",201,thin
+51191,"Washington County, Virginia",397,mid
+51193,"Westmoreland County, Virginia",41,stub
+51195,"Wise County, Virginia",146,thin
+51197,"Wythe County, Virginia",55,stub
+51199,"York County, Virginia",1663,rich
+51620,"Franklin City, Virginia",67,stub
+53001,"Adams County, Washington",510,rich
+53003,"Asotin County, Washington",373,mid
+53005,"Benton County, Washington",321,mid
+53007,"Chelan County, Washington",450,mid
+53009,"Clallam County, Washington",757,rich
+53011,"Clark County, Washington",558,rich
+53013,"Columbia County, Washington",301,mid
+53015,"Cowlitz County, Washington",433,mid
+53017,"Douglas County, Washington",273,thin
+53019,"Ferry County, Washington",210,thin
+53021,"Franklin County, Washington",293,mid
+53023,"Garfield County, Washington",215,thin
+53025,"Grant County, Washington",323,mid
+53027,"Grays Harbor County, Washington",133,thin
+53029,"Island County, Washington",758,rich
+53031,"Jefferson County, Washington",644,rich
+53033,"King County, Washington",975,rich
+53035,"Kitsap County, Washington",1029,rich
+53037,"Kittitas County, Washington",624,rich
+53039,"Klickitat County, Washington",138,thin
+53041,"Lewis County, Washington",222,thin
+53043,"Lincoln County, Washington",220,thin
+53045,"Mason County, Washington",449,mid
+53047,"Okanogan County, Washington",599,rich
+53049,"Pacific County, Washington",460,mid
+53051,"Pend Oreille County, Washington",445,mid
+53053,"Pierce County, Washington",1342,rich
+53055,"San Juan County, Washington",550,rich
+53057,"Skagit County, Washington",540,rich
+53059,"Skamania County, Washington",280,thin
+53061,"Snohomish County, Washington",1803,rich
+53063,"Spokane County, Washington",396,mid
+53065,"Stevens County, Washington",350,mid
+53067,"Thurston County, Washington",688,rich
+53069,"Wahkiakum County, Washington",468,rich
+53071,"Walla Walla County, Washington",413,mid
+53073,"Whatcom County, Washington",1064,rich
+53075,"Whitman County, Washington",317,mid
+53077,"Yakima County, Washington",274,thin
+54001,"Barbour County, West Virginia",891,rich
+54003,"Berkeley County, West Virginia",319,mid
+54005,"Boone County, West Virginia",219,thin
+54007,"Braxton County, West Virginia",653,rich
+54009,"Brooke County, West Virginia",345,mid
+54011,"Cabell County, West Virginia",268,thin
+54013,"Calhoun County, West Virginia",175,thin
+54015,"Clay County, West Virginia",294,mid
+54017,"Doddridge County, West Virginia",120,thin
+54019,"Fayette County, West Virginia",126,thin
+54021,"Gilmer County, West Virginia",1196,rich
+54023,"Grant County, West Virginia",183,thin
+54025,"Greenbrier County, West Virginia",243,thin
+54027,"Hampshire County, West Virginia",330,mid
+54029,"Hancock County, West Virginia",521,rich
+54031,"Hardy County, West Virginia",148,thin
+54033,"Harrison County, West Virginia",140,thin
+54035,"Jackson County, West Virginia",80,stub
+54037,"Jefferson County, West Virginia",247,thin
+54039,"Kanawha County, West Virginia",228,thin
+54041,"Lewis County, West Virginia",185,thin
+54043,"Lincoln County, West Virginia",174,thin
+54045,"Logan County, West Virginia",196,thin
+54047,"McDowell County, West Virginia",737,rich
+54049,"Marion County, West Virginia",321,mid
+54051,"Marshall County, West Virginia",624,rich
+54053,"Mason County, West Virginia",284,mid
+54055,"Mercer County, West Virginia",269,thin
+54057,"Mineral County, West Virginia",153,thin
+54059,"Mingo County, West Virginia",130,thin
+54061,"Monongalia County, West Virginia",376,mid
+54063,"Monroe County, West Virginia",332,mid
+54065,"Morgan County, West Virginia",747,rich
+54067,"Nicholas County, West Virginia",160,thin
+54069,"Ohio County, West Virginia",355,mid
+54071,"Pendleton County, West Virginia",504,rich
+54073,"Pleasants County, West Virginia",37,stub
+54075,"Pocahontas County, West Virginia",408,mid
+54077,"Preston County, West Virginia",365,mid
+54079,"Putnam County, West Virginia",277,thin
+54081,"Raleigh County, West Virginia",167,thin
+54083,"Randolph County, West Virginia",166,thin
+54085,"Ritchie County, West Virginia",163,thin
+54087,"Roane County, West Virginia",100,thin
+54089,"Summers County, West Virginia",224,thin
+54091,"Taylor County, West Virginia",176,thin
+54093,"Tucker County, West Virginia",341,mid
+54095,"Tyler County, West Virginia",141,thin
+54097,"Upshur County, West Virginia",305,mid
+54099,"Wayne County, West Virginia",244,thin
+54101,"Webster County, West Virginia",117,thin
+54103,"Wetzel County, West Virginia",251,thin
+54105,"Wirt County, West Virginia",347,mid
+54107,"Wood County, West Virginia",335,mid
+54109,"Wyoming County, West Virginia",172,thin
+55001,"Adams County, Wisconsin",361,mid
+55003,"Ashland County, Wisconsin",220,thin
+55005,"Barron County, Wisconsin",89,stub
+55007,"Bayfield County, Wisconsin",299,mid
+55009,"Brown County, Wisconsin",162,thin
+55011,"Buffalo County, Wisconsin",265,thin
+55013,"Burnett County, Wisconsin",377,mid
+55015,"Calumet County, Wisconsin",308,mid
+55017,"Chippewa County, Wisconsin",400,mid
+55019,"Clark County, Wisconsin",40,stub
+55021,"Columbia County, Wisconsin",225,thin
+55023,"Crawford County, Wisconsin",45,stub
+55025,"Dane County, Wisconsin",496,rich
+55027,"Dodge County, Wisconsin",253,thin
+55029,"Door County, Wisconsin",773,rich
+55031,"Douglas County, Wisconsin",104,thin
+55033,"Dunn County, Wisconsin",196,thin
+55035,"Eau Claire County, Wisconsin",248,thin
+55037,"Florence County, Wisconsin",282,thin
+55039,"Fond du Lac County, Wisconsin",378,mid
+55041,"Forest County, Wisconsin",224,thin
+55043,"Grant County, Wisconsin",537,rich
+55045,"Green County, Wisconsin",99,stub
+55047,"Green Lake County, Wisconsin",121,thin
+55049,"Iowa County, Wisconsin",152,thin
+55051,"Iron County, Wisconsin",369,mid
+55053,"Jackson County, Wisconsin",131,thin
+55055,"Jefferson County, Wisconsin",208,thin
+55057,"Juneau County, Wisconsin",134,thin
+55059,"Kenosha County, Wisconsin",635,rich
+55061,"Kewaunee County, Wisconsin",555,rich
+55063,"La Crosse County, Wisconsin",252,thin
+55065,"Lafayette County, Wisconsin",569,rich
+55067,"Langlade County, Wisconsin",35,stub
+55069,"Lincoln County, Wisconsin",264,thin
+55071,"Manitowoc County, Wisconsin",218,thin
+55073,"Marathon County, Wisconsin",411,mid
+55075,"Marinette County, Wisconsin",119,thin
+55077,"Marquette County, Wisconsin",215,thin
+55078,"Menominee County, Wisconsin",576,rich
+55079,"Milwaukee County, Wisconsin",1077,rich
+55081,"Monroe County, Wisconsin",35,stub
+55083,"Oconto County, Wisconsin",178,thin
+55085,"Oneida County, Wisconsin",160,thin
+55087,"Outagamie County, Wisconsin",308,mid
+55089,"Ozaukee County, Wisconsin",253,thin
+55091,"Pepin County, Wisconsin",263,thin
+55093,"Pierce County, Wisconsin",131,thin
+55095,"Polk County, Wisconsin",174,thin
+55097,"Portage County, Wisconsin",190,thin
+55099,"Price County, Wisconsin",37,stub
+55101,"Racine County, Wisconsin",666,rich
+55103,"Richland County, Wisconsin",163,thin
+55105,"Rock County, Wisconsin",179,thin
+55107,"Rusk County, Wisconsin",251,thin
+55109,"St. Croix County, Wisconsin",438,mid
+55111,"Sauk County, Wisconsin",279,thin
+55113,"Sawyer County, Wisconsin",655,rich
+55115,"Shawano County, Wisconsin",241,thin
+55117,"Sheboygan County, Wisconsin",420,mid
+55119,"Taylor County, Wisconsin",153,thin
+55121,"Trempealeau County, Wisconsin",80,stub
+55123,"Vernon County, Wisconsin",36,stub
+55125,"Vilas County, Wisconsin",290,mid
+55127,"Walworth County, Wisconsin",652,rich
+55129,"Washburn County, Wisconsin",229,thin
+55131,"Washington County, Wisconsin",264,thin
+55133,"Waukesha County, Wisconsin",515,rich
+55135,"Waupaca County, Wisconsin",231,thin
+55137,"Waushara County, Wisconsin",103,thin
+55139,"Winnebago County, Wisconsin",365,mid
+55141,"Wood County, Wisconsin",262,thin
+56001,"Albany County, Wyoming",288,mid
+56003,"Big Horn County, Wyoming",91,stub
+56005,"Campbell County, Wyoming",142,thin
+56007,"Carbon County, Wyoming",294,mid
+56009,"Converse County, Wyoming",36,stub
+56011,"Crook County, Wyoming",198,thin
+56013,"Fremont County, Wyoming",293,mid
+56015,"Goshen County, Wyoming",352,mid
+56017,"Hot Springs County, Wyoming",163,thin
+56019,"Johnson County, Wyoming",231,thin
+56021,"Laramie County, Wyoming",434,mid
+56023,"Lincoln County, Wyoming",116,thin
+56025,"Natrona County, Wyoming",183,thin
+56027,"Niobrara County, Wyoming",172,thin
+56029,"Park County, Wyoming",303,mid
+56031,"Platte County, Wyoming",37,stub
+56033,"Sheridan County, Wyoming",150,thin
+56035,"Sublette County, Wyoming",113,thin
+56037,"Sweetwater County, Wyoming",330,mid
+56039,"Teton County, Wyoming",397,mid
+56041,"Uinta County, Wyoming",232,thin
+56043,"Washakie County, Wyoming",35,stub
+56045,"Weston County, Wyoming",118,thin
+51510,"Alexandria City, Virginia",2134,rich
+51520,"Bristol City, Virginia",740,rich
+51530,"Buena Vista City, Virginia",581,rich
+51540,"Charlottesville City, Virginia",1400,rich
+51550,"Chesapeake City, Virginia",1492,rich
+51570,"Colonial Heights City, Virginia",422,mid
+51580,"Covington City, Virginia",547,rich
+51590,"Danville City, Virginia",1403,rich
+51595,"Emporia City, Virginia",449,mid
+51600,"Fairfax City, Virginia",581,rich
+51610,"Falls Church City, Virginia",1535,rich
+51630,"Fredericksburg City, Virginia",1624,rich
+51640,"Galax City, Virginia",428,mid
+51650,"Hampton City, Virginia",1329,rich
+51660,"Harrisonburg City, Virginia",409,mid
+51670,"Hopewell City, Virginia",504,rich
+51678,"Lexington City, Virginia",570,rich
+51680,"Lynchburg City, Virginia",993,rich
+51683,"Manassas City, Virginia",874,rich
+51685,"Manassas Park City, Virginia",344,mid
+51690,"Martinsville City, Virginia",990,rich
+51700,"Newport News City, Virginia",2321,rich
+51710,"Norfolk City, Virginia",1574,rich
+51720,"Norton City, Virginia",383,mid
+51730,"Petersburg City, Virginia",3705,rich
+51735,"Poquoson City, Virginia",1063,rich
+51740,"Portsmouth City, Virginia",523,rich
+51750,"Radford City, Virginia",105,thin
+51760,"Richmond City, Virginia",1650,rich
+51770,"Roanoke City, Virginia",2540,rich
+51775,"Salem City, Virginia",1031,rich
+51790,"Staunton City, Virginia",864,rich
+51800,"Suffolk City, Virginia",718,rich
+51810,"Virginia Beach City, Virginia",1719,rich
+51820,"Waynesboro City, Virginia",421,mid
+51830,"Williamsburg City, Virginia",1617,rich
+51840,"Winchester City, Virginia",562,rich
+02020,"Anchorage Municipality, Alaska",2279,rich
+02105,"Hoonah-Angoon Census Area, Alaska",238,thin
+02110,"Juneau City and Borough, Alaska",3224,rich
+02198,"Prince of Wales-Hyder Census Area, Alaska",535,rich
+02220,"Sitka City and Borough, Alaska",698,rich
+02230,"Skagway Municipality, Alaska",1629,rich
+02275,"Wrangell City and Borough, Alaska",1537,rich
+02282,"Yakutat City and Borough, Alaska",1261,rich
+15001,"Hawaii County, Hawaii",1033,rich
+17039,"De Witt County, Illinois",376,mid
+21123,"Larue County, Kentucky",548,rich
+22031,"De Soto Parish, Louisiana",361,mid
+25019,"Nantucket County, Massachusetts",1045,rich
+36005,"Bronx County, New York",2420,rich
+36047,"Kings County, New York",2877,rich
+36061,"New York County, New York",4050,rich
+36081,"Queens County, New York",1887,rich
+36085,"Richmond County, New York",2846,rich
+40079,"Le Flore County, Oklahoma",377,mid

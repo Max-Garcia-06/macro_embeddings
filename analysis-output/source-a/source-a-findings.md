@@ -1,8 +1,8 @@
 ---
 type: results-report
-date: 2026-07-10
+date: 2026-08-03
 experiment_line: source-a
-round: 3
+round: 4
 purpose: consolidated-findings
 status: active
 supersedes:
@@ -754,3 +754,179 @@ wasn't measured on the subset.
   separately since re-execution alone does not update prose text; see §3.2
   for the one substantive change re-execution surfaced (PC1 now has a real
   theme, reversing the superseded baseline's finding).
+
+## 13. Typed Feature Extraction — Beating `content_length` Without the Embedding (2026-08-03)
+
+**Context**: the `bge-m3` embedding step was cut from the pipeline (see
+`E_macro_key_findings.ipynb` §2). The cut rested on cost, not on absence of
+signal — the embedding beat `content_length` on 23 of 28 cross-pillar targets
+(Wilcoxon p = 4.2e-5) but by +0.0030 mean R² lift against +0.0010, for a 2.2GB
+model and CPU inference over 3,144 articles. That left Source A shipping one
+scalar. This round asks whether cheap typed extraction can do better.
+
+### 13.1 The corpus is extremely uneven, and the unevenness is economic
+
+Splitting all 3,144 counties into content tiers on `content_length`
+(`analyze_source_a_tiers.py`; stub <100 chars, thin 100–283, mid 284–461,
+rich ≥462):
+
+| tier | n | any named industry | mean distinct proper nouns | founding year present |
+|---|---|---|---|---|
+| stub | 294 | 1.0% | 2.0 | 5.8% |
+| thin | 1,281 | 1.1% | 5.2 | 32.9% |
+| mid | 784 | 5.5% | 8.8 | 52.4% |
+| rich | 785 | **25.2%** | 17.8 | 46.5% |
+
+Named industry content is **23× more common in the rich tier than the thin
+tier**, but only 6.5% of the corpus carries it at all. Two consequences:
+
+1. A dense representation averaged over all 3,144 articles is dominated by
+   counties with no economic content. This is the quantitative form of the
+   heterogeneity that §4.1 identified as a failure *mechanism* (LLM cleaning kept
+   geographic anchoring for some counties and dropped it for others).
+2. The founding/namesake axis is flat across the thin/mid/rich tiers
+   (42.5 / 53.7 / 51.7%) — which is exactly why PC1 (§3.2) was a dead end. It has
+   mass everywhere and therefore separates nothing.
+
+**Caution on an earlier draft of this table**: a first pass reported the industry
+gradient as 9.4% → 43.1% and the corpus rate as 19.7%. Those numbers were wrong
+in both directions — the patterns were case-sensitive (missing "Metropolitan
+Statistical Area") and lacked word boundaries (`port` matched "important",
+"airport", "transport"). The corrected figures above are steeper in gradient and
+much lower in absolute rate. Any reuse should take these, not the earlier ones.
+
+### 13.2 Method: one uniform schema, sparsity encodes the tier
+
+`extract_source_a_features.py` writes 20 typed columns for every county from
+`raw_intro_text` — industry family flags, institution flags (university,
+military base, protected land, tribal land), transport flags, metro attachment,
+namesake, founding year, and a distinct-proper-noun count. Design points:
+
+- **Absence is `False`, not null.** A stub county returns False across the board
+  and that sparsity *is* its tier. One schema for all 3,144 counties, so the
+  feature-store handoff has no "not applicable" null category.
+- **Extraction reads `raw_intro_text`, never `embedding_text`.** The corpus
+  stripper that produces the latter removes the county name, the state name, and
+  "U.S. state of" along with boilerplate, leaving damaged input.
+- **Tiers are not shipped.** Tier membership tracks county size, so it is used to
+  route work and break out results, never as a feature.
+- **Precision was checked on sampled matches, and two flags failed it.**
+  `has_military_base` originally matched `\bFort [A-Z]` and `\bArmy\b`: five of
+  six sampled hits were false ("Fort Wayne" and "Fort Yates" are city names,
+  "Fort Lemhi" an 1855 Mormon settlement). `has_tribal_land` matched bare
+  `Indian`, catching "American Indian Wars" and reservations dissolved in the
+  1830s. Both were tightened to require installation/present-tense-land terms,
+  cutting them from 163→21 and 157→79 counties respectively. This step is what
+  separates lexicon extraction from plausible-looking noise.
+
+### 13.3 Result: 2.6× the incumbent, 94% of the embedding, at 1/50th the width
+
+`analyze_source_a_representation.py`, same protocol as the 2026-07-27 run — 28
+targets in pillars B–F, unpenalized size-plus-state baseline, each representation
+fitted to its residuals, ridge penalty by nested crossvalidation, seed 42, 5 folds.
+
+| variant | columns | mean R² lift | raw R² alone | beats `length` | Wilcoxon p |
+|---|---|---|---|---|---|
+| `content_length` (incumbent) | 1 | +0.00098 | 0.019 | — | — |
+| `extracted_min` | 4 | +0.00223 | 0.041 | 14/28 | 0.493 |
+| `extracted_mid` | 8 | +0.00231 | 0.041 | 17/28 | 0.053 |
+| `extracted_full` | 20 | **+0.00257** | 0.044 | 16/28 | 0.274 |
+| `bge-m3` PCA-50 | 50 | +0.00171 | 0.085 | 13/28 | 0.522 |
+| `bge-m3` full | 1024 | +0.00273 | 0.112 | 21/28 | 0.0008 |
+
+**The mean-lift criterion passes decisively; the paired-consistency criterion does
+not.** Extraction delivers 2.6× the incumbent's mean lift and 94% of the 1024-dim
+embedding's, for 20 regex columns and no model download. But it gets there by
+winning large on a handful of targets and tying on the rest — mean difference
+against the incumbent is +0.00159 while the *median* is +0.00021 — so the
+rank-based Wilcoxon does not reach significance. The embedding shows the opposite
+profile: smaller per-target gains, but on 21 of 28 targets, which is what makes
+its test significant.
+
+Stated plainly: **extraction is the better representation on average and the
+cheaper one by far, but it is not uniformly better target by target.**
+
+### 13.4 The wins are semantically coherent, not curve-fitting
+
+The largest single gain is Accommodation & Food Services LQ (`lq_emp_72`,
++0.0189 against the incumbent's −0.0000), and it has an obvious mechanism:
+
+| | mean `lq_emp_72` | n |
+|---|---|---|
+| intro mentions tourism | 1.407 | 78 |
+| intro does not | 1.010 | 2,291 |
+
+Wikipedia saying "resort", "ski", or "casino" predicts measured tourism
+employment (r = 0.157). Other top gains follow the same pattern — Information LQ
+(+0.0086 over incumbent), Finance & Insurance LQ (+0.0054), and Source E's
+capital-to-wage ratio (+0.0049), where extraction beats even the full embedding
+(+0.0058 vs +0.0026). Source E is Capital Flow, the pillar the E_macro proposal
+originally assigned Source A to support (§10).
+
+### 13.5 Gains concentrate where the content is — the tier hypothesis holds
+
+Mean lift by content tier, re-scored from the same out-of-fold predictions
+(`outputs/source_a_representation_by_tier.csv`, tiers with <150 rows suppressed):
+
+| variant | stub | thin | mid | rich |
+|---|---|---|---|---|
+| `content_length` | +0.00060 | +0.00039 | +0.00008 | +0.00331 |
+| `extracted_full` | −0.00007 | +0.00243 | +0.00104 | **+0.00501** |
+| `bge-m3` full | +0.00103 | +0.00236 | +0.00054 | +0.00545 |
+
+Extraction contributes essentially nothing on stub counties — correctly, since
+there is nothing to extract — and most in the rich tier, where it nearly matches
+the 1024-dim embedding (+0.00501 vs +0.00545). **The heterogeneity hypothesis is
+confirmed: the pillar's value is concentrated in the counties whose articles have
+something to say.**
+
+### 13.6 The win is not an artifact of Source F circularity
+
+Some intros restate USDA's own county classification verbatim (Marquette County
+WI: "considered a high-recreation retirement destination by the U.S. Department
+of Agriculture"), and Source F's `distress_count` is built from those
+classifications. `has_usda_echo` flags the 16 counties affected and is excluded
+from every scored variant. As a stronger check, dropping Source F's target
+entirely: `extracted_full` +0.00190 vs incumbent +0.00073 across the remaining 27
+targets — still 2.6×. The advantage does not depend on Source F.
+
+### 13.7 Dimensionality: reduce by column selection, never by PCA
+
+The nested widths are close (+0.00223 / +0.00231 / +0.00257 for 4 / 8 / 20
+columns), so most of the value sits in the four-column core — `content_length`,
+`n_industry_mentions`, `has_metro_attachment`, `n_distinct_proper_nouns` — and the
+remaining sixteen add roughly 15% more. Either is defensible; the 4-column block
+is the better feature-store citizen if width matters at fusion.
+
+PCA is separately ruled out. On the embedding, compressing 1024 → 50 retained only
+42% of its advantage over `content_length` (+0.00073 vs +0.00175), losing on 23 of
+28 targets (p = 0.0009). The mechanism is §3.2: this corpus's highest-variance
+direction is the Texas founding-narrative artifact, so a variance criterion
+selects against economic content. Ridge over the full width is itself a soft,
+target-aware reduction and does the job better. **If the embedding is ever
+reinstated, reduce it supervised (PLS) or not at all.**
+
+### 13.8 Status and open items
+
+- **Status**: `extracted_full`'s 20 columns are written into
+  `data/source_a_text_features.parquet` and flow into `pillar_matrix.build_matrix`
+  as Source A's block (A = 21 columns) with no change to that module.
+- **Allowed wording**: "typed extraction from Wikipedia intros delivers 2.6× the
+  mean cross-pillar lift of article length, and 94% of the cut embedding's, at 20
+  columns and no model download — but its per-target advantage is concentrated
+  rather than uniform, and does not reach paired significance."
+- **Forbidden wording**: "extraction beats the embedding" (it does not, on
+  consistency: 16/28 vs 21/28 targets); "the improvement is statistically
+  significant" (the paired Wilcoxon is p = 0.274).
+- **Open — body sections not yet tested.** Extraction runs on intro text only. The
+  feature family that produces the largest wins (named industry) fires on just
+  6.5% of counties, while §4 found ~25% of counties have a dedicated Economy
+  section that was never parsed. Fetch cost is flat — `extract_article_html`
+  already returns the full article body and `isolate_lead_section` discards
+  everything after the lead — so this is a parsing question, not an acquisition
+  cost question. §4/§4.1 closed section expansion, but did so on Mantel-r against
+  *geographic* distance, the yardstick this project has since rejected for exactly
+  this pillar. Re-testing against economic targets is the open increment.
+- **Reproduction**: `uv run python scripts/extract_source_a_features.py`, then
+  `uv run python scripts/analyze_source_a_tiers.py`, then
+  `uv run python scripts/analyze_source_a_representation.py`. Seed 42 throughout.
