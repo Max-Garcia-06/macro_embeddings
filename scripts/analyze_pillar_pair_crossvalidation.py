@@ -25,6 +25,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from county_population import load_size_proxy
 from stats_utils import benjamini_hochberg, permutation_test_corr
 
 # Matches every other crossvalidation script in this project so effect sizes and
@@ -157,13 +158,13 @@ def build_panel() -> pd.DataFrame:
         )
         .merge(d[["fips_code", "log_total_tons", "mean_partner_hhi"]], on="fips_code", how="left")
         .merge(
-            e[["fips_code", "capital_to_wage_ratio", "num_returns"]],
+            e[["fips_code", "capital_to_wage_ratio"]],
             on="fips_code",
             how="left",
         )
+        .merge(load_size_proxy(), on="fips_code", how="left")
     )
     panel["metro_2023"] = panel["metro_2023"].astype("float")
-    panel["log_num_returns"] = np.log10(panel["num_returns"].clip(lower=1))
     return panel
 
 
@@ -231,7 +232,7 @@ def partial_correlation(x: pd.Series, y: pd.Series, control: pd.Series) -> float
     The control is removed **linearly** (OLS on `[1, control]`). Any size
     confounding that is nonlinear in the control survives into the residuals,
     so a link that looks size-robust here may still be size-driven. Callers
-    pass `log_num_returns` rather than raw counts partly for this reason.
+    pass `log_population` rather than raw counts partly for this reason.
 
     Args:
         x: First variable.
@@ -259,9 +260,12 @@ def partial_correlation(x: pd.Series, y: pd.Series, control: pd.Series) -> float
 def add_size_controlled_correlations(results: pd.DataFrame, panel: pd.DataFrame) -> pd.DataFrame:
     """Recompute every sweep correlation controlling for county size.
 
-    `num_returns` (Source E's tax-return count) is used as the size proxy: it is
-    available for 3,143 of 3,144 counties and tracks population far more closely
-    than any other column already in the panel.
+    Census PEP county population is used as the size proxy (`county_population`),
+    covering all 3,144 counties and belonging to no pillar. It replaced Source
+    E's `num_returns` on 2026-08-04, because using one pillar's column to control
+    correlations involving that same pillar made Source E's independence partly
+    self-referential. The two agree at r = 0.998 in logs, so the swap changes the
+    provenance of the control rather than its verdicts.
 
     **`r_size_controlled` carries no significance test.** `run_sweep`
     permutation-tests and BH-corrects the *raw* correlation only; the
@@ -285,7 +289,7 @@ def add_size_controlled_correlations(results: pd.DataFrame, panel: pd.DataFrame)
 
     Args:
         results: Output of run_sweep.
-        panel: Output of build_panel, plus a `log_num_returns` column.
+        panel: Output of build_panel, plus a `log_population` column.
 
     Returns:
         `results` with `r_size_controlled` and `size_confounded` columns added,
@@ -294,10 +298,10 @@ def add_size_controlled_correlations(results: pd.DataFrame, panel: pd.DataFrame)
     """
     partials: list[float] = []
     for row in results.itertuples():
-        paired = panel[[row.feature_x, row.feature_y, "log_num_returns"]].dropna()
+        paired = panel[[row.feature_x, row.feature_y, "log_population"]].dropna()
         partials.append(
             partial_correlation(
-                paired[row.feature_x], paired[row.feature_y], paired["log_num_returns"]
+                paired[row.feature_x], paired[row.feature_y], paired["log_population"]
             )
         )
 

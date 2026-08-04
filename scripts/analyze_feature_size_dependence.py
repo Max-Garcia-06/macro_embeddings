@@ -11,11 +11,14 @@ high correlation here is harmless. Under a rate-shaped target (revenue per
 request) the denominator already normalizes for volume, so a feature that tracks
 size closely contributes little the downstream model does not already hold.
 
-Size proxy is `log10(num_returns)` from Source E, matching the partial-correlation
-control used in the sweep. That proxy is itself a Source E column, so Source E's
-own independence score is partly self-referential -- swapping in Census
-population is a documented prerequisite before treating this table as final
-(`docs/PROJECT_GOAL.md`, next-work item 2).
+Size proxy is `log10(population)` from the Census Population Estimates Program
+(`county_population.py`), matching the partial-correlation control used in the
+sweep. It replaced `log10(num_returns)` on 2026-08-04: the tax-return count is a
+Source E column, so Source E's own independence score used to be partly
+self-referential (`docs/PROJECT_GOAL.md`, next-work item 2). The two proxies
+correlate at r = 0.998 in logs, so the swap removes the self-reference without
+moving the tiering; `r_with_log_returns` is retained per feature as evidence of
+that rather than as a claim to be taken on trust.
 
 Output: `outputs/feature_size_dependence.csv`, one row per feature.
 """
@@ -28,6 +31,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from county_population import load_size_proxy
 from extract_source_a_features import VARIANT_COLUMNS
 from extract_source_a_section_features import section_feature_columns
 
@@ -94,7 +98,12 @@ def build_feature_panel() -> tuple[pd.DataFrame, dict[str, str]]:
     ]
 
     panel = (
-        source_e[["fips_code", "num_returns", "capital_to_wage_ratio"]]
+        load_size_proxy()
+        .merge(
+            source_e[["fips_code", "num_returns", "capital_to_wage_ratio"]],
+            on="fips_code",
+            how="outer",
+        )
         .merge(
             source_d[["fips_code", "total_outbound_tons", "total_inbound_tons", *d_columns]],
             on="fips_code",
@@ -106,9 +115,12 @@ def build_feature_panel() -> tuple[pd.DataFrame, dict[str, str]]:
         .merge(source_b[["fips_code", *lq_columns]], on="fips_code", how="outer")
     )
 
-    # log10 on both size and tonnage: both are heavy-tailed county counts, and
-    # the sweep's partial-correlation control uses the same transform.
-    panel["log_size"] = np.log10(panel["num_returns"].clip(lower=1))
+    # `log_population` arrives from county_population.load_size_proxy. The
+    # superseded tax-return proxy is kept alongside it so every row can report
+    # both, and tonnage takes the same log10 transform -- both are heavy-tailed
+    # county counts, and the sweep's partial-correlation control matches.
+    panel["log_size"] = panel["log_population"]
+    panel["log_returns"] = np.log10(panel["num_returns"].clip(lower=1))
     panel["log_tons"] = np.log10(
         (panel["total_outbound_tons"] + panel["total_inbound_tons"]).clip(lower=1)
     )
@@ -128,16 +140,18 @@ def compute_size_dependence(
     """Correlate each feature against the county-size proxy.
 
     Args:
-        panel: Per-county frame carrying every feature plus `log_size`.
+        panel: Per-county frame carrying every feature, `log_size` (Census
+            population) and `log_returns` (the superseded Source E proxy).
         pillar_of: Mapping of feature name to pillar letter.
 
     Returns:
         One row per feature with columns `feature`, `pillar`, `r_with_log_size`,
-        `abs_r`, `r_squared`, `n`, `size_proxy`, sorted by `abs_r` descending.
+        `abs_r`, `r_squared`, `n`, `size_proxy`, and `r_with_log_returns`,
+        sorted by `abs_r` descending.
     """
     rows: list[dict[str, object]] = []
     for feature, pillar in pillar_of.items():
-        paired = panel[[feature, "log_size"]].dropna()
+        paired = panel[[feature, "log_size", "log_returns"]].dropna()
         if len(paired) < MIN_PAIRED_COUNT:
             logger.warning(
                 "Skipping %s: only %d paired counties (floor %d)",
@@ -146,9 +160,9 @@ def compute_size_dependence(
                 MIN_PAIRED_COUNT,
             )
             continue
-        r = float(
-            np.corrcoef(paired[feature].astype(float), paired["log_size"])[0, 1]
-        )
+        values = paired[feature].astype(float)
+        r = float(np.corrcoef(values, paired["log_size"])[0, 1])
+        r_returns = float(np.corrcoef(values, paired["log_returns"])[0, 1])
         rows.append(
             {
                 "feature": feature,
@@ -158,6 +172,7 @@ def compute_size_dependence(
                 "r_squared": r**2,
                 "n": len(paired),
                 "size_proxy": abs(r) >= SIZE_PROXY_THRESHOLD,
+                "r_with_log_returns": r_returns,
             }
         )
     return (
@@ -186,6 +201,26 @@ def main() -> None:
         len(dependence),
         SIZE_PROXY_THRESHOLD,
     )
+
+    # What the 2026-08-04 proxy swap cost. Reported every run rather than once,
+    # so the claim that Census population and the retired tax-return proxy give
+    # the same tiering stays checkable instead of becoming folklore.
+    would_flag = dependence["r_with_log_returns"].abs() >= SIZE_PROXY_THRESHOLD
+    reclassified = dependence[would_flag != dependence["size_proxy"]]
+    logger.info(
+        "Proxy swap: max |dr| = %.4f, %d feature(s) change tier vs the retired "
+        "tax-return proxy",
+        (dependence["r_with_log_size"] - dependence["r_with_log_returns"]).abs().max(),
+        len(reclassified),
+    )
+    for row in reclassified.itertuples():
+        logger.info(
+            "  %s (%s): population r=%+.3f, returns r=%+.3f",
+            row.feature,
+            row.pillar,
+            row.r_with_log_size,
+            row.r_with_log_returns,
+        )
     for row in flagged.itertuples():
         logger.info(
             "  %s (%s): r=%+.3f, %.0f%% shared variance, n=%d",

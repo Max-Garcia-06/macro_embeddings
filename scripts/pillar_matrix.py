@@ -30,6 +30,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from county_population import load_size_proxy
+
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 DATA_DIR: Path = REPO_ROOT / "data"
 
@@ -61,8 +63,13 @@ SIZE_COLUMNS: tuple[str, ...] = (
 )
 
 # The size control handed to every baseline model, alongside state dummies.
+# `log_population` (Census PEP, `county_population.py`) replaced `log_num_returns`
+# on 2026-08-04: every other member of this tuple is still a pillar's own column
+# re-exposed, so anchoring the control on a source outside all six pillars keeps
+# the baseline from being partly Source E measuring itself. The two agree at
+# r = 0.998 in logs.
 SIZE_FEATURES: tuple[str, ...] = (
-    "log_num_returns",
+    "log_population",
     "log_agi",
     "log_gdp_latest",
 )
@@ -90,6 +97,7 @@ NON_FEATURE_COLUMNS: tuple[str, ...] = (
     "county_name",
     "unemployment_latest_year",
     "gdp_latest_year",
+    "as_of_date",
 )
 
 logger = logging.getLogger(__name__)
@@ -170,7 +178,8 @@ def build_matrix() -> tuple[pd.DataFrame, dict[str, list[str]]]:
 
     Returns:
         Tuple of (matrix, blocks). `matrix` carries `fips_code`, `county_name`,
-        `state_fips`, `log_num_returns`, and every pillar feature column.
+        `state_fips`, the `SIZE_FEATURES` columns, and every pillar feature
+        column.
         `blocks` maps pillar letter to its list of feature column names,
         excluding size and identifier columns.
 
@@ -203,13 +212,16 @@ def build_matrix() -> tuple[pd.DataFrame, dict[str, list[str]]]:
 
     # Scale measures, re-attached outside every block so they can control
     # without also predicting.
-    matrix = matrix.merge(
-        frames["E"][["fips_code", "num_returns", "agi_thousands"]], on="fips_code", how="left"
-    ).merge(frames["C"][["fips_code", "gdp_latest"]], on="fips_code", how="left")
-    matrix["log_num_returns"] = np.log10(matrix["num_returns"].clip(lower=1))
+    matrix = (
+        matrix.merge(
+            frames["E"][["fips_code", "agi_thousands"]], on="fips_code", how="left"
+        )
+        .merge(frames["C"][["fips_code", "gdp_latest"]], on="fips_code", how="left")
+        .merge(load_size_proxy(), on="fips_code", how="left")
+    )
     matrix["log_agi"] = np.log10(matrix["agi_thousands"].clip(lower=1))
     matrix["log_gdp_latest"] = np.log10(matrix["gdp_latest"].clip(lower=1))
-    matrix = matrix.drop(columns=["num_returns", "agi_thousands", "gdp_latest"])
+    matrix = matrix.drop(columns=["agi_thousands", "gdp_latest"])
 
     # State FIPS is the first two digits of the county code -- the geography
     # control, so "signal" cannot just be one state's counties resembling each

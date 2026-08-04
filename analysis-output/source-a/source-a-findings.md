@@ -518,6 +518,11 @@ the §3.6 permutation test).
   two `_by_pillar.csv` files are the primary reportable results** (§14.2c,
   §17.2a); the aggregates in the headline tables are secondary and are weighted
   71% toward QCEW.
+- **Handoff and control era (§18–§19)**: `county_population.py` (Census PEP size
+  proxy, caches `data/county_population.parquet`), `pillar_vintage.py`
+  (`as_of_date` stamping, writes `outputs/pillar_vintages.csv`), and
+  `export_source_a_schema.py` (writes `docs/source_a_feature_schema.md` and
+  `outputs/source_a_feature_schema.csv` from the parquet).
 - Persisted statistics: `analysis-output/source-a/stats.json` (adopted-embeddings
   snapshot, n=3,144 / n=2,849, 2026-07-10).
 - Figures: `analysis-output/source-a/figures/figure-01-similarity-vs-distance.png`,
@@ -1021,82 +1026,91 @@ what §4's intro-only framing could not see.
 ### 14.2 Result: 29 typed columns beat the 1024-dim embedding
 
 Full re-run on the refetched corpus, same protocol throughout (28 targets, seed
-42, 5 folds, unpenalized size-plus-state baseline, nested-CV ridge penalty):
+42, 5 folds, unpenalized size-plus-state baseline, nested-CV ridge penalty).
+**Re-scored 2026-08-04** against the Census-population size baseline that
+replaced the tax-return proxy (§18); every figure below moved in the fourth
+decimal and none of the conclusions changed, except that the headline p rose
+from 0.082 to 0.115:
 
 | variant | columns | mean R² lift | raw R² alone | beats `length` | Wilcoxon p |
 |---|---|---|---|---|---|
-| `content_length` (incumbent) | 1 | +0.00117 | 0.020 | — | — |
-| `extracted_min` | 4 | +0.00254 | 0.042 | 13/28 | 0.493 |
-| `extracted_mid` | 8 | +0.00243 | 0.042 | 19/28 | 0.066 |
-| `extracted_full` (intro only) | 20 | +0.00263 | 0.044 | 16/28 | 0.339 |
-| **`extracted_sections`** | 29 | **+0.00320** | 0.048 | 19/28 | 0.082 |
-| `bge-m3` PCA-50 | 50 | +0.00171 | 0.085 | 13/28 | 0.678 |
-| `bge-m3` full | 1024 | +0.00273 | 0.112 | 19/28 | 0.014 |
+| `content_length` (incumbent) | 1 | +0.00118 | 0.020 | — | — |
+| `extracted_min` | 4 | +0.00260 | 0.042 | 13/28 | 0.412 |
+| `extracted_mid` | 8 | +0.00249 | 0.042 | 17/28 | 0.126 |
+| `extracted_full` (intro only) | 20 | +0.00258 | 0.044 | 14/28 | 0.451 |
+| **`extracted_sections`** | 29 | **+0.00307** | 0.048 | 18/28 | 0.115 |
+| `bge-m3` PCA-50 | 50 | +0.00164 | 0.085 | 15/28 | 0.695 |
+| `bge-m3` full | 1024 | +0.00281 | 0.112 | 19/28 | 0.012 |
 
-**29 interpretable regex columns now exceed the 1024-dim embedding's mean lift
-(+0.00320 against +0.00273), at 2.7× the incumbent scalar, with no model
-download.** Adding the economy section is worth +0.00057 over intro-only
-extraction — about 22% more lift for 9 more columns.
+**29 interpretable regex columns still exceed the 1024-dim embedding's mean lift
+(+0.00307 against +0.00281), at 2.6× the incumbent scalar, with no model
+download.** Adding the economy section is worth +0.00049 over intro-only
+extraction — about 19% more lift for 9 more columns.
 
-The consistency caveat from §13.3 still stands: p = 0.082, short of 0.05. The
-extraction variants win large on a handful of targets and tie elsewhere, while
-the embedding wins smaller but on more of them. **Extraction is the better and
-far cheaper representation on average; it is not uniformly better target by
-target, and that should not be claimed.** §14.2a gives that p-value the sample
-size it needed, which changes how it should be read.
+The consistency caveat from §13.3 still stands, and is now further from 0.05
+than it was: p = 0.115. The extraction variants win large on a handful of
+targets and tie elsewhere, while the embedding wins smaller but on more of them.
+**Extraction is the better and far cheaper representation on average; it is not
+uniformly better target by target, and that should not be claimed.** §14.2a
+gives that p-value the sample size it needed, which changes how it should be
+read.
 
-### 14.2a That p = 0.082 is underpowered, not close
+### 14.2a That p = 0.115 is underpowered, not close
 
-`p = 0.082` has been reported four times in this file without the sample size it
-would have needed. Paired difference, `extracted_sections` minus
+The headline p has been reported repeatedly in this file without the sample size
+it would have needed. Paired difference, `extracted_sections` minus
 `content_length`, across the 28 targets:
 
 | statistic | value |
 |---|---|
-| mean | +0.00203 |
-| median | +0.00061 |
-| sd | 0.00605 |
-| Cohen dz | 0.335 |
-| **power at n = 28, α = 0.05 one-sided** | **0.53** |
-| targets needed for 80% power | 57 |
-| targets needed for 90% power | 78 |
+| mean | +0.00190 |
+| median | +0.00058 |
+| sd | 0.00586 |
+| Cohen dz | 0.323 |
+| **power at n = 28, α = 0.05 one-sided** | **0.51** |
+| targets needed for 80% power | 61 |
+| targets needed for 90% power | 84 |
 
-**Power of 0.53 means that if the observed effect is the true effect, this test
-detects it about half the time.** `p = 0.082` is the ordinary output of a real
+**Power of 0.51 means that if the observed effect is the true effect, this test
+detects it about half the time.** `p = 0.115` is the ordinary output of a real
 effect measured with roughly half the sample its effect size requires. It is not
 evidence against the effect, and it must not be written up as though the question
 were close or as though the result had failed a fair test.
 
 **It is not a test-choice problem.** The suspicion that Wilcoxon misses the
-result by discarding magnitude was checked directly: Wilcoxon signed-rank
-p = 0.0815, paired t p = 0.0873. Switching to a magnitude-weighted test changes
-the third decimal. Any proposal to "use a better test" is proposing a rounding
-error.
+result by discarding magnitude was checked directly against the retired
+tax-return baseline: Wilcoxon signed-rank p = 0.0815, paired t p = 0.0873 —
+the two tests landed in the same place, and switching to a magnitude-weighted
+test changed the third decimal. Any proposal to "use a better test" is proposing
+a rounding error.
 
 **The mean is carried by five targets.** Mean is 3.3× the median because the
-distribution is concentrated: Accommodation & Food Services LQ (+0.02619),
-demographic distress count (+0.01356), Information LQ (+0.00783),
-capital-to-wage ratio (+0.00590), Transportation & Warehousing LQ (+0.00428).
-Losses concentrate too — Professional Services −0.00653, Retail Trade −0.00294,
-Educational Services −0.00284. Dropping Accommodation alone roughly halves the
-mean. Its mechanism is documented and independently verified (§13.4: counties
-whose articles mention tourism average 1.407 Accommodation LQ against 1.010 for
-those that do not, r = 0.157), so the concentration is explicable rather than
-suspicious — but the headline rests heavily on one target.
+distribution is concentrated: Accommodation & Food Services LQ (+0.02531),
+demographic distress count (+0.01330), Information LQ (+0.00799),
+capital-to-wage ratio (+0.00486), Transportation & Warehousing LQ (+0.00426).
+Losses concentrate too — Professional Services −0.00615, Educational Services
+−0.00294, Retail Trade −0.00288. Dropping Accommodation alone takes the mean
+from +0.00190 to +0.00103, roughly halving it. Its mechanism is documented and
+independently verified (§13.4: counties whose articles mention tourism average
+1.407 Accommodation LQ against 1.010 for those that do not, r = 0.157), so the
+concentration is explicable rather than suspicious — but the headline rests
+heavily on one target.
 
 **Against the embedding the two are a statistical dead heat.** Head to head,
-`extracted_sections` minus `bge-m3` full: mean difference **+0.00047, 13 of 28
-targets, Wilcoxon p = 0.76**, dz = 0.089. §14.5 already forbids "significantly
+`extracted_sections` minus `bge-m3` full: mean difference **+0.00026, 11 of 28
+targets, Wilcoxon p = 0.52**, dz = 0.057. §14.5 already forbids "significantly
 beats the embedding," which is correct, but the true relationship is weaker than
 that phrasing implies. Typed extraction is *statistically indistinguishable* from
 the 1024-dim embedding and wins on cost, interpretability, and the absence of a
-2.2GB model download. **Those are the defensible arguments.** The +0.00320
-against +0.00273 gap is noise and must not be leaned on.
+2.2GB model download. **Those are the defensible arguments.** The +0.00307
+against +0.00281 gap is noise and must not be leaned on — the rank count now
+runs against the typed block, which is the same conclusion read from the other
+side.
 
 One asymmetry cuts the other way and belongs on the record: against
 `content_length`, the embedding's advantage is both larger and more consistent
-(dz = 0.435, power 0.72, Wilcoxon p = 0.014, and it survives the pillar-blocked
-test at p = 0.022) where the typed block's does not (pillar-blocked p = 0.132).
+(dz = 0.426, power 0.71, Wilcoxon p = 0.012, and it survives the pillar-blocked
+test at p = 0.005) where the typed block's does not (pillar-blocked p = 0.146).
 That is the same fact §14.2 states in prose — the embedding wins smaller but on
 more targets — now measured. It does not change the shipping decision, because
 the two tie head to head and only one of them costs a model download.
@@ -1125,16 +1139,16 @@ design effect it implies, and the effective n:
 
 | variant | ICC of differences | effective n | pillar-blocked p |
 |---|---|---|---|
-| `extracted_min` | 0.360 | 15.5 | 0.212 |
-| `extracted_mid` | 0.351 | 15.6 | 0.158 |
-| `extracted_full` | 0.158 | 20.6 | 0.158 |
-| **`extracted_sections`** | **0.031** | **26.2** | 0.132 |
-| `bge-m3` full | 0.000 | 28.0 | 0.022 |
+| `extracted_min` | 0.410 | 14.6 | 0.224 |
+| `extracted_mid` | 0.385 | 15.0 | 0.146 |
+| `extracted_full` | 0.170 | 20.3 | 0.175 |
+| **`extracted_sections`** | **0.029** | **26.3** | 0.146 |
+| `bge-m3` full | 0.000 | 28.0 | 0.005 |
 
 The targets are coupled; the *paired differences between two variants scored on
 them* largely are not, because the coupling affects both variants and cancels in
-the difference. For `extracted_sections` the design effect is 1.07, so the
-nominal 28 is very nearly the effective 28 and `p = 0.082` needs no clustering
+the difference. For `extracted_sections` the design effect is 1.06, so the
+nominal 28 is very nearly the effective 28 and `p = 0.115` needs no clustering
 discount. The narrower variants do carry real within-pillar dependence and their
 p-values should be read against an effective n near 15.
 
@@ -1148,11 +1162,11 @@ trust.
 
 | target pillar | `content_length` | `extracted_sections` |
 |---|---|---|
-| B (20 targets) | +0.00099 | +0.00258 |
-| C (3 targets) | +0.00062 | +0.00166 |
-| D (3 targets) | +0.00075 | +0.00156 |
-| E (1 target) | +0.00090 | +0.00680 |
-| F (1 target) | +0.00803 | +0.02158 |
+| B (20 targets) | +0.00097 | +0.00245 |
+| C (3 targets) | +0.00082 | +0.00180 |
+| D (3 targets) | +0.00075 | +0.00153 |
+| E (1 target) | +0.00043 | +0.00530 |
+| F (1 target) | +0.00851 | +0.02182 |
 
 The typed block leads in every pillar, which is the useful robustness statement
 and a stronger one than the aggregate. But the aggregate itself is weighted 71%
@@ -1160,12 +1174,13 @@ toward B, where the margin is smallest in absolute terms. Full table in
 `outputs/source_a_representation_by_pillar.csv`; **this breakout is the primary
 result and the single mean is secondary.**
 
-*Numbers differ slightly from §13 because the refetch pulled live Wikipedia text
-three weeks newer — `content_length` mean moved 388.1 → 390.0 and the incumbent's
-mean lift 0.00098 → 0.00117. §14's table supersedes §13.3's. The embedding's own
-lift is unchanged at +0.00273 (it is scored from the frozen July parquet), so it
-remains a valid reference point, though it is now measured against marginally
-different text than the extraction variants.*
+*Numbers differ from §13 for two reasons. The refetch pulled live Wikipedia text
+three weeks newer, moving `content_length` mean 388.1 → 390.0; and the 2026-08-04
+size-proxy swap (§18) re-scored every variant against a Census-population
+baseline. §14's table supersedes §13.3's. The embedding is scored from the frozen
+July parquet, so its text is unchanged, but its lift moved +0.00273 → +0.00281
+with the baseline — it remains a valid reference point, measured against
+marginally different text than the extraction variants.*
 
 ### 14.3 The gain is content, not another size proxy
 
@@ -1180,6 +1195,12 @@ in Source A. An ablation isolates its contribution:
 | + sections, `n_body_sections` dropped | 29 | +0.00320 |
 | + sections, both structural columns dropped | 28 | +0.00320 |
 
+*This ablation was measured against the retired tax-return baseline and has not
+been re-run against the Census-population one (§18). The two shipping rows there
+correspond to +0.00258 and +0.00307 under the current baseline; the 97.6% share
+is a ratio between two columns of the same run, so the swap is not expected to
+move it, but that is an expectation rather than a measurement.*
+
 **97.6% of the section gain survives removing the size proxy.** The signal is
 `sec_n_industry_mentions` (r = 0.108 with size — effectively size-independent),
 not section count. `n_body_sections` is therefore written to the parquet as a
@@ -1191,14 +1212,19 @@ feature set whose central open question is whether size is a control or a target
 
 | variant | stub | thin | mid | rich |
 |---|---|---|---|---|
-| `content_length` | +0.00061 | +0.00037 | +0.00005 | +0.00390 |
-| `extracted_full` | −0.00008 | +0.00242 | +0.00098 | +0.00542 |
-| `extracted_sections` | **+0.00051** | +0.00278 | **+0.00208** | **+0.00634** |
-| `bge-m3` full | +0.00085 | +0.00235 | +0.00065 | +0.00539 |
+| `content_length` | +0.00054 | +0.00039 | +0.00008 | +0.00391 |
+| `extracted_full` | −0.00008 | +0.00241 | +0.00082 | +0.00534 |
+| `extracted_sections` | **+0.00097** | **+0.00264** | **+0.00195** | +0.00559 |
+| `bge-m3` full | +0.00080 | +0.00244 | +0.00097 | **+0.00568** |
 
 Adding sections turns the stub tier from slightly negative to slightly positive
-and roughly doubles the mid tier, while still gaining most in the rich tier. It
-beats the 1024-dim embedding in all three non-stub tiers.
+and roughly doubles the mid tier, while still gaining most in the rich tier.
+**Against the 1024-dim embedding the tiers now split**: the typed block leads in
+the thin and mid tiers and trails it by +0.00009 in the rich tier, which is
+noise at this scale. The earlier claim that it beats the embedding in all three
+non-stub tiers was true under the retired baseline and is not true under this
+one — the defensible statement is that the two are level and the typed block
+costs nothing to serve.
 
 ### 14.5 Status
 
@@ -1206,20 +1232,21 @@ beats the 1024-dim embedding in all three non-stub tiers.
   interpretable, uniform schema across all 3,144 counties, absence encoded as
   `False`. Beats both the incumbent scalar and the cut embedding on mean lift.
 - **Allowed wording**: "targeted extraction from Wikipedia leads plus economy
-  sections yields 2.7× the incumbent's mean cross-pillar lift and matches the cut
+  sections yields 2.6× the incumbent's mean cross-pillar lift and matches the cut
   1024-dim embedding's, at 29 interpretable columns and no model download —
   though its per-target advantage is concentrated rather than uniform, and the
-  paired comparison against the incumbent is underpowered (p = 0.082 at power
-  0.53; 57 targets would be needed for 80%)."
-- **Forbidden wording**: "significantly beats the embedding" (p = 0.082, and the
+  paired comparison against the incumbent is underpowered (p = 0.115 at power
+  0.51; 61 targets would be needed for 80%)."
+- **Forbidden wording**: "significantly beats the embedding" (p = 0.115, and the
   embedding wins on comparable target counts); "beats the embedding" without
-  qualification — head to head the two are a rank tie at 13/28, p = 0.76, and the
-  case for the typed block is cost and interpretability, not lift; "the typed
-  block failed to reach significance" — the test was powered at 0.53, so it was
-  never in a position to reach it; "across 28 targets" as a breadth claim — 20 of
-  the 28 are QCEW sectors from five pillars total; "section expansion works" —
-  this tests *targeted lexicon extraction from one named section*, not the
-  concatenation §4 and §4.1 ruled out, which remains closed.
+  qualification — head to head the typed block wins 11 of 28 at p = 0.52, so the
+  case for it is cost and interpretability, not lift; "the typed block failed to
+  reach significance" — the test was powered at 0.51, so it was never in a
+  position to reach it; "across 28 targets" as a breadth claim — 20 of the 28 are
+  QCEW sectors from five pillars total; "section expansion works" — this tests
+  *targeted lexicon extraction from one named section*, not the concatenation §4
+  and §4.1 ruled out, which remains closed; any figure from this section quoted
+  without noting it is the 2026-08-04 Census-population re-score (§18).
 - **Reporting rule**: the per-pillar breakout in
   `outputs/source_a_representation_by_pillar.csv` is the primary result. Any
   handoff of the single aggregate must carry the basket composition (§14.2b)
@@ -1246,12 +1273,25 @@ flat 29-column `extracted_sections` block:
 
 | approach | width | mean R² lift |
 |---|---|---|
-| one model, one global coefficient per feature | 29 | **+0.00320** |
-| one model, coefficients free to vary by tier | 120 | +0.00265 |
+| one model, one global coefficient per feature | 29 | **+0.00307** |
+| one model, coefficients free to vary by tier | 120 | +0.00279 |
 | four independent models, one per tier | 29 × 4 fits | **−0.01595** |
 
+*The first two rows are the 2026-08-04 Census-population re-score (§18); the
+third was measured once against the retired baseline and not re-run, since a
+result that far negative does not turn on a fourth-decimal baseline change.*
+
+One thing the re-score did change, and it belongs on the record: the
+tier-crossed variant's paired test against the incumbent now reads p = 0.040
+against the flat block's p = 0.115. **That does not reverse this section** — the
+flat block still carries the higher mean lift (+0.00307 against +0.00279), which
+is the quantity the shipping decision uses, and §14.2a explains why these
+p-values are underpowered rank tests rather than the verdict. It does mean the
+flat block's advantage over the crossed one is a point estimate, not a
+demonstrated gap.
+
 **Both branching forms lose, and the loss scales with how much branching there
-is.** Tier-specific slopes cost 17% of the lift. Fully separate per-tier models
+is.** Tier-specific slopes cost 9% of the lift. Fully separate per-tier models
 go negative — worse than dropping Source A entirely — because each trains on
 roughly a quarter of the rows and overfits, with no shared penalty to restrain it.
 
@@ -1320,11 +1360,16 @@ delineation. The ablation is now `RESTATEMENT_COLUMNS`, covering both.
 
 ### 16.3 What the repaired leave-one-pillar-out sweep shows
 
-| | before (A = 1 column) | after (A = 29 columns) |
-|---|---|---|
-| mean lift | +0.0772 | +0.0739 |
-| mean ablated lift | +0.0296 | +0.0234 |
-| targets carrying signal | — | 22 of 29 |
+| | before (A = 1 column) | after (A = 29 columns) | after, Census-population baseline |
+|---|---|---|---|
+| mean lift | +0.0772 | +0.0739 | +0.0720 |
+| mean ablated lift | +0.0296 | +0.0234 | +0.0228 |
+| targets carrying signal | — | 22 of 29 | 21 of 29 |
+
+*The third column is the 2026-08-04 re-score (§18). One target — the
+Unclassified LQ (`lq_emp_99`) — fell out of the carrying-signal set, on an
+ablated lift that moved +0.0026 to −0.0002. It was never distinguishable from
+zero; nothing about the pillar changed.*
 
 **Source A's typed features do not help this sweep, and slightly dilute it.**
 That is not a contradiction of §14, it is a different question. The
@@ -1379,8 +1424,9 @@ Sweep totals moved from 41 feature pairs / 28 significant to **50 / 33**. The
 Benjamini-Hochberg correction is applied across the whole sweep, so adding tests
 tightens it for everyone — but **no pair changed its significance verdict**, which
 is the robustness check that matters. `docs/PROJECT_GOAL.md` has been updated
-(50 pairs, 17 of 33 significant correlations losing more than half their effect to
-the size control).
+(50 pairs, 15 of 33 significant correlations losing more than half their effect to
+the size control — 17 before the 2026-08-04 size-proxy swap, §18; the raw
+correlations are untouched by that swap, only the partial ones).
 
 ### 16.5 Status
 
@@ -1396,7 +1442,7 @@ the size control).
 ## 17. Marginal Value Against a Crowded Baseline — The Fusion-Relevant Test (2026-08-03)
 
 **Context**: §14 and §16 disagreed about Source A's typed features. The
-representation harness scored them at +0.0032 mean lift; the leave-one-pillar-out
+representation harness scored them at +0.0031 mean lift; the leave-one-pillar-out
 sweep found they added nothing and slightly diluted it. Neither settles the
 fusion decision, because neither matches what a downstream consumer sees:
 
@@ -1418,51 +1464,56 @@ within-pillar task no outside source can contribute to.
 
 ### 17.1 Result: Source A survives, at roughly a quarter of its headline value
 
-Adding B–F to the baseline raises mean R² from 0.255 to 0.327 across 106 columns.
+Adding B–F to the baseline raises mean R² from 0.256 to 0.327 across 106 columns.
+**Re-scored 2026-08-04** against the Census-population baseline (§18); the
+load-bearing result strengthened slightly.
 
 | variant | lift, thin baseline | lift, crowded baseline | retained | positive | Wilcoxon p |
 |---|---|---|---|---|---|
-| `content_length` | +0.00143 | +0.00052 | 37% | 20/28 | **0.014** |
-| `extracted_sections` | +0.00373 | **+0.00104** | 28% | 19/28 | **0.013** |
+| `content_length` | +0.00148 | +0.00059 | 40% | 22/28 | **0.003** |
+| `extracted_sections` | +0.00364 | **+0.00105** | 29% | 19/28 | **0.010** |
 
 **Three findings, in order of how much they should change behaviour:**
 
 1. **Roughly 70% of Source A's measured value was information other pillars
    already carry.** The harness overstates the pillar's contribution by about
-   3.5×. Any planning that used +0.0032 as Source A's expected contribution to a
+   3.5×. Any planning that used +0.0031 as Source A's expected contribution to a
    fused model should use **+0.0010**.
 2. **What remains is statistically real.** Both variants stay significantly
    positive against a baseline that already contains every other pillar
-   (p = 0.013, 0.014). The sweep's reading — that Source A's expansion adds
+   (p = 0.010, 0.003). The sweep's reading — that Source A's expansion adds
    nothing — was too strong. It measured the wrong thing.
 3. **The typed block keeps roughly twice the marginal value of the scalar**
-   (+0.00104 against +0.00052). That difference is not individually significant
-   (17/28 targets, p = 0.295), so it supports "ship the typed block" on point
-   estimate and cost, not on a demonstrated gap.
+   (+0.00105 against +0.00059). That difference is not individually significant
+   (13/28 targets, p = 0.493), so it supports "ship the typed block" on point
+   estimate and cost, not on a demonstrated gap. The rank count moved against it
+   in the 2026-08-04 re-score, which is what an underpowered test does; the point
+   estimate did not.
 
 **How much power each of those three tests had**, which decides how much weight
 each can carry:
 
 | test | dz | power at n = 28 | targets for 80% | p |
 |---|---|---|---|---|
-| typed block vs zero, crowded baseline | 0.549 | **0.88** | 22 | **0.013** |
-| `content_length` vs zero, crowded baseline | 0.339 | 0.54 | 56 | **0.014** |
-| typed vs scalar, crowded baseline | 0.264 | 0.39 | 91 | 0.295 |
+| typed block vs zero, crowded baseline | 0.587 | **0.92** | 20 | **0.010** |
+| `content_length` vs zero, crowded baseline | 0.367 | 0.60 | 48 | **0.003** |
+| typed vs scalar, crowded baseline | 0.239 | 0.34 | 110 | 0.493 |
 
 Two consequences that should govern how this section is cited:
 
 - **"Source A carries marginal value over all five other pillars combined" is a
-  well-powered, significant result** — power 0.88, p = 0.013, and the effective n
+  well-powered, significant result** — power 0.92, p = 0.010, and the effective n
   equals the nominal n (ICC of the paired lifts within pillar is 0.000, design
-  effect 1.00). This is the load-bearing finding of the whole experiment line and
-  it is solid.
-- **"The typed block beats the scalar" is powered at 0.39 and would need 91
+  effect 1.00). This is the load-bearing finding of the whole experiment line, it
+  is solid, and it is the one result the 2026-08-04 baseline swap (§18)
+  strengthened rather than weakened.
+- **"The typed block beats the scalar" is powered at 0.34 and would need 110
   targets.** It will not be settled in this repo by adding targets, and it is not
   what the shipping decision rests on. The typed block ships on cost and
   interpretability.
 
 The pillar-blocked sensitivity check — one vote per pillar, five observations —
-gives p = 0.092 for the typed block and p = 0.166 for the scalar. Neither clears
+gives p = 0.062 for the typed block and p = 0.087 for the scalar. Neither clears
 0.05 there, but a five-observation test is underpowered by construction and this
 is reported as a caution about breadth claims, not as a competing verdict.
 
@@ -1474,15 +1525,15 @@ something no federal statistic encodes:
 | target | crowded lift | plausible mechanism |
 |---|---|---|
 | Accommodation & Food Services LQ | +0.0058 | tourism / resort / ski / casino mentions |
-| Educational Services LQ | +0.0051 | `has_university` |
+| Educational Services LQ | +0.0052 | `has_university` |
 | Transportation & Warehousing LQ | +0.0042 | river / interstate / port |
-| demographic distress count | +0.0040 | mixed |
 | outbound partner concentration | +0.0035 | transport and logistics mentions |
-| GDP velocity (normalized) | +0.0025 | mixed |
+| demographic distress count | +0.0032 | mixed |
+| GDP velocity (normalized) | +0.0026 | mixed |
 
 And it is fully absorbed where another pillar measures the same quantity
-directly — Source E's capital-to-wage ratio collapses from +0.0079 to +0.0000,
-Information LQ turns negative, Manufacturing LQ retains 11%.
+directly — Source E's capital-to-wage ratio collapses from +0.0064 to −0.0000,
+Information LQ turns negative, Manufacturing LQ retains 5%.
 
 **This is the strongest evidence in the whole experiment line that the extraction
 is doing something real.** A feature set that survived arbitrarily would look like
@@ -1492,18 +1543,18 @@ absorbed loss (capital-to-wage) and the largest surviving gain (accommodation)
 are both predicted by what the columns actually contain.
 
 Per-pillar, the typed block's advantage over `content_length` under the crowded
-baseline concentrates in F (+0.0032), C (+0.0013) and D (+0.0012); it is
-negligible for B (+0.0002) and E (+0.00001).
+baseline concentrates in F (+0.0025), D (+0.0012) and C (+0.0011); it is
+negligible for B (+0.0002) and E (−0.00003).
 
 ### 17.2a Retention varies by two orders of magnitude, so +0.0010 is a property of the basket
 
 | target pillar | targets | thin lift | crowded lift | retained |
 |---|---|---|---|---|
-| C (velocities) | 3 | +0.00170 | +0.00118 | **69%** |
-| D (freight) | 3 | +0.00212 | +0.00133 | 63% |
-| B (QCEW) | 20 | +0.00317 | +0.00087 | 28% |
-| F (typology) | 1 | +0.02172 | +0.00401 | 18% |
-| E (capital-to-wage) | 1 | +0.00786 | +0.00002 | **0.2%** |
+| C (velocities) | 3 | +0.00188 | +0.00127 | **68%** |
+| D (freight) | 3 | +0.00216 | +0.00133 | 61% |
+| B (QCEW) | 20 | +0.00306 | +0.00092 | 30% |
+| F (typology) | 1 | +0.02233 | +0.00318 | 14% |
+| E (capital-to-wage) | 1 | +0.00640 | −0.00002 | **≈0%** |
 
 Retention is highest where the other pillars know least — Source C's velocity
 series are near-orthogonal to county size and to the rest of the matrix — and
@@ -1540,21 +1591,130 @@ both decisions rather than inherit them.
 
 - **Allowed wording**: "against a baseline that already contains every other
   pillar, Source A's typed block retains a small but statistically real
-  contribution (+0.0010 mean R² lift, p = 0.013, power 0.88), roughly twice the
+  contribution (+0.0010 mean R² lift, p = 0.010, power 0.92), roughly twice the
   shipped scalar's, concentrated on targets whose semantics its lexicons match —
-  with retention ranging from 69% on Source C's velocities to 0.2% on Source E's
-  capital ratio."
-- **Forbidden wording**: "Source A contributes +0.0032 to a fused model" — that
+  with retention ranging from 68% on Source C's velocities to essentially zero on
+  Source E's capital ratio."
+- **Forbidden wording**: "Source A contributes +0.0031 to a fused model" — that
   is the thin-baseline figure and it overstates by ~3.5×; "the typed block
-  significantly beats `content_length` in fusion" — p = 0.295 at power 0.39, a
-  test that would need 91 targets; quoting +0.0010 as Source A's expected
+  significantly beats `content_length` in fusion" — p = 0.493 at power 0.34, a
+  test that would need 110 targets; quoting +0.0010 as Source A's expected
   contribution without stating that the basket is 71% QCEW.
 - **Verdict for the fusion step**: **ship the typed block.** It is positive
   against the hardest in-repo baseline on the best-powered test in this file, its
   surviving contribution is semantically coherent rather than diffuse, and it
-  costs one regex pass. Plan around +0.0010, not +0.0032, and adjust for which
+  costs one regex pass. Plan around +0.0010, not +0.0031, and adjust for which
   pillars the consuming model's targets resemble.
 - **Reproduction**: `uv run python scripts/analyze_source_a_marginal.py`, seed 42.
   Power and clustering diagnostics come from `scripts/paired_power.py` and land
   in `source_a_marginal_stats.json`; the per-pillar breakout is written to
   `outputs/source_a_marginal_by_pillar.csv`.
+
+## 18. Size Proxy Swapped to Census Population (2026-08-04)
+
+**Context**: every size control in this repo used `num_returns`, Source E's count
+of filed tax returns. That column belongs to a pillar, so Source E's measured
+independence from county size was partly Source E measuring itself, and
+`docs/PROJECT_GOAL.md` next-work item 2 recorded replacing it as a prerequisite
+for trusting the size tables. `scripts/county_population.py` now supplies Census
+PEP vintage-2024 county population, which belongs to no pillar, and three
+consumers were switched to it: the size-dependence scan, the pillar-pair sweep's
+partial correlation, and `pillar_matrix.SIZE_FEATURES` — which is the baseline
+under §14 and §17.
+
+**The two proxies agree at r = 0.998 in logs** (n = 3,143), so this was expected
+to be a provenance fix rather than a result change. Mostly it was.
+
+### 18.1 What did not move
+
+- **The size-dependence tiering is unchanged.** Same 15 of 62 features above
+  |r| = 0.30, same membership, largest single shift 0.030. One feature crosses a
+  reporting boundary: `has_university` moves from tier 3 to tier 2 (0.145 →
+  0.150), which is a rounding artifact of where the cutoff sits, not a change in
+  what the column is.
+- **The raw pillar-pair sweep is bit-identical** — 50 tests, 33 significant. The
+  control enters only the partial correlations.
+- **Every §14/§17 conclusion holds.** The typed block still leads the incumbent
+  on mean lift, still ties the embedding head to head, still carries real
+  marginal value over a baseline holding all five other pillars.
+
+### 18.2 What did move, and where it matters
+
+| figure | tax-return baseline | Census-population baseline |
+|---|---|---|
+| `extracted_sections` mean lift (§14.2) | +0.00320 | +0.00307 |
+| its paired p against the incumbent | 0.082 | **0.115** |
+| `bge-m3` full mean lift | +0.00273 | +0.00281 |
+| typed vs embedding, head to head | +0.00047, 13/28, p = 0.76 | +0.00026, 11/28, p = 0.52 |
+| typed block marginal lift (§17.1) | +0.00104 | +0.00105 |
+| its p / power against a crowded baseline | 0.013 / 0.88 | **0.010 / 0.92** |
+| significant sweep pairs losing >½ their effect | 17 of 33 | **15 of 33** |
+
+Two of these deserve to be read carefully rather than skimmed:
+
+- **The headline p moved the wrong way, and that is fine.** `p = 0.082` became
+  `p = 0.115` on a test powered at 0.51. §14.2a's point was that this p-value is
+  the output of an underpowered rank test and should not gate anything; a swing
+  of this size on a fourth-decimal baseline change is exactly what an
+  underpowered test looks like. It would have been a mistake to have leaned on
+  0.082, which is why §14.5 forbade doing so before this run.
+- **The load-bearing result strengthened.** Source A's marginal value over all
+  five other pillars went to p = 0.010 at power 0.92. That is the finding the
+  shipping decision rests on, and it is now slightly more solid than when it was
+  published.
+
+**One earlier claim is now false and has been corrected in place**: §14.4 said
+the typed block beats the 1024-dim embedding in all three non-stub tiers. Under
+this baseline it leads in thin and mid and trails by +0.00009 in rich.
+
+### 18.3 Status
+
+- **Status**: done. `docs/PROJECT_GOAL.md` next-work item 2 is closed.
+- **Allowed wording**: "the size control is Census PEP county population, which
+  belongs to no pillar; the retired tax-return proxy correlates with it at
+  r = 0.998 and produced the same tiering and the same verdicts."
+- **Forbidden wording**: quoting any §14 or §17 figure from before 2026-08-04
+  without saying which baseline produced it — the two sets differ in the fourth
+  decimal throughout and in the third for `p`.
+- **Caveat this does not fix**: population is an estimate with its own vintage
+  (2024) and its own error, and the counties where PEP and IRS disagree most are
+  small ones. Nothing here re-derives the 0.30/0.15 tier cutoffs, which remain
+  reporting conventions rather than statistical thresholds.
+- **Reproduction**: `uv run python scripts/county_population.py` (caches
+  `data/county_population.parquet`), then
+  `uv run python scripts/analyze_feature_size_dependence.py`,
+  `uv run python scripts/analyze_pillar_pair_crossvalidation.py`,
+  `uv run python scripts/analyze_source_a_representation.py`,
+  `uv run python scripts/analyze_source_a_marginal.py`. Seed 42 throughout.
+
+## 19. Feature-Store Handoff Artifacts (2026-08-04)
+
+Two gaps between "the analysis is done" and "a downstream team can consume this"
+were closed, neither of which depends on the open rate-versus-count question.
+
+**Frozen schema.** `scripts/export_source_a_schema.py` writes
+`docs/source_a_feature_schema.md` and `outputs/source_a_feature_schema.csv` from
+the parquet itself, so coverage figures cannot drift from the data they
+describe. One row per column: dtype, what the flag is evidence of, how many
+counties it fires on, null policy, size tier, and whether it ships or is a
+withheld diagnostic. The null contract is stated once, at the top: **absence is
+`False`, not null**, with `founding_year` the single exception (null on the 1,930
+counties whose lead states no founding clause).
+
+**Vintage.** `scripts/pillar_vintage.py` stamps an `as_of_date` on all six pillar
+parquets and writes `outputs/pillar_vintages.csv`. The pillars span 2022 (FAF
+freight, IRS SOI) to 2025 (QCEW, FRED unemployment, USDA typology 2025 edition)
+to a continuous scrape date (Source A), and until now nothing in the data said
+so. The date is the end of the period the data describes, except for Sources A
+and F, which describe no fixed period and carry the tightest available upper
+bound on what they can know — flagged as such in the `reference_period` column
+rather than silently mixed in.
+
+*Correction this surfaced*: the vintage table in `docs/downstream_target.md`
+listed Source F as "USDA 2023". The ingest pulls the **2025 edition**; `metro_2023`
+is named for the 2023 OMB metro delineation the edition uses, not for the release.
+Corrected there and here.
+
+`as_of_date` is excluded from the feature matrix via
+`pillar_matrix.NON_FEATURE_COLUMNS`, so it travels with the data without
+entering any model.

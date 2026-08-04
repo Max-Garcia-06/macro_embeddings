@@ -27,6 +27,8 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+from pillar_vintage import stamp_vintage
+
 # --------------------------------------------------------------------------
 # Configuration
 # --------------------------------------------------------------------------
@@ -791,11 +793,14 @@ def build_sections_dataframe(results: list[CountyIngestionResult]) -> pd.DataFra
 def export_to_parquet(df: pd.DataFrame, output_path: Path) -> None:
     """Write the ingestion DataFrame to a local Parquet file.
 
+    The pillar's `as_of_date` is stamped on before writing, so the vintage
+    travels with the data rather than only with the docs (`pillar_vintage`).
+
     Args:
         df: DataFrame to export.
         output_path: Destination Parquet file path.
     """
-    df.to_parquet(output_path, engine="pyarrow", index=False)
+    stamp_vintage(df, "A").to_parquet(output_path, engine="pyarrow", index=False)
     logger.info("Wrote %d rows to %s", len(df), output_path)
 
 

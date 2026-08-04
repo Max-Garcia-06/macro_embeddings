@@ -75,7 +75,7 @@ not shipping the final tensor. Repo state matches that:
 
 Operating principle: every pillar must earn its slot on evidence before anything is
 fused. Applied already — Source A's `bge-m3` embedding step was cut (|r| = 0.041
-Mantel, k-means silhouette 0.028), and 17 of 33 significant correlations lose more
+Mantel, k-means silhouette 0.028), and 15 of 33 significant correlations lose more
 than half their effect once size is controlled.
 
 ## Where the evidence stands
@@ -86,7 +86,8 @@ Verdict per pillar (detail in `analysis-output/E_macro_key_findings.ipynb`):
   `content_length` scalar with 29 typed columns extracted from the lead and the
   economy section. Those beat the scalar and tie the cut embedding on mean
   cross-pillar lift, and they survive a baseline that already holds every other
-  pillar (+0.0010, p = 0.013, power 0.88); see `source-a-findings.md` §13–§17.
+  pillar (+0.0010, p = 0.010, power 0.92); see `source-a-findings.md` §13–§17.
+  Schema and null semantics are frozen in `docs/source_a_feature_schema.md`.
   Done.
 - **B** — keep, change the feature: ship the 20-dim LQ vector, not a scalar.
 - **C** — keep, fix the metric: use `gdp_velocity_pct`, not dollar-denominated
@@ -120,8 +121,14 @@ to −0.057 once size is controlled.
 ## Next work, in order
 
 1. Extend the sweep beyond single scalars — full 20-column B LQ vector against E.
-2. Re-run the size control with Census population instead of the tax-return proxy.
+2. ~~Re-run the size control with Census population instead of the tax-return
+   proxy.~~ **Done 2026-08-04** — `scripts/county_population.py`, results in
+   `source-a-findings.md` §18. Same tiering, same verdicts, one self-reference
+   removed.
 3. Build the fusion — **only after** the size question is settled, or the confound
    gets baked into the output.
 4. Hand off to the Comcast downstream models: publish the pillar parquets behind
-   the feature store with a frozen schema and documented null semantics.
+   the feature store with a frozen schema and documented null semantics. Source A
+   is ready (`docs/source_a_feature_schema.md`); every pillar now carries an
+   `as_of_date` (`outputs/pillar_vintages.csv`). B–F still need their own schema
+   docs.

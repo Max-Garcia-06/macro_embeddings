@@ -45,26 +45,29 @@ choice reverses conclusions across the whole repo, not just one pillar.
 | operative sweep column | `r_size_controlled` | raw `r` |
 | Source D freight `log_tons` | dead — r = +0.871 with size | strong |
 | Source F `metro_2023` | demote — r = +0.596 | strong |
-| Source A `content_length` | compromised — r = +0.359 | defensible, cheap size proxy |
-| Source A's 29 typed columns | **win** — 23 of 29 below \|r\| = 0.15 | interpretability only |
-| Source C velocities, Source E ratio | cleanest pillars — r ≈ 0.04–0.10 | unremarkable |
+| Source A `content_length` | compromised — r = +0.355 | defensible, cheap size proxy |
+| Source A's 29 typed columns | **win** — 22 of 29 below \|r\| = 0.15 | interpretability only |
+| Source C velocities, Source E ratio | cleanest pillars — r ≈ 0.02–0.10 | unremarkable |
 
 Source: `outputs/feature_size_dependence.csv`, 62 features scanned against
-`log10(num_returns)` — full tiering in Part 2.
+`log10(Census population)` — full tiering in Part 2. The proxy was the
+tax-return count until 2026-08-04; swapping it changed no tier membership above
+\|r\| = 0.30 and moved `has_university` across the 0.15 line
+(`source-a-findings.md` §18).
 
 ### It also settles something no amount of further testing can
 
 Whether Source A's 29 typed columns beat the `content_length` scalar they
-replaced is powered at **0.39** and would need **91 targets** to resolve
+replaced is powered at **0.34** and would need **110 targets** to resolve
 statistically (`source-a-findings.md` §17.3). That comparison will not be settled
 in this repo by adding targets.
 
-Under a rate target it does not need to be. `content_length` sits at +0.359 with
+Under a rate target it does not need to be. `content_length` sits at +0.355 with
 county size; `sec_n_industry_mentions` — the single column carrying 97.6% of the
-section gain — sits at +0.108. The typed block wins on construction rather than
+section gain — sits at +0.110. The typed block wins on construction rather than
 on a p-value.
 
-**One answer here resolves what 91 targets could not.** That is the strongest
+**One answer here resolves what 110 targets could not.** That is the strongest
 argument for asking rather than for running another sweep.
 
 ## What each answer changes
@@ -101,12 +104,12 @@ normalize before or after joining county features.
 ## If they push back
 
 **"Why does it matter — just give me all the features."**
-You can, and the features ship either way. But 19 of the 50 cross-pillar
+You can, and the features ship either way. But 18 of the 50 cross-pillar
 correlations lose more than half their effect once county size is controlled
 (`outputs/pillar_pair_crossvalidation.csv`). If the target is a rate and the raw
 numbers get taken at face value, the model gets built on structure that is mostly
 population wearing a costume. The largest raw effect in the whole sweep — freight
-tonnage against metro status, r = 0.495 — collapses to −0.057 under the control.
+tonnage against metro status, r = 0.495 — collapses to −0.036 under the control.
 
 **"We haven't picked the target yet."**
 The weaker version is still decisive: *is your outcome per-customer/per-request,
@@ -143,11 +146,11 @@ two orders of magnitude depending on the target:
 
 | target pillar | retained |
 |---|---|
-| C (velocity series) | 69% |
-| D (freight) | 63% |
-| B (QCEW location quotients) | 28% |
-| F (typology) | 18% |
-| E (capital-to-wage) | 0.2% |
+| C (velocity series) | 68% |
+| D (freight) | 61% |
+| B (QCEW location quotients) | 30% |
+| F (typology) | 14% |
+| E (capital-to-wage) | ≈0% |
 
 Source A survives where no federal agency measures the same construct and is
 absorbed where one does. The published headline of **+0.0010** is an average over
@@ -196,8 +199,11 @@ the raw `r` column should not be quoted without its size-controlled partner.
 
 ## Evidence: which features are size in disguise
 
-Every pillar feature correlated against `log10(num_returns)`. This is the
-diagnostic that determines whether a feature transfers to a rate target.
+Every pillar feature correlated against `log10(Census population)`. This is the
+diagnostic that determines whether a feature transfers to a rate target. The
+proxy was Source E's `num_returns` until 2026-08-04; each row's correlation
+against the retired proxy is retained in `r_with_log_returns` so the swap stays
+checkable (`source-a-findings.md` §18).
 
 62 features scanned; **15 exceed |r| = 0.30 with county size.** Full table in
 `outputs/feature_size_dependence.csv`. The scan now covers Source A's 29 shipping
@@ -209,72 +215,73 @@ beyond what population already supplies.
 
 | Feature | Pillar | r with size | Shared variance | n |
 |---|---|---|---|---|
-| `log_tons` | D | **+0.871** | 76% | 3,143 |
-| `metro_2023` | F | +0.596 | 36% | 3,143 |
+| `log_tons` | D | **+0.865** | 75% | 3,143 |
+| `metro_2023` | F | +0.592 | 35% | 3,143 |
 | `has_metro_attachment` | A | +0.541 | 29% | 3,143 |
-| `lq_emp_11` (Agriculture) | B | −0.501 | 25% | 1,457 |
-| `lq_emp_54` (Professional svcs) | B | +0.461 | 21% | 2,268 |
-| `lq_emp_21` (Mining) | B | −0.419 | 18% | 1,026 |
-| `lq_emp_56` (Admin/Waste) | B | +0.408 | 17% | 2,212 |
-| `founding_year` | A | −0.398 | 16% | 1,214 |
-| `population_loss` | F | −0.393 | 15% | 3,126 |
-| `content_length` | A | +0.359 | 13% | 3,143 |
-| `housing_stress` | F | +0.349 | 12% | 3,143 |
-| `in_partner_hhi` | D | +0.333 | 11% | 3,143 |
-| `out_partner_hhi` | D | +0.329 | 11% | 3,143 |
-| `n_distinct_proper_nouns` | A | +0.329 | 11% | 3,143 |
-| `lq_emp_53` (Real Estate) | B | +0.319 | 10% | 2,453 |
+| `lq_emp_11` (Agriculture) | B | −0.506 | 26% | 1,457 |
+| `lq_emp_54` (Professional svcs) | B | +0.453 | 21% | 2,268 |
+| `lq_emp_21` (Mining) | B | −0.416 | 17% | 1,026 |
+| `lq_emp_56` (Admin/Waste) | B | +0.412 | 17% | 2,212 |
+| `population_loss` | F | −0.400 | 16% | 3,126 |
+| `founding_year` | A | −0.395 | 16% | 1,214 |
+| `content_length` | A | +0.355 | 13% | 3,143 |
+| `housing_stress` | F | +0.350 | 12% | 3,143 |
+| `in_partner_hhi` | D | +0.329 | 11% | 3,143 |
+| `n_distinct_proper_nouns` | A | +0.328 | 11% | 3,143 |
+| `out_partner_hhi` | D | +0.326 | 11% | 3,143 |
+| `lq_emp_53` (Real Estate) | B | +0.314 | 10% | 2,453 |
 
 **Tier 2 — partly size** (0.15 ≤ |r| < 0.30). Usable; know what they carry.
-`lq_emp_55` (+0.299), `lq_emp_22` (−0.291), `has_economy_section` (+0.267),
-`lq_emp_61` (+0.255), `lq_emp_62` (+0.244), `lq_emp_42` (−0.230), `lq_emp_99`
-(−0.222), `low_postsecondary_ed` (−0.216), `lq_emp_81` (+0.207),
-`low_employment` (−0.197), `sec_has_manufacturing` (+0.163).
+`lq_emp_22` (−0.292), `lq_emp_55` (+0.292), `has_economy_section` (+0.268),
+`lq_emp_61` (+0.251), `lq_emp_62` (+0.245), `lq_emp_42` (−0.243), `lq_emp_99`
+(−0.228), `low_postsecondary_ed` (−0.191), `lq_emp_81` (+0.189),
+`low_employment` (−0.168), `sec_has_manufacturing` (+0.163), `has_university`
+(+0.150 — 0.145 under the retired proxy, so it sits on the tier boundary rather
+than having changed character).
 
 **Tier 3 — effectively size-free** (|r| < 0.15). These transfer cleanly to a
 rate target.
 
 | Feature | Pillar | r with size | Shared variance | n |
 |---|---|---|---|---|
-| `has_tribal_land` | A | −0.005 | 0.0% | 3,143 |
-| `has_oil_gas` | A | +0.009 | 0.0% | 3,143 |
+| `has_tribal_land` | A | −0.002 | 0.0% | 3,143 |
+| `lq_emp_71` (Arts/Rec) | B | +0.010 | 0.0% | 2,243 |
+| `has_oil_gas` | A | +0.011 | 0.0% | 3,143 |
+| `has_timber` | A | −0.016 | 0.0% | 3,143 |
 | `has_mining` | A | −0.018 | 0.0% | 3,143 |
-| `has_timber` | A | −0.019 | 0.0% | 3,143 |
-| `has_protected_land` | A | +0.020 | 0.0% | 3,143 |
-| `lq_emp_23` (Construction) | B | −0.024 | 0.1% | 2,469 |
-| `lq_emp_71` (Arts/Rec) | B | +0.029 | 0.1% | 2,243 |
-| `has_interstate` | A | +0.034 | 0.1% | 3,143 |
-| `capital_to_wage_ratio` | E | **+0.040** | 0.2% | 3,143 |
-| `has_agriculture` | A | +0.047 | 0.2% | 3,143 |
-| `retirement_destination` | F | +0.052 | 0.3% | 3,134 |
-| `has_manufacturing` | A | +0.066 | 0.4% | 3,143 |
+| `has_protected_land` | A | +0.019 | 0.0% | 3,143 |
+| `capital_to_wage_ratio` | E | **+0.019** | 0.0% | 3,143 |
+| `lq_emp_23` (Construction) | B | −0.030 | 0.1% | 2,469 |
+| `has_interstate` | A | +0.035 | 0.1% | 3,143 |
+| `has_agriculture` | A | +0.049 | 0.2% | 3,143 |
+| `retirement_destination` | F | +0.050 | 0.3% | 3,134 |
+| `has_manufacturing` | A | +0.064 | 0.4% | 3,143 |
+| `has_logistics` | A | +0.075 | 0.6% | 3,143 |
 | `unemployment_velocity` | C | **+0.075** | 0.6% | 3,143 |
-| `has_logistics` | A | +0.076 | 0.6% | 3,143 |
 | `n_industry_mentions` | A | +0.079 | 0.6% | 3,143 |
-| `has_tourism` | A | +0.091 | 0.8% | 3,143 |
-| `has_river` | A | +0.092 | 0.9% | 3,143 |
-| `lq_emp_52` (Finance) | B | +0.094 | 0.9% | 2,638 |
-| `has_namesake` | A | −0.095 | 0.9% | 3,143 |
-| `gdp_velocity_pct` | C | **+0.095** | 0.9% | 3,080 |
-| `sec_has_tourism` | A | +0.098 | 1.0% | 3,143 |
-| `has_military_base` | A | +0.104 | 1.1% | 3,143 |
-| `has_port` | A | +0.105 | 1.1% | 3,143 |
-| `sec_n_industry_mentions` | A | **+0.108** | 1.2% | 3,143 |
-| `lq_emp_48-49` (Transport) | B | +0.116 | 1.3% | 2,160 |
-| `lq_emp_44-45` (Retail) | B | +0.117 | 1.4% | 3,050 |
-| `lq_emp_51` (Information) | B | +0.137 | 1.9% | 1,914 |
-| `persistent_poverty` | F | −0.139 | 1.9% | 3,111 |
-| `lq_emp_31-33` (Manufacturing) | B | −0.139 | 1.9% | 2,570 |
-| `lq_emp_72` (Accommodation/Food) | B | +0.145 | 2.1% | 2,369 |
-| `has_university` | A | +0.145 | 2.1% | 3,143 |
+| `has_tourism` | A | +0.086 | 0.7% | 3,143 |
+| `lq_emp_52` (Finance) | B | +0.086 | 0.7% | 2,638 |
+| `has_namesake` | A | −0.090 | 0.8% | 3,143 |
+| `has_river` | A | +0.094 | 0.9% | 3,143 |
+| `gdp_velocity_pct` | C | **+0.101** | 1.0% | 3,080 |
+| `has_port` | A | +0.101 | 1.0% | 3,143 |
+| `has_military_base` | A | +0.105 | 1.1% | 3,143 |
+| `sec_n_industry_mentions` | A | **+0.110** | 1.2% | 3,143 |
+| `lq_emp_48-49` (Transport) | B | +0.113 | 1.3% | 2,160 |
+| `persistent_poverty` | F | −0.114 | 1.3% | 3,111 |
+| `lq_emp_44-45` (Retail) | B | +0.118 | 1.4% | 3,050 |
+| `lq_emp_51` (Information) | B | +0.131 | 1.7% | 1,914 |
+| `lq_emp_72` (Accommodation/Food) | B | +0.135 | 1.8% | 2,369 |
+| `lq_emp_31-33` (Manufacturing) | B | −0.140 | 2.0% | 2,570 |
 
-Source A's remaining columns — `sec_has_logistics` (+0.087), `sec_has_agriculture`
-(+0.056), `sec_has_oil_gas` (−0.032), `sec_has_mining` (+0.028),
-`sec_has_timber` (+0.008) — also sit in Tier 3.
+Source A's remaining section columns — `sec_has_tourism` (+0.094),
+`sec_has_logistics` (+0.087), `sec_has_agriculture` (+0.059), `sec_has_mining`
+(+0.033), `sec_has_oil_gas` (−0.029), `sec_has_timber` (+0.009) — also sit in
+Tier 3.
 
 **Source A's typed block is the cleanest large block in this table under a rate
-target.** Of its 29 columns, **23 fall in Tier 3, two in Tier 2, and four in Tier
-1.** Of those four, `has_metro_attachment` is already ablated from the
+target.** Of its 29 columns, **22 fall in Tier 3, three in Tier 2, and four in
+Tier 1.** Of those four, `has_metro_attachment` is already ablated from the
 cross-pillar sweeps as a restatement of Source F's `metro_2023`
 (`source-a-findings.md` §16.2), `founding_year` fires on only 1,214 counties, and
 `content_length` is the retired incumbent scalar, which the block retains as one
@@ -283,7 +290,7 @@ column among 29 rather than as the pillar's whole representation.
 The distinction that matters is *within* the block. Its size-loaded columns are
 the structural ones — how long the article is, how many proper nouns it contains,
 whether it has an economy section — and its size-free columns are the ones that
-name economic facts. `sec_n_industry_mentions`, at +0.108, is the single column
+name economic facts. `sec_n_industry_mentions`, at +0.110, is the single column
 responsible for 97.6% of the section gain (§14.3). **Under a rate target the part
 of Source A that carries the signal is also the part that survives the size
 control**, which is the strongest evidence here that the rate-versus-count answer
@@ -304,18 +311,20 @@ raw sweep (C, E) are the ones that transfer cleanly to a rate target. D's
 `log_tons` at r = 0.871 with size is why D↔F collapsed from 0.495 to −0.057 —
 nothing subtle was happening.
 
-**Caveat on the size proxy.** `num_returns` is a Source E column, so E's
-apparent independence (0.040) is partly self-referential — though
-`capital_to_wage_ratio` is a dollar ratio and `num_returns` is a filer count, so
-they are different constructs. Swapping in Census population
-(`PROJECT_GOAL.md` next-work item 2) is a prerequisite for trusting this table
-in full.
+**The size proxy no longer belongs to a pillar.** This table used
+`num_returns`, a Source E column, until 2026-08-04, which made Source E's
+apparent independence partly self-referential. It is now Census PEP population
+(`scripts/county_population.py`). The two agree at r = 0.998 in logs and the
+tiering is unchanged — but the self-reference was real, and removing it moved
+`capital_to_wage_ratio` from +0.040 to **+0.019**, making Source E cleaner than
+the old table showed rather than dirtier. Full accounting in
+`source-a-findings.md` §18.
 
 ## Refeaturization implied by a rate target
 
 | Pillar | Action | Rationale |
 |---|---|---|
-| **A** | **Ship the 29 typed columns, not the `content_length` scalar alone** | Reverses this document's original row, which predated `source-a-findings.md` §13–§17. The embedding stays cut; the text source does not. 23 of the 29 columns are Tier 3, and the signal-carrying `sec_n_industry_mentions` sits at +0.108 against `content_length`'s +0.359 — so a rate target *strengthens* Source A's case rather than confirming a cut. Exclude `has_metro_attachment` (+0.541, duplicates F's `metro_2023`), treat `founding_year` (−0.398, n = 1,214) as low-coverage, and annotate `content_length` and `n_distinct_proper_nouns` as the block's size-loaded columns. |
+| **A** | **Ship the 29 typed columns, not the `content_length` scalar alone** | Reverses this document's original row, which predated `source-a-findings.md` §13–§17. The embedding stays cut; the text source does not. 22 of the 29 columns are Tier 3, and the signal-carrying `sec_n_industry_mentions` sits at +0.110 against `content_length`'s +0.355 — so a rate target *strengthens* Source A's case rather than confirming a cut. Exclude `has_metro_attachment` (+0.541, duplicates F's `metro_2023`), treat `founding_year` (−0.395, n = 1,214) as low-coverage, and annotate `content_length` and `n_distinct_proper_nouns` as the block's size-loaded columns. |
 | **B** | Ship the 20-dim LQ vector; annotate per-column size loading | LQs are **not** uniformly size-neutral. `lq_emp_11`/`lq_emp_54` are urbanicity axes; `lq_emp_23`/`lq_emp_71` are clean. Both usable — the point is knowing which is which. |
 | **C** | Ship as-is | Both velocities are near-orthogonal to size. |
 | **D** | **Normalize to a rate** — `tons_per_return`, `tons_per_capita` | Highest-value single change implied here. A raw total cannot work against a per-request target. Recheck `out_partner_hhi` (0.33) as well; a concentration index should not carry that much size. |
@@ -359,19 +368,26 @@ stated imputation policy that does not exist yet.
 
 ### 4. Vintage spread and leakage
 
-| Pillar | Vintage |
-|---|---|
-| A | continuous (scrape date) |
-| B | QCEW 2025 |
-| C | unemployment 2025, GDP 2024 |
-| D | FAF `tons_2022` |
-| E | IRS TY 2022 |
-| F | USDA 2023 typology |
+| Pillar | Vintage | `as_of_date` |
+|---|---|---|
+| A | continuous (scrape date) | 2026-08-03 |
+| B | QCEW 2025 Q4 | 2025-12-31 |
+| C | unemployment 2025, GDP 2024 | 2025-12-31 |
+| D | FAF `tons_2022` | 2022-12-31 |
+| E | IRS TY 2022 | 2022-12-31 |
+| F | USDA typology, **2025 edition** (2023 OMB metro delineation) | 2025-12-31 |
 
-Three years of spread presented as one county snapshot, with no `as_of_date`
-column anywhere. Acceptable for a static feature layer; a leakage vector if a
-downstream model backtests against pre-2025 outcomes, since B and C would carry
-future information. The consuming team cannot detect this without the column.
+Three years of spread presented as one county snapshot. Acceptable for a static
+feature layer; a leakage vector if a downstream model backtests against pre-2025
+outcomes, since B, C and F would carry future information.
+
+**The `as_of_date` column now exists** (`scripts/pillar_vintage.py`, 2026-08-04)
+on all six parquets, with the full table in `outputs/pillar_vintages.csv`, so the
+consuming team can detect this without reading these docs. It is excluded from
+the feature matrix, so it travels with the data without entering any model. Note
+the correction in that row: Source F is the **2025 edition** — `metro_2023` is
+named for the OMB delineation it uses, not for the release year, and this table
+previously said "USDA 2023 typology".
 
 ## Validation plan under this placeholder
 

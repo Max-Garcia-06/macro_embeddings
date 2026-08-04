@@ -8,9 +8,23 @@ qualifies have been written into `source-a-findings.md` §14.2a–§14.2c and
 §17.2a–§17.3. Two of this document's original conjectures did not survive
 measurement and are corrected in place, marked **[corrected]**.
 
+**Four boss-independent items also landed 2026-08-04**, closing everything that
+could be done without an answer from the downstream team
+(`source-a-findings.md` §18–§19):
+
+1. The size proxy is Census PEP population, not Source E's tax-return count.
+   Same tiering, same verdicts, one self-reference removed — but every §14/§17
+   figure was re-scored, and the numbers in this document are the re-scored ones.
+2. `as_of_date` is stamped on all six pillar parquets.
+3. Source A's schema and null semantics are frozen in
+   `docs/source_a_feature_schema.md`.
+4. The cross-source notebook no longer reads as though Source A ships a
+   character count.
+
 **Still open: which of Plans 1, 3, 4 or 5 follows.** That is a decision about
 scope and budget, not about evidence, and the questions that select among them
-are at the end of this document unchanged.
+are at the end of this document unchanged. **Nothing further can be done here
+without asking question 4.**
 
 ## Context
 
@@ -19,9 +33,10 @@ Source A ships 29 interpretable columns extracted from county Wikipedia articles
 and the shipping decision is made. Two open items remain, recorded in §14.5,
 §17.3, and the session log's §8:
 
-1. **`p = 0.082`** on the paired comparison of typed extraction against the
-   incumbent `content_length` scalar — short of 0.05, described in the findings
-   file as "a judgment call, not a result."
+1. **`p = 0.115`** on the paired comparison of typed extraction against the
+   incumbent `content_length` scalar (`p = 0.082` before the 2026-08-04 size-proxy
+   swap) — short of 0.05, described in the findings file as "a judgment call,
+   not a result."
 2. **Every target is another pillar's feature.** The 28-target harness is the
    closest in-repo proxy for downstream usefulness, not an answer to it.
 
@@ -44,19 +59,25 @@ thin baseline, 28 targets:
 
 | statistic | value |
 |---|---|
-| mean | +0.00203 |
-| median | +0.00061 |
-| sd | 0.00605 |
-| Cohen dz | 0.335 |
-| **power at n = 28, α = 0.05 one-sided** | **0.53** |
-| n targets for 80% power | 57 |
-| n targets for 90% power | 78 |
+| mean | +0.00190 |
+| median | +0.00058 |
+| sd | 0.00586 |
+| Cohen dz | 0.323 |
+| **power at n = 28, α = 0.05 one-sided** | **0.51** |
+| n targets for 80% power | 61 |
+| n targets for 90% power | 84 |
 
-Power of 0.53 means that if the observed effect is the true effect, this test
-detects it about half the time. `p = 0.082` is the ordinary output of a real
+Power of 0.51 means that if the observed effect is the true effect, this test
+detects it about half the time. `p = 0.115` is the ordinary output of a real
 effect measured with roughly half the sample the effect size requires. It is not
 evidence against the effect, and it should not be written up as though the
 question were close.
+
+**The proxy swap is itself the demonstration.** Changing the size control from
+tax returns to Census population — two variables correlated at r = 0.998 — moved
+this p from 0.082 to 0.115. A test whose verdict swings that far on a
+fourth-decimal change to a control is not measuring the question precisely
+enough to gate a decision.
 
 **This is not a test-choice problem.** The suspicion that Wilcoxon misses the
 result because it discards magnitude was checked directly:
@@ -66,43 +87,44 @@ result because it discards magnitude was checked directly:
 | Wilcoxon signed-rank | 0.0815 |
 | paired t (magnitude-weighted) | 0.0873 |
 
-Both land in the same place. Switching to a magnitude-weighted test changes the
-third decimal. Any proposal to "use a better test" is proposing a rounding
-error.
+Both land in the same place *(measured against the retired tax-return baseline;
+not re-run, since the point is the gap between the two tests, not their level)*.
+Switching to a magnitude-weighted test changes the third decimal. Any proposal to
+"use a better test" is proposing a rounding error.
 
 **The mean is carried by five targets.** Mean is 3.3× the median because the
 distribution is concentrated:
 
 | target | `content_length` | typed | difference |
 |---|---|---|---|
-| Accommodation & Food Services LQ | −0.00001 | +0.02618 | **+0.02619** |
-| demographic distress count | +0.00803 | +0.02158 | +0.01356 |
-| Information LQ | −0.00514 | +0.00269 | +0.00783 |
-| capital-to-wage ratio | +0.00090 | +0.00680 | +0.00590 |
-| Transportation & Warehousing LQ | +0.00135 | +0.00563 | +0.00428 |
+| Accommodation & Food Services LQ | −0.00001 | +0.02531 | **+0.02531** |
+| demographic distress count | +0.00851 | +0.02182 | +0.01330 |
+| Information LQ | −0.00520 | +0.00279 | +0.00799 |
+| capital-to-wage ratio | +0.00043 | +0.00530 | +0.00486 |
+| Transportation & Warehousing LQ | +0.00142 | +0.00568 | +0.00426 |
 
-Losses are similarly concentrated: Professional Services −0.00653, Retail Trade
-−0.00294, Educational Services −0.00284. Dropping Accommodation alone moves the
-mean from +0.00203 to +0.00113 — roughly halving it. Its mechanism is documented
+Losses are similarly concentrated: Professional Services −0.00615, Educational
+Services −0.00294, Retail Trade −0.00288. Dropping Accommodation alone moves the
+mean from +0.00190 to +0.00103 — roughly halving it. Its mechanism is documented
 and independently verified (§13.4: counties whose articles mention tourism
 average 1.407 Accommodation LQ against 1.010 for those that do not, r = 0.157),
 so the concentration is explicable rather than suspicious — but the headline
 rests heavily on one target.
 
 **A number that was not recorded anywhere, now in §14.2a.** Typed extraction
-against the `bge-m3` embedding: mean difference +0.00047, wins **13 of 28**,
-Wilcoxon **p = 0.76**, dz = 0.089. By rank the two are a dead tie. §14.5 already
+against the `bge-m3` embedding: mean difference +0.00026, wins **11 of 28**,
+Wilcoxon **p = 0.52**, dz = 0.057. By rank the two are a dead tie. §14.5 already
 forbade "significantly beats the embedding," which is correct, but the true
 relationship is weaker than that phrasing implies: typed extraction is
 *statistically indistinguishable* from the 1024-dim embedding and wins on cost,
 interpretability, and the absence of a 2.2GB model download. Those are the
-defensible arguments. The +0.00320 against +0.00273 gap is noise and is now
+defensible arguments. The +0.00307 against +0.00281 gap is noise and is now
 forbidden wording in §14.5.
 
 **[corrected] One asymmetry runs the other way.** Against `content_length`, the
 embedding's advantage is both larger and more consistent than the typed block's
-(dz = 0.435, power 0.72, p = 0.014, surviving the pillar-blocked test at
-p = 0.022; the typed block's pillar-blocked p is 0.132). That is §14.2's prose
+(dz = 0.426, power 0.71, p = 0.012, surviving the pillar-blocked test at
+p = 0.005; the typed block's pillar-blocked p is 0.146). That is §14.2's prose
 caveat — the embedding wins smaller but on more targets — measured rather than
 asserted. It does not change the shipping decision, because the two tie head to
 head and only one costs a model download, but it belongs on the record and is
@@ -134,14 +156,14 @@ coupling affects both variants being differenced, so it largely cancels:
 
 | variant | ICC of differences | design effect | effective n | pillar-blocked p |
 |---|---|---|---|---|
-| `extracted_min` | 0.360 | 1.81 | 15.5 | 0.212 |
-| `extracted_mid` | 0.351 | 1.79 | 15.6 | 0.158 |
-| `extracted_full` | 0.158 | 1.36 | 20.6 | 0.158 |
-| **`extracted_sections`** | **0.031** | **1.07** | **26.2** | 0.132 |
-| `bge-m3` full | 0.000 | 1.00 | 28.0 | 0.022 |
-| typed block vs zero, crowded | 0.000 | 1.00 | 28.0 | 0.092 |
+| `extracted_min` | 0.410 | 1.92 | 14.6 | 0.224 |
+| `extracted_mid` | 0.385 | 1.87 | 15.0 | 0.146 |
+| `extracted_full` | 0.170 | 1.38 | 20.3 | 0.175 |
+| **`extracted_sections`** | **0.029** | **1.06** | **26.3** | 0.146 |
+| `bge-m3` full | 0.000 | 1.00 | 28.0 | 0.005 |
+| typed block vs zero, crowded | 0.000 | 1.00 | 28.0 | 0.062 |
 
-So `p = 0.082` needs no clustering discount, and the "57 targets for 80% power"
+So `p = 0.115` needs no clustering discount, and the "61 targets for 80% power"
 figure computed on nominal n stands essentially unchanged. **The narrower
 variants are a different story** — `extracted_min` and `extracted_mid` do carry
 real within-pillar dependence and their p-values should be read against an
@@ -155,17 +177,17 @@ every other pillar, has better properties than the headline test:
 
 | test | dz | power at n = 28 | targets for 80% | p |
 |---|---|---|---|---|
-| typed block vs zero, crowded baseline | 0.549 | **0.88** | 22 | 0.013 |
-| `content_length` vs zero, crowded baseline | 0.339 | 0.54 | 56 | 0.014 |
-| typed vs scalar, crowded baseline | 0.264 | 0.39 | 91 | 0.295 |
+| typed block vs zero, crowded baseline | 0.587 | **0.92** | 20 | 0.010 |
+| `content_length` vs zero, crowded baseline | 0.367 | 0.60 | 48 | 0.003 |
+| typed vs scalar, crowded baseline | 0.239 | 0.34 | 110 | 0.493 |
 
 Two consequences:
 
 - **"Source A carries marginal value over all other pillars combined" is a
-  well-powered, significant result** (power 0.88, p = 0.013, effective n = nominal
-  n). This is the load-bearing finding of the whole experiment line and it is
-  solid.
-- **"The typed block beats the scalar" is powered at 0.39 and needs 91 targets.**
+  well-powered, significant result** (power 0.92, p = 0.010, effective n = nominal
+  n). This is the load-bearing finding of the whole experiment line, it is solid,
+  and the proxy swap strengthened it.
+- **"The typed block beats the scalar" is powered at 0.34 and needs 110 targets.**
   It will not be settled in this repo by adding targets. The typed block ships
   on cost and interpretability, not on that comparison.
 
@@ -174,11 +196,11 @@ headline +0.0010 is an artifact of the basket's composition:
 
 | target pillar | thin lift | crowded lift | retained |
 |---|---|---|---|
-| C (velocities) | +0.00170 | +0.00118 | **69%** |
-| D (freight) | +0.00212 | +0.00133 | 63% |
-| B (QCEW) | +0.00317 | +0.00087 | 28% |
-| F (typology) | +0.02172 | +0.00401 | 18% |
-| E (capital-to-wage) | +0.00786 | +0.00002 | **0.2%** |
+| C (velocities) | +0.00188 | +0.00127 | **68%** |
+| D (freight) | +0.00216 | +0.00133 | 61% |
+| B (QCEW) | +0.00306 | +0.00092 | 30% |
+| F (typology) | +0.02233 | +0.00318 | 14% |
+| E (capital-to-wage) | +0.00640 | −0.00002 | **≈0%** |
 
 Retention is highest where the other pillars know least — Source C's velocity
 series are near-orthogonal to county size and to the rest of the matrix — and
@@ -232,7 +254,7 @@ Do not chase power. Stop overstating the power already in hand. What shipped:
   `outputs/source_a_marginal_by_pillar.csv`. Both scripts log them before the
   aggregate.
 - §14.2a, §14.2b, §14.2c, §17.2a added; §14.5 and §17.3 status blocks rewritten.
-  `p = 0.082` now reads as "underpowered at 0.53" everywhere it appears, four
+  the headline p now reads as "underpowered at ~0.5" everywhere it appears, four
   new forbidden phrasings were added, and the typed-vs-embedding rank tie
   (13/28, p = 0.76) is recorded.
 - `docs/downstream_target.md` (Part 2) refreshed: the stale
@@ -249,13 +271,12 @@ Do not chase power. Stop overstating the power already in hand. What shipped:
 - **Cost:** as estimated, roughly half a day.
 - **Bought:** every published claim is now defensible, and one new substantive
   result — Source A's typed block is the cleanest large block in the repo under a
-  rate target (23 of 29 columns below |r| = 0.15 with county size), which
+  rate target (22 of 29 columns below |r| = 0.15 with county size), which
   strengthens the case in question 4 below.
 
-**Not done, and deliberately:** the cross-source notebook's §2 still narrates
-Source A entirely as the embedding cut. It is not wrong — the embedding was cut —
-but it predates the typed-extraction round and does not mention it. Rewriting
-that section is a presentation task, not a correctness one.
+**Since closed:** the cross-source notebook's §2 narrated Source A entirely as
+the embedding cut. Its §2 header and framing now say the pillar ships 29 typed
+columns and point the reader at §2c before they can draw the wrong conclusion.
 
 ### Plan 3 — Expand the in-repo target set
 
@@ -268,12 +289,12 @@ additional Source C series.
   the two effects.
 - **Ceiling:** new targets are still pillar features and still correlated.
   **[corrected] The dependence penalty is smaller than this document assumed** —
-  effective n on the shipping variant is 26.2 of 28, not 8–12 — so added targets
+  effective n on the shipping variant is 26.3 of 28, not 8–12 — so added targets
   would convert to effective n more efficiently than argued above. That makes
   Plan 3 cheaper per unit of power than originally stated, and reaching the 57
   targets Item 1 needs is now plausible rather than illusory.
 - **Does nothing for Item 2.** The basket remains a proxy, and the comparison it
-  would settle (typed vs scalar, 91 targets) is one that question 4 settles for
+  would settle (typed vs scalar, 110 targets) is one that question 4 settles for
   free.
 
 ### Plan 4 — Ingest an external county-level target
@@ -315,7 +336,7 @@ combined.
 Ordered by how much the answer changes the work. Unchanged by Plan 2 — it
 produced evidence, not decisions.
 
-### 1. Would anything be built differently if `p` were 0.03 instead of 0.082?
+### 1. Would anything be built differently if `p` were 0.03 instead of 0.115?
 
 If nothing changes — and the block appears to ship either way — then Item 1 is a
 documentation problem rather than a research problem, and Plan 2 has closed it.
@@ -342,17 +363,17 @@ Already identified in `docs/downstream_target.md` as the property
 that decides everything. **Plan 2 strengthened this question's leverage.** The
 size-dependence scan now covers all 29 shipping columns, and the split is sharp:
 
-- **Rate** → county size is a control → `content_length` (r = +0.359 with size)
-  is compromised, while 23 of the block's 29 columns sit below |r| = 0.15 and the
+- **Rate** → county size is a control → `content_length` (r = +0.355 with size)
+  is compromised, while 22 of the block's 29 columns sit below |r| = 0.15 and the
   single column carrying 97.6% of the section gain, `sec_n_industry_mentions`,
-  sits at +0.108. Within the block, the size-loaded columns are the structural
+  sits at +0.110. Within the block, the size-loaded columns are the structural
   ones and the size-free columns are the ones naming economic facts — so the
   typed block wins on construction, not on a p-value.
 - **Count** → size is a feature → the scalar is defensible as a cheap size proxy
   and the typed block's case rests on interpretability alone.
 
-This is the typed-vs-scalar comparison that is powered at 0.39 and would need 91
-targets. **A single answer here settles what 91 targets could not** — which is
+This is the typed-vs-scalar comparison that is powered at 0.34 and would need 110
+targets. **A single answer here settles what 110 targets could not** — which is
 the strongest argument for asking the question rather than running Plan 3.
 
 `docs/downstream_target.md` Part 1 is the question written out for the
@@ -377,7 +398,8 @@ Skip Plan 3 — but for a narrower reason than this document originally gave. It
 is not that added targets fail to convert into effective n; measurement showed
 they largely would. It is that the only comparison Plan 3 could win is
 typed-versus-scalar, and question 4 settles that comparison for the cost of one
-email.
+email. The proxy swap sharpened this: reaching 80% power on that comparison now
+needs 110 targets, not 91.
 
 **Ask question 4 before spending anything.**
 
