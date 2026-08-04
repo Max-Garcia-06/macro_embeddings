@@ -1218,3 +1218,102 @@ the size control).
   measured and not supported.
 - **Reproduction**: `uv run python scripts/analyze_pillar_matrix_signal.py` and
   `uv run python scripts/analyze_pillar_pair_crossvalidation.py`, seed 42.
+
+## 17. Marginal Value Against a Crowded Baseline — The Fusion-Relevant Test (2026-08-03)
+
+**Context**: §14 and §16 disagreed about Source A's typed features. The
+representation harness scored them at +0.0032 mean lift; the leave-one-pillar-out
+sweep found they added nothing and slightly diluted it. Neither settles the
+fusion decision, because neither matches what a downstream consumer sees:
+
+- The harness baseline is **size + state only**. A model at Comcast will have
+  every pillar E_macro publishes, not just county size and geography.
+- The sweep never isolates Source A — it measures the other five pillars as a
+  bloc, predicting a pillar's own features, where the target's sibling columns
+  dominate by construction.
+
+`analyze_source_a_marginal.py` runs the missing configuration:
+
+    baseline = size + state + every pillar except Source A and the target's own
+    variant  = baseline + Source A's block
+
+Same 28 targets, seed 42, 5 folds, baseline and block fitted separately so no
+shared penalty artifact. The target's own pillar is excluded for the same reason
+the sweep excludes it: predicting one QCEW sector from nineteen others is a
+within-pillar task no outside source can contribute to.
+
+### 17.1 Result: Source A survives, at roughly a quarter of its headline value
+
+Adding B–F to the baseline raises mean R² from 0.255 to 0.327 across 106 columns.
+
+| variant | lift, thin baseline | lift, crowded baseline | retained | positive | Wilcoxon p |
+|---|---|---|---|---|---|
+| `content_length` | +0.00143 | +0.00052 | 37% | 20/28 | **0.014** |
+| `extracted_sections` | +0.00373 | **+0.00104** | 28% | 19/28 | **0.013** |
+
+**Three findings, in order of how much they should change behaviour:**
+
+1. **Roughly 70% of Source A's measured value was information other pillars
+   already carry.** The harness overstates the pillar's contribution by about
+   3.5×. Any planning that used +0.0032 as Source A's expected contribution to a
+   fused model should use **+0.0010**.
+2. **What remains is statistically real.** Both variants stay significantly
+   positive against a baseline that already contains every other pillar
+   (p = 0.013, 0.014). The sweep's reading — that Source A's expansion adds
+   nothing — was too strong. It measured the wrong thing.
+3. **The typed block keeps roughly twice the marginal value of the scalar**
+   (+0.00104 against +0.00052). That difference is not individually significant
+   (17/28 targets, p = 0.295), so it supports "ship the typed block" on point
+   estimate and cost, not on a demonstrated gap.
+
+### 17.2 Where it survives, and why that is the coherence check
+
+Source A's surviving contribution is concentrated exactly where its features name
+something no federal statistic encodes:
+
+| target | crowded lift | plausible mechanism |
+|---|---|---|
+| Accommodation & Food Services LQ | +0.0058 | tourism / resort / ski / casino mentions |
+| Educational Services LQ | +0.0051 | `has_university` |
+| Transportation & Warehousing LQ | +0.0042 | river / interstate / port |
+| demographic distress count | +0.0040 | mixed |
+| outbound partner concentration | +0.0035 | transport and logistics mentions |
+| GDP velocity (normalized) | +0.0025 | mixed |
+
+And it is fully absorbed where another pillar measures the same quantity
+directly — Source E's capital-to-wage ratio collapses from +0.0079 to +0.0000,
+Information LQ turns negative, Manufacturing LQ retains 11%.
+
+**This is the strongest evidence in the whole experiment line that the extraction
+is doing something real.** A feature set that survived arbitrarily would look like
+noise; this one survives on the three targets whose semantics match its
+lexicons and dies on the ones another agency already measures. The largest
+absorbed loss (capital-to-wage) and the largest surviving gain (accommodation)
+are both predicted by what the columns actually contain.
+
+Per-pillar, the typed block's advantage over `content_length` under the crowded
+baseline concentrates in F (+0.0032), C (+0.0013) and D (+0.0012); it is
+negligible for B (+0.0002) and E (+0.00001).
+
+### 17.3 What this does not settle
+
+Every target here is still another pillar's feature. Downstream targets at
+Comcast are external — churn, propensity, whatever the consuming model predicts.
+A source can be redundant for predicting `lq_emp_72` and still carry independent
+information about an external outcome, or vice versa. **This is the closest proxy
+available in-repo, not the answer.** The only thing that settles it is a
+downstream label, which this project does not have and is not scoped to obtain.
+
+- **Allowed wording**: "against a baseline that already contains every other
+  pillar, Source A's typed block retains a small but statistically real
+  contribution (+0.0010 mean R² lift, p = 0.013), roughly twice the shipped
+  scalar's, concentrated on targets whose semantics its lexicons match."
+- **Forbidden wording**: "Source A contributes +0.0032 to a fused model" — that
+  is the thin-baseline figure and it overstates by ~3.5×; "the typed block
+  significantly beats `content_length` in fusion" — p = 0.295 on the paired
+  comparison.
+- **Verdict for the fusion step**: **ship the typed block.** It is positive
+  against the hardest in-repo baseline, its surviving contribution is
+  semantically coherent rather than diffuse, and it costs one regex pass. Plan
+  around +0.0010, not +0.0032.
+- **Reproduction**: `uv run python scripts/analyze_source_a_marginal.py`, seed 42.
