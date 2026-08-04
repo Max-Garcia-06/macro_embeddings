@@ -942,9 +942,12 @@ reinstated, reduce it supervised (PLS) or not at all.**
 
 ### 13.8 Status and open items
 
-- **Status**: `extracted_full`'s 20 columns are written into
-  `data/source_a_text_features.parquet` and flow into `pillar_matrix.build_matrix`
-  as Source A's block (A = 21 columns) with no change to that module.
+- **Status — superseded by §14.5.** `extracted_full`'s 20 columns were written
+  into `data/source_a_text_features.parquet` and flowed into
+  `pillar_matrix.build_matrix` as Source A's block with no change to that module.
+  §14 added the nine economy-section columns; **the block is now 29 columns**, and
+  that is what ships. The figures in §13.3 below were measured on the pre-refetch
+  corpus and are superseded by §14.2's table.
 - **Allowed wording**: "typed extraction from Wikipedia intros delivers 2.6× the
   mean cross-pillar lift of article length, and 94% of the cut embedding's, at 20
   columns and no model download — but its per-target advantage is concentrated

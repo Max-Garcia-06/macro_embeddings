@@ -33,16 +33,28 @@ Sources A and C need credentials in a `.env` file (see their sections below); B,
 
 1. Authenticates against the **Wikimedia Enterprise API**.
 2. Fetches the full article for each of the ~3,222 US counties, county-equivalents, and Puerto Rico municipios in `ALL_COUNTIES` (derived from the Census Gazetteer counties file, cached in `county_crosswalk.parquet`).
-3. Isolates the **lead/introductory section** only (drops infobox, later sections, and citation markers) — Wikimedia Enterprise returns a full HTML document whose body is split into `<section data-mw-section-id="N">` blocks per MediaWiki's Parsoid model; section `0` is the lead.
+3. Isolates the **lead/introductory section** (drops infobox, later sections, and citation markers) — Wikimedia Enterprise returns a full HTML document whose body is split into `<section data-mw-section-id="N">` blocks per MediaWiki's Parsoid model; section `0` is the lead.
 4. Strips self-references and boilerplate phrasing, then writes the cleaned text and its character count to `data/source_a_text_features.parquet`.
+5. Persists **every body section** to `data/source_a_sections.parquet` (64,588 rows, 20.5 sections per county, 3,144 counties). Fetch cost was always flat — the full article body was always returned and then discarded — so no future section question needs another 3,144-request crawl.
 
 Per-county failures (article not found, empty intro) are logged and skipped rather than aborting the run; only an authentication failure stops the whole pipeline.
+
+### The pillar ships 29 typed columns, not the text
+
+Ingestion is step one of three. Two extraction passes then enrich `source_a_text_features.parquet` in place:
+
+- `extract_source_a_features.py` — a fixed lexicon over the lead section (industry mentions, university, port, river, interstate, tourism, military base, tribal land, founding year, …).
+- `extract_source_a_section_features.py` — the same industry lexicon applied only to sections whose title marks them economic, prefixed `sec_`. This raises industry coverage from 8.2% to 18.8% of counties.
+
+The result is the 29-column block `pillar_matrix.build_matrix` exposes as pillar A. It beats the `content_length` scalar it replaced and ties the cut embedding on mean cross-pillar lift, and it survives a baseline that already holds every other pillar (+0.0010 mean R² lift, p = 0.013, power 0.88). Full evidence, including the wording that is and is not defensible, in `analysis-output/source-a/source-a-findings.md` §13–§17.
+
+Two columns are written to the parquet as diagnostics and **excluded** from the scored block: `n_body_sections` (r = 0.550 with county size, and removing it costs only 2.4% of the section gain) and `has_usda_echo`.
 
 ### The embedding step was removed
 
 This pipeline previously embedded each intro with `BAAI/bge-m3` (1024-dim) and wrote `data/source_a_embeddings.parquet`. That step was cut: the embedding correlates with economic distance at |r| = 0.041 (Mantel, n = 2,786) and k-means over it peaks at a silhouette of 0.028, meaning no recoverable cluster structure. See `analysis-output/E_macro_key_findings.ipynb` §2.
 
-`data/source_a_embeddings.parquet` is **retained** and is no longer regenerated. The new ingestion writes to a separate path so a re-run cannot clobber it. Its one live consumer is `analyze_source_a_representation.py`, which scores the embedding head-to-head against the typed features that replaced it (`analysis-output/source-a/source-a-findings.md` §13–§14). The embedding-era EDA scripts that also read it — `analyze_source_a_clusters.py`, `analyze_source_a_cluster_stability.py`, `generate_source_a_insights.py`, and the two `analyze_source_a_source_{c,f}_correlation.py` crossvalidations — were deleted 2026-08-03; recover them from git history if the cut is reversed. `visualize_source_a.py` and `analyze_source_a_similarity.py` stay, but as shared geospatial utilities: sources B–F import `fetch_county_centroids` and `haversine_distance_matrix` from them.
+`data/source_a_embeddings.parquet` is **retained** and is no longer regenerated. The new ingestion writes to a separate path so a re-run cannot clobber it. Its one live consumer is `analyze_source_a_representation.py`, which scores the embedding head-to-head against the typed features that replaced it (`analysis-output/source-a/source-a-findings.md` §13–§17). Head to head the two are a statistical tie — 13 of 28 targets, Wilcoxon p = 0.76 — so the case for the typed block is cost, interpretability, and no 2.2GB download, not measured lift. The embedding-era EDA scripts that also read it — `analyze_source_a_clusters.py`, `analyze_source_a_cluster_stability.py`, `generate_source_a_insights.py`, and the two `analyze_source_a_source_{c,f}_correlation.py` crossvalidations — were deleted 2026-08-03; recover them from git history if the cut is reversed. `visualize_source_a.py` and `analyze_source_a_similarity.py` stay, but as shared geospatial utilities: sources B–F import `fetch_county_centroids` and `haversine_distance_matrix` from them.
 
 ### Output
 
@@ -55,6 +67,13 @@ This pipeline previously embedded each intro with `BAAI/bge-m3` (1024-dim) and w
 | `raw_intro_text` | str | cleaned lead-section text |
 | `embedding_text` | str | `raw_intro_text` with self-references and boilerplate phrasing stripped |
 | `content_length` | int | character count of `embedding_text` |
+| 19 lead-extraction columns | bool \| int | written by `extract_source_a_features.py` — `has_university`, `has_port`, `has_river`, `has_interstate`, `has_tourism`, `has_military_base`, `has_tribal_land`, `has_protected_land`, `has_namesake`, `has_metro_attachment`, `founding_year`, `n_distinct_proper_nouns`, `n_industry_mentions`, and six `has_<industry>` flags |
+| 9 section-extraction columns | bool \| int | written by `extract_source_a_section_features.py` — `has_economy_section`, `sec_n_industry_mentions`, and seven `sec_has_<industry>` flags |
+| `n_body_sections`, `has_usda_echo` | int \| bool | diagnostics only; **excluded** from the scored 29-column block |
+
+Absence is encoded as `False`/`0`, never null: the schema is uniform across all 3,144 counties and sparsity is itself the signal (a county whose article says nothing is a county about which little is written).
+
+And `data/source_a_sections.parquet` — one row per county × body section (64,588 rows), carrying `fips_code`, `county_name`, `section_id`, `section_title`, `section_text`.
 
 ### Running
 
@@ -154,7 +173,7 @@ Output: `data/source_f_usda_typology.parquet` with columns `county_name`, `fips_
 
 ## Cross-pillar crossvalidation
 
-`analyze_pillar_pair_crossvalidation.py` runs the full pillar-to-pillar sweep: representative scalar features from all six pillars against each other (41 feature pairs spanning all 15 pillar pairs), each permutation-tested at 499 permutations with one Benjamini-Hochberg correction across the whole sweep. Earlier crossvalidation rounds only ever tested each pillar against Source C.
+`analyze_pillar_pair_crossvalidation.py` runs the full pillar-to-pillar sweep: representative scalar features from all six pillars against each other (50 feature pairs spanning all 15 pillar pairs), each permutation-tested at 499 permutations with one Benjamini-Hochberg correction across the whole sweep. Earlier crossvalidation rounds only ever tested each pillar against Source C.
 
 Every correlation is then recomputed as a partial correlation controlling for county size (log tax returns), because large counties simultaneously move more freight, carry longer Wikipedia articles, hold more capital, and are classified metro.
 
@@ -164,8 +183,12 @@ uv run scripts/analyze_pillar_pair_crossvalidation.py
 
 Outputs `outputs/pillar_pair_crossvalidation.csv` (per feature pair) and `analysis-output/cross-source/pillar_pair_stats.json` (sweep-level counts plus the best link per pillar pair).
 
-**The size control matters:** 15 of 41 tests lose more than half their effect size once it is applied. The largest raw effect in the sweep, Source D freight tonnage against Source F metro status at r = 0.495, falls to -0.057. The strongest surviving link is Source B's Real Estate & Rental & Leasing LQ against Source E's capital-to-wage ratio -- r = 0.394 raw, 0.382 size-controlled -- two independent federal sources identifying the same underlying economy.
+**The size control matters:** 19 of 50 tests lose more than half their effect size once it is applied, including 17 of the 33 that survived the FDR correction. The largest raw effect in the sweep, Source D freight tonnage against Source F metro status at r = 0.495, falls to -0.057. The strongest surviving link is Source B's Real Estate & Rental & Leasing LQ against Source E's capital-to-wage ratio -- r = 0.394 raw, 0.382 size-controlled -- two independent federal sources identifying the same underlying economy.
+
+Whether the size-controlled column or the raw column is the operative one depends on a question the downstream team has not yet answered — see `docs/downstream_target_assumptions.md`.
 
 ## Findings
 
 `analysis-output/E_macro_key_findings.ipynb` consolidates all six pillars into one keep/cut/fix decision per pillar, with the evidence behind each. Per-pillar detail lives in `analysis-output/source-{a..f}/`.
+
+Source A's typed-extraction round is the most recent work: `analysis-output/source-a/source-a-findings.md` §13–§17, with the open items and the plans for them in `docs/plans/source_a_next_steps.md`.

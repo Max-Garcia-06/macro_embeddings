@@ -108,8 +108,12 @@ to −0.057 once size is controlled.
    model. Everything downstream hangs on this.
 2. **Does B ↔ E get privileged weight?** It is roughly five times stronger than
    anything else surviving the size control.
-3. **Confirm the Source A cut.** Reinstating is a `git revert`; re-running costs a
-   2.2GB model download plus CPU inference over 3,144 articles.
+3. **Confirm the Source A *embedding* cut.** The pillar itself is not cut — it
+   ships 29 typed columns. Only the `bge-m3` step is gone. Reinstating it is a
+   `git revert`; re-running costs a 2.2GB model download plus CPU inference over
+   3,144 articles. The case against reinstating is no longer that the embedding
+   loses: head to head against the typed block it is a statistical tie (13/28,
+   p = 0.76). It is that a tie does not justify the download.
 
 ## Next work, in order
 
