@@ -28,13 +28,16 @@ out-of-fold fit, so the null lift sits below zero. A target can therefore clear
 the null with a lift that is itself negative. `lift` is the practical measure;
 `p` only certifies that a positive lift is not noise.
 
-Every lift is reported twice, raw and with Source F's industry-dependence flags
-removed from the predictors (`lift_ablated`). USDA builds those flags from
+Every lift is reported twice, raw and with the restating columns removed from the
+predictors (`lift_ablated`). USDA builds its industry-dependence flags from
 industry employment and earnings shares -- the same underlying quantity QCEW's
 location quotients measure -- so `high_manufacturing` predicting the
 manufacturing LQ is two federal products restating one fact, not two agencies
-corroborating each other. The gap between the two columns is how much of a
-result is that overlap.
+corroborating each other. Source A's `has_metro_attachment` is the same
+phenomenon across a different pair: it fires when a Wikipedia intro states the
+county belongs to a metropolitan statistical area, which is the OMB delineation
+Source F's `metro_2023` reports directly. The gap between the two columns is how
+much of a result is that overlap.
 
 Two things this test deliberately does **not** claim:
 
@@ -92,6 +95,23 @@ F_INDUSTRY_COLUMNS: tuple[str, ...] = (
     "industry_dependence_government",
     "industry_dependence_recreation",
 )
+
+# Source A columns that restate a fact another pillar also reports, for the same
+# reason F_INDUSTRY_COLUMNS does: `has_metro_attachment` fires when a county's
+# Wikipedia intro says it belongs to a metropolitan or micropolitan statistical
+# area, and Source F's `metro_2023` is that same OMB delineation read from USDA.
+# One is an encyclopedia repeating a federal definition, the other is the federal
+# definition -- agreement between them is bookkeeping, not corroboration.
+#
+# Source A's outright diagnostics (`has_usda_echo`, `n_body_sections`) need no
+# entry here: `pillar_matrix` keeps them out of the matrix entirely.
+A_RESTATEMENT_COLUMNS: tuple[str, ...] = ("has_metro_attachment",)
+
+# Everything held out of the ablated design. Both entries above are the same
+# phenomenon -- two products restating one underlying fact -- so they share one
+# ablation rather than getting a column each, which keeps `lift_ablated`
+# interpretable as "lift with definitional overlap removed".
+RESTATEMENT_COLUMNS: tuple[str, ...] = F_INDUSTRY_COLUMNS + A_RESTATEMENT_COLUMNS
 
 # RidgeCV search grid. The matrix is wide relative to its 3,143 rows once state
 # dummies and missingness indicators are added, so the penalty matters.
@@ -285,10 +305,9 @@ def score_target(
     r2_full = _oof_r2(full_design, y, _ridge_pipeline(), folds)
     lift = r2_full - r2_baseline
 
-    # Same test with USDA's industry-composition flags held out, isolating the
-    # share of the lift that is definitional overlap with QCEW rather than
-    # independent corroboration.
-    ablated_predictors = [col for col in predictors if col not in F_INDUSTRY_COLUMNS]
+    # Same test with the restating columns held out, isolating the share of the
+    # lift that is definitional overlap rather than independent corroboration.
+    ablated_predictors = [col for col in predictors if col not in RESTATEMENT_COLUMNS]
     ablated_design = np.hstack(
         [base_design, matrix.loc[rows, ablated_predictors].to_numpy(dtype="float64")]
     )

@@ -1105,3 +1105,116 @@ the model has more data to learn from when it is not partitioned.
 - **Status**: resolved. `sections_x_tier` is retained as a scored variant in
   `analyze_source_a_representation.py` so the negative result stays reproducible
   rather than becoming folklore.
+
+## 16. Repairing the Cross-Pillar Sweeps After Source A's Expansion (2026-08-03)
+
+Source A's block went from 1 column to 31 in §13–§14. Two cross-pillar analyses
+consume that block, and both needed attention — one for a defect the expansion
+introduced, one for a convention it made stale.
+
+### 16.1 Defect: diagnostics were leaking into the matrix as predictors
+
+`pillar_matrix._derive_pillar_columns` forwards every Source A column except the
+two raw-text ones. That was correct when Source A shipped one scalar. After
+§13–§14 it silently promoted two **diagnostics** into the predictor set:
+
+- **`has_usda_echo`** exists to *detect* a contamination — it marks counties
+  whose Wikipedia intro quotes USDA's own classification back ("considered a
+  high-recreation retirement destination by the U.S. Department of
+  Agriculture"). Source F's `distress_count` is built from those
+  classifications. Letting the detector predict the thing it detects would have
+  credited Source A for reciting a label it copied. **A detector for circularity
+  must not itself be a predictor.**
+- **`n_body_sections`** is a size proxy — r = 0.550 against log tax returns,
+  above `content_length`'s 0.359 — carrying 2.4% of its block's lift (§14.3).
+
+Both are now excluded in `pillar_matrix` via `SOURCE_A_DIAGNOSTIC_COLUMNS`, so
+every consumer of the matrix gets the exclusion rather than each re-deriving it.
+Source A's block is 29 columns. Source A's own representation harness is
+unaffected — it already excluded both from scored variants, and re-running it
+reproduces §14.2 exactly, which confirms the leak was confined to the sweeps.
+
+### 16.2 Restatement: `has_metro_attachment` duplicates Source F
+
+`analyze_pillar_matrix_signal.py` already ablates `F_INDUSTRY_COLUMNS` on the
+grounds that USDA derives its typology from the same industry shares QCEW
+measures, so agreement between them is bookkeeping rather than corroboration.
+Source A's `has_metro_attachment` is the same phenomenon across a different
+pair: it fires when an intro states the county belongs to a metropolitan or
+micropolitan statistical area, and Source F's `metro_2023` is that same OMB
+delineation. The ablation is now `RESTATEMENT_COLUMNS`, covering both.
+
+### 16.3 What the repaired leave-one-pillar-out sweep shows
+
+| | before (A = 1 column) | after (A = 29 columns) |
+|---|---|---|
+| mean lift | +0.0772 | +0.0739 |
+| mean ablated lift | +0.0296 | +0.0234 |
+| targets carrying signal | — | 22 of 29 |
+
+**Source A's typed features do not help this sweep, and slightly dilute it.**
+That is not a contradiction of §14, it is a different question. The
+representation harness asks whether Source A adds anything over county size and
+state; this sweep asks whether the *other five pillars together* know about a
+target, and A's contribution sits inside a pool that already carries far more.
+Adding 28 mostly-sparse columns to a 44-column design costs a little out-of-fold
+efficiency and buys little.
+
+Checked and ruled out: the ridge penalty grid. This sweep caps at 1000 while
+Source A's own harness needed 1e6 for its 1024-dim variant, so the obvious
+suspect was an alpha ceiling. Re-running three targets with the grid extended to
+1e6 returned **identical** results to four decimal places — `RidgeCV` was already
+selecting well below the cap. `RIDGE_ALPHAS` is therefore left alone rather than
+changed on a hunch, which would have shifted every previously published number in
+this sweep for no reason.
+
+### 16.4 The pair sweep gets a second Source A feature
+
+`analyze_pillar_pair_crossvalidation.py` represented Source A by
+`content_length` alone. Its own stated convention gives Source B two features
+"so the sweep can distinguish 'the pillar is weak' from 'the feature is weak'" —
+and Source A now has exactly that ambiguity. `sec_n_industry_mentions` was added
+as the feature family that carried §14's multivariate result.
+
+**The result is worth stating plainly because it cuts against the new features.**
+Bivariately, `content_length` remains Source A's strongest scalar:
+
+| candidate | mean abs. r across sweep targets |
+|---|---|
+| `content_length` | **0.132** |
+| `n_distinct_proper_nouns` | 0.116 |
+| `founding_year` | 0.115 |
+| `n_industry_mentions` | 0.047 |
+| `sec_n_industry_mentions` | 0.038 |
+
+The typed features win in the multivariate harness, where they combine and where
+particular features match particular targets (tourism → Accommodation & Food
+Services LQ). **One at a time, against one target at a time, they are weak.** Both
+results are correct; they answer different questions, and this entry is what makes
+that visible rather than leaving it to be discovered later.
+
+A further check, run because it seemed likely and turned out not to hold: the
+typed feature is **not** systematically more robust to the size control. Among
+significant pairs it retains 51.0% of its raw |r| against `content_length`'s
+49.9% — indistinguishable, and the median favours `content_length` (0.386 against
+0.537). Its one distinctive pair is `gdp_velocity_pct`, where it keeps 84%
+(r = 0.063 raw, 0.052 controlled, q = 0.004). That single pair should not be
+generalized into a claim about the feature family.
+
+Sweep totals moved from 41 feature pairs / 28 significant to **50 / 33**. The
+Benjamini-Hochberg correction is applied across the whole sweep, so adding tests
+tightens it for everyone — but **no pair changed its significance verdict**, which
+is the robustness check that matters. `docs/PROJECT_GOAL.md` has been updated
+(50 pairs, 17 of 33 significant correlations losing more than half their effect to
+the size control).
+
+### 16.5 Status
+
+- **Allowed wording**: "Source A's typed features earn their place against county
+  size and state, but add little to the leave-one-pillar-out sweep and are weak
+  bivariately; `content_length` remains the pillar's strongest single scalar."
+- **Forbidden wording**: "the typed features improve cross-pillar prediction" —
+  they do not improve this sweep; "the typed features are more size-robust" —
+  measured and not supported.
+- **Reproduction**: `uv run python scripts/analyze_pillar_matrix_signal.py` and
+  `uv run python scripts/analyze_pillar_pair_crossvalidation.py`, seed 42.

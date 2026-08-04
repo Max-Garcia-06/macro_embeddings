@@ -68,21 +68,24 @@ not shipping the final tensor. Repo state matches that:
 
 - All six sources ingested, coverage 3,143–3,144 counties on five of six.
 - Per-pillar findings in `analysis-output/source-{a..f}/`.
-- Full 15-pillar-pair crossvalidation sweep: 41 feature pairs, 499 permutations,
+- Full 15-pillar-pair crossvalidation sweep: 50 feature pairs, 499 permutations,
   one Benjamini-Hochberg correction across the sweep, every correlation recomputed
   as a partial correlation controlling for county size.
 - **The fusion/assembly step does not exist yet.** By design.
 
 Operating principle: every pillar must earn its slot on evidence before anything is
 fused. Applied already — Source A's `bge-m3` embedding step was cut (|r| = 0.041
-Mantel, k-means silhouette 0.028), and 15 of 41 significant correlations lost more
-than half their effect once size was controlled.
+Mantel, k-means silhouette 0.028), and 17 of 33 significant correlations lose more
+than half their effect once size is controlled.
 
 ## Where the evidence stands
 
 Verdict per pillar (detail in `analysis-output/E_macro_key_findings.ipynb`):
 
-- **A** — cut the embedding, keep the text source. Done.
+- **A** — cut the embedding, keep the text source, and replace the single
+  `content_length` scalar with 29 typed columns extracted from the lead and the
+  economy section. Those beat both the scalar and the cut embedding on mean
+  cross-pillar lift; see `source-a-findings.md` §13–§16. Done.
 - **B** — keep, change the feature: ship the 20-dim LQ vector, not a scalar.
 - **C** — keep, fix the metric: use `gdp_velocity_pct`, not dollar-denominated
   `gdp_velocity`. Done.

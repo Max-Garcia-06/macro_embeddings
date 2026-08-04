@@ -67,6 +67,23 @@ SIZE_FEATURES: tuple[str, ...] = (
     "log_gdp_latest",
 )
 
+# Source A columns written for diagnosis rather than prediction, and therefore
+# kept out of the matrix entirely.
+#
+# `has_usda_echo` exists to *detect* a contamination: it marks the counties whose
+# Wikipedia intro quotes USDA's own classification back ("considered a
+# high-recreation retirement destination by the U.S. Department of
+# Agriculture"). Source F's `distress_count` is built from those
+# classifications, so letting this column predict it would credit Source A for
+# reciting a label it copied. A detector for circularity must not itself be a
+# predictor.
+#
+# `n_body_sections` is a size proxy in disguise -- r = 0.550 against log tax
+# returns, above `content_length`'s 0.359 -- and an ablation showed it carries
+# 2.4% of its block's lift. Excluded on the same grounds it was excluded from
+# Source A's own scored variants.
+SOURCE_A_DIAGNOSTIC_COLUMNS: tuple[str, ...] = ("has_usda_echo", "n_body_sections")
+
 # Identifier and bookkeeping columns that are never features.
 NON_FEATURE_COLUMNS: tuple[str, ...] = (
     "fips_code",
@@ -111,11 +128,10 @@ def _load_pillar_frames() -> dict[str, pd.DataFrame]:
 
 
 def _derive_pillar_columns(frames: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
-    """Add the derived columns each pillar contributes, and drop raw text.
+    """Add the derived columns each pillar contributes, and drop non-features.
 
-    Source A's `raw_intro_text` / `embedding_text` are dropped -- `content_length`
-    is the numeric feature the pipeline now ships. Source D gains log-scaled
-    tonnage. Source F gains `distress_count`.
+    Source A drops its two raw-text columns plus its diagnostics. Source D gains
+    log-scaled tonnage. Source F gains `distress_count`.
 
     Args:
         frames: Raw pillar frames from `_load_pillar_frames`.
@@ -125,7 +141,10 @@ def _derive_pillar_columns(frames: dict[str, pd.DataFrame]) -> dict[str, pd.Data
     """
     derived = dict(frames)
 
-    derived["A"] = frames["A"].drop(columns=["raw_intro_text", "embedding_text"])
+    derived["A"] = frames["A"].drop(
+        columns=["raw_intro_text", "embedding_text", *SOURCE_A_DIAGNOSTIC_COLUMNS],
+        errors="ignore",
+    )
 
     d = frames["D"]
     total_tons = d[list(D_TONNAGE_COLUMNS)].sum(axis=1)

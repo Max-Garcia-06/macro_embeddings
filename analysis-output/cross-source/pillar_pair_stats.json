@@ -2,15 +2,15 @@
   "n_permutations": 499,
   "random_seed": 42,
   "fdr_alpha": 0.05,
-  "n_feature_pair_tests": 41,
+  "n_feature_pair_tests": 50,
   "n_pillar_pairs_tested": 15,
-  "n_significant_feature_pairs": 28,
-  "n_size_confounded_feature_pairs": 15,
+  "n_significant_feature_pairs": 33,
+  "n_size_confounded_feature_pairs": 19,
   "best_per_pillar_pair": {
     "DxF": {
       "r": 0.4950505375749271,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 3144,
       "significant": true,
       "r_size_controlled": -0.0569293774715008,
@@ -21,7 +21,7 @@
     "BxE": {
       "r": 0.39367619512148566,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 2453,
       "significant": true,
       "r_size_controlled": 0.38187325459342025,
@@ -30,12 +30,12 @@
       "feature_y": "E capital-to-wage ratio"
     },
     "AxD": {
-      "r": 0.27504559202854884,
+      "r": 0.27740149664005304,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 3144,
       "significant": true,
-      "r_size_controlled": -0.07422572136165649,
+      "r_size_controlled": -0.07403751649274677,
       "size_confounded": true,
       "feature_x": "A intro-text length",
       "feature_y": "D freight tonnage (log10)"
@@ -43,7 +43,7 @@
     "BxD": {
       "r": 0.2546882595190262,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 2453,
       "significant": true,
       "r_size_controlled": -0.03966358689880745,
@@ -52,23 +52,23 @@
       "feature_y": "D freight tonnage (log10)"
     },
     "AxF": {
-      "r": 0.24765465764710848,
+      "r": 0.2486139770020714,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 3144,
       "significant": true,
-      "r_size_controlled": 0.046875083703732216,
+      "r_size_controlled": 0.04624361763688003,
       "size_confounded": true,
       "feature_x": "A intro-text length",
       "feature_y": "F metro status"
     },
     "AxB": {
-      "r": 0.21453728970312938,
+      "r": 0.21334554196545655,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 2453,
       "significant": true,
-      "r_size_controlled": 0.10070917051398581,
+      "r_size_controlled": 0.09858513663457182,
       "size_confounded": true,
       "feature_x": "A intro-text length",
       "feature_y": "B Real Estate & Rental & Leasing LQ"
@@ -76,7 +76,7 @@
     "BxC": {
       "r": 0.20590987816388623,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 2396,
       "significant": true,
       "r_size_controlled": 0.1785058935148195,
@@ -87,7 +87,7 @@
     "BxF": {
       "r": 0.1869594399123175,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 2453,
       "significant": true,
       "r_size_controlled": -0.006997579332138072,
@@ -98,7 +98,7 @@
     "DxE": {
       "r": 0.1055071354983089,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 3143,
       "significant": true,
       "r_size_controlled": 0.09779407321978521,
@@ -109,7 +109,7 @@
     "CxD": {
       "r": 0.07653846121500077,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 3080,
       "significant": true,
       "r_size_controlled": -0.012665155200716061,
@@ -120,7 +120,7 @@
     "CxF": {
       "r": 0.07278602057246401,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 3080,
       "significant": true,
       "r_size_controlled": 0.020133532079482225,
@@ -131,7 +131,7 @@
     "CxE": {
       "r": 0.07052957196710884,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 3080,
       "significant": true,
       "r_size_controlled": 0.06749655326678491,
@@ -139,32 +139,32 @@
       "feature_x": "C GDP velocity (normalized)",
       "feature_y": "E capital-to-wage ratio"
     },
-    "AxE": {
-      "r": 0.06764627319506807,
-      "p": 0.008,
-      "q": 0.012615384615384615,
-      "n": 3143,
-      "significant": true,
-      "r_size_controlled": 0.057192629017885195,
-      "size_confounded": false,
-      "feature_x": "A intro-text length",
-      "feature_y": "E capital-to-wage ratio"
-    },
     "AxC": {
-      "r": 0.06258324875326007,
+      "r": 0.0665384589953517,
       "p": 0.002,
-      "q": 0.003565217391304348,
+      "q": 0.004,
       "n": 3143,
       "significant": true,
-      "r_size_controlled": 0.0384352060828874,
+      "r_size_controlled": 0.04252121430575036,
       "size_confounded": false,
       "feature_x": "A intro-text length",
       "feature_y": "C unemployment velocity"
     },
+    "AxE": {
+      "r": 0.06608118389546651,
+      "p": 0.008,
+      "q": 0.013793103448275864,
+      "n": 3143,
+      "significant": true,
+      "r_size_controlled": 0.05546594731593947,
+      "size_confounded": false,
+      "feature_x": "A intro-text length",
+      "feature_y": "E capital-to-wage ratio"
+    },
     "ExF": {
       "r": -0.0368409216643221,
       "p": 0.046,
-      "q": 0.06503448275862068,
+      "q": 0.06764705882352941,
       "n": 3143,
       "significant": false,
       "r_size_controlled": -0.02967080596309825,

@@ -73,8 +73,24 @@ class PillarFeature:
 # summary scalar the pipeline currently exposes (`dominant_lq`) and the single
 # sector LQ that source-b-findings.md identified as its strongest signal, so the
 # sweep can distinguish "the pillar is weak" from "the feature is weak".
+#
+# Source A carries a second feature for the same reason. `content_length` is what
+# the pipeline shipped; `sec_n_industry_mentions` counts the industries named in
+# a county's Wikipedia economy section, and is the feature family that carried
+# Source A's multivariate result (§14 of source-a-findings.md). Including it
+# tests whether Source A's weak showing in this sweep is a property of the pillar
+# or of the scalar chosen to stand for it.
+#
+# Worth knowing before reading the result: bivariately, `content_length` is still
+# Source A's strongest scalar (mean |r| = 0.132 across this sweep's targets,
+# against 0.116 for `n_distinct_proper_nouns` and 0.038 for this column). The
+# typed features win in the multivariate harness, where they combine and where
+# specific features match specific targets -- one at a time they are weak. That
+# is not a contradiction, it is the difference between the two questions, and
+# this entry is what makes it visible rather than assumed.
 PILLAR_FEATURES: tuple[PillarFeature, ...] = (
     PillarFeature("A", "content_length", "intro-text length"),
+    PillarFeature("A", "sec_n_industry_mentions", "industries named in economy section"),
     PillarFeature("B", "dominant_lq", "dominant sector LQ"),
     PillarFeature("B", "lq_emp_53", "Real Estate & Rental & Leasing LQ"),
     PillarFeature("C", "unemployment_velocity", "unemployment velocity"),
@@ -128,7 +144,11 @@ def build_panel() -> pd.DataFrame:
 
     panel = (
         f[["fips_code", "county_name", "distress_count", "metro_2023"]]
-        .merge(a[["fips_code", "content_length"]], on="fips_code", how="left")
+        .merge(
+            a[["fips_code", "content_length", "sec_n_industry_mentions"]],
+            on="fips_code",
+            how="left",
+        )
         .merge(b[["fips_code", "dominant_lq", "lq_emp_53"]], on="fips_code", how="left")
         .merge(
             c[["fips_code", "unemployment_velocity", "gdp_velocity_pct"]],
