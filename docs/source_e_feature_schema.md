@@ -106,6 +106,42 @@ remains a valid upper bound for leakage checks.
 | `n_tax_years_observed` | int64 | 0 | Years contributing to the two columns above. 5 for 3,132 counties. |
 | `as_of_date` | str | 0 | `2022-12-31`. See `outputs/pillar_vintages.csv`. |
 
+## How much of each column is county size
+
+Pearson r of each scored column against `log_population`, on the same tiering
+Source A uses. This matters here more than for other pillars: `pillar_matrix`
+draws its `log_agi` size control from Source E's own `agi_thousands`, so a
+size-heavy E column is partly the control restated.
+
+| column | r vs `log_population` | tier |
+|---|---|---|
+| `capgain_participation_rate` | −0.039 | 3 (size-free) |
+| `capital_to_wage_ratio` | +0.019 | 3 (size-free) |
+| `capital_to_wage_ratio_normalized_mean` | +0.068 | 3 (size-free) |
+| `capital_to_wage_ratio_normalized_std` | −0.159 | 3 (size-free) |
+| `concentrated_gain_flag` | +0.169 | 3 (size-free) |
+| `dividend_participation_rate` | +0.171 | 3 (size-free) |
+| `gain_per_claimer_thousands` | +0.215 | 3 (size-free) |
+| `thin_claimer_flag` | −0.228 | 3 (size-free) |
+| `low_return_flag` | −0.560 | 1 (size in disguise) |
+| `wage_per_return_thousands` | +0.568 | 1 (size in disguise) |
+
+`low_return_flag` is defined by a `num_returns` threshold, so its correlation is
+definitional — another reason to read it as materiality rather than as a feature.
+
+`wage_per_return_thousands` sits above the r = 0.550 at which Source A's
+`n_body_sections` was cut from its scored block, and it ships anyway. The
+justification is that it is income per filer, not a count of filers — wealth
+level rather than county size — and it is the term that separates "capital-rich"
+from "job-thin" (`source-e-findings.md` §9). A consumer that wants a strictly
+size-free block should drop it; it is flagged here rather than removed so that
+is an informed choice.
+
+The two remaining Source E dollar totals, `qualified_dividends_thousands` and
+`net_cap_gain_thousands`, are **not** scored columns. They stay in the parquet
+and are held in `pillar_matrix.SIZE_COLUMNS`: in logs they run r = 0.894 and
+0.875 against log population.
+
 ## Serving policy by data volume
 
 Source E does not behave the same way across county sizes, and a single national

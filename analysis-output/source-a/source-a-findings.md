@@ -1360,16 +1360,26 @@ delineation. The ablation is now `RESTATEMENT_COLUMNS`, covering both.
 
 ### 16.3 What the repaired leave-one-pillar-out sweep shows
 
-| | before (A = 1 column) | after (A = 29 columns) | after, Census-population baseline |
-|---|---|---|---|
-| mean lift | +0.0772 | +0.0739 | +0.0720 |
-| mean ablated lift | +0.0296 | +0.0234 | +0.0228 |
-| targets carrying signal | — | 22 of 29 | 21 of 29 |
+| | before (A = 1 column) | after (A = 29 columns) | after, Census-population baseline | after Source E round 2 |
+|---|---|---|---|---|
+| mean lift | +0.0772 | +0.0739 | +0.0720 | +0.0808 |
+| mean ablated lift | +0.0296 | +0.0234 | +0.0228 | +0.0329 |
+| targets carrying signal | — | 22 of 29 | 21 of 29 | 24 of 29 |
 
 *The third column is the 2026-08-04 re-score (§18). One target — the
 Unclassified LQ (`lq_emp_99`) — fell out of the carrying-signal set, on an
 ablated lift that moved +0.0026 to −0.0002. It was never distinguishable from
 zero; nothing about the pillar changed.*
+
+*The fourth column is the same sweep re-run after Source E went from 4 feature
+columns to 10 (`source-e-findings.md` §15). Nothing about Source A changed;
+Source E is a predictor for every non-E target, so its expansion moves every
+other pillar's numbers. Source A's own ablated lift went +0.0560 to +0.0510 —
+the largest per-pillar move in the sweep, and a fall rather than a rise, because
+two of the columns that came out of E's block in that round were dollar totals
+correlating r ≈ 0.89 with log population, and `content_length` is itself size in
+disguise (§13.1). A size proxy leaving the predictor pool costs the most on the
+target most made of size.*
 
 **Source A's typed features do not help this sweep, and slightly dilute it.**
 That is not a contradiction of §14, it is a different question. The

@@ -60,6 +60,15 @@ SIZE_COLUMNS: tuple[str, ...] = (
     "agi_thousands",
     "wages_salaries_thousands",
     "gdp_latest",
+    # The other two Source E dollar totals, excluded on the rule already stated
+    # above and previously applied to only one of the three: in logs they run
+    # r = 0.894 and r = 0.875 against log population, and r = 0.928 / 0.912
+    # against `log_agi` -- which is itself derived from Source E's
+    # `agi_thousands`. Leaving them in E's block put two near-copies of the size
+    # control inside a block scored against that control. For comparison, Source
+    # A's `n_body_sections` was cut from its scored block at r = 0.550.
+    "qualified_dividends_thousands",
+    "net_cap_gain_thousands",
     # Counts of returns reporting each income type: scale measures on the same
     # footing as `num_returns`. Their composition counterparts --
     # `capgain_participation_rate`, `dividend_participation_rate` -- are the

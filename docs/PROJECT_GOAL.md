@@ -97,8 +97,12 @@ Verdict per pillar (detail in `analysis-output/E_macro_key_findings.ipynb`):
   three separable drivers (R² = 0.975 on its log) and its *level* is set by the
   market year, not the county — the unweighted county mean runs 0.095 / 0.156 /
   0.108 across TY2020–TY2022. Ships the three components plus a TY2018–TY2022
-  normalized mean; prefer that mean over the raw ratio. Schema frozen in
-  `docs/source_e_feature_schema.md`. Done.
+  normalized mean; prefer that mean over the raw ratio. The re-scored sweep
+  backs the change: 24 of 29 targets now carry signal against 21 before, mean
+  lift +0.0720 → +0.0808, and the definitional share of that lift falls from
+  0.683 to 0.592. Two Source E dollar totals moved into the size control at the
+  same time (r ≈ 0.89 with log population) and cost only −0.0011, so the gain is
+  not size. Schema frozen in `docs/source_e_feature_schema.md`. Done.
 - **F** — keep, reclassify as a structural anchor rather than a hub-tested pillar.
 
 Strongest surviving link: Source B Real Estate & Rental & Leasing LQ against

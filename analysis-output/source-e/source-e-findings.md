@@ -7,12 +7,12 @@ purpose: initial-ingestion-and-findings, then multi-year and data-volume revisio
 status: active
 ---
 
-> **Round 2 (2026-08-04).** §1–§8 are the round-1 report as written. §9–§13 add a
-> multi-year panel, decompose the ratio, and stratify every claim by county data
-> volume. Two round-1 conclusions do not survive that: finding 3's noise
-> mechanism is narrower than described, and §5's mitigation advice ("weight by
-> `num_returns`") is backwards. Both are corrected in place below and explained
-> in §11.
+> **Round 2 (2026-08-04).** §1–§8 are the round-1 report as written. §9–§15 add a
+> multi-year panel, decompose the ratio, stratify every claim by county data
+> volume, and re-score the leave-one-pillar-out sweep. Two round-1 conclusions do
+> not survive that: finding 3's noise mechanism is narrower than described, and
+> §5's mitigation advice ("weight by `num_returns`") is backwards. Both are
+> corrected in place below and explained in §11.
 
 # Source E — IRS Statistics of Income Panel Data (Capital Composition)
 
@@ -278,4 +278,63 @@ flag.
 
 - Ingestion (now multi-year): `scripts/ingest_source_e.py` -> `data/source_e_irs_soi.parquet` (3,143 × 24) and `data/source_e_irs_soi_panel.parquet` (15,686 rows, TY2018–TY2022)
 - Data-volume tiers: `scripts/analyze_source_e_tiers.py` -> `outputs/source_e_tiers.csv`, `analysis-output/source-e/source_e_tier_stats.json`
-- Frozen schema: `docs/source_e_feature_schema.md`
+- Frozen schema, including the per-column size tiering: `docs/source_e_feature_schema.md`
+- Re-scored sweep (§15): `scripts/analyze_pillar_matrix_signal.py` -> `outputs/pillar_matrix_signal.csv`, `analysis-output/cross-source/pillar_matrix_signal_stats.json`
+
+## 15. Re-scored leave-one-pillar-out sweep
+
+Two changes to Source E's feature block landed in this round, and both move
+`analyze_pillar_matrix_signal.py` for every pillar except E itself — E's own
+target is predicted by the *other* five pillars, so its row is byte-identical
+across all three runs (+0.0729 lift, +0.0694 ablated).
+
+The sweep was run at each state to keep the two changes separable:
+
+| | A: pre-round 2 (E = 4 cols) | B: + the new E columns (E = 12) | C: dollar totals moved out (E = 10) |
+|---|---|---|---|
+| targets carrying signal | 21 of 29 | 24 of 29 | **24 of 29** |
+| mean lift | +0.0720 | +0.0818 | **+0.0808** |
+| mean ablated lift | +0.0228 | +0.0333 | **+0.0329** |
+| mean GBM lift | +0.1042 | +0.1139 | **+0.1159** |
+| definitional share of mean lift | 0.683 | 0.593 | **0.592** |
+
+**The components earned their place (A → B).** Three more targets clear the
+carrying-signal bar, all Source B sector LQs, and the definitional share of the
+mean lift falls from 0.683 to 0.592 — a larger fraction of what the matrix knows
+is now corroboration rather than two federal products restating one fact.
+
+The targets that moved most are the ones a capital-composition signal should
+move, which is the part that argues this is real rather than 8 extra columns
+buying out-of-fold luck:
+
+| target | ablated lift, A | ablated lift, C |
+|---|---|---|
+| Professional, Scientific & Technical Services LQ | +0.0059 | **+0.0686** |
+| Arts, Entertainment & Recreation LQ | −0.0287 | **+0.0161** |
+| Information LQ | +0.0576 | **+0.0920** |
+| Management of Companies & Enterprises LQ | −0.0107 | **+0.0157** |
+| Finance & Insurance LQ | +0.0445 | **+0.0582** |
+| unemployment rate (level) | +0.0232 | **+0.0492** |
+
+**Removing the two size proxies cost almost nothing (B → C).**
+`qualified_dividends_thousands` and `net_cap_gain_thousands` are dollar totals
+running r = 0.894 and 0.875 against log population in logs, and r = 0.928 / 0.912
+against `log_agi` — which `pillar_matrix` derives from Source E's own
+`agi_thousands`. Leaving them in E's block put two near-copies of the size
+control inside a block scored against that control. Source A's `n_body_sections`
+was cut from its scored block at r = 0.550, so the rule already existed; it had
+been applied to `wages_salaries_thousands` and not to its two siblings.
+
+Moving them costs −0.0011 mean lift and no targets. That is the result worth
+recording: **the round-2 gain was not size.** Had the gain evaporated here, the
+new columns would have been a size proxy in a better costume.
+
+One per-pillar move is worth naming. Source A's mean ablated lift fell +0.0560 →
++0.0510, the largest in the sweep. Source A's only target is `content_length`,
+itself classified size-in-disguise (`source-a-findings.md` §13.1), so removing a
+size proxy from the predictor pool costs most on the target most made of size.
+That is the exclusion working, not a regression.
+
+**Unchanged:** the 15-pillar-pair sweep (`pillar_pair_stats.json`) uses
+`capital_to_wage_ratio` as E's feature and is untouched, so the B ↔ E headline
+(r = 0.394 raw, 0.382 size-controlled) stands exactly as published.

@@ -1,49 +1,49 @@
 {
   "n_targets": 29,
   "n_significant": 28,
-  "n_carrying_signal": 21,
+  "n_carrying_signal": 24,
   "n_folds": 5,
   "n_null_reps": 99,
   "random_seed": 42,
-  "mean_lift": 0.07198140772440811,
-  "mean_lift_ablated": 0.02278790877703493,
-  "median_lift_ablated": 0.019013966055514753,
-  "mean_lift_gbm": 0.10416361382587776,
+  "mean_lift": 0.0807466880537756,
+  "mean_lift_ablated": 0.032931868275675374,
+  "median_lift_ablated": 0.026350507152524405,
+  "mean_lift_gbm": 0.11588351182046418,
   "mean_r2_baseline": 0.2609825793510732,
-  "definitional_share_of_mean_lift": 0.6834195176581994,
+  "definitional_share_of_mean_lift": 0.5921582783216639,
   "best_target": "distress_count",
-  "best_lift_ablated": 0.11470696336495245,
+  "best_lift_ablated": 0.11718101426321592,
   "by_pillar": {
     "A": {
       "n_targets": 1,
       "n_carrying_signal": 1,
-      "mean_lift": 0.053821868,
-      "mean_lift_ablated": 0.0559906457,
-      "max_lift_ablated": 0.0559906457,
+      "mean_lift": 0.0491253061,
+      "mean_lift_ablated": 0.0509941883,
+      "max_lift_ablated": 0.0509941883,
       "mean_r2_baseline": 0.2390698522
     },
     "B": {
       "n_targets": 20,
-      "n_carrying_signal": 13,
-      "mean_lift": 0.0891032074,
-      "mean_lift_ablated": 0.0177907333,
-      "max_lift_ablated": 0.1014299493,
+      "n_carrying_signal": 16,
+      "mean_lift": 0.1000870186,
+      "mean_lift_ablated": 0.0309658939,
+      "max_lift_ablated": 0.0920374682,
       "mean_r2_baseline": 0.1970306019
     },
     "C": {
       "n_targets": 3,
       "n_carrying_signal": 2,
-      "mean_lift": 0.0043756358,
-      "mean_lift_ablated": 0.0032829065,
-      "max_lift_ablated": 0.0231830136,
+      "mean_lift": 0.0140305087,
+      "mean_lift_ablated": 0.0133494808,
+      "max_lift_ablated": 0.0492274744,
       "mean_r2_baseline": 0.3921491665
     },
     "D": {
       "n_targets": 3,
       "n_carrying_signal": 3,
-      "mean_lift": 0.0160017975,
-      "mean_lift_ablated": 0.0183585074,
-      "max_lift_ablated": 0.0258635363,
+      "mean_lift": 0.0181819077,
+      "mean_lift_ablated": 0.0193566064,
+      "max_lift_ablated": 0.0298051154,
       "mean_r2_baseline": 0.5469752819
     },
     "E": {
@@ -57,9 +57,9 @@
     "F": {
       "n_targets": 1,
       "n_carrying_signal": 1,
-      "mean_lift": 0.1175878065,
-      "mean_lift_ablated": 0.1147069634,
-      "max_lift_ablated": 0.1147069634,
+      "mean_lift": 0.1212963236,
+      "mean_lift_ablated": 0.1171810143,
+      "max_lift_ablated": 0.1171810143,
       "mean_r2_baseline": 0.2024425905
     }
   }
