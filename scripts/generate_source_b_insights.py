@@ -3,11 +3,11 @@
 Mirrors `generate_source_f_insights.py`'s role: re-invokes the existing,
 side-effect-free functions from `analyze_source_b_industry_mix.py` and
 `analyze_source_b_source_c_correlation.py`, writes the headline numbers to
-`analysis-output/source_b_stats.json`, and renders three static summary
+`analysis-output/source-b/source_b_stats.json`, and renders three static summary
 figures from that same data.
 
-Output: `analysis-output/source_b_stats.json`, `analysis-output/figures/
-source-b-figure-*.png`, `analysis-output/figures/source-b-numeric-summary.md`.
+Output: `analysis-output/source-b/source_b_stats.json`, `analysis-output/source-b/figures/
+source-b-figure-*.png`, `analysis-output/source-b/figures/source-b-numeric-summary.md`.
 """
 
 from __future__ import annotations

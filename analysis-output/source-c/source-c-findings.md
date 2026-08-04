@@ -75,9 +75,12 @@ Pearson r = 0.009 across the 3,080 fully-covered counties — essentially no lin
 
 ## 4. Figure-by-Figure Interpretation
 
-- `analysis-output/figures/source-c-figure-01-quadrants.png`: momentum-quadrant scatter, all 3,080 counties, colored by quadrant. Visually confirms §3.3's finding — one quadrant clearly dominates by point density.
-- `analysis-output/figures/source-c-figure-02-velocity-distributions.png`: side-by-side histograms of both velocity axes. Unemployment velocity is right-shifted off zero (broad increase); GDP velocity is extremely heavy-tailed (see §5).
-- `analysis-output/figures/source-c-figure-03-proximity-vs-divergence.png`: geographic-distance-vs-economic-distance hexbin. The King County outlier effect is visible as a distinct band of high-economic-distance points regardless of geographic distance.
+- `analysis-output/source-c/figures/source-c-figure-01-quadrants.png`: momentum-quadrant scatter, all 3,080 counties, colored by quadrant. Visually confirms §3.3's finding — one quadrant clearly dominates by point density.
+- `analysis-output/source-c/figures/source-c-figure-02-velocity-distributions.png`: side-by-side histograms of both velocity axes. Unemployment velocity is right-shifted off zero (broad increase); GDP velocity is extremely heavy-tailed (see §5).
+- `analysis-output/source-c/figures/source-c-figure-03-proximity-vs-divergence.png`: geographic-distance-vs-economic-distance hexbin. The King County outlier effect is visible as a distinct band of high-economic-distance points regardless of geographic distance.
+The `.html` renders below are ~5MB each, regenerable, and no longer committed —
+rebuild any of them with the script named against it in §8.
+
 - `outputs/source_c_map_unemployment.html`, `outputs/source_c_map_gdp.html`: interactive US choropleths, one per velocity axis.
 - `outputs/source_c_quadrants.html`, `outputs/source_c_similarity.html`: interactive versions of figures 1 and 3.
 
@@ -108,8 +111,8 @@ This isn't a bug in this round's implementation; it's a fair reading of what the
 - Proximity/divergence: `scripts/analyze_source_c_similarity.py` → `outputs/source_c_similarity_pairs.csv`, `outputs/source_c_similarity.html`
 - GDP coverage: `scripts/analyze_source_c_gdp_coverage.py` → `outputs/source_c_gdp_coverage.csv`
 - Maps: `scripts/visualize_source_c.py` → `outputs/source_c_map_{unemployment,gdp}.html`
-- Stats/figures: `scripts/generate_source_c_insights.py` → `analysis-output/source_c_stats.json`, `analysis-output/figures/source-c-*.png`, `analysis-output/figures/source-c-numeric-summary.md`
-- Presentation notebook: `analysis-output/source_c_key_findings.ipynb`
+- Stats/figures: `scripts/generate_source_c_insights.py` → `analysis-output/source-c/source_c_stats.json`, `analysis-output/source-c/figures/source-c-*.png`, `analysis-output/source-c/figures/source-c-numeric-summary.md`
+- Presentation notebook: `analysis-output/source-c/source_c_key_findings.ipynb`
 
 ## 9. Proposal Alignment Assessment (`E_macro_extendedProposal.pdf`, Source C section)
 

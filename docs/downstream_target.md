@@ -1,17 +1,171 @@
-# Downstream Target Assumptions
+# Downstream Target — The Open Question, and the Placeholder Standing In For It
 
-> **STATUS: PLACEHOLDER — NOT A REQUIREMENT FROM THE DOWNSTREAM TEAM.**
+> **STATUS: NO TARGET VARIABLE HAS BEEN SUPPLIED TO THIS REPO.**
 >
-> No target variable has been supplied to this repo. This document adopts
-> **revenue per request** as a working assumption so that pillar-selection
-> decisions can be reasoned about instead of deferred. Every conclusion here is
-> conditional on that assumption and must be re-derived if the real target
-> differs in the one property that matters: whether it is a **rate** or a
-> **count**. See [Invalidation conditions](#invalidation-conditions).
+> Part 1 is the question to put to the downstream team — the one property of the
+> real target that decides more than everything else combined. Part 2 adopts
+> **revenue per request** as a working placeholder so pillar-selection can be
+> reasoned about instead of deferred; every conclusion there is conditional on
+> that assumption. Part 1 is how the placeholder gets retired.
+>
+> Merged 2026-08-04 from `downstream_target_assumptions.md` and
+> `plans/downstream_target_question.md`. Content refreshed against
+> `source-a-findings.md` §13–§17, which reinstated Source A as 29 typed columns
+> and changed its refeaturization row from "stays cut" to "ship".
 
-> **Refreshed 2026-08-04** against `source-a-findings.md` §13–§17, which
-> reinstated Source A as 29 typed columns and changed its row in the
-> refeaturization table below from "stays cut" to "ship".
+---
+
+# Part 1 — The question to ask the downstream team
+
+## The question
+
+> When your model consumes county features, is the thing you're predicting a
+> **rate** or a **count**?
+>
+> Concretely: is the target something like *revenue per subscriber*, *churn
+> probability*, *take rate* — already normalized, so a big county and a small
+> county can score the same? Or is it something like *total revenue*, *subscriber
+> count*, *number of service calls* — where a big county scores higher because it
+> is big?
+>
+> I'm not asking what the target is. Just whether population is already divided
+> out of it.
+
+That framing matters. Teams often cannot name their metric yet but always know
+whether it is per-customer or a county total.
+
+## Why this one question
+
+It decides whether county size is a **control** or a **feature**. That single
+choice reverses conclusions across the whole repo, not just one pillar.
+
+| | rate target | count target |
+|---|---|---|
+| county size | **control** — regress it out before fusion | **feature** — keep it |
+| operative sweep column | `r_size_controlled` | raw `r` |
+| Source D freight `log_tons` | dead — r = +0.871 with size | strong |
+| Source F `metro_2023` | demote — r = +0.596 | strong |
+| Source A `content_length` | compromised — r = +0.359 | defensible, cheap size proxy |
+| Source A's 29 typed columns | **win** — 23 of 29 below \|r\| = 0.15 | interpretability only |
+| Source C velocities, Source E ratio | cleanest pillars — r ≈ 0.04–0.10 | unremarkable |
+
+Source: `outputs/feature_size_dependence.csv`, 62 features scanned against
+`log10(num_returns)` — full tiering in Part 2.
+
+### It also settles something no amount of further testing can
+
+Whether Source A's 29 typed columns beat the `content_length` scalar they
+replaced is powered at **0.39** and would need **91 targets** to resolve
+statistically (`source-a-findings.md` §17.3). That comparison will not be settled
+in this repo by adding targets.
+
+Under a rate target it does not need to be. `content_length` sits at +0.359 with
+county size; `sec_n_industry_mentions` — the single column carrying 97.6% of the
+section gain — sits at +0.108. The typed block wins on construction rather than
+on a p-value.
+
+**One answer here resolves what 91 targets could not.** That is the strongest
+argument for asking rather than for running another sweep.
+
+## What each answer changes
+
+### If the answer is "rate"
+
+- County size becomes a control. Regress it out of every pillar before fusion.
+- `r_size_controlled` becomes the operative scorecard; the raw `r` column becomes
+  actively misleading and should not be quoted without its partner.
+- **Source D needs refeaturization** — normalize to `tons_per_return` or
+  `tons_per_capita`. Highest-value single change implied by a rate target: a raw
+  total cannot work against a per-unit outcome.
+- Demote Source F's `metro_2023`, `population_loss`, `housing_stress`.
+- Source A ships the typed block, and the case for it is now structural rather
+  than statistical.
+- Add pillars in cleanliness order: C, E and Source A's typed block first, then
+  the B LQ vector, then normalized D, then F's distress flags.
+
+### If the answer is "count"
+
+- Size is a legitimate feature and the raw correlations stand.
+- D and F recover most of their apparent value.
+- `content_length` is defensible again as a cheap size proxy, and the typed
+  block's case rests on interpretability alone.
+- Flag honestly that the project is then partly a population model, and that this
+  is a choice rather than an accident.
+
+### If the answer is "already size-normalized upstream"
+
+Different failure mode, worth catching explicitly. If they supply per-capita
+features themselves, double-normalization removes real signal. Ask whether they
+normalize before or after joining county features.
+
+## If they push back
+
+**"Why does it matter — just give me all the features."**
+You can, and the features ship either way. But 19 of the 50 cross-pillar
+correlations lose more than half their effect once county size is controlled
+(`outputs/pillar_pair_crossvalidation.csv`). If the target is a rate and the raw
+numbers get taken at face value, the model gets built on structure that is mostly
+population wearing a costume. The largest raw effect in the whole sweep — freight
+tonnage against metro status, r = 0.495 — collapses to −0.057 under the control.
+
+**"We haven't picked the target yet."**
+The weaker version is still decisive: *is your outcome per-customer/per-request,
+or a county total?* That is usually known long before the exact metric is.
+
+**"Can't you just test both?"**
+Both are already reported. The problem is not producing two numbers, it is that
+the two point at opposite feature sets, and shipping a feature store means
+committing to one. Publishing both without a decision pushes the decision onto
+whoever consumes it, with less context than we have.
+
+## Two more, if the conversation is going well
+
+### 1. Is there any path to a real label — at any horizon?
+
+Not "do you have one now" — *ever*. Even 500 counties, even a stale extract.
+
+- **Yes, with meaningful probability** → every in-repo test is provisional.
+  Minimize further validation spend and hold budget for the real thing.
+- **Hard no, never** → that is the argument for spending 2–4 days ingesting an
+  external public county-level target. Broadband or household internet adoption
+  is the closest analogue to a Comcast downstream model, and would be the only
+  non-circular evidence this project ever produces.
+
+The reason this matters: every target in the repo's validation is another
+pillar's feature, which penalizes a source precisely for agreeing with the
+pillars it will ship alongside. That is the right penalty for assembling a
+non-redundant feature store and the wrong one for predicting an external outcome.
+
+### 2. Does your model care about dynamics, or about industry composition?
+
+Source A's marginal value against a baseline holding every other pillar swings by
+two orders of magnitude depending on the target:
+
+| target pillar | retained |
+|---|---|
+| C (velocity series) | 69% |
+| D (freight) | 63% |
+| B (QCEW location quotients) | 28% |
+| F (typology) | 18% |
+| E (capital-to-wage) | 0.2% |
+
+Source A survives where no federal agency measures the same construct and is
+absorbed where one does. The published headline of **+0.0010** is an average over
+a basket that is **71% a single BLS table**, so it should never travel without
+that composition attached.
+
+## What not to ask
+
+**Do not ask them to bless the feature set, or to confirm a p-value.** They
+cannot, and it invites a decision they are not positioned to make. Source A's
+typed block ships either way — it costs one regex pass and no model download.
+
+**The rate-versus-count question is the only one whose answer changes what gets
+built.**
+
+---
+
+# Part 2 — The placeholder currently standing in
 
 ## Why a placeholder was needed
 
@@ -29,7 +183,7 @@ control or a feature?* — is unanswerable, and it blocks the fusion step. The
 placeholder exists to unblock that reasoning, not to pre-empt the downstream
 team's actual choice.
 
-## The property that decides everything: rate vs count
+## What the placeholder assumes
 
 | Target shape | Example | What county size is |
 |---|---|---|
@@ -37,22 +191,8 @@ team's actual choice.
 | **Rate / ratio** | revenue **per request**, ARPU, margin % | A **control**. The denominator already normalizes for volume. Size enters only through correlates such as urbanicity and pricing tier. |
 
 Revenue per request is a rate. Under this placeholder, **county size is a
-control, not a feature.**
-
-Three consequences for how existing results are read:
-
-1. The `r_size_controlled` column in the sweep is the operative scorecard.
-2. The raw `r` column becomes actively misleading and should not be quoted
-   without its size-controlled partner.
-3. **It settles a Source A comparison that no amount of in-repo testing can.**
-   Whether the 29 typed columns beat the `content_length` scalar is powered at
-   0.39 and would need 91 targets (`source-a-findings.md` §17.3) — it will not be
-   resolved statistically here. But under a rate target the question changes
-   shape: `content_length` at +0.359 with size is compromised, while
-   `sec_n_industry_mentions` at +0.108 is not, so the typed block wins on
-   construction rather than on a p-value. Under a count target the scalar is
-   defensible and the typed block's case rests on interpretability alone. **One
-   answer from the downstream team settles what 91 targets could not.**
+control, not a feature** — so `r_size_controlled` is the operative scorecard and
+the raw `r` column should not be quoted without its size-controlled partner.
 
 ## Evidence: which features are size in disguise
 
@@ -62,7 +202,7 @@ diagnostic that determines whether a feature transfers to a rate target.
 62 features scanned; **15 exceed |r| = 0.30 with county size.** Full table in
 `outputs/feature_size_dependence.csv`. The scan now covers Source A's 29 shipping
 typed columns rather than the `content_length` scalar alone, which is why the
-count rose from the 34 features this document originally reported.
+count rose from the 34 features this analysis originally reported.
 
 **Tier 1 — size in disguise** (|r| ≥ 0.30). Contribute little to a rate target
 beyond what population already supplies.
@@ -144,10 +284,10 @@ The distinction that matters is *within* the block. Its size-loaded columns are
 the structural ones — how long the article is, how many proper nouns it contains,
 whether it has an economy section — and its size-free columns are the ones that
 name economic facts. `sec_n_industry_mentions`, at +0.108, is the single column
-responsible for 97.6% of the section gain (§14.3). **Under a rate target the
-part of Source A that carries the signal is also the part that survives the size
-control**, which is the strongest evidence in this document that the
-rate-versus-count answer moves Source A rather than leaving it where it was.
+responsible for 97.6% of the section gain (§14.3). **Under a rate target the part
+of Source A that carries the signal is also the part that survives the size
+control**, which is the strongest evidence here that the rate-versus-count answer
+moves Source A rather than leaving it where it was.
 
 Reproduce with:
 
@@ -178,7 +318,7 @@ in full.
 | **A** | **Ship the 29 typed columns, not the `content_length` scalar alone** | Reverses this document's original row, which predated `source-a-findings.md` §13–§17. The embedding stays cut; the text source does not. 23 of the 29 columns are Tier 3, and the signal-carrying `sec_n_industry_mentions` sits at +0.108 against `content_length`'s +0.359 — so a rate target *strengthens* Source A's case rather than confirming a cut. Exclude `has_metro_attachment` (+0.541, duplicates F's `metro_2023`), treat `founding_year` (−0.398, n = 1,214) as low-coverage, and annotate `content_length` and `n_distinct_proper_nouns` as the block's size-loaded columns. |
 | **B** | Ship the 20-dim LQ vector; annotate per-column size loading | LQs are **not** uniformly size-neutral. `lq_emp_11`/`lq_emp_54` are urbanicity axes; `lq_emp_23`/`lq_emp_71` are clean. Both usable — the point is knowing which is which. |
 | **C** | Ship as-is | Both velocities are near-orthogonal to size. |
-| **D** | **Normalize to a rate** — `tons_per_return`, `tons_per_capita` | Highest-value single change in this document. A raw total cannot work against a per-request target. Recheck `out_partner_hhi` (0.33) as well; a concentration index should not carry that much size. |
+| **D** | **Normalize to a rate** — `tons_per_return`, `tons_per_capita` | Highest-value single change implied here. A raw total cannot work against a per-request target. Recheck `out_partner_hhi` (0.33) as well; a concentration index should not carry that much size. |
 | **E** | Ship as-is | Cleanest pillar under this target. |
 | **F** | Demote `metro_2023`, `population_loss`, `housing_stress`; keep the rest | `metro_2023` (0.596) duplicates population, which the downstream model very likely already holds. `population_loss` (−0.393) and `housing_stress` (+0.349) are also size-loaded — the "distress flags are size-light" reading only holds for `persistent_poverty` (−0.139), `low_employment` (−0.197), and `retirement_destination` (+0.052). |
 
@@ -193,8 +333,7 @@ distinct feature values.
 **Effective sample size is the county count, not the request count.** A model
 reporting significance on request-level rows will report absurdly tight
 confidence intervals, for exactly the reason a naive correlation test on 3.9M
-county *pairs* did in the Source A analysis (see
-`analyze_source_a_clusters.mantel_test`).
+county *pairs* did in the Source A analysis.
 
 Mitigations, both required:
 - Cluster standard errors by `fips_code`.
@@ -259,7 +398,7 @@ status. Stated in advance so it can be wrong on the record.
 
 ## Invalidation conditions
 
-Re-derive this document if the real target is:
+Re-derive Part 2 if the real target is:
 
 - **A count or total** (total revenue, subscriber counts, request volume). Size
   becomes a feature, the raw `r` column becomes the operative one, D and F
@@ -274,19 +413,19 @@ Re-derive this document if the real target is:
   group-level covariates and the clustering requirements in trap 1 become
   non-negotiable.
 
+---
+
 ## Related
 
-- `docs/PROJECT_GOAL.md` — open decision #1, which this document conditionally
-  resolves.
+- `docs/PROJECT_GOAL.md` — open decision #1 is Part 1's question, stated from the
+  repo's side; Part 2 conditionally resolves it.
 - `analysis-output/E_macro_key_findings.ipynb` — section "What a downstream
   target would settle" presents this analysis for review.
 - `outputs/pillar_pair_crossvalidation.csv` — the 50-test sweep this reinterprets.
+- `outputs/feature_size_dependence.csv` — every r-with-size figure quoted here.
 - `analysis-output/source-a/source-a-findings.md` §13–§17 — the typed-extraction
-  round that reinstated Source A. §14.2a and §17.3 carry the power figures behind
-  the claim that the rate-versus-count answer settles more than another sweep
-  could.
+  round that reinstated Source A. §14.2a, §17.2a and §17.3 carry the power figures
+  and basket composition behind the claim that the rate-versus-count answer
+  settles more than another sweep could.
 - `docs/plans/source_a_next_steps.md` — the five plans for the two items §17.3
-  leaves open, and the questions that select among them.
-- `docs/plans/downstream_target_question.md` — **the rate-versus-count question
-  written out for the downstream team**, with what each answer changes across all
-  six pillars. This document is the placeholder; that one is how to retire it.
+  leaves open; Part 1's question is question 4 there.

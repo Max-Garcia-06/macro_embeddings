@@ -172,6 +172,11 @@ exactly the signal under test here, unlike Source A's other EDA scripts.
 
 ## 4. Figure-by-Figure Interpretation
 
+The `.html` renders below are ~5MB each and no longer committed. The D and F ones
+rebuild from the scripts named in §8; the two Source A ones do not, since those
+scripts were deleted with the embedding cut (see the note at the top of this
+document).
+
 - `outputs/source_a_source_c_correlation.html` — density heatmap of
   embedding similarity vs. economic distance; shallow trend line, consistent
   with the small Mantel r.

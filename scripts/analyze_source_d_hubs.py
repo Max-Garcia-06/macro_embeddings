@@ -2,7 +2,7 @@
 
 The proposal frames Source D as distinguishing "a logistical pass-through
 corridor or industrial exporter from a pure consumer sink"
-(`E_macro_extendedProposal.pdf`). `source_d_plan.md`'s Phase 1b/2 findings
+(`E_macro_extendedProposal.pdf`). `docs/plans/ingestion_recon.md (Source D)`'s Phase 1b/2 findings
 ruled out raw partner degree as a signal (BTS's gravity-model
 disaggregation assigns near-universal nonzero flow regardless of county
 character) and found that at national scale, hub counties are *both*

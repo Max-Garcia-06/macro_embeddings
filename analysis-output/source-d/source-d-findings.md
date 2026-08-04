@@ -16,14 +16,14 @@ Source D ingests 2022 county-level freight tonnage from the Bureau of Transporta
 Three findings stand out:
 
 1. **Scalar tonnage alone cleanly separates hubs from sinks, at up to 1,000x range** (§3.1) — Harris County, TX (Houston) leads at 731K tons, while sub-1,000-ton rural counties sit at the opposite extreme; a genuine oil/gas export point (Loving County, TX — population ~64) shows the metric correctly capturing economic character that has nothing to do with population.
-2. **Partner concentration (HHI) reverses direction between regional and national scale** (§3.2) — the two-state design spike documented in `source_d_plan.md` §Phase 1b found hub counties *less* concentrated than rural ones; at full national scale, the opposite holds (r = 0.278 between log-tonnage and HHI) — big hubs funnel large volume through a few dominant interstate corridors, while small counties spread modest volume evenly across nearby neighbors. This is a real scale-dependent reversal, not noise, and is worth flagging explicitly for any downstream consumer that only saw the regional spike's direction.
+2. **Partner concentration (HHI) reverses direction between regional and national scale** (§3.2) — the two-state design spike documented in `docs/plans/ingestion_recon.md` (§ Source D, Phase 1b) found hub counties *less* concentrated than rural ones; at full national scale, the opposite holds (r = 0.278 between log-tonnage and HHI) — big hubs funnel large volume through a few dominant interstate corridors, while small counties spread modest volume evenly across nearby neighbors. This is a real scale-dependent reversal, not noise, and is worth flagging explicitly for any downstream consumer that only saw the regional spike's direction.
 3. **Trade volume tracks GDP momentum weakly but monotonically** (§3.3) — mean size-normalized GDP velocity rises cleanly across freight-tonnage quartiles (1.6% → 1.6% → 2.1% → 2.4%/year), a small but directionally consistent signal that higher-throughput counties trend toward faster economic growth, distinct from and complementary to Source C's own velocity measure.
 
 ## 2. Data & Setup
 
-`scripts/ingest_source_d.py` downloads per-state zip files from `faf.ornl.gov` (the actual host behind BTS's Akamai-gated `bts.gov` landing page — see `source_d_plan.md` Phase 0 for the access-resolution detail) via `curl` subprocess calls, worked around a TLS-handshake incompatibility between this host and Python's `requests`/urllib3 stack. Each state zip contains four OD tables at mixed county/FAF-zone granularity; only domestic flows (`trade_type=1`) are used. For each state's home counties, the pipeline computes `total_outbound_tons`/`total_inbound_tons`, a 5-way `sctgG5` commodity-group breakdown per direction, and `out_partner_hhi`/`in_partner_hhi` — a Herfindahl-Hirschman concentration index pooling county-level and FAF-zone-level partner rows into one distribution per county per direction.
+`scripts/ingest_source_d.py` downloads per-state zip files from `faf.ornl.gov` (the actual host behind BTS's Akamai-gated `bts.gov` landing page — see `docs/plans/ingestion_recon.md` § Source D, Phase 0 for the access-resolution detail) via `curl` subprocess calls, worked around a TLS-handshake incompatibility between this host and Python's `requests`/urllib3 stack. Each state zip contains four OD tables at mixed county/FAF-zone granularity; only domestic flows (`trade_type=1`) are used. For each state's home counties, the pipeline computes `total_outbound_tons`/`total_inbound_tons`, a 5-way `sctgG5` commodity-group breakdown per direction, and `out_partner_hhi`/`in_partner_hhi` — a Herfindahl-Hirschman concentration index pooling county-level and FAF-zone-level partner rows into one distribution per county per direction.
 
-This feature set (scalar totals + pooled HHI) was not picked a priori: `source_d_plan.md`'s Phase 1b ran three candidate vectorizations (scalar aggregates only; scalar + top-5 partner columns; scalar + graph-summary statistics) on two independent state samples (Rhode Island, then New Jersey) before choosing. Partner-degree and distance-weighted "reach" were both tested and dropped — degree is a dead signal (BTS's gravity-model disaggregation assigns near-universal nonzero flow to almost every county pair, so raw partner count doesn't distinguish hub from sink at all), and distance-weighted reach pointed backward for a understood, structural reason (a real hub's long-distance flows collapse into the FAF-zone-level tables once they leave the adjacent-state window that bounds the county-to-county table, so a small regional sample can't see them). Top-5 partner columns added nothing over scalar totals, since both hub and rural counties in a region share the same handful of big neighboring counties as partners.
+This feature set (scalar totals + pooled HHI) was not picked a priori: `docs/plans/ingestion_recon.md`'s § Source D Phase 1b ran three candidate vectorizations (scalar aggregates only; scalar + top-5 partner columns; scalar + graph-summary statistics) on two independent state samples (Rhode Island, then New Jersey) before choosing. Partner-degree and distance-weighted "reach" were both tested and dropped — degree is a dead signal (BTS's gravity-model disaggregation assigns near-universal nonzero flow to almost every county pair, so raw partner count doesn't distinguish hub from sink at all), and distance-weighted reach pointed backward for a understood, structural reason (a real hub's long-distance flows collapse into the FAF-zone-level tables once they leave the adjacent-state window that bounds the county-to-county table, so a small regional sample can't see them). Top-5 partner columns added nothing over scalar totals, since both hub and rural counties in a region share the same handful of big neighboring counties as partners.
 
 Output: `data/source_d_faf.parquet`, 3,144 rows, 16 columns (`county_name`, `fips_code`, `total_outbound_tons`, `total_inbound_tons`, `out_partner_hhi`, `in_partner_hhi`, 5 `out_sctg*` + 5 `in_sctg*` commodity-group columns). Full-batch ingestion ran 51/51 states with zero failures; every crosswalk county has a row, zero nulls, zero duplicate `fips_code` values.
 
@@ -43,7 +43,7 @@ The gap between the biggest hubs and the median county spans roughly two orders 
 
 ### 3.2 HHI concentration direction reverses between regional and national scale
 
-`source_d_plan.md`'s Phase 1b design spike (Rhode Island, then New Jersey) found hub counties *less* concentrated than rural ones — e.g., Essex County, NJ (Newark hub) at HHI 0.043–0.056 vs. Sussex County, NJ (rural) at 0.047–0.059, consistent with a hub spreading flow across many destinations. At full national scale, the direction flips:
+The § Source D Phase 1b design spike (Rhode Island, then New Jersey) in `docs/plans/ingestion_recon.md` found hub counties *less* concentrated than rural ones — e.g., Essex County, NJ (Newark hub) at HHI 0.043–0.056 vs. Sussex County, NJ (rural) at 0.047–0.059, consistent with a hub spreading flow across many destinations. At full national scale, the direction flips:
 
 | Metric | Value |
 |---|---|
@@ -78,9 +78,12 @@ All correlations are weak in absolute terms, consistent with the pattern Source 
 
 ## 4. Figure-by-Figure Interpretation
 
-- `analysis-output/figures/source-d-figure-01-top-hubs.png`: horizontal bar chart of the top 15 counties by total tonnage. Visually confirms §3.1 — Harris, LA, and Cook Counties dominate by a wide margin over the rest of the top 15.
-- `analysis-output/figures/source-d-figure-02-tons-vs-concentration.png`: scatter of log10(tons) vs. mean partner HHI across all 3,144 counties. The positive trend is visible but noisy — confirms §3.2's r=0.278 is a real but modest tilt, not a tight relationship.
-- `analysis-output/figures/source-d-figure-03-tons-vs-velocity.png`: bar chart of mean size-normalized GDP velocity by tonnage quartile. Shows the clean monotonic step from §3.3, with Q4 roughly 1.5x Q1.
+- `analysis-output/source-d/figures/source-d-figure-01-top-hubs.png`: horizontal bar chart of the top 15 counties by total tonnage. Visually confirms §3.1 — Harris, LA, and Cook Counties dominate by a wide margin over the rest of the top 15.
+- `analysis-output/source-d/figures/source-d-figure-02-tons-vs-concentration.png`: scatter of log10(tons) vs. mean partner HHI across all 3,144 counties. The positive trend is visible but noisy — confirms §3.2's r=0.278 is a real but modest tilt, not a tight relationship.
+- `analysis-output/source-d/figures/source-d-figure-03-tons-vs-velocity.png`: bar chart of mean size-normalized GDP velocity by tonnage quartile. Shows the clean monotonic step from §3.3, with Q4 roughly 1.5x Q1.
+The `.html` renders below are ~5MB each, regenerable, and no longer committed —
+rebuild any of them with the script named against it in §7.
+
 - `outputs/source_d_hubs.html`: interactive version of figure 1's underlying scatter (log-tonnage vs. HHI, top 10 hubs labeled).
 - `outputs/source_d_map_tons.html`, `outputs/source_d_map_concentration.html`: interactive US choropleth-style bubble maps of tonnage and HHI respectively.
 - `outputs/source_d_source_c_crossvalidation.html`: interactive version of figure 3.
@@ -89,8 +92,8 @@ All correlations are weak in absolute terms, consistent with the pattern Source 
 
 - **No dollar-value column** — see §7. Any downstream use expecting a value-weighted (not just tonnage-weighted) trade signal is not supported by this experimental county-level product.
 - **Single 2022 cross-section, not a time series** — unlike Source C's rolling velocity window, Source D captures one snapshot; trend/momentum in freight flows themselves cannot be derived from this data alone.
-- **`dms_mode` code `11` remains unexplained** — the experimental county product's mode taxonomy doesn't match the general FAF5 user guide's 1–8 code table (`source_d_plan.md` Phase 0 addendum); the county-level-specific technical report that would likely resolve this sits behind the same Akamai gate as the landing page and wasn't pursued (see plan file for why this wasn't worked around).
-- **Zone→county crosswalk was not pursued** — HHI pooling uses raw FAF-zone partner rows without resolving them to zone-centroid geography, so no distance/reach metric was salvaged; `source_d_plan.md` recommends this if a "reach" signal is wanted in a future round.
+- **`dms_mode` code `11` remains unexplained** — the experimental county product's mode taxonomy doesn't match the general FAF5 user guide's 1–8 code table (`docs/plans/ingestion_recon.md` § Source D, Phase 0 addendum); the county-level-specific technical report that would likely resolve this sits behind the same Akamai gate as the landing page and wasn't pursued (see plan file for why this wasn't worked around).
+- **Zone→county crosswalk was not pursued** — HHI pooling uses raw FAF-zone partner rows without resolving them to zone-centroid geography, so no distance/reach metric was salvaged; `docs/plans/ingestion_recon.md` (§ Source D) recommends this if a "reach" signal is wanted in a future round.
 - **Ingestion has no per-state checkpointing** — a known, accepted limitation for the current run (which completed in 2h32min with zero failures); revisit before assuming a future data refresh will be equally fast.
 
 ## 6. Next Actions
@@ -105,9 +108,9 @@ All correlations are weak in absolute terms, consistent with the pattern Source 
 - Hub ranking: `scripts/analyze_source_d_hubs.py` → `outputs/source_d_hubs.csv`, `outputs/source_d_hubs.html`
 - Cross-validation vs. Source C: `scripts/analyze_source_d_source_c_correlation.py` → `outputs/source_d_source_c_crossvalidation.csv`, `outputs/source_d_source_c_crossvalidation.html`
 - Maps: `scripts/visualize_source_d.py` → `outputs/source_d_map_{tons,concentration}.html`
-- Stats/figures: `scripts/generate_source_d_insights.py` → `analysis-output/source_d_stats.json`, `analysis-output/figures/source-d-figure-*.png`, `analysis-output/figures/source-d-numeric-summary.md`
-- Presentation notebook: `analysis-output/source_d_key_findings.ipynb`
-- Full reconnaissance/decision trail: `source_d_plan.md` (Phase 0 access resolution, Phase 1b vectorization comparison, Phase 2/3 run logs)
+- Stats/figures: `scripts/generate_source_d_insights.py` → `analysis-output/source-d/source_d_stats.json`, `analysis-output/source-d/figures/source-d-figure-*.png`, `analysis-output/source-d/figures/source-d-numeric-summary.md`
+- Presentation notebook: `analysis-output/source-d/source_d_key_findings.ipynb`
+- Full reconnaissance/decision trail: `docs/plans/ingestion_recon.md` § Source D (Phase 0 access resolution, Phase 1b vectorization comparison, the falsified hypotheses). The original `source_d_plan.md`, including the phase-by-phase run logs, is in git history.
 
 ## 8. Proposal Alignment Assessment (`E_macro_extendedProposal.pdf` / `macro_pre_scoping_spec.pdf`, Source D section)
 

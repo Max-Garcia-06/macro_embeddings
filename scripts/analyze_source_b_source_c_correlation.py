@@ -7,7 +7,7 @@ static industrial structure track its short-term economic momentum
 column's economy-size confound.
 
 Two questions, both drawn from the proposal's framing of Source B
-(`source_b_plan.md` Context -- "distinguishes *what kind* of growth or
+(`docs/plans/ingestion_recon.md (Source B)` Context -- "distinguishes *what kind* of growth or
 decline a county is experiencing"): (1) does the *magnitude* of a county's
 top-sector specialization (`dominant_lq`) predict velocity, and (2) do
 *specific* sectors' LQs predict velocity better than others (e.g. does high

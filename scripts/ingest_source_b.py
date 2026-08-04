@@ -6,7 +6,7 @@ ownerships, industries, and size classes in one file) and stream-filters it to
 2025 Q4, Private ownership (own_code=5), county-level rows (agglvl_code=74)
 across the 20 primary 2-digit NAICS sectors. Individual per-industry-slice
 downloads were tried first but 3 of the 20 combined codes (31-33, 44-45,
-48-49) 404 as slice URLs -- see source_b_plan.md's Phase 1b for the detour --
+48-49) 404 as slice URLs -- see docs/plans/ingestion_recon.md (Source B)'s Phase 1b for the detour --
 so the bulk file is filtered locally instead.
 
 Pivots the long-format (one row per county x sector) result into one row per
@@ -14,7 +14,7 @@ county: `lq_emp_{naics2}` (that sector's Location Quotient, using the
 quarter's third-month value) plus a matching `disclosure_{naics2}` flag (True
 where BLS suppressed the cell for small-employer privacy, per
 `disclosure_code == "N"`). Suppressed cells are left null rather than
-estimated -- source_b_plan.md's Phase 1b empirically tested a state-level
+estimated -- docs/plans/ingestion_recon.md (Source B)'s Phase 1b empirically tested a state-level
 fallback and a proportional-allocation proxy for the spec's proposed IPF fix,
 and neither meaningfully beat a plain null (r~=0.33-0.34 either way, barely
 above a global-mean baseline), so an honest null with a disclosure flag was
@@ -45,7 +45,7 @@ SINGLEFILE_URL_TEMPLATE: str = "https://data.bls.gov/cew/data/files/{year}/csv/{
 REQUEST_TIMEOUT_SECONDS: int = 60
 CHUNK_ROWS: int = 500_000
 
-# Reference quarter and slice, per source_b_plan.md Phase 1/1b decisions.
+# Reference quarter and slice, per docs/plans/ingestion_recon.md (Source B) Phase 1/1b decisions.
 TARGET_QTR: str = "4"
 PRIVATE_OWN_CODE: str = "5"
 COUNTY_AGGLVL_CODE: str = "74"
@@ -187,7 +187,7 @@ def transform_wide(long_df: pd.DataFrame) -> pd.DataFrame:
 
     # BLS reports a suppressed cell's lq_* value as 0 rather than blank, which
     # is indistinguishable from a genuine zero LQ without the disclosure flag
-    # (confirmed in source_b_plan.md's Phase 0) -- null it out explicitly here
+    # (confirmed in docs/plans/ingestion_recon.md (Source B)'s Phase 0) -- null it out explicitly here
     # rather than trust the raw value at face value.
     for code in NAICS2_CODES:
         lq_wide.loc[disclosure_wide[f"disclosure_{code}"].fillna(False), f"lq_emp_{code}"] = pd.NA

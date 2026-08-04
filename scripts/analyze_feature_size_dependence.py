@@ -5,7 +5,7 @@ whether two pillars agree with each other. This script asks a different and,
 under a rate-shaped downstream target, more decisive question: **is this feature
 anything other than county size?**
 
-Motivation is in `docs/downstream_target_assumptions.md`. Under a count-shaped
+Motivation is in `docs/downstream_target.md`. Under a count-shaped
 target (total revenue, subscriber counts) size is a legitimate feature and a
 high correlation here is harmless. Under a rate-shaped target (revenue per
 request) the denominator already normalizes for volume, so a feature that tracks

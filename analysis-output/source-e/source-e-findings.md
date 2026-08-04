@@ -53,6 +53,9 @@ Mean size-normalized GDP velocity rises monotonically across capital-to-wage qua
 - `analysis-output/source-e/figures/source-e-figure-01-top-investment-driven.png`: horizontal bar chart of the top 15 counties by `capital_to_wage_ratio`. Visually confirms §3.1's resort-county cluster (Teton, Pitkin, Blaine, Collier, Monroe at the top).
 - `analysis-output/source-e/figures/source-e-figure-02-ratio-distribution.png`: histogram of `capital_to_wage_ratio` across all counties. Right-skewed, median 0.082, long tail out past 2.5, visualizing the resort/low-N-outlier extremes from §3.1.
 - `analysis-output/source-e/figures/source-e-figure-03-composition-vs-velocity.png`: bar chart of mean size-normalized GDP velocity by capital-composition quartile. Visualizes §3.3's monotonic 1.6%-2.3% quartile progression.
+The `.html` renders below are ~5MB each, regenerable, and no longer committed --
+rebuild any of them with the script named against it in §7.
+
 - `outputs/source_e_map_capital_composition.html`: interactive US map, one bubble per county, colored by `capital_to_wage_ratio`, top-5 counties labeled directly.
 - `outputs/source_e_capital_composition.html`, `outputs/source_e_source_c_correlation.html`: interactive versions of figures 2 and 3.
 
@@ -78,7 +81,7 @@ Mean size-normalized GDP velocity rises monotonically across capital-to-wage qua
 - Map: `scripts/visualize_source_e.py` -> `outputs/source_e_map_capital_composition.html`
 - Stats/figures: `scripts/generate_source_e_insights.py` -> `analysis-output/source-e/source_e_stats.json`, `analysis-output/source-e/figures/source-e-figure-*.png`, `analysis-output/source-e/figures/source-e-numeric-summary.md`
 - Presentation notebook: `analysis-output/source-e/source_e_key_findings.ipynb`
-- Full phased research/design history (access mechanism, file-format choice, column-mapping mitigation): `source_e_plan.md`
+- Reconnaissance/decision trail (access mechanism, file-format choice, column-mapping mitigation): `docs/plans/ingestion_recon.md` § Source E. The original `source_e_plan.md`, including the phase-by-phase run logs, is in git history.
 
 ## 8. Proposal Alignment Assessment (`E_macro_extendedProposal.pdf` / `docs/macro_pre_scoping_spec.pdf`, Source E section)
 

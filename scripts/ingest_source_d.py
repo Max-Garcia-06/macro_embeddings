@@ -8,7 +8,7 @@ also present but never touches a US county directly, so it isn't needed here).
 For each state's own ("home") counties, computes domestic-only (trade_type=1)
 tonnage totals by commodity supergroup (sctgG5) plus a Herfindahl-Hirschman
 trade-partner concentration index, pooling county-level and FAF-zone-level
-partner rows into a single distribution per county. See source_d_plan.md for
+partner rows into a single distribution per county. See docs/plans/ingestion_recon.md (Source D) for
 the empirical comparison behind this feature set: scalar totals plus pooled
 HHI concentration outperformed top-K partner columns and a distance-weighted
 "reach" metric, both dropped after testing on Rhode Island and New Jersey
@@ -296,7 +296,7 @@ def compute_county_flows(
     distribution per direction before computing concentration, since a
     county's true trade-partner spread includes both nearby counties and the
     zone-collapsed long tail -- restricting the HHI calc to county-level
-    partners alone (as tested in source_d_plan.md's Phase 1b spike) understates
+    partners alone (as tested in docs/plans/ingestion_recon.md (Source D)'s Phase 1b spike) understates
     concentration for any county with substantial long-distance flow.
 
     Args:

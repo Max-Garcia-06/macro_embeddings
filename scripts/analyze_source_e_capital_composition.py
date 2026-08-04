@@ -1,7 +1,7 @@
 """Capital-composition characterization for Source E (IRS SOI).
 
 The proposal frames Source E as isolating "asset-rich, investment-driven
-markets ... from pure labor-dependent markets" (`source_e_plan.md` Context)
+markets ... from pure labor-dependent markets" (`docs/plans/ingestion_recon.md (Source E)` Context)
 via `capital_to_wage_ratio` = (net capital gains + qualified dividends) /
 W-2 wages. This script buckets counties into data-driven quartiles of that
 ratio (1=most labor-dependent, 4=most investment-driven), analogous to

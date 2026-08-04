@@ -235,7 +235,7 @@ Do not chase power. Stop overstating the power already in hand. What shipped:
   `p = 0.082` now reads as "underpowered at 0.53" everywhere it appears, four
   new forbidden phrasings were added, and the typed-vs-embedding rank tie
   (13/28, p = 0.76) is recorded.
-- `docs/downstream_target_assumptions.md` refreshed: the stale
+- `docs/downstream_target.md` (Part 2) refreshed: the stale
   "A | No change (stays cut)" row now reads "ship the 29 typed columns," the
   sweep count corrected 41 → 50, and the size-dependence scan extended from
   `content_length` alone to all 29 shipping columns.
@@ -305,7 +305,7 @@ combined.
 
 - **Cost:** not a repo cost. An organizational ask.
 - **Buys:** the actual answer.
-- **Blocker:** `docs/downstream_target_assumptions.md` exists because no target
+- **Blocker:** `docs/downstream_target.md` Part 2 exists because no target
   has been supplied, and the project is not scoped to obtain one.
 
 ---
@@ -338,7 +338,7 @@ likely way to waste the next week.
 
 ### 4. Is the downstream target a rate or a count?
 
-Already identified in `docs/downstream_target_assumptions.md` as the property
+Already identified in `docs/downstream_target.md` as the property
 that decides everything. **Plan 2 strengthened this question's leverage.** The
 size-dependence scan now covers all 29 shipping columns, and the split is sharp:
 
@@ -355,7 +355,7 @@ This is the typed-vs-scalar comparison that is powered at 0.39 and would need 91
 targets. **A single answer here settles what 91 targets could not** — which is
 the strongest argument for asking the question rather than running Plan 3.
 
-`docs/plans/downstream_target_question.md` is the question written out for the
+`docs/downstream_target.md` Part 1 is the question written out for the
 downstream team, with what each answer changes and what to say if they push back.
 
 ### 5. Who consumes +0.0010, and does the target basket match their targets?
@@ -390,10 +390,11 @@ email.
 - `analysis-output/source-a/source-a-findings.md` §13–§17 — canonical claims,
   allowed and forbidden wording. §14.2a–§14.2c and §17.2a are where Plan 2
   landed.
-- `analysis-output/source-a/SESSION_2026-08-03_source_a_extraction.md` — how the
-  extraction round was reasoned through, including what went wrong.
-- `docs/downstream_target_assumptions.md` — the rate-versus-count question in
-  question 4, refreshed 2026-08-04.
+- `docs/downstream_target.md` — Part 1 is the rate-versus-count question in
+  question 4 above, written out for the downstream team; Part 2 is the
+  placeholder analysis behind it. The session log for this round,
+  `SESSION_2026-08-03_source_a_extraction.md`, was deleted 2026-08-04 and is in
+  git history — its canonical numbers are in `source-a-findings.md` §13–§17.
 - `docs/PROJECT_GOAL.md` — open decision #1, size as control or feature.
 - `outputs/source_a_representation.csv`, `outputs/source_a_marginal.csv` — the
   per-target data every figure above is computed from, with

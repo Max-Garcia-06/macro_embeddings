@@ -3,11 +3,11 @@
 Mirrors `generate_source_c_insights.py`'s role: re-invokes the existing,
 side-effect-free functions from `analyze_source_f_typology.py` and
 `analyze_source_f_source_c_crossvalidation.py`, writes the headline numbers
-to `analysis-output/source_f_stats.json`, and renders three static summary
+to `analysis-output/source-f/source_f_stats.json`, and renders three static summary
 figures from that same data.
 
-Output: `analysis-output/source_f_stats.json`, `analysis-output/figures/
-source-f-figure-*.png`, `analysis-output/figures/source-f-numeric-summary.md`.
+Output: `analysis-output/source-f/source_f_stats.json`, `analysis-output/source-f/figures/
+source-f-figure-*.png`, `analysis-output/source-f/figures/source-f-numeric-summary.md`.
 """
 
 from __future__ import annotations

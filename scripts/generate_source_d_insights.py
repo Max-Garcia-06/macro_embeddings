@@ -3,11 +3,11 @@
 Mirrors `generate_source_f_insights.py`'s role: re-invokes the existing,
 side-effect-free functions from `analyze_source_d_hubs.py` and
 `analyze_source_d_source_c_correlation.py`, writes the headline numbers to
-`analysis-output/source_d_stats.json`, and renders three static summary
+`analysis-output/source-d/source_d_stats.json`, and renders three static summary
 figures from that same data.
 
-Output: `analysis-output/source_d_stats.json`, `analysis-output/figures/
-source-d-figure-*.png`, `analysis-output/figures/source-d-numeric-summary.md`.
+Output: `analysis-output/source-d/source_d_stats.json`, `analysis-output/source-d/figures/
+source-d-figure-*.png`, `analysis-output/source-d/figures/source-d-numeric-summary.md`.
 """
 
 from __future__ import annotations

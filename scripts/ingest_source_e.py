@@ -5,7 +5,7 @@ Downloads the IRS SOI Division's Tax Year 2022 pre-aggregated county file
 (`22incyallnoagi.csv` -- `AGI_STUB` fixed at 0, i.e. IRS's own county totals,
 not the 8-AGI-bracket breakdown) and computes the ratio of investment income
 (net capital gains + qualified dividends) to W-2 wage income per county, per
-`source_e_plan.md`'s Phase 0 findings.
+`docs/plans/ingestion_recon.md (Source E)`'s Phase 0 findings.
 
 No credentials required. `www.irs.gov` has no bot protection on either the
 landing pages or the `/pub/irs-soi/*.csv` file host -- plain `requests`
@@ -17,7 +17,7 @@ proposed mitigation for upstream schema mutation -- a future year renaming
 or dropping one of these fields fails loudly (KeyError) instead of silently
 misreading a shifted column.
 
-Known limitation, not fixable from this file alone (source_e_plan.md Risk
+Known limitation, not fixable from this file alone (docs/plans/ingestion_recon.md (Source E) Risk
 3): unlike BLS QCEW's `disclosure_code`, the IRS county file carries no
 suppression flag. A handful of ultra-low-population counties show exact
 zero amounts that could be a true zero or a suppressed small-cell value --
@@ -44,7 +44,7 @@ CSV_ENCODING: str = "latin-1"
 
 STATE_TOTAL_COUNTYFIPS: str = "000"
 
-# Conceptual name -> raw SOI variable code, per source_e_plan.md's Risk 2
+# Conceptual name -> raw SOI variable code, per docs/plans/ingestion_recon.md (Source E)'s Risk 2
 # mitigation (insulates the pipeline from future line-item renumbering).
 SOI_COLUMN_MAP: dict[str, str] = {
     "num_returns": "N1",
@@ -120,7 +120,7 @@ def download_county_csv(url: str) -> pd.DataFrame:
     if missing:
         raise SourceEError(
             f"IRS SOI file is missing expected columns {missing} -- "
-            "upstream schema likely changed, see source_e_plan.md Risk 2."
+            "upstream schema likely changed, see docs/plans/ingestion_recon.md (Source E) Risk 2."
         )
     return df
 

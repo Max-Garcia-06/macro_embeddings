@@ -1,19 +1,12 @@
 # MacroEmbeddings (`E_macro`)
 
-A six-pillar county-level macro/geo dataset for the ~3,143 U.S. counties and county-equivalents. Each pillar (Sources A-F) is an independent federal or public data source, ingested by its own script into a single `data/*.parquet` file keyed on `fips_code`:
+A six-pillar county-level macro/geo dataset for the ~3,143 U.S. counties and county-equivalents. Each pillar (Sources A-F) is an independent federal or public data source, ingested by its own script into a single `data/*.parquet` file keyed on `fips_code`. This file documents how each pillar is ingested and what it outputs.
 
-| Source | Pillar | Data |
-|---|---|---|
-| A | Place Identity | Wikipedia lead-section text |
-| B | Industrial Core | BLS QCEW Location Quotients |
-| C | Economic Velocity | FRED unemployment & real GDP slopes |
-| D | Trade Logistics | BTS FAF5 freight flows |
-| E | Capital Flow | IRS SOI capital-to-wage ratio |
-| F | Structural Resilience | USDA ERS county typology |
+**Start here for context:** `docs/PROJECT_GOAL.md` — what `E_macro` is for, what the six pillars are, what stage the project is in, and the open decisions blocking the fusion step. It carries the pillar table and the keep/cut/fix verdict per source; this README does not repeat them.
 
-All six are ingested and analyzed; a cross-pillar crossvalidation sweep and per-pillar findings reports are in `analysis-output/`. Planning docs for the sources that had one are in `docs/plans/`.
+All six are ingested and analyzed; a cross-pillar crossvalidation sweep and per-pillar findings reports are in `analysis-output/`. Ingestion reconnaissance for the sources that needed it (B, D, E) is in `docs/plans/ingestion_recon.md`.
 
-**Start here for context:** `docs/PROJECT_GOAL.md` — what `E_macro` is for, what stage the project is in, and the open decisions blocking the fusion step.
+The `.html` map renders the visualization scripts produce are ~5MB each and are **not committed** (`.gitignore`d) — rerun the script named in the relevant findings doc's artifact index to rebuild one.
 
 ## Setup
 
@@ -185,7 +178,7 @@ Outputs `outputs/pillar_pair_crossvalidation.csv` (per feature pair) and `analys
 
 **The size control matters:** 19 of 50 tests lose more than half their effect size once it is applied, including 17 of the 33 that survived the FDR correction. The largest raw effect in the sweep, Source D freight tonnage against Source F metro status at r = 0.495, falls to -0.057. The strongest surviving link is Source B's Real Estate & Rental & Leasing LQ against Source E's capital-to-wage ratio -- r = 0.394 raw, 0.382 size-controlled -- two independent federal sources identifying the same underlying economy.
 
-Whether the size-controlled column or the raw column is the operative one depends on a question the downstream team has not yet answered — see `docs/downstream_target_assumptions.md`.
+Whether the size-controlled column or the raw column is the operative one depends on a question the downstream team has not yet answered — see `docs/downstream_target.md`.
 
 ## Findings
 

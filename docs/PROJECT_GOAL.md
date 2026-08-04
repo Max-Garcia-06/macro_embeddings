@@ -107,7 +107,7 @@ to −0.057 once size is controlled.
    the target, the raw correlations stand but the project is partly a population
    model. Everything downstream hangs on this. **This is not answerable in-repo —
    it is one question for the downstream team, written out in
-   `docs/plans/downstream_target_question.md`.**
+   `docs/downstream_target.md` Part 1.**
 2. **Does B ↔ E get privileged weight?** It is roughly five times stronger than
    anything else surviving the size control.
 3. **Confirm the Source A *embedding* cut.** The pillar itself is not cut — it

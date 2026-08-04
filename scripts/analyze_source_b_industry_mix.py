@@ -1,7 +1,7 @@
 """Industry-specialization characterization for Source B (BLS QCEW).
 
 The proposal frames Source B as identifying "which industries actually drive
-a county's economy at scale-invariant resolution" (`source_b_plan.md`
+a county's economy at scale-invariant resolution" (`docs/plans/ingestion_recon.md (Source B)`
 Context). This script collapses each county's 20 NAICS-2 sector LQs down to
 its single dominant sector (highest LQ, analogous to Source F's one-hot
 `dominant_industry_label` collapse) plus that sector's LQ magnitude as a

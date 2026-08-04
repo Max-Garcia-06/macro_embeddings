@@ -81,9 +81,12 @@ Both are indistinguishable from zero. This is a genuinely informative negative r
 
 ## 4. Figure-by-Figure Interpretation
 
-- `analysis-output/figures/source-f-figure-01-dependence.png`: bar chart of the 7-way industry dependence breakdown. Visually confirms §3.1 — "None" is more than double the next-largest bar.
-- `analysis-output/figures/source-f-figure-02-distress-distribution.png`: stacked histogram of distress count, metro vs. nonmetro. Nonmetro's distribution is visibly right-shifted relative to metro's, matching §3.3.
-- `analysis-output/figures/source-f-figure-03-distress-vs-velocity.png`: mean size-normalized GDP velocity by distress count. Flat across 0–4, with a dip at 5 driven by a 17-county sample — the near-zero correlation from §3.4 visualized, including its noise floor.
+- `analysis-output/source-f/figures/source-f-figure-01-dependence.png`: bar chart of the 7-way industry dependence breakdown. Visually confirms §3.1 — "None" is more than double the next-largest bar.
+- `analysis-output/source-f/figures/source-f-figure-02-distress-distribution.png`: stacked histogram of distress count, metro vs. nonmetro. Nonmetro's distribution is visibly right-shifted relative to metro's, matching §3.3.
+- `analysis-output/source-f/figures/source-f-figure-03-distress-vs-velocity.png`: mean size-normalized GDP velocity by distress count. Flat across 0–4, with a dip at 5 driven by a 17-county sample — the near-zero correlation from §3.4 visualized, including its noise floor.
+The `.html` renders below are ~5MB each, regenerable, and no longer committed —
+rebuild any of them with the script named against it in §7.
+
 - `outputs/source_f_map_dependence.html`: interactive US map, one bubble per county, colored by dominant industry dependence category.
 - `outputs/source_f_map_distress.html`: interactive US map colored by demographic distress count (0–6).
 - `outputs/source_f_typology.html`, `outputs/source_f_source_c_crossvalidation.html`: interactive versions of figures 1 and 3.
@@ -107,8 +110,8 @@ Both are indistinguishable from zero. This is a genuinely informative negative r
 - Industry dependence / distress breakdown: `scripts/analyze_source_f_typology.py` → `outputs/source_f_typology_breakdown.csv`, `outputs/source_f_typology.html`
 - Cross-validation vs. Source C: `scripts/analyze_source_f_source_c_crossvalidation.py` → `outputs/source_f_source_c_crossvalidation.csv`, `outputs/source_f_source_c_crossvalidation.html`
 - Maps: `scripts/visualize_source_f.py` → `outputs/source_f_map_{dependence,distress}.html`
-- Stats/figures: `scripts/generate_source_f_insights.py` → `analysis-output/source_f_stats.json`, `analysis-output/figures/source-f-*.png`, `analysis-output/figures/source-f-numeric-summary.md`
-- Presentation notebook: `analysis-output/source_f_key_findings.ipynb`
+- Stats/figures: `scripts/generate_source_f_insights.py` → `analysis-output/source-f/source_f_stats.json`, `analysis-output/source-f/figures/source-f-*.png`, `analysis-output/source-f/figures/source-f-numeric-summary.md`
+- Presentation notebook: `analysis-output/source-f/source_f_key_findings.ipynb`
 
 ## 8. Proposal Alignment Assessment (`E_macro_extendedProposal.pdf`, Source F section)
 

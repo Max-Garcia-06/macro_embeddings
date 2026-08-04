@@ -466,8 +466,11 @@ the §3.6 permutation test).
   covers all 37 Virginia independent cities plus the 19 remaining
   Gazetteer-vs-Wikipedia mismatches, 56 entries total),
   `backfill_virginia_cities.py` (Virginia-only re-ingestion + parquet
-  merge), `backfill_remaining_19.py` (final 19 counties, re-ingestion +
-  parquet merge — brings coverage to all 3,144 US counties).
+  merge) *(deleted 2026-08-04)*, `backfill_remaining_19.py` (final 19
+  counties, re-ingestion + parquet merge — brings coverage to all 3,144 US
+  counties) *(deleted 2026-08-04)*. Both were one-shot backfills whose
+  effect is already baked into `INDEPENDENT_CITY_ARTICLE_LOOKUP` and the
+  shipped parquets; recover from git history if a coverage gap reopens.
 - LLM cleaning / adoption (2026-07-10, §12): `reembed_source_a_llm.py`
   (gemma2:9b boilerplate-cleaning pass, full 3,144-county run, wrote
   `source_a_embeddings_llm.parquet`, resumable via
@@ -475,8 +478,9 @@ the §3.6 permutation test).
   (baseline-vs-LLM-cleaned gate check: pairwise similarity, Mantel r,
   tracked-pair mean, on the full 2,849-county set). After the gate passed,
   `source_a_embeddings_llm.parquet` was copied over `source_a_embeddings.parquet`
-  (the superseded regex-cleaned version preserved at
-  `source_a_embeddings_regex_baseline.parquet`).
+  (the superseded regex-cleaned version was preserved at
+  `source_a_embeddings_regex_baseline.parquet` until 2026-08-04, when it was
+  deleted as a 20MB file with no code consumer; it remains in git history).
 - EDA / analysis: `visualize_source_a.py` (PCA), `analyze_source_a_similarity.py`
   (pairwise similarity/distance), `analyze_source_a_clusters.py` (K-means +
   Mantel test), `analyze_source_a_cluster_stability.py` (cross-seed
@@ -535,8 +539,11 @@ the §3.6 permutation test).
   `.ipynb`'s markdown cells for numeric literals before trusting them
   post-rerun).
 - Ingestion log: `ingest_run.log` (untracked).
-- Reproduction (coverage backfill): `uv run --env-file .env python scripts/backfill_virginia_cities.py`,
-  then `uv run --env-file .env python scripts/backfill_remaining_19.py`.
+- Reproduction (coverage backfill): **no longer runnable as written
+  (2026-08-04)** — both `backfill_virginia_cities.py` and
+  `backfill_remaining_19.py` were deleted once their one-shot effect was
+  permanent in `INDEPENDENT_CITY_ARTICLE_LOOKUP`. Recover from git history
+  (`git log -- scripts/backfill_virginia_cities.py`) if needed.
 - Reproduction (LLM adoption): **no longer runnable as written (2026-07-27).**
   `reembed_source_a_llm.py` and `compare_llm_cleaning_full_corpus.py` were
   deleted from `scripts/` once the embedding step itself was retired (see
@@ -545,8 +552,9 @@ the §3.6 permutation test).
   reference to those two scripts below and in §12 is a record of what was
   run at the time, not a live path. Recover them from git history
   (`git log -- scripts/reembed_source_a_llm.py`) if this needs re-running.
-  The adopted output survives as `data/source_a_embeddings.parquet`, with
-  the superseded regex version at `data/source_a_embeddings_regex_baseline.parquet`.
+  The adopted output survives as `data/source_a_embeddings.parquet`; the
+  superseded regex version, `data/source_a_embeddings_regex_baseline.parquet`,
+  was deleted 2026-08-04 and is recoverable from git history.
 - Reproduction (EDA/insights, run after either of the above):
   **partly unrunnable as written (2026-08-03)** — three of the five scripts
   below were deleted with the embedding, see the EDA bullet above.
@@ -771,9 +779,9 @@ wasn't measured on the subset.
 
 - **Status**: **adopted and fully regenerated (2026-07-10)**.
   `source_a_embeddings.parquet` now contains the LLM-cleaned embeddings (the
-  former regex-cleaned baseline is preserved at
-  `source_a_embeddings_regex_baseline.parquet`, and unaltered in git
-  history). Every script that reads `EMBEDDINGS_PARQUET_PATH` /
+  former regex-cleaned baseline was preserved at
+  `source_a_embeddings_regex_baseline.parquet` until 2026-08-04; it is
+  deleted from the working tree and unaltered in git history). Every script that reads `EMBEDDINGS_PARQUET_PATH` /
   `source_a_embeddings.parquet` (`visualize_source_a.py`,
   `analyze_source_a_clusters.py`, `analyze_source_a_similarity.py`,
   `analyze_source_a_cluster_stability.py`, `generate_source_a_insights.py`,

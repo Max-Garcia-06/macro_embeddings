@@ -3,11 +3,11 @@
 Mirrors `generate_source_a_insights.py`'s role: re-invokes the existing,
 side-effect-free functions from `analyze_source_c_quadrants.py`,
 `analyze_source_c_similarity.py`, and `analyze_source_c_gdp_coverage.py`,
-writes the headline numbers to `analysis-output/source_c_stats.json`, and
+writes the headline numbers to `analysis-output/source-c/source_c_stats.json`, and
 renders three static summary figures from that same data.
 
-Output: `analysis-output/source_c_stats.json`, `analysis-output/figures/
-source-c-figure-*.png`, `analysis-output/figures/source-c-numeric-summary.md`.
+Output: `analysis-output/source-c/source_c_stats.json`, `analysis-output/source-c/figures/
+source-c-figure-*.png`, `analysis-output/source-c/figures/source-c-numeric-summary.md`.
 """
 
 from __future__ import annotations
