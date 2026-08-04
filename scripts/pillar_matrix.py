@@ -60,6 +60,13 @@ SIZE_COLUMNS: tuple[str, ...] = (
     "agi_thousands",
     "wages_salaries_thousands",
     "gdp_latest",
+    # Counts of returns reporting each income type: scale measures on the same
+    # footing as `num_returns`. Their composition counterparts --
+    # `capgain_participation_rate`, `dividend_participation_rate` -- are the
+    # size-free version and stay in E's block.
+    "n_returns_wages",
+    "n_returns_qualified_dividends",
+    "n_returns_net_cap_gain",
 )
 
 # The size control handed to every baseline model, alongside state dummies.
@@ -90,6 +97,25 @@ SIZE_FEATURES: tuple[str, ...] = (
 # 2.4% of its block's lift. Excluded on the same grounds it was excluded from
 # Source A's own scored variants.
 SOURCE_A_DIAGNOSTIC_COLUMNS: tuple[str, ...] = ("has_usda_echo", "n_body_sections")
+
+# Source E columns that exist for interpretation rather than prediction.
+#
+# `national_capital_to_wage_ratio` is the same value on every row -- it is the
+# divisor behind the normalized columns, carried so the normalization stays
+# invertible without refetching. Zero variance, no information.
+#
+# `capital_to_wage_ratio_normalized` is `capital_to_wage_ratio` divided by that
+# constant, so the two are perfectly collinear within a vintage. The cross-year
+# columns built from it (`..._normalized_mean`, `..._normalized_std`) are not,
+# and stay in the block.
+#
+# `n_tax_years_observed` records boundary changes -- Connecticut's planning
+# regions, the Valdez-Cordova split -- not economics.
+SOURCE_E_DIAGNOSTIC_COLUMNS: tuple[str, ...] = (
+    "national_capital_to_wage_ratio",
+    "capital_to_wage_ratio_normalized",
+    "n_tax_years_observed",
+)
 
 # Identifier and bookkeeping columns that are never features.
 NON_FEATURE_COLUMNS: tuple[str, ...] = (
@@ -153,6 +179,8 @@ def _derive_pillar_columns(frames: dict[str, pd.DataFrame]) -> dict[str, pd.Data
         columns=["raw_intro_text", "embedding_text", *SOURCE_A_DIAGNOSTIC_COLUMNS],
         errors="ignore",
     )
+
+    derived["E"] = frames["E"].drop(columns=list(SOURCE_E_DIAGNOSTIC_COLUMNS), errors="ignore")
 
     d = frames["D"]
     total_tons = d[list(D_TONNAGE_COLUMNS)].sum(axis=1)

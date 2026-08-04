@@ -3,5 +3,5 @@ A,source_a_text_features.parquet,2026-08-03,scrape date (no reference period),co
 B,source_b_qcew.parquet,2025-12-31,2025 Q4,quarterly,BLS QCEW private-ownership county employment; ~35% of LQ cells suppressed.
 C,source_c_fred.parquet,2025-12-31,"unemployment through 2025, real GDP through 2024",monthly (unemployment) / annual (GDP),Velocities are 3-year slopes; per-row years stay in unemployment_latest_year and gdp_latest_year.
 D,source_d_faf.parquet,2022-12-31,2022,every ~5 years,BTS FAF5 county freight tonnage; oldest pillar in the matrix.
-E,source_e_irs_soi.parquet,2022-12-31,tax year 2022,annual,IRS SOI county file; no suppression flag published upstream.
+E,source_e_irs_soi.parquet,2022-12-31,tax year 2022 (cross-year columns span TY2018-TY2022),annual,"IRS SOI county file; no suppression flag published upstream. The cross-year columns are built only from years at or before this date, so the stamp stays a valid upper bound. Per-year rows are in source_e_irs_soi_panel.parquet, which carries tax_year instead."
 F,source_f_usda_typology.parquet,2025-12-31,2025 edition (2023 OMB metro delineation),every ~10 years,"USDA ERS county typology codes, 2025 edition. Date is the publication edition, not a period end: the codes are built from several upstream series with different windows, all predating publication, so this is an upper bound on what they can know."

@@ -103,9 +103,12 @@ PILLAR_VINTAGES: tuple[PillarVintage, ...] = (
         pillar="E",
         parquet_name="source_e_irs_soi.parquet",
         as_of_date="2022-12-31",
-        reference_period="tax year 2022",
+        reference_period="tax year 2022 (cross-year columns span TY2018-TY2022)",
         cadence="annual",
-        note="IRS SOI county file; no suppression flag published upstream.",
+        note="IRS SOI county file; no suppression flag published upstream. The "
+        "cross-year columns are built only from years at or before this date, so "
+        "the stamp stays a valid upper bound. Per-year rows are in "
+        "source_e_irs_soi_panel.parquet, which carries tax_year instead.",
     ),
     PillarVintage(
         pillar="F",

@@ -136,9 +136,15 @@ Output: `data/source_d_faf.parquet` with columns `county_name`, `fips_code`, `to
 
 ## Source E: IRS SOI County Capital-to-Wage Ratio
 
-`ingest_source_e.py` downloads the IRS Statistics of Income pre-aggregated county file and computes each county's ratio of investment income (qualified dividends + net capital gain) to wage income -- the "Capital vs. Wage Income" pillar of `E_macro`, distinguishing counties driven by market/investment performance from those driven by local employment.
+`ingest_source_e.py` downloads the IRS Statistics of Income pre-aggregated county files for Tax Years 2018-2022 and derives each county's position on investment income (qualified dividends + net capital gain) versus wage income -- the "Capital vs. Wage Income" pillar of `E_macro`, distinguishing counties driven by market/investment performance from those driven by local employment.
 
-Uses the IRS's own pre-aggregated `22incyallnoagi.csv` (Tax Year 2022, the latest published) rather than summing across the 8 per-county AGI brackets manually. Target columns are referenced via a conceptual name-to-SOI-variable-code mapping so a future schema change fails loudly instead of silently misreading a shifted column. Unlike Source B, the IRS file carries no suppression flag -- a suppressed cell and a genuine zero are indistinguishable, and this is shipped as a disclosed limitation rather than papered over.
+Uses the IRS's own pre-aggregated `{yy}incyallnoagi.csv` files rather than summing across the 8 per-county AGI brackets manually. Target columns are referenced via a conceptual name-to-SOI-variable-code mapping so a future schema change fails loudly instead of silently misreading a shifted column. Unlike Source B, the IRS file carries no suppression flag -- a suppressed cell and a genuine zero are indistinguishable, and this is shipped as a disclosed limitation rather than papered over.
+
+### The ratio alone was not enough
+
+`capital_to_wage_ratio` decomposes into three separable quantities -- how many filers report investment income, how much each reports, and how much wage income sits underneath -- at R² = 0.975 with near-unit elasticities. A high ratio can mean any of the three, and the single column maps them onto the same number. All three now ship alongside it, together with the `N00200`/`N00650`/`N01000` return counts the earlier version discarded.
+
+Its *level* is also set by the market year rather than by county economics: the unweighted county mean runs 0.095 (TY2020), 0.156 (TY2021), 0.108 (TY2022). `capital_to_wage_ratio_normalized_mean` -- each year's ratio divided by that year's national aggregate, averaged across TY2018-TY2022 -- is the column downstream models should prefer, since it survives a vintage refresh. Evidence in `analysis-output/source-e/source-e-findings.md` §9-§13; frozen schema and null semantics in `docs/source_e_feature_schema.md`.
 
 No credentials are required:
 
@@ -146,9 +152,11 @@ No credentials are required:
 uv run scripts/ingest_source_e.py
 ```
 
-Output: `data/source_e_irs_soi.parquet` with columns `county_name`, `fips_code`, `num_returns`, `agi_thousands`, `wages_salaries_thousands`, `qualified_dividends_thousands`, `net_cap_gain_thousands`, `capital_to_wage_ratio`, `low_return_flag`.
+Output: `data/source_e_irs_soi.parquet` (3,143 x 24, latest tax year plus the cross-year summary) and `data/source_e_irs_soi_panel.parquet` (15,686 rows, one per county x tax year).
 
-`low_return_flag` marks counties under 2,200 total returns (325 of 3,143, against a national median of ~11,700). In that tail the ratio is driven by a handful of one-time transactions -- typically farm or ranch land sales -- rather than a sustained investment-income base, so downstream consumers should weight by `num_returns` or exclude flagged counties rather than reading every high ratio as an investment-driven economy.
+Three flags ship, each naming its own mechanism: `thin_claimer_flag` (fewer than 100 filers behind the numerator; 37 counties -- the "do not trust this level" flag, and where undisclosed suppression can hide), `concentrated_gain_flag` (gain per claiming return above the national p95; 157 counties -- a few large land sales rather than a broad investment base), and `low_return_flag` (under 2,200 total returns; 325 counties). `low_return_flag` is a **materiality** flag, not a noise flag: those counties are 10.3% of rows but 0.14% of national investment income, and they are no less stable year over year than large counties. Do not weight the ratio by `num_returns` to suppress noise -- the largest counties move most between vintages, so it does the opposite.
+
+Source E does not behave the same way across county sizes. `scripts/analyze_source_e_tiers.py` splits counties into four data-volume tiers and writes `analysis-output/source-e/source_e_tier_stats.json`; the operative result is that the strongest surviving cross-pillar link, B Real Estate LQ x E ratio, runs +0.476 among counties above 100k returns and -0.058 among those below 2,200.
 
 ## Source F: USDA ERS County Typology Codes
 

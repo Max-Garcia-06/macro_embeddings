@@ -92,7 +92,13 @@ Verdict per pillar (detail in `analysis-output/E_macro_key_findings.ipynb`):
 - **B** — keep, change the feature: ship the 20-dim LQ vector, not a scalar.
 - **C** — keep, fix the metric: use `gdp_velocity_pct`, not dollar-denominated
   `gdp_velocity`. Done.
-- **D, E** — keep both. Weak, but clean and independent.
+- **D** — keep. Weak, but clean and independent.
+- **E** — keep, change the feature: the capital-to-wage ratio is a product of
+  three separable drivers (R² = 0.975 on its log) and its *level* is set by the
+  market year, not the county — the unweighted county mean runs 0.095 / 0.156 /
+  0.108 across TY2020–TY2022. Ships the three components plus a TY2018–TY2022
+  normalized mean; prefer that mean over the raw ratio. Schema frozen in
+  `docs/source_e_feature_schema.md`. Done.
 - **F** — keep, reclassify as a structural anchor rather than a hub-tested pillar.
 
 Strongest surviving link: Source B Real Estate & Rental & Leasing LQ against
@@ -128,7 +134,8 @@ to −0.057 once size is controlled.
 3. Build the fusion — **only after** the size question is settled, or the confound
    gets baked into the output.
 4. Hand off to the Comcast downstream models: publish the pillar parquets behind
-   the feature store with a frozen schema and documented null semantics. Source A
-   is ready (`docs/source_a_feature_schema.md`); every pillar now carries an
-   `as_of_date` (`outputs/pillar_vintages.csv`). B–F still need their own schema
-   docs.
+   the feature store with a frozen schema and documented null semantics. Sources
+   A and E are ready (`docs/source_a_feature_schema.md`,
+   `docs/source_e_feature_schema.md`); every pillar now carries an
+   `as_of_date` (`outputs/pillar_vintages.csv`). B, C, D, and F still need their
+   own schema docs.
