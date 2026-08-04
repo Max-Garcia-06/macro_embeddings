@@ -13,7 +13,27 @@
       "share_retained": 0.3650892502253999,
       "n_positive_crowded": 20,
       "wilcoxon_p_crowded": 0.01362369954586029,
-      "wilcoxon_statistic_crowded": 96.0
+      "wilcoxon_statistic_crowded": 96.0,
+      "effect": {
+        "n": 28,
+        "mean": 0.0005207587460084714,
+        "median": 9.250712999747668e-05,
+        "sd": 0.0015382710395369856,
+        "dz": 0.33853510377808194,
+        "power": 0.5403720688250628,
+        "n_for_80": 56,
+        "n_for_90": 77
+      },
+      "clustering": {
+        "n_nominal": 28,
+        "n_clusters": 5,
+        "mean_cluster_size": 3.25,
+        "icc": 0.0,
+        "design_effect": 1.0,
+        "n_effective": 28.0,
+        "power_at_effective_n": 0.5403720688250628,
+        "cluster_mean_p": 0.16646948980208376
+      }
     },
     "extracted_sections": {
       "mean_lift_thin": 0.003730871391068436,
@@ -22,13 +42,105 @@
       "share_retained": 0.2775939675856593,
       "n_positive_crowded": 19,
       "wilcoxon_p_crowded": 0.012704446911811829,
-      "wilcoxon_statistic_crowded": 95.0
+      "wilcoxon_statistic_crowded": 95.0,
+      "effect": {
+        "n": 28,
+        "mean": 0.0010356673919985151,
+        "median": 0.00025527695969068676,
+        "sd": 0.0018862942629632128,
+        "dz": 0.5490486889206603,
+        "power": 0.882273221600322,
+        "n_for_80": 22,
+        "n_for_90": 30
+      },
+      "clustering": {
+        "n_nominal": 28,
+        "n_clusters": 5,
+        "mean_cluster_size": 3.25,
+        "icc": 0.0,
+        "design_effect": 1.0,
+        "n_effective": 28.0,
+        "power_at_effective_n": 0.882273221600322,
+        "cluster_mean_p": 0.09229226396756988
+      }
     }
   },
   "typed_vs_scalar_crowded": {
     "mean_difference": 0.0005149086459900436,
     "n_wins": 17,
     "wilcoxon_p": 0.2945980280637741,
-    "wilcoxon_statistic": 156.0
-  }
+    "wilcoxon_statistic": 156.0,
+    "effect": {
+      "n": 28,
+      "mean": 0.0005149086459900436,
+      "median": 6.29241957304516e-05,
+      "sd": 0.001953642952393511,
+      "dz": 0.2635633319584839,
+      "power": 0.3877423784997769,
+      "n_for_80": 91,
+      "n_for_90": 125
+    },
+    "clustering": {
+      "n_nominal": 28,
+      "n_clusters": 5,
+      "mean_cluster_size": 3.25,
+      "icc": 0.0,
+      "design_effect": 1.0,
+      "n_effective": 28.0,
+      "power_at_effective_n": 0.3877423784997769,
+      "cluster_mean_p": 0.10871856343238759
+    }
+  },
+  "by_pillar": [
+    {
+      "pillar": "B",
+      "n_targets": 20,
+      "thin_length": 0.0012136784,
+      "crowded_length": 0.0006802872,
+      "thin_extracted_sections": 0.0031710919,
+      "crowded_extracted_sections": 0.0008733967,
+      "retained_length": 0.5605168345,
+      "retained_extracted_sections": 0.2754245956
+    },
+    {
+      "pillar": "C",
+      "n_targets": 3,
+      "thin_length": 0.0005751594,
+      "crowded_length": -0.0001165964,
+      "thin_extracted_sections": 0.0017046949,
+      "crowded_extracted_sections": 0.0011750787,
+      "retained_length": -0.2027202315,
+      "retained_extracted_sections": 0.6893190999
+    },
+    {
+      "pillar": "D",
+      "n_targets": 3,
+      "thin_length": 0.0015731502,
+      "crowded_length": 0.0001720432,
+      "thin_extracted_sections": 0.0021155721,
+      "crowded_extracted_sections": 0.0013261954,
+      "retained_length": 0.1093621935,
+      "retained_extracted_sections": 0.6268731794
+    },
+    {
+      "pillar": "E",
+      "n_targets": 1,
+      "thin_length": 0.0012318132,
+      "crowded_length": 8.8396e-06,
+      "thin_extracted_sections": 0.007859583,
+      "crowded_extracted_sections": 1.68842e-05,
+      "retained_length": 0.0071760546,
+      "retained_extracted_sections": 0.002148236
+    },
+    {
+      "pillar": "F",
+      "n_targets": 1,
+      "thin_length": 0.00798854,
+      "crowded_length": 0.0008003216,
+      "thin_extracted_sections": 0.0217221767,
+      "crowded_extracted_sections": 0.0040100461,
+      "retained_length": 0.1001837088,
+      "retained_extracted_sections": 0.1846060915
+    }
+  ]
 }

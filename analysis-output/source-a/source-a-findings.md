@@ -501,6 +501,19 @@ the §3.6 permutation test).
   `outputs/source_a_source_c_correlation_pairs.csv` and
   `outputs/source_a_source_f_crossvalidation.csv`; only the five multi-megabyte
   Plotly `.html` renders were removed with them.
+- **Typed-extraction era (§13–§17)**: `extract_source_a_features.py` and
+  `extract_source_a_section_features.py` (the 29 columns),
+  `analyze_source_a_tiers.py`, `analyze_source_a_representation.py` (thin
+  baseline, §14), `analyze_source_a_marginal.py` (crowded baseline, §17), and
+  `paired_power.py` (effect size, achieved power, and pillar-clustering
+  diagnostics for every paired test in §14 and §17 — no point estimate depends on
+  it, it only says how much weight each p-value carries). Outputs:
+  `outputs/source_a_representation.csv`, `..._by_tier.csv`, `..._by_pillar.csv`,
+  `outputs/source_a_marginal.csv`, `..._by_pillar.csv`, and the matching
+  `source_a_representation_stats.json` / `source_a_marginal_stats.json`. **The
+  two `_by_pillar.csv` files are the primary reportable results** (§14.2c,
+  §17.2a); the aggregates in the headline tables are secondary and are weighted
+  71% toward QCEW.
 - Persisted statistics: `analysis-output/source-a/stats.json` (adopted-embeddings
   snapshot, n=3,144 / n=2,849, 2026-07-10).
 - Figures: `analysis-output/source-a/figures/figure-01-similarity-vs-distance.png`,
@@ -1018,7 +1031,123 @@ The consistency caveat from §13.3 still stands: p = 0.082, short of 0.05. The
 extraction variants win large on a handful of targets and tie elsewhere, while
 the embedding wins smaller but on more of them. **Extraction is the better and
 far cheaper representation on average; it is not uniformly better target by
-target, and that should not be claimed.**
+target, and that should not be claimed.** §14.2a gives that p-value the sample
+size it needed, which changes how it should be read.
+
+### 14.2a That p = 0.082 is underpowered, not close
+
+`p = 0.082` has been reported four times in this file without the sample size it
+would have needed. Paired difference, `extracted_sections` minus
+`content_length`, across the 28 targets:
+
+| statistic | value |
+|---|---|
+| mean | +0.00203 |
+| median | +0.00061 |
+| sd | 0.00605 |
+| Cohen dz | 0.335 |
+| **power at n = 28, α = 0.05 one-sided** | **0.53** |
+| targets needed for 80% power | 57 |
+| targets needed for 90% power | 78 |
+
+**Power of 0.53 means that if the observed effect is the true effect, this test
+detects it about half the time.** `p = 0.082` is the ordinary output of a real
+effect measured with roughly half the sample its effect size requires. It is not
+evidence against the effect, and it must not be written up as though the question
+were close or as though the result had failed a fair test.
+
+**It is not a test-choice problem.** The suspicion that Wilcoxon misses the
+result by discarding magnitude was checked directly: Wilcoxon signed-rank
+p = 0.0815, paired t p = 0.0873. Switching to a magnitude-weighted test changes
+the third decimal. Any proposal to "use a better test" is proposing a rounding
+error.
+
+**The mean is carried by five targets.** Mean is 3.3× the median because the
+distribution is concentrated: Accommodation & Food Services LQ (+0.02619),
+demographic distress count (+0.01356), Information LQ (+0.00783),
+capital-to-wage ratio (+0.00590), Transportation & Warehousing LQ (+0.00428).
+Losses concentrate too — Professional Services −0.00653, Retail Trade −0.00294,
+Educational Services −0.00284. Dropping Accommodation alone roughly halves the
+mean. Its mechanism is documented and independently verified (§13.4: counties
+whose articles mention tourism average 1.407 Accommodation LQ against 1.010 for
+those that do not, r = 0.157), so the concentration is explicable rather than
+suspicious — but the headline rests heavily on one target.
+
+**Against the embedding the two are a statistical dead heat.** Head to head,
+`extracted_sections` minus `bge-m3` full: mean difference **+0.00047, 13 of 28
+targets, Wilcoxon p = 0.76**, dz = 0.089. §14.5 already forbids "significantly
+beats the embedding," which is correct, but the true relationship is weaker than
+that phrasing implies. Typed extraction is *statistically indistinguishable* from
+the 1024-dim embedding and wins on cost, interpretability, and the absence of a
+2.2GB model download. **Those are the defensible arguments.** The +0.00320
+against +0.00273 gap is noise and must not be leaned on.
+
+One asymmetry cuts the other way and belongs on the record: against
+`content_length`, the embedding's advantage is both larger and more consistent
+(dz = 0.435, power 0.72, Wilcoxon p = 0.014, and it survives the pillar-blocked
+test at p = 0.022) where the typed block's does not (pillar-blocked p = 0.132).
+That is the same fact §14.2 states in prose — the embedding wins smaller but on
+more targets — now measured. It does not change the shipping decision, because
+the two tie head to head and only one of them costs a model download.
+
+### 14.2b The 28 targets are 5 pillars, and 20 of them are one table
+
+| target pillar | count | share |
+|---|---|---|
+| **B (QCEW location quotients)** | **20** | **71%** |
+| C (velocity series) | 3 | 11% |
+| D (freight) | 3 | 11% |
+| E (capital-to-wage) | 1 | 4% |
+| F (typology) | 1 | 4% |
+
+Seventy-one percent of the basket is a single table, and QCEW location quotients
+are compositional — each is a share against a national base, so they are
+mechanically coupled. **Every claim to 28-target breadth in this file overstates
+the evidence**; the honest phrasing is "28 targets drawn from five pillars, 20 of
+them QCEW sectors."
+
+The natural follow-on worry — that the significance test is therefore inflated by
+treating coupled targets as independent draws — was tested and **does not hold
+for the shipping variant.** `analyze_source_a_representation.py` now reports the
+intraclass correlation of the paired differences within target pillar, the Kish
+design effect it implies, and the effective n:
+
+| variant | ICC of differences | effective n | pillar-blocked p |
+|---|---|---|---|
+| `extracted_min` | 0.360 | 15.5 | 0.212 |
+| `extracted_mid` | 0.351 | 15.6 | 0.158 |
+| `extracted_full` | 0.158 | 20.6 | 0.158 |
+| **`extracted_sections`** | **0.031** | **26.2** | 0.132 |
+| `bge-m3` full | 0.000 | 28.0 | 0.022 |
+
+The targets are coupled; the *paired differences between two variants scored on
+them* largely are not, because the coupling affects both variants and cancels in
+the difference. For `extracted_sections` the design effect is 1.07, so the
+nominal 28 is very nearly the effective 28 and `p = 0.082` needs no clustering
+discount. The narrower variants do carry real within-pillar dependence and their
+p-values should be read against an effective n near 15.
+
+The pillar-blocked column is a sensitivity check, not a replacement: it gives
+each pillar one vote regardless of how many targets it supplied, which is the
+right correction for a breadth claim but leaves a five-observation test with very
+little power. It is reported so that no reader has to take the aggregate on
+trust.
+
+### 14.2c The aggregate is a property of the basket
+
+| target pillar | `content_length` | `extracted_sections` |
+|---|---|---|
+| B (20 targets) | +0.00099 | +0.00258 |
+| C (3 targets) | +0.00062 | +0.00166 |
+| D (3 targets) | +0.00075 | +0.00156 |
+| E (1 target) | +0.00090 | +0.00680 |
+| F (1 target) | +0.00803 | +0.02158 |
+
+The typed block leads in every pillar, which is the useful robustness statement
+and a stronger one than the aggregate. But the aggregate itself is weighted 71%
+toward B, where the margin is smallest in absolute terms. Full table in
+`outputs/source_a_representation_by_pillar.csv`; **this breakout is the primary
+result and the single mean is secondary.**
 
 *Numbers differ slightly from §13 because the refetch pulled live Wikipedia text
 three weeks newer — `content_length` mean moved 388.1 → 390.0 and the incumbent's
@@ -1066,19 +1195,32 @@ beats the 1024-dim embedding in all three non-stub tiers.
   interpretable, uniform schema across all 3,144 counties, absence encoded as
   `False`. Beats both the incumbent scalar and the cut embedding on mean lift.
 - **Allowed wording**: "targeted extraction from Wikipedia leads plus economy
-  sections yields 2.7× the incumbent's mean cross-pillar lift and exceeds the cut
+  sections yields 2.7× the incumbent's mean cross-pillar lift and matches the cut
   1024-dim embedding's, at 29 interpretable columns and no model download —
-  though its per-target advantage is concentrated rather than uniform and does
-  not reach paired significance (p = 0.082)."
+  though its per-target advantage is concentrated rather than uniform, and the
+  paired comparison against the incumbent is underpowered (p = 0.082 at power
+  0.53; 57 targets would be needed for 80%)."
 - **Forbidden wording**: "significantly beats the embedding" (p = 0.082, and the
-  embedding wins on comparable target counts); "section expansion works" — this
-  tests *targeted lexicon extraction from one named section*, not the
+  embedding wins on comparable target counts); "beats the embedding" without
+  qualification — head to head the two are a rank tie at 13/28, p = 0.76, and the
+  case for the typed block is cost and interpretability, not lift; "the typed
+  block failed to reach significance" — the test was powered at 0.53, so it was
+  never in a position to reach it; "across 28 targets" as a breadth claim — 20 of
+  the 28 are QCEW sectors from five pillars total; "section expansion works" —
+  this tests *targeted lexicon extraction from one named section*, not the
   concatenation §4 and §4.1 ruled out, which remains closed.
+- **Reporting rule**: the per-pillar breakout in
+  `outputs/source_a_representation_by_pillar.csv` is the primary result. Any
+  handoff of the single aggregate must carry the basket composition (§14.2b)
+  with it.
 - **Reproduction**: `uv run --env-file .env python scripts/ingest_source_a.py`
   (refetch, ~16 min, also rewrites the text-features parquet so the extraction
   steps must follow), then `extract_source_a_features.py`,
   `extract_source_a_section_features.py`, `analyze_source_a_tiers.py`,
-  `analyze_source_a_representation.py`. Seed 42 throughout.
+  `analyze_source_a_representation.py`. Seed 42 throughout. Power, effective n,
+  and the pillar-blocked p-values come from `scripts/paired_power.py` and land in
+  `source_a_representation_stats.json` under each variant's `effect` and
+  `clustering` keys.
 
 ## 15. Should the Tiers Branch the Model? No — Tested Both Ways (2026-08-03)
 
@@ -1287,6 +1429,32 @@ Adding B–F to the baseline raises mean R² from 0.255 to 0.327 across 106 colu
    (17/28 targets, p = 0.295), so it supports "ship the typed block" on point
    estimate and cost, not on a demonstrated gap.
 
+**How much power each of those three tests had**, which decides how much weight
+each can carry:
+
+| test | dz | power at n = 28 | targets for 80% | p |
+|---|---|---|---|---|
+| typed block vs zero, crowded baseline | 0.549 | **0.88** | 22 | **0.013** |
+| `content_length` vs zero, crowded baseline | 0.339 | 0.54 | 56 | **0.014** |
+| typed vs scalar, crowded baseline | 0.264 | 0.39 | 91 | 0.295 |
+
+Two consequences that should govern how this section is cited:
+
+- **"Source A carries marginal value over all five other pillars combined" is a
+  well-powered, significant result** — power 0.88, p = 0.013, and the effective n
+  equals the nominal n (ICC of the paired lifts within pillar is 0.000, design
+  effect 1.00). This is the load-bearing finding of the whole experiment line and
+  it is solid.
+- **"The typed block beats the scalar" is powered at 0.39 and would need 91
+  targets.** It will not be settled in this repo by adding targets, and it is not
+  what the shipping decision rests on. The typed block ships on cost and
+  interpretability.
+
+The pillar-blocked sensitivity check — one vote per pillar, five observations —
+gives p = 0.092 for the typed block and p = 0.166 for the scalar. Neither clears
+0.05 there, but a five-observation test is underpowered by construction and this
+is reported as a caution about breadth claims, not as a competing verdict.
+
 ### 17.2 Where it survives, and why that is the coherence check
 
 Source A's surviving contribution is concentrated exactly where its features name
@@ -1316,6 +1484,29 @@ Per-pillar, the typed block's advantage over `content_length` under the crowded
 baseline concentrates in F (+0.0032), C (+0.0013) and D (+0.0012); it is
 negligible for B (+0.0002) and E (+0.00001).
 
+### 17.2a Retention varies by two orders of magnitude, so +0.0010 is a property of the basket
+
+| target pillar | targets | thin lift | crowded lift | retained |
+|---|---|---|---|---|
+| C (velocities) | 3 | +0.00170 | +0.00118 | **69%** |
+| D (freight) | 3 | +0.00212 | +0.00133 | 63% |
+| B (QCEW) | 20 | +0.00317 | +0.00087 | 28% |
+| F (typology) | 1 | +0.02172 | +0.00401 | 18% |
+| E (capital-to-wage) | 1 | +0.00786 | +0.00002 | **0.2%** |
+
+Retention is highest where the other pillars know least — Source C's velocity
+series are near-orthogonal to county size and to the rest of the matrix — and
+collapses where a federal agency measures the same construct directly. That
+gradient is §17.2's coherence argument stated quantitatively.
+
+It also means the headline is basket-dependent. **The basket is 71% QCEW, the
+worst-retaining large block**, so the single published number is as much a
+property of the target mix as of Source A. A downstream model that cares about
+dynamics and velocity should expect considerably more than +0.0010; one that
+cares about industry composition, considerably less. Full table in
+`outputs/source_a_marginal_by_pillar.csv`; **it is the primary result and the
+aggregate must not travel without it.**
+
 ### 17.3 What this does not settle
 
 Every target here is still another pillar's feature. Downstream targets at
@@ -1325,16 +1516,34 @@ information about an external outcome, or vice versa. **This is the closest prox
 available in-repo, not the answer.** The only thing that settles it is a
 downstream label, which this project does not have and is not scoped to obtain.
 
+There is a structural consequence of that which is easy to miss. Because every
+target is a pillar feature, **a source is penalized precisely for agreeing with
+the pillars it will ship alongside.** For assembling a non-redundant feature
+store that is arguably the correct penalty. For predicting an external outcome it
+is not: Source A and Source F can be redundant with each other and both
+predictive of churn. Relatedly, `has_metro_attachment` is ablated in the sweeps
+as a restatement of Source F's `metro_2023` (§16.2) — justified for
+pillar-versus-pillar work, unjustified against an external target, where it would
+be a legitimate free feature. Any future external-target harness must revisit
+both decisions rather than inherit them.
+
 - **Allowed wording**: "against a baseline that already contains every other
   pillar, Source A's typed block retains a small but statistically real
-  contribution (+0.0010 mean R² lift, p = 0.013), roughly twice the shipped
-  scalar's, concentrated on targets whose semantics its lexicons match."
+  contribution (+0.0010 mean R² lift, p = 0.013, power 0.88), roughly twice the
+  shipped scalar's, concentrated on targets whose semantics its lexicons match —
+  with retention ranging from 69% on Source C's velocities to 0.2% on Source E's
+  capital ratio."
 - **Forbidden wording**: "Source A contributes +0.0032 to a fused model" — that
   is the thin-baseline figure and it overstates by ~3.5×; "the typed block
-  significantly beats `content_length` in fusion" — p = 0.295 on the paired
-  comparison.
+  significantly beats `content_length` in fusion" — p = 0.295 at power 0.39, a
+  test that would need 91 targets; quoting +0.0010 as Source A's expected
+  contribution without stating that the basket is 71% QCEW.
 - **Verdict for the fusion step**: **ship the typed block.** It is positive
-  against the hardest in-repo baseline, its surviving contribution is
-  semantically coherent rather than diffuse, and it costs one regex pass. Plan
-  around +0.0010, not +0.0032.
+  against the hardest in-repo baseline on the best-powered test in this file, its
+  surviving contribution is semantically coherent rather than diffuse, and it
+  costs one regex pass. Plan around +0.0010, not +0.0032, and adjust for which
+  pillars the consuming model's targets resemble.
 - **Reproduction**: `uv run python scripts/analyze_source_a_marginal.py`, seed 42.
+  Power and clustering diagnostics come from `scripts/paired_power.py` and land
+  in `source_a_marginal_stats.json`; the per-pillar breakout is written to
+  `outputs/source_a_marginal_by_pillar.csv`.

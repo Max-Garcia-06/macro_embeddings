@@ -100,6 +100,7 @@ from analyze_pillar_matrix_signal import (
 from analyze_source_a_tiers import TIER_LABELS, assign_tiers
 from extract_source_a_features import VARIANT_COLUMNS
 from extract_source_a_section_features import section_feature_columns
+from paired_power import diagnostics
 from pillar_matrix import DATA_DIR, build_matrix
 
 # The widest variant: everything extracted from the lead, plus the industry
@@ -129,6 +130,7 @@ ANALYSIS_DIR: Path = REPO_ROOT / "analysis-output" / "source-a"
 
 OUTPUT_CSV_PATH: Path = OUTPUTS_DIR / "source_a_representation.csv"
 OUTPUT_TIER_CSV_PATH: Path = OUTPUTS_DIR / "source_a_representation_by_tier.csv"
+OUTPUT_PILLAR_CSV_PATH: Path = OUTPUTS_DIR / "source_a_representation_by_pillar.csv"
 OUTPUT_STATS_PATH: Path = ANALYSIS_DIR / "source_a_representation_stats.json"
 
 # Minimum rows a tier must contribute to a target before its lift is reported.
@@ -540,7 +542,7 @@ def run_sweep(
     return results, pd.DataFrame(tier_records)
 
 
-def _paired_test(results: pd.DataFrame, key: str) -> dict[str, float | int]:
+def _paired_test(results: pd.DataFrame, key: str) -> dict[str, object]:
     """Compare one variant against the incumbent across every target.
 
     The paired test across targets is the headline rather than any single row:
@@ -552,13 +554,15 @@ def _paired_test(results: pd.DataFrame, key: str) -> dict[str, float | int]:
         key: Variant key to test.
 
     Returns:
-        Mean lift, mean paired difference, win count, and the Wilcoxon
-        signed-rank p-value against the incumbent.
+        Mean lift, mean paired difference, win count, the Wilcoxon signed-rank
+        p-value against the incumbent, and the power and clustering diagnostics
+        that say how much weight that p-value can carry.
     """
     differences = results[f"lift_{key}"] - results[f"lift_{INCUMBENT}"]
-    # The incumbent against itself is all zeros, which Wilcoxon cannot rank.
+    # The incumbent against itself is all zeros, which Wilcoxon cannot rank and
+    # for which effect size and clustering are both undefined.
     statistic, p_value = (float("nan"), float("nan")) if key == INCUMBENT else wilcoxon(differences)
-    return {
+    test: dict[str, object] = {
         "mean_lift": float(results[f"lift_{key}"].mean()),
         "median_lift": float(results[f"lift_{key}"].median()),
         "mean_r2_alone": float(results[f"r2_alone_{key}"].mean()),
@@ -567,6 +571,31 @@ def _paired_test(results: pd.DataFrame, key: str) -> dict[str, float | int]:
         "wilcoxon_statistic": float(statistic),
         "wilcoxon_p": float(p_value),
     }
+    if key != INCUMBENT:
+        test.update(diagnostics(differences, results["pillar"]))
+    return test
+
+
+def summarize_by_pillar(results: pd.DataFrame) -> pd.DataFrame:
+    """Mean lift per variant within each target pillar.
+
+    The aggregate across all 28 targets is a property of the basket as much as
+    of the variants, because 20 of those targets are QCEW location quotients.
+    This breakout is the primary reportable result; the aggregate is secondary
+    and must never travel without it.
+
+    Args:
+        results: Per-target output of `run_sweep`.
+
+    Returns:
+        One row per target pillar, target count first, then each variant's mean
+        lift within that pillar.
+    """
+    renames = {f"lift_{variant.key}": variant.key for variant in VARIANTS}
+    grouped = results.groupby("pillar")
+    frame = grouped[list(renames)].mean().rename(columns=renames)
+    frame.insert(0, "n_targets", grouped.size())
+    return frame.reset_index()
 
 
 def summarize(results: pd.DataFrame, tier_results: pd.DataFrame) -> dict[str, object]:
@@ -583,6 +612,13 @@ def summarize(results: pd.DataFrame, tier_results: pd.DataFrame) -> dict[str, ob
     """
     differences = results["best_embedding_lift"] - results["lift_length"]
     statistic, p_value = wilcoxon(differences)
+
+    # The shipping variant against the cut embedding, head to head. The mean
+    # lift table shows the typed block ahead, but the paired comparison is what
+    # decides whether that gap is real, and it is the comparison the findings
+    # file leans on when it argues the embedding is not worth its download.
+    typed_vs_embedding = results[f"lift_{TIER_INTERACTION_BASE}"] - results["lift_full"]
+    embedding_statistic, embedding_p = wilcoxon(typed_vs_embedding)
 
     tier_means = (
         tier_results.groupby(["variant", "tier"], observed=True)["lift"].mean().unstack()
@@ -610,7 +646,17 @@ def summarize(results: pd.DataFrame, tier_results: pd.DataFrame) -> dict[str, ob
         "best_embedding_lift": float(results["best_embedding_lift"].max()),
         "mean_lift_best_extracted": float(results["best_extracted_lift"].mean()),
         "n_extracted_wins": int(results["extracted_beats_length"].sum()),
+        "typed_vs_embedding": {
+            "typed_variant": TIER_INTERACTION_BASE,
+            "embedding_variant": "full",
+            "mean_difference": float(typed_vs_embedding.mean()),
+            "n_wins": int((typed_vs_embedding > 0).sum()),
+            "wilcoxon_statistic": float(embedding_statistic),
+            "wilcoxon_p": float(embedding_p),
+            **diagnostics(typed_vs_embedding, results["pillar"]),
+        },
         "variants": {variant.key: _paired_test(results, variant.key) for variant in VARIANTS},
+        "by_pillar": json.loads(summarize_by_pillar(results).to_json(orient="records")),
         "mean_lift_by_tier": json.loads(tier_means.to_json(orient="index")) if len(tier_means) else {},
     }
 
@@ -643,17 +689,35 @@ def main() -> None:
     logger.info("scoring %d non-Source-A targets against %d variants", len(targets), len(VARIANTS))
 
     results, tier_results = run_sweep(matrix, embeddings, tiers, targets)
+    pillar_results = summarize_by_pillar(results)
     stats = summarize(results, tier_results)
 
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
     results.to_csv(OUTPUT_CSV_PATH, index=False)
     tier_results.to_csv(OUTPUT_TIER_CSV_PATH, index=False)
+    pillar_results.to_csv(OUTPUT_PILLAR_CSV_PATH, index=False)
     OUTPUT_STATS_PATH.write_text(json.dumps(stats, indent=2))
 
     logger.info("wrote %s", OUTPUT_CSV_PATH)
     logger.info("wrote %s", OUTPUT_TIER_CSV_PATH)
+    logger.info("wrote %s", OUTPUT_PILLAR_CSV_PATH)
     logger.info("wrote %s", OUTPUT_STATS_PATH)
+
+    # Per-pillar first: the aggregate below is 71% QCEW and reads as a breadth
+    # claim the basket does not support unless its composition is visible.
+    logger.info("per-pillar mean lift, %s (the primary breakout):", TIER_INTERACTION_BASE)
+    for row in pillar_results.itertuples():
+        logger.info(
+            "  pillar %s  %2d targets  %-18s %+.5f | %-8s %+.5f",
+            row.pillar,
+            row.n_targets,
+            TIER_INTERACTION_BASE,
+            getattr(row, TIER_INTERACTION_BASE),
+            INCUMBENT,
+            getattr(row, INCUMBENT),
+        )
+
     for variant in VARIANTS:
         test = stats["variants"][variant.key]
         logger.info(
@@ -667,6 +731,33 @@ def main() -> None:
             stats["n_targets"],
             test["wilcoxon_p"],
         )
+        if variant.key == INCUMBENT:
+            continue
+        effect, clustering = test["effect"], test["clustering"]
+        logger.info(
+            "%-15s   dz=%.3f power=%.2f | 80%% power needs %d targets | "
+            "effective n %.1f of %d (ICC %.3f), pillar-blocked p=%.3f",
+            "",
+            effect["dz"],
+            effect["power"],
+            effect["n_for_80"],
+            clustering["n_effective"],
+            clustering["n_nominal"],
+            clustering["icc"],
+            clustering["cluster_mean_p"],
+        )
+
+    embedding = stats["typed_vs_embedding"]
+    logger.info(
+        "%s vs bge-m3 full: mean diff %+.5f, wins %d/%d, p=%.3f (dz=%.3f, power=%.2f) -- a rank tie",
+        TIER_INTERACTION_BASE,
+        embedding["mean_difference"],
+        embedding["n_wins"],
+        stats["n_targets"],
+        embedding["wilcoxon_p"],
+        embedding["effect"]["dz"],
+        embedding["effect"]["power"],
+    )
 
 
 if __name__ == "__main__":

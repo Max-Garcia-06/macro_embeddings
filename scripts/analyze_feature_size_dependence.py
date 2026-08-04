@@ -1,6 +1,6 @@
 """Measure how much of each pillar feature is explained by county size alone.
 
-The 41-test pillar-pair sweep (`analyze_pillar_pair_crossvalidation.py`) asks
+The pillar-pair sweep (`analyze_pillar_pair_crossvalidation.py`) asks
 whether two pillars agree with each other. This script asks a different and,
 under a rate-shaped downstream target, more decisive question: **is this feature
 anything other than county size?**
@@ -27,6 +27,9 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+from extract_source_a_features import VARIANT_COLUMNS
+from extract_source_a_section_features import section_feature_columns
 
 DATA_DIR: Path = Path(__file__).resolve().parent.parent / "data"
 OUTPUTS_DIR: Path = Path(__file__).resolve().parent.parent / "outputs"
@@ -69,6 +72,14 @@ def build_feature_panel() -> tuple[pd.DataFrame, dict[str, str]]:
     source_e = pd.read_parquet(DATA_DIR / "source_e_irs_soi.parquet")
     source_f = pd.read_parquet(DATA_DIR / "source_f_usda_typology.parquet")
 
+    # Source A ships the 29 typed columns, not the `content_length` scalar
+    # (source-a-findings.md 14.5). The scalar stays in the scan as the incumbent
+    # this table was originally built to judge, but the columns that actually
+    # reach a downstream model are the typed ones, and a rate-shaped target
+    # cares about their size loading rather than the retired scalar's.
+    a_columns = ["content_length", *VARIANT_COLUMNS["extracted_full"], *section_feature_columns()]
+    a_columns = [col for col in dict.fromkeys(a_columns) if col in source_a.columns]
+
     lq_columns = [col for col in source_b.columns if col.startswith("lq_emp_")]
     c_columns = ["gdp_velocity_pct", "unemployment_velocity"]
     d_columns = ["out_partner_hhi", "in_partner_hhi"]
@@ -91,7 +102,7 @@ def build_feature_panel() -> tuple[pd.DataFrame, dict[str, str]]:
         )
         .merge(source_c[["fips_code", *c_columns]], on="fips_code", how="outer")
         .merge(source_f[["fips_code", *f_columns]], on="fips_code", how="outer")
-        .merge(source_a[["fips_code", "content_length"]], on="fips_code", how="outer")
+        .merge(source_a[["fips_code", *a_columns]], on="fips_code", how="outer")
         .merge(source_b[["fips_code", *lq_columns]], on="fips_code", how="outer")
     )
 
@@ -102,7 +113,7 @@ def build_feature_panel() -> tuple[pd.DataFrame, dict[str, str]]:
         (panel["total_outbound_tons"] + panel["total_inbound_tons"]).clip(lower=1)
     )
 
-    pillar_of: dict[str, str] = {"content_length": "A"}
+    pillar_of: dict[str, str] = {col: "A" for col in a_columns}
     pillar_of.update({col: "B" for col in lq_columns})
     pillar_of.update({col: "C" for col in c_columns})
     pillar_of.update({col: "D" for col in ["log_tons", *d_columns]})

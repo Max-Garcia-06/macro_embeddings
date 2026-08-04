@@ -71,6 +71,7 @@ from analyze_pillar_matrix_signal import (
 )
 from analyze_source_a_representation import RESIDUAL_ALPHAS, build_non_a_targets
 from extract_source_a_features import VARIANT_COLUMNS
+from paired_power import diagnostics
 from pillar_matrix import build_matrix
 
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent
@@ -78,6 +79,7 @@ OUTPUTS_DIR: Path = REPO_ROOT / "outputs"
 ANALYSIS_DIR: Path = REPO_ROOT / "analysis-output" / "source-a"
 
 OUTPUT_CSV_PATH: Path = OUTPUTS_DIR / "source_a_marginal.csv"
+OUTPUT_PILLAR_CSV_PATH: Path = OUTPUTS_DIR / "source_a_marginal_by_pillar.csv"
 OUTPUT_STATS_PATH: Path = ANALYSIS_DIR / "source_a_marginal_stats.json"
 
 # Penalty grid for the crowded baseline. Wider than the pillar sweep's because
@@ -282,6 +284,37 @@ def run_sweep(
     )
 
 
+def summarize_by_pillar(results: pd.DataFrame) -> pd.DataFrame:
+    """Per-pillar lift and retention, which is the primary reportable result.
+
+    Retention varies by an order of magnitude across the basket: Source C's
+    velocity series keep most of their thin-baseline lift because no other
+    pillar measures them, while Source E's capital-to-wage ratio keeps almost
+    none because Source E measures it directly. Since 20 of the 28 targets are
+    QCEW location quotients -- the worst-retaining large block -- the single
+    aggregate figure is as much a property of the target mix as of Source A,
+    and publishing it without this table is the most likely way to mislead a
+    downstream reader.
+
+    Args:
+        results: Output of `run_sweep`.
+
+    Returns:
+        One row per target pillar with each variant's mean lift under both
+        baselines, plus the share of thin-baseline lift that survives.
+    """
+    grouped = results.groupby("pillar")
+    columns = {
+        f"{stage}_{key}": grouped[f"lift_{stage}_{key}"].mean()
+        for key in SCORED_VARIANTS
+        for stage in ("thin", "crowded")
+    }
+    frame = pd.DataFrame({"n_targets": grouped.size(), **columns})
+    for key in SCORED_VARIANTS:
+        frame[f"retained_{key}"] = frame[f"crowded_{key}"] / frame[f"thin_{key}"]
+    return frame.reset_index()
+
+
 def summarize(results: pd.DataFrame) -> dict[str, object]:
     """Collapse to the numbers that decide whether Source A survives fusion.
 
@@ -314,6 +347,7 @@ def summarize(results: pd.DataFrame) -> dict[str, object]:
             "n_positive_crowded": int((crowded > 0).sum()),
             "wilcoxon_p_crowded": float(p_value),
             "wilcoxon_statistic_crowded": float(statistic),
+            **diagnostics(crowded, results["pillar"]),
         }
 
     typed = results["lift_crowded_extracted_sections"]
@@ -324,7 +358,9 @@ def summarize(results: pd.DataFrame) -> dict[str, object]:
         "n_wins": int((typed > scalar).sum()),
         "wilcoxon_p": float(p_value),
         "wilcoxon_statistic": float(statistic),
+        **diagnostics(typed - scalar, results["pillar"]),
     }
+    summary["by_pillar"] = json.loads(summarize_by_pillar(results).to_json(orient="records"))
     return summary
 
 
@@ -345,14 +381,17 @@ def main() -> None:
     )
 
     results = run_sweep(matrix, blocks, targets)
+    pillar_results = summarize_by_pillar(results)
     stats = summarize(results)
 
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
     results.to_csv(OUTPUT_CSV_PATH, index=False)
+    pillar_results.to_csv(OUTPUT_PILLAR_CSV_PATH, index=False)
     OUTPUT_STATS_PATH.write_text(json.dumps(stats, indent=2))
 
     logger.info("wrote %s", OUTPUT_CSV_PATH)
+    logger.info("wrote %s", OUTPUT_PILLAR_CSV_PATH)
     logger.info("wrote %s", OUTPUT_STATS_PATH)
     logger.info(
         "baseline R2 %.3f (size+state) -> %.3f (plus B-F, %.0f columns)",
@@ -360,6 +399,21 @@ def main() -> None:
         stats["mean_r2_crowded_baseline"],
         stats["mean_baseline_columns"],
     )
+
+    # Per-pillar first. Retention swings from near-total to near-zero depending
+    # on whether another pillar already measures the target, so the aggregate
+    # underneath is meaningless without this.
+    logger.info("per-pillar, extracted_sections (the primary breakout):")
+    for row in pillar_results.itertuples():
+        logger.info(
+            "  pillar %s  %2d targets  thin %+.5f -> crowded %+.5f (%.0f%% retained)",
+            row.pillar,
+            row.n_targets,
+            row.thin_extracted_sections,
+            row.crowded_extracted_sections,
+            100 * row.retained_extracted_sections,
+        )
+
     for key in SCORED_VARIANTS:
         test = stats["variants"][key]
         logger.info(
@@ -372,14 +426,28 @@ def main() -> None:
             stats["n_targets"],
             test["wilcoxon_p_crowded"],
         )
+        logger.info(
+            "%-20s   dz=%.3f power=%.2f | effective n %.1f of %d (ICC %.3f), pillar-blocked p=%.3f",
+            "",
+            test["effect"]["dz"],
+            test["effect"]["power"],
+            test["clustering"]["n_effective"],
+            test["clustering"]["n_nominal"],
+            test["clustering"]["icc"],
+            test["clustering"]["cluster_mean_p"],
+        )
+
     versus = stats["typed_vs_scalar_crowded"]
     logger.info(
         "typed block beats content_length on %d/%d targets under the crowded baseline "
-        "(mean diff %+.5f, p=%.4f)",
+        "(mean diff %+.5f, p=%.4f) -- dz=%.3f, power %.2f, would need %d targets for 80%%",
         versus["n_wins"],
         stats["n_targets"],
         versus["mean_difference"],
         versus["wilcoxon_p"],
+        versus["effect"]["dz"],
+        versus["effect"]["power"],
+        versus["effect"]["n_for_80"],
     )
 
 

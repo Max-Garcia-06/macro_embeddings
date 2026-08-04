@@ -84,8 +84,10 @@ Verdict per pillar (detail in `analysis-output/E_macro_key_findings.ipynb`):
 
 - **A** — cut the embedding, keep the text source, and replace the single
   `content_length` scalar with 29 typed columns extracted from the lead and the
-  economy section. Those beat both the scalar and the cut embedding on mean
-  cross-pillar lift; see `source-a-findings.md` §13–§16. Done.
+  economy section. Those beat the scalar and tie the cut embedding on mean
+  cross-pillar lift, and they survive a baseline that already holds every other
+  pillar (+0.0010, p = 0.013, power 0.88); see `source-a-findings.md` §13–§17.
+  Done.
 - **B** — keep, change the feature: ship the 20-dim LQ vector, not a scalar.
 - **C** — keep, fix the metric: use `gdp_velocity_pct`, not dollar-denominated
   `gdp_velocity`. Done.
