@@ -9,6 +9,16 @@ status: active
 
 # Source A / D / F ↔ Source C — Three-Pillar Momentum Crossvalidation (Synthesis)
 
+> **The Source A arms are not reproducible as written (2026-08-03).** Both route
+> through the cut `bge-m3` embedding, and their scripts
+> (`analyze_source_a_source_c_correlation.py`,
+> `analyze_source_a_source_f_correlation.py`, `analyze_source_a_clusters.py`)
+> plus the two `.html` renders were deleted with it. The D and F arms are
+> unaffected and still run. Recover the deleted scripts from git history if the
+> cut is reversed; the Source A numbers survive here and in
+> `outputs/source_a_source_c_correlation_pairs.csv` /
+> `outputs/source_a_source_f_crossvalidation.csv`.
+
 > This repo is not bound to an Obsidian project knowledge base (no
 > `.claude/project-memory/registry.yaml`), so this stays a local markdown
 > artifact, not an Obsidian write-back.

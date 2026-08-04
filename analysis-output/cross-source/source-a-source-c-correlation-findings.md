@@ -9,6 +9,18 @@ status: active
 
 # Source A ↔ Source C — Embedding Similarity vs. Economic Momentum (Joint Findings)
 
+> **Not reproducible as written (2026-08-03).** Everything here tests the
+> `bge-m3` embedding, which was cut. `analyze_source_a_source_c_correlation.py`
+> and `analyze_source_a_clusters.py` were deleted along with it, as was
+> `outputs/source_a_source_c_correlation.html`. Script paths and the HTML below
+> are a record of what was run, not live paths — recover from git history
+> (`git log -- scripts/analyze_source_a_source_c_correlation.py`) if the cut is
+> reversed. The numbers survive in this document and in
+> `outputs/source_a_source_c_correlation_pairs.csv`; the input
+> `data/source_a_embeddings.parquet` is retained. Source A's current position
+> against the other pillars is `source-a-findings.md` §13–§17, on typed
+> features rather than on the embedding.
+
 > This repo is not bound to an Obsidian project knowledge base (no
 > `.claude/project-memory/registry.yaml`), so this stays a local markdown
 > artifact, not an Obsidian write-back.

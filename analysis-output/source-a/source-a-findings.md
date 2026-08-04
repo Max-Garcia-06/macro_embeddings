@@ -300,7 +300,7 @@ throwaway, fully described above.
 
 ## 5. Figure-by-Figure Interpretation
 
-Figures live in `analysis-output/figures/` (all regenerated 2026-07-10
+Figures live in `analysis-output/source-a/figures/` (all regenerated 2026-07-10
 against the adopted LLM-cleaned embeddings, full 3,144-county corpus /
 2,849-county clustering set — fully consistent with the numbers in §3).
 
@@ -484,17 +484,35 @@ the §3.6 permutation test).
   against the adopted LLM-cleaned `source_a_embeddings.parquet`.
 - Insights synthesis: `generate_source_a_insights.py` (produced the current
   `stats.json` and the three saved figures, rerun 2026-07-10).
-- Persisted statistics: `analysis-output/stats.json` (adopted-embeddings
+- **Five of those scripts were deleted 2026-08-03** as the last artifacts of
+  the cut embedding, on the same grounds as `reembed_source_a_llm.py` below:
+  `analyze_source_a_clusters.py`, `analyze_source_a_cluster_stability.py`,
+  `generate_source_a_insights.py`, `analyze_source_a_source_c_correlation.py`,
+  `analyze_source_a_source_f_correlation.py`. Nothing outside that set imported
+  them. Every reference to them in §3–§6, §10 and the reproduction block below
+  is a record of what was run, not a live path — recover from git history
+  (`git log -- scripts/analyze_source_a_clusters.py`) if the cut is ever
+  reversed. `visualize_source_a.py` and `analyze_source_a_similarity.py`
+  **stay**: sources B–F import `fetch_county_centroids`,
+  `CENTROIDS_CACHE_PATH` and `haversine_distance_matrix` from them, so they are
+  shared geospatial utilities rather than Source A EDA. Their numeric outputs
+  survive in `stats.json`, `figures/`, `outputs/source_a_similarity_pairs.csv`,
+  `outputs/source_a_cluster_summary.csv`,
+  `outputs/source_a_source_c_correlation_pairs.csv` and
+  `outputs/source_a_source_f_crossvalidation.csv`; only the five multi-megabyte
+  Plotly `.html` renders were removed with them.
+- Persisted statistics: `analysis-output/source-a/stats.json` (adopted-embeddings
   snapshot, n=3,144 / n=2,849, 2026-07-10).
-- Figures: `analysis-output/figures/figure-01-similarity-vs-distance.png`,
+- Figures: `analysis-output/source-a/figures/figure-01-similarity-vs-distance.png`,
   `figure-02-pc1-distribution.png`, `figure-03-cluster-coherence.png`,
   `figures/source-a-numeric-summary.md` (all regenerated 2026-07-10 against
   the adopted embeddings).
-- Companion artifacts: `source_a_map.html`, `source_a_similarity.html` /
-  `source_a_similarity_pairs.csv`, `source_a_clusters.html` /
-  `source_a_cluster_summary.csv` — all refreshed 2026-07-10, mutually
-  consistent with `stats.json`.
-- Notebook: `analysis-output/source_a_key_findings.ipynb` — presentation
+- Companion artifacts: `outputs/source_a_similarity_pairs.csv`,
+  `outputs/source_a_cluster_summary.csv` — refreshed 2026-07-10, mutually
+  consistent with `stats.json`. Their Plotly companions
+  (`source_a_map.html`, `source_a_similarity.html`, `source_a_clusters.html`)
+  were deleted 2026-08-03; the CSVs carry the numbers, the renders did not.
+- Notebook: `analysis-output/source-a/source_a_key_findings.ipynb` — presentation
   notebook covering the findings in §3-§6; loads the artifacts above rather
   than recomputing them, so re-run it after any future backfill or
   embedding-source change to keep it in sync. **Caveat**: several cells'
@@ -504,8 +522,8 @@ the §3.6 permutation test).
   `.ipynb`'s markdown cells for numeric literals before trusting them
   post-rerun).
 - Ingestion log: `ingest_run.log` (untracked).
-- Reproduction (coverage backfill): `uv run --env-file .env backfill_virginia_cities.py`,
-  then `uv run --env-file .env backfill_remaining_19.py`.
+- Reproduction (coverage backfill): `uv run --env-file .env python scripts/backfill_virginia_cities.py`,
+  then `uv run --env-file .env python scripts/backfill_remaining_19.py`.
 - Reproduction (LLM adoption): **no longer runnable as written (2026-07-27).**
   `reembed_source_a_llm.py` and `compare_llm_cleaning_full_corpus.py` were
   deleted from `scripts/` once the embedding step itself was retired (see
@@ -517,11 +535,14 @@ the §3.6 permutation test).
   The adopted output survives as `data/source_a_embeddings.parquet`, with
   the superseded regex version at `data/source_a_embeddings_regex_baseline.parquet`.
 - Reproduction (EDA/insights, run after either of the above):
-  `uv run generate_source_a_insights.py`, `uv run visualize_source_a.py`,
-  `uv run analyze_source_a_similarity.py`,
-  `uv run analyze_source_a_clusters.py`,
-  `uv run analyze_source_a_cluster_stability.py`, then
-  `uv run jupyter nbconvert --to notebook --execute --inplace analysis-output/source_a_key_findings.ipynb`
+  **partly unrunnable as written (2026-08-03)** — three of the five scripts
+  below were deleted with the embedding, see the EDA bullet above.
+  `uv run python scripts/generate_source_a_insights.py` *(deleted)*,
+  `uv run python scripts/visualize_source_a.py`,
+  `uv run python scripts/analyze_source_a_similarity.py`,
+  `uv run python scripts/analyze_source_a_clusters.py` *(deleted)*,
+  `uv run python scripts/analyze_source_a_cluster_stability.py` *(deleted)*, then
+  `uv run jupyter nbconvert --to notebook --execute --inplace analysis-output/source-a/source_a_key_findings.ipynb`
   (plus a manual pass over its markdown cells, see caveat above). All
   seeded (`RANDOM_SEED=42` throughout; stability seeds 42/7/123/2024/99).
 

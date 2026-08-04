@@ -42,7 +42,7 @@ Per-county failures (article not found, empty intro) are logged and skipped rath
 
 This pipeline previously embedded each intro with `BAAI/bge-m3` (1024-dim) and wrote `data/source_a_embeddings.parquet`. That step was cut: the embedding correlates with economic distance at |r| = 0.041 (Mantel, n = 2,786) and k-means over it peaks at a silhouette of 0.028, meaning no recoverable cluster structure. See `analysis-output/E_macro_key_findings.ipynb` §2.
 
-`data/source_a_embeddings.parquet` is **retained** and still backs Source A's own EDA scripts (`analyze_source_a_*.py`, `visualize_source_a.py`); it is simply no longer regenerated. The new ingestion writes to a separate path so a re-run cannot clobber it.
+`data/source_a_embeddings.parquet` is **retained** and is no longer regenerated. The new ingestion writes to a separate path so a re-run cannot clobber it. Its one live consumer is `analyze_source_a_representation.py`, which scores the embedding head-to-head against the typed features that replaced it (`analysis-output/source-a/source-a-findings.md` §13–§14). The embedding-era EDA scripts that also read it — `analyze_source_a_clusters.py`, `analyze_source_a_cluster_stability.py`, `generate_source_a_insights.py`, and the two `analyze_source_a_source_{c,f}_correlation.py` crossvalidations — were deleted 2026-08-03; recover them from git history if the cut is reversed. `visualize_source_a.py` and `analyze_source_a_similarity.py` stay, but as shared geospatial utilities: sources B–F import `fetch_county_centroids` and `haversine_distance_matrix` from them.
 
 ### Output
 
