@@ -355,6 +355,9 @@ This is the typed-vs-scalar comparison that is powered at 0.39 and would need 91
 targets. **A single answer here settles what 91 targets could not** — which is
 the strongest argument for asking the question rather than running Plan 3.
 
+`docs/plans/downstream_target_question.md` is the question written out for the
+downstream team, with what each answer changes and what to say if they push back.
+
 ### 5. Who consumes +0.0010, and does the target basket match their targets?
 
 Retention swings from 0.2% (Source E) to 69% (Source C) depending on the target.

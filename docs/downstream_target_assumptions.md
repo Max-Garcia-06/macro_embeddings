@@ -287,3 +287,6 @@ Re-derive this document if the real target is:
   could.
 - `docs/plans/source_a_next_steps.md` — the five plans for the two items §17.3
   leaves open, and the questions that select among them.
+- `docs/plans/downstream_target_question.md` — **the rate-versus-count question
+  written out for the downstream team**, with what each answer changes across all
+  six pillars. This document is the placeholder; that one is how to retire it.
