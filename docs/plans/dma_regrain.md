@@ -2,7 +2,7 @@
 
 ## Status
 
-**Nothing built. This is a plan, written 2026-08-05.**
+**Nothing built. This is a plan, written 2026-08-05, revised the same day.**
 
 The downstream consumer joins county features on **DMA**, not on `fips_code`
 (Comcast FreeWheel Revenue Science; asserted by Max, pending written
@@ -13,9 +13,54 @@ confirmation, same provenance as the rate answer in
 of whole counties, so the mapping is clean and many-to-one — roughly 15 counties
 per DMA. Nothing in this repo is DMA-aware.
 
-This document states what that costs, what it does not cost, and what would have
-to be built. It does not re-derive `docs/downstream_target.md`; the rate answer
-is unaffected, since row grain and geo key are separate properties.
+**Revision: the impression row almost certainly carries ZIP** (Max, high
+confidence; lat/long possible but unconfirmed). That is Phase 0.1 answered in the
+favourable direction, and it changes what this plan recommends. Two facts were
+being conflated:
+
+- *They join on DMA* — a **choice** about their feature store.
+- *The row carries ZIP* — a **capability**, which means county is derivable and
+  the choice is reversible.
+
+So the primary path is no longer "aggregate `E_macro` to DMA." It is **make the
+case for a county-grain join**, with DMA aggregation retained as the fallback if
+that case loses. The argument for it is in the next section and it is a
+substantive one, not a preference.
+
+This document states what the DMA grain costs, what it does not cost, and what
+would have to be built under either outcome. It does not re-derive
+`docs/downstream_target.md`; the rate answer is unaffected, since row grain and
+geo key are separate properties.
+
+---
+
+## The argument for a county-grain join
+
+The fixed-effect objection in problem 1 below is not a fixed property of the
+project. It is a function of **units per parameter**, and it swings hard with
+grain:
+
+| Grain | Units | Impressions per unit | A unit fixed effect is |
+|---|---|---|---|
+| **DMA** | 210 | millions each | Cheap and precise. `E_macro` is exactly collinear with it and adds zero. |
+| **County** | 3,143 | fat head, **long thin tail** | Precise for large counties, poorly estimated for most of them. |
+
+The median US county holds roughly 26,000 people, and its impression volume is
+correspondingly small. A 3,143-level fixed effect is well estimated for Los
+Angeles County and badly estimated across the several hundred counties carrying
+thin traffic — which is precisely the cold-start and partial-pooling regime where
+economic features are *not* redundant with the consumer's own history.
+
+The case to put to the team:
+
+> At DMA grain your own data already tells you everything these features could —
+> a DMA dummy captures it and costs nothing. At county grain it does not, because
+> most counties are thin, and that is where economic features substitute for
+> history you do not have.
+
+This is the strongest argument the project has, and it only exists if the join
+can happen at county grain. **Establishing that it can is worth more than any
+analysis in Phase 2.**
 
 ---
 
@@ -141,20 +186,34 @@ every effect size in `analysis-output/`. All were computed at county grain.
 
 **Cost: zero. Blocking.**
 
-### 0.1 Does the impression row carry sub-DMA geo?
+### 0.1 Does the impression row carry sub-DMA geo? — **probably yes: ZIP**
 
 "Joins on DMA" has two readings and they imply very different work:
 
-- **Case 1 — the feature store is keyed on DMA.** Everything in this document
-  applies.
+- **Case 1 — the feature store is keyed on DMA**, and nothing finer is available.
+  Everything in this document applies.
 - **Case 2 — DMA is the *targeting and reporting* grain, but the impression row
-  carries finer geo** (IP → ZIP or lat/long is standard in ad tech, and county is
-  derivable from either). Then `E_macro` ships at county grain unchanged, and
-  only the reporting rolls up.
+  carries finer geo.** IP → ZIP is standard in ad tech and county is derivable
+  from it. `E_macro` then ships at county grain unchanged and only the reporting
+  rolls up.
 
-Case 2 is far better and is common enough that it must be ruled out before a day
-is spent. **Ask: does the impression row carry ZIP, postal code, or lat/long, and
-can county-level features be joined even though targeting is DMA-level?**
+**Max is highly confident the row carries ZIP; lat/long is possible but
+unconfirmed.** That puts this in Case 2, so the remaining question is not
+capability but willingness — whether the consuming team will join at county grain
+when their targeting is DMA-level. The argument for it is at the top of this
+document.
+
+Still to confirm, and all cheap:
+
+- **Is ZIP on the row at serving time, or only in post-hoc reporting?** Only the
+  former supports a county-grain feature join.
+- **Does lat/long exist, and how is it sourced?** Point-in-polygon against TIGER
+  county shapefiles is exact and removes the crosswalk entirely. But IP-derived
+  lat/long is frequently a ZIP or city centroid, in which case it carries no real
+  precision over the ZIP and should not be treated as better. Ask how it is
+  derived before relying on it.
+- **Is there an appetite to join at a finer grain than targeting?** This is the
+  actual decision, and it is theirs.
 
 ### 0.2 Request their DMA crosswalk
 
@@ -176,9 +235,43 @@ per DMA, which is exactly the cold-start regime where `E_macro` wins.
 
 ---
 
-## Phase 1 — Aggregation layer
+## Phase 1A — ZIP→county join specification (the primary path)
 
-**Gate: Phase 0 returns Case 1. Cost: 1–2 days.**
+**Gate: Phase 0 confirms ZIP is available at serving time. Cost: 0.5 day.**
+
+This is not an aggregation. `E_macro` stays keyed on `fips_code` and unchanged;
+what gets built is the mapping the consumer needs to attach it to a ZIP-keyed
+row.
+
+- **Crosswalk source: HUD-USPS ZIP Crosswalk Files.** Free, refreshed quarterly,
+  gives ZIP → county FIPS with allocation ratios (`res_ratio`, `bus_ratio`,
+  `oth_ratio`, `tot_ratio`) derived from address counts. Registration is needed
+  for the API; a plain file download is also published. Fallback with no
+  registration: the Census ZCTA-to-county relationship file.
+- **ZIPs are not areas.** They are USPS delivery routes; ZCTAs are the areal
+  approximation. Any document describing the join must say which is in use.
+- **Assignment rule: dominant county by `res_ratio`,** carrying a
+  `zip_county_confidence` column equal to that ratio so the consumer can see
+  which ZIPs are ambiguous. Note what this is *not*: no feature is split,
+  averaged or re-derived, because county features are being **attached to rows**
+  rather than rebuilt from parts. The whole class of aggregation error in
+  Phase 1B does not arise here.
+- **Measure the ambiguity, do not quote it.** The share of ZIPs spanning more
+  than one county — and the share of *addresses* affected, which is much smaller
+  — is computable directly from the crosswalk. Report both.
+- **If lat/long turns out to be genuine** (not an IP-derived centroid),
+  point-in-polygon against TIGER county boundaries supersedes all of the above
+  and is exact.
+
+Deliverable: `data/zip_county_crosswalk.parquet` plus a short join note for the
+handoff. No change to any pillar.
+
+---
+
+## Phase 1B — DMA aggregation layer (the fallback)
+
+**Gate: Phase 0 returns Case 1, or the county-grain case is rejected.
+Cost: 1–2 days.**
 
 - `scripts/dma_crosswalk.py` — county→DMA mapping, cached parquet, coverage
   audit against all 3,143 counties, explicit handling of unassigned counties.
@@ -200,7 +293,8 @@ a hand-computed example per pillar.
 
 ## Phase 2 — Re-measure at DMA grain
 
-**Gate: Phase 1. Cost: 0.5–1 day, mostly re-runs.**
+**Gate: Phase 1B. Skipped entirely if the county-grain join is accepted — every
+existing figure already holds at county grain. Cost: 0.5–1 day, mostly re-runs.**
 
 Re-run at n = 210, and report against the county figures rather than replacing
 them:
@@ -225,36 +319,47 @@ currently unknown in both directions.
 **The phase that decides whether the project has a value proposition.
 Cost: 2–4 days. Cannot be fully run in-repo.**
 
-The bar is no longer "does `E_macro` correlate with pillar features." It is:
+**This phase survives at either grain**, which is why it is the one that matters
+regardless of how the join question resolves. The bar is no longer "does
+`E_macro` correlate with pillar features." It is:
 
-> Does `E_macro` beat `target ~ C(dma)` **on held-out DMAs**?
+> Does `E_macro` beat `target ~ C(geo_unit)` **on held-out geo units**?
 
 Design:
 
-- Grouped CV **by DMA**, 5 folds, 42 test DMAs per fold. Held-out-DMA evaluation
-  is the primary test, not a robustness check — it is the only setting where a
-  fixed effect cannot compete, because the test DMA's effect is unestimable.
-- Compare three models: DMA dummies; `E_macro` features; both. The interesting
-  quantity is `E_macro`'s lift on *unseen* DMAs, plus whether the combined model
+- Grouped CV **by geo unit**, 5 folds. At DMA grain that is 42 test DMAs per
+  fold; at county grain ~629 test counties. Held-out-unit evaluation is the
+  primary test, not a robustness check — it is the only setting where a fixed
+  effect cannot compete, because the test unit's effect is unestimable.
+- Compare three models: unit dummies; `E_macro` features; both. The interesting
+  quantity is `E_macro`'s lift on *unseen* units, plus whether the combined model
   beats dummies alone on seen ones.
-- Feature count must come down to roughly 15–25 first, or the comparison is a
-  regularization contest rather than an information one. See Phase 4.
-- Test partial pooling explicitly: `E_macro`-derived DMA similarity as a
-  shrinkage prior on the fixed effects, scored against shrinkage toward the grand
-  mean.
+- **Stratify the county-grain version by volume.** The whole argument for county
+  grain is that thin units are where fixed effects fail, so the result must be
+  reported by impression-volume decile rather than pooled. A flat average would
+  hide exactly the effect being claimed.
+- Test partial pooling explicitly: `E_macro`-derived similarity as a shrinkage
+  prior on the unit effects, scored against shrinkage toward the grand mean.
+- At DMA grain, feature count must come down to roughly 15–25 first or the
+  comparison is a regularization contest rather than an information one
+  (Phase 4). At county grain 118 features against 3,143 units is workable and
+  the reduction is optional.
 
 **This needs a target.** Options, in order of preference: a real label from the
-consuming team even at 210 rows and one period; a public DMA-level proxy
-(broadband adoption aggregates cleanly to DMA); or nothing, in which case
-Phase 3 cannot run and that fact should be reported rather than papered over.
+consuming team, even one period and even partial coverage; a public proxy
+(broadband adoption aggregates cleanly to either grain); or nothing, in which
+case Phase 3 cannot run and that fact should be reported rather than papered
+over.
 
 ---
 
 ## Phase 4 — Feature reduction
 
-**Gate: Phase 2. Cost: 1 day.**
+**Gate: Phase 2. Cost: 1 day. Required only at DMA grain.**
 
-118 features against 210 rows will not survive. Reduce before Phase 3, not after:
+118 features against 210 rows will not survive. Against 3,143 counties it is
+fine, so this phase is a consequence of losing the grain argument rather than a
+standing item. Reduce before Phase 3, not after:
 
 - Drop what Phase 2 shows is size-in-disguise at *DMA* grain.
 - Collapse Source B's 20 LQs — plausibly to a handful of components or to the
@@ -268,16 +373,25 @@ Phase 3 cannot run and that fact should be reported rather than papered over.
 
 ## Decision points
 
-1. **Case 1 or Case 2** (Phase 0.1). Case 2 makes Phases 1–2 unnecessary and
-   leaves only Phase 3's benchmark question, which applies at any grain.
-2. **Does a DMA-level effect already exist in their model** (Phase 0.3). If yes,
-   Phase 3 is the whole project and Phases 1–2 are prerequisites to it. If no,
-   `E_macro` has a much easier road and cold-start is the pitch.
-3. **Is a target obtainable** — unchanged from `source_a_next_steps.md`
+1. ~~**Case 1 or Case 2**~~ **(Phase 0.1) — probably Case 2.** The row carries
+   ZIP, so county is derivable and the DMA join is a choice rather than a
+   constraint. What remains is whether the consuming team will *accept* a
+   county-grain join, which is a conversation, not an analysis.
+2. **Will they join at county grain?** The live decision, and the highest-value
+   one in the project. Winning it skips Phases 1B, 2 and 4 entirely and preserves
+   every measured figure in `analysis-output/`. Losing it costs 3–4 days of
+   re-grain work and materially weakens the pitch. The argument to make is at the
+   top of this document.
+3. **Does a unit-level effect already exist in their model** (Phase 0.3). If yes,
+   Phase 3 is the whole project. If no, `E_macro` has a much easier road and
+   cold-start is the pitch.
+4. **Is a target obtainable** — unchanged from `source_a_next_steps.md`
    question 2, but now decisive rather than merely valuable. Without one, Phase 3
-   is unrunnable and the fixed-effect objection stands unanswered.
-4. **Ship both grains, or DMA only.** Recommend both; the marginal cost after
-   Phase 1 is near zero.
+   is unrunnable and the fixed-effect objection stands unanswered at either
+   grain.
+5. **Ship both grains, or one.** Recommend both if Phase 1B is ever built; the
+   marginal cost once the aggregation layer exists is near zero, and it hedges
+   against a future consumer at a different grain.
 
 ---
 
@@ -298,6 +412,13 @@ Added on the same basis as the reporting rules in `source-a-findings.md` §14.5.
   argument.
 - **Do not claim the 210-DMA table has the statistical properties of the
   3,143-county table.** Critical |r| moves 0.035 → 0.136.
+- **Do not state that the consumer *cannot* join at county grain.** The row
+  carries ZIP, so they can. What is true is that they currently join at DMA, and
+  that is a choice they have not yet been asked to revisit. The two must not be
+  reported as the same thing.
+- **Do not report a pooled county-grain Phase 3 result.** The claim being tested
+  is that fixed effects fail on thin units, so the result must be stratified by
+  impression volume. A pooled average hides the effect in either direction.
 
 ---
 
@@ -308,11 +429,16 @@ identical places in different economic climates — "a suburb outside New York
 versus one outside Cleveland." That example survives: those are different DMAs.
 
 What does not survive is discrimination *within* a market. At DMA grain,
-Manhattan and rural Sullivan County share one vector. If the consumer's decisions
-are made at DMA grain, that is not a loss — the features are exactly as fine as
-the decisions they inform. If the consumer ever wants sub-DMA targeting, the
-county parquets are still there, which is the strongest practical argument for
-shipping both grains.
+Manhattan and rural Sullivan County share one vector — both sit in the New York
+DMA, which spans roughly 30 counties across four states. If the consumer's
+decisions are made at DMA grain, that is not a loss: the features are exactly as
+fine as the decisions they inform.
+
+But this is also the second argument for the county-grain join, alongside the
+fixed-effect one. A feature layer built to distinguish physically identical
+places in different economic climates should not be delivered at a grain that
+cannot separate Manhattan from Sullivan County. The premise and the delivery
+grain should match, and at county grain they do.
 
 ---
 

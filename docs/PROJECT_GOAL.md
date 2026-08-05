@@ -155,9 +155,16 @@ to −0.057 once size is controlled.
    `E_macro` adds zero over `C(dma)` — and cross-sectional association is what
    every test in this repo measures. The value proposition has to move to cold
    start, partial pooling, temporal transfer and interpretability, none of which
-   has been tested here. **Nothing built yet; the plan is
-   `docs/plans/dma_regrain.md`, and its Phase 0 is three questions that come
-   before any code.**
+   has been tested here.
+
+   **But the impression row almost certainly carries ZIP**, so county is
+   derivable and the DMA join is a *choice* rather than a constraint. That
+   reframes the work: the primary path is making the case for a county-grain
+   join, not aggregating to DMA. The case is that the fixed-effect objection
+   scales with units per parameter — fatal at 210 DMAs with millions of rows
+   each, weak at 3,143 counties where most units are thin, which is exactly where
+   economic features substitute for history the consumer does not have.
+   **Nothing built yet; the plan is `docs/plans/dma_regrain.md`.**
 2. **Does B ↔ E get privileged weight?** It is roughly five times stronger than
    anything else surviving the size control.
 3. **Confirm the Source A *embedding* cut.** The pillar itself is not cut — it
