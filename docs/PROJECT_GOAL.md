@@ -64,6 +64,37 @@ not one source echoing itself.
 Update cadence spans continuous (A) to decennial (F), which is why ingestion is
 offline/asynchronous batch — downstream consumers are isolated from API bottlenecks.
 
+## Operating constraints
+
+Recorded 2026-08-05 because they explain why the validation looks the way it
+does, and because anyone picking this repo up cold will otherwise propose work
+that cannot be done.
+
+- **No access to company data or internal channels.** The project was scoped to
+  **public and open-source data only**, deliberately and from the start. That is
+  why every pillar is a federal or public source and why there is no downstream
+  label anywhere in the repo.
+- **A real downstream label is therefore unobtainable at this stage.** This is a
+  structural fact, not an open question. It closes
+  `docs/plans/source_a_next_steps.md` question 2 with "no," which per that
+  document makes an **external public target mandatory rather than optional** —
+  it is the only non-circular evidence this project can ever produce.
+- **Requests for company data are policy asks**, not small favors, including a
+  single sample row. Plan around not getting one.
+- **Communication with the commissioning side is in person only**, four days a
+  week, with no async channel. Questions must be batched into a written
+  one-pager rather than asked one at a time; there is no "email the downstream
+  team" path. Everything routes through one person.
+- **No deadline and no budget cap in days.** The binding constraint is calendar
+  weeks of availability, not permission. Leaving work unfinished is acceptable.
+
+Two consequences worth stating plainly. Any claim that depends on the consuming
+team's data — the fixed-effect comparison in `docs/plans/dma_regrain.md` Phase 3
+above all — can only be answered **by analogy against a public proxy**, and the
+go/no-go artifact must disclose that rather than imply a direct test. And every
+deliverable has to stand on its own evidence without its author present to
+explain it.
+
 ## Current stage: validation, not modeling
 
 The pre-scoping spec scopes this phase to documenting boundaries and flagging risks,
@@ -165,14 +196,72 @@ to −0.057 once size is controlled.
    each, weak at 3,143 counties where most units are thin, which is exactly where
    economic features substitute for history the consumer does not have.
    **Nothing built yet; the plan is `docs/plans/dma_regrain.md`.**
+
+   The ZIP claim is recollection, not verification, and under the access
+   constraints above it **cannot be verified from inside this repo**. It is
+   recorded as an assumption to be put to the commissioning side, and the
+   county-grain case is a *recommendation this project makes* rather than a
+   decision it implements. Both grains are buildable here regardless — the
+   ZIP→county crosswalk (HUD-USPS) and the county→DMA crosswalk are both public.
 2. **Does B ↔ E get privileged weight?** It is roughly five times stronger than
    anything else surviving the size control.
-3. **Confirm the Source A *embedding* cut.** The pillar itself is not cut — it
-   ships 29 typed columns. Only the `bge-m3` step is gone. Reinstating it is a
-   `git revert`; re-running costs a 2.2GB model download plus CPU inference over
-   3,144 articles. The case against reinstating is no longer that the embedding
-   loses: head to head against the typed block it is a statistical tie (13/28,
-   p = 0.76). It is that a tie does not justify the download.
+3. ~~**Confirm the Source A *embedding* cut.**~~ **Closed 2026-08-05: the cut is
+   final.** The decision was ours to make and it is made. The pillar was never
+   cut — it ships 29 typed columns; only the `bge-m3` step is gone. Head to head
+   against the typed block the embedding is a statistical tie (13/28, p = 0.76),
+   and a tie does not justify a 2.2GB model download plus CPU inference over
+   3,144 articles. `data/source_a_embeddings.parquet` is retained and no longer
+   regenerated, so reinstating remains a `git revert` if anyone ever revisits it.
+
+## Stage outcome: this ends in a go/no-go
+
+Recorded 2026-08-05. The commissioning side expects a **go/no-go decision on
+whether `E_macro` is worth continuing**, which fixes what the deliverable is:
+
+**A validated claim, not a pile of documented columns.** That distinction was
+open — `docs/plans/source_a_next_steps.md` question 3 asks it directly — and it
+is now answered. "Here are 29 documented columns, downstream decides" would be
+finished today; a go/no-go is not, because the repo cannot yet say whether the
+pillars are useful to anyone.
+
+Two things stand between here and an honest verdict:
+
+1. **Every test in this repo is pillar-versus-pillar**, which measures coherence
+   and redundancy rather than usefulness. Usefulness needs a target outside the
+   six pillars.
+2. **The fixed-effect objection is unanswered.** If the consumer joins at DMA
+   grain, a 210-level dummy supplies everything `E_macro` could, and no
+   cross-sectional correlation in `analysis-output/` is evidence against that.
+
+Walking into the go/no-go with either unresolved means the defensible
+recommendation is "no." **The external-target benchmark is therefore the
+deliverable**, not a side quest — see `docs/plans/dma_regrain.md` Phase 3 and
+`docs/plans/source_a_next_steps.md` Plan 4.
+
+### The fusion step is deferred, deliberately
+
+Decided 2026-08-05, reversing this document's earlier framing of fusion as the
+next build. Two reasons:
+
+- **Fusion does not decide the go/no-go.** Evidence does. Spending the remaining
+  weeks on assembly rather than validation arrives at the decision point with the
+  same unanswerable question.
+- **Fusing now bakes in a grain that is not settled.** This is the same trap the
+  size confound posed, one level up.
+
+It also costs less to defer than the framing implies: `pillar_matrix.build_matrix()`
+already joins all six pillars into a 3,144 × 124 matrix with per-pillar blocks.
+What remains of "fusion" is packaging — freeze the schema, settle the imputation
+policy, choose a serving format.
+
+### Sibling tiers: one exists, one does not
+
+`E_local` is under construction by another contributor at **H3 res-8**.
+`E_census` does not exist. So the three-tier stack described above is currently
+one tier at county grain, one at hex grain, and one missing — served side by side
+by design, at grains that have never been reconciled, with nobody owning the
+reconciliation. Flagged here rather than solved; it is outside this repo's scope
+but it is a real gap and the go/no-go should name it.
 
 ## Next work, in order
 

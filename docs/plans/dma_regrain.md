@@ -186,6 +186,19 @@ every effect size in `analysis-output/`. All were computed at county grain.
 
 **Cost: zero. Blocking.**
 
+> **Revised 2026-08-05 for the access constraints.** There is no channel to the
+> downstream team — communication is in person with one person, four days a week,
+> with no async path (`docs/PROJECT_GOAL.md`, "Operating constraints"). So none
+> of the questions below are emails. They are items on a **written one-pager**
+> carried into a scheduled conversation, and they should be batched into a single
+> pass rather than asked one at a time.
+>
+> Two consequences. **A sample impression row is a policy ask, not a favor** —
+> the project exists because it needs no company data, and requesting some cuts
+> against that. Ask, but plan for "no." And **none of Phase 0 blocks Phase 1A or
+> Phase 3**, both of which run entirely on public data. Nothing here should stall
+> waiting for an answer.
+
 ### 0.1 Does the impression row carry sub-DMA geo? — **probably yes: ZIP**
 
 "Joins on DMA" has two readings and they imply very different work:
@@ -345,11 +358,20 @@ Design:
   (Phase 4). At county grain 118 features against 3,143 units is workable and
   the reduction is optional.
 
-**This needs a target.** Options, in order of preference: a real label from the
-consuming team, even one period and even partial coverage; a public proxy
-(broadband adoption aggregates cleanly to either grain); or nothing, in which
-case Phase 3 cannot run and that fact should be reported rather than papered
-over.
+**This needs a target, and it will be a public one.** A real label from the
+consuming team is unobtainable by design, not merely unavailable
+(`docs/PROJECT_GOAL.md`, "Operating constraints"), so the choice is not between a
+label and a proxy. It is a public proxy or nothing.
+
+Recommended: **ACS table B28002**, household presence and type of internet
+subscription — county-level, free via the Census API, and the closest public
+analogue to a FreeWheel-adjacent outcome. It aggregates cleanly to either grain.
+
+**Disclose the limitation in the go/no-go rather than burying it.** The
+fixed-effect comparison this phase runs is against a public proxy, so it answers
+the objection *by analogy*, not directly. A confident answer to a slightly wrong
+question is the specific failure mode here, and it should be named in the writeup
+the same way `source-a-findings.md` §14.5 names its forbidden phrasings.
 
 ---
 

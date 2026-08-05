@@ -358,12 +358,23 @@ documentation problem rather than a research problem, and Plan 2 has closed it.
 Spending Plan 3's effort to move a number that gates no decision is the most
 likely way to waste the next week.
 
-### 2. Is there any path to a real downstream label, at any horizon?
+### 2. Is there any path to a real downstream label? — **ANSWERED: no**
 
-- **Yes, with meaningful probability** → every in-repo test is provisional.
-  Minimize spend now (Plan 1) and hold budget for the real thing.
-- **No, never** → Plan 4 is not optional. A public external proxy becomes the
-  only non-circular evidence this project will ever produce.
+Answered 2026-08-05 by structure rather than by asking. This project has **no
+access to company data**, and was scoped to public and open-source sources
+precisely for that reason (`docs/PROJECT_GOAL.md`, "Operating constraints"). A
+downstream label is not merely unavailable now — it is unavailable by design.
+
+- ~~**Yes, with meaningful probability**~~ → would have made every in-repo test
+  provisional and argued for minimizing spend.
+- **No, never** ← **this one.** **Plan 4 is not optional.** A public external
+  proxy is the only non-circular evidence this project will ever produce, and
+  with the stage ending in a go/no-go it is the deliverable rather than an
+  enhancement.
+
+This also settles **question 3** below: the deliverable is a validated claim, so
+"certification against pillar features is circular by construction, Plan 4 is the
+minimum" is the operative branch.
 
 ### 3. Is the deliverable a feature set or a validated claim?
 
@@ -406,6 +417,15 @@ it — now enforced by the reporting rule in §14.5 and the per-pillar CSVs.
 ---
 
 ## Recommendation
+
+**Superseded 2026-08-05 — the recommendation is now Plan 4.** Question 2 returned
+"no label, ever," by structure rather than by asking, so the conditional below
+resolved to its second branch: **Plan 4, with household internet or broadband
+adoption as the external target.** Question 3 resolved the same way — the stage
+ends in a go/no-go, so the deliverable is a validated claim, and certification
+against pillar features is circular by construction.
+
+The original wording, retained because the reasoning still holds:
 
 Plan 2 is done. Question 4 is answered. **Plan 1** — declare done, ship the 29
 columns — unless question 2 returns "no label, ever," in which case Plan 4 with
