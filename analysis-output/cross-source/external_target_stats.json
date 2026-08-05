@@ -1,0 +1,143 @@
+{
+  "n_targets": 3,
+  "n_folds": 5,
+  "fold_strategy": "GroupKFold on state_fips (spatially blocked)",
+  "random_seed": 42,
+  "mean_r2_size_emacro": 0.6068376239919023,
+  "mean_lift_over_size": 0.19795376557283853,
+  "mean_lift_over_size_ablated": 0.1610411490198016,
+  "mean_r2_emacro_alone": 0.6031591678098186,
+  "targets_with_positive_lift": 3,
+  "by_target": {
+    "broadband_rate": {
+      "r2_size": 0.4205835180446834,
+      "r2_size_emacro": 0.5112664626687244,
+      "lift_over_size": 0.09068294462404103,
+      "lift_over_size_ablated": 0.09068294462404103,
+      "ablated_columns": ""
+    },
+    "median_household_income": {
+      "r2_size": 0.5789493347693475,
+      "r2_size_emacro": 0.8259062491221306,
+      "lift_over_size": 0.2469569143527831,
+      "lift_over_size_ablated": 0.153653483602753,
+      "ablated_columns": "wage_per_return_thousands"
+    },
+    "median_age": {
+      "r2_size": 0.22711872244316056,
+      "r2_size_emacro": 0.48334016018485204,
+      "lift_over_size": 0.2562214377416915,
+      "lift_over_size_ablated": 0.23878701883261078,
+      "ablated_columns": "retirement_destination"
+    }
+  },
+  "rmse_reduction_smallest_decile": 0.18900979624972017,
+  "rmse_reduction_largest_decile": 0.28180802935285,
+  "by_training_size": [
+    {
+      "target": "broadband_rate",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.05787558136921632,
+      "sd_lift_over_size": 0.07326847887916302
+    },
+    {
+      "target": "broadband_rate",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.01530797400245062,
+      "sd_lift_over_size": 0.05096591661402276
+    },
+    {
+      "target": "broadband_rate",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.05000475611351918,
+      "sd_lift_over_size": 0.037571856531184694
+    },
+    {
+      "target": "broadband_rate",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.07351818992540624,
+      "sd_lift_over_size": 0.029151786060890975
+    },
+    {
+      "target": "broadband_rate",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.09613192252737364,
+      "sd_lift_over_size": 0.01149999957576022
+    },
+    {
+      "target": "median_household_income",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.04838928345459779,
+      "sd_lift_over_size": 0.21539599274120907
+    },
+    {
+      "target": "median_household_income",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17771223990648316,
+      "sd_lift_over_size": 0.3211825922854183
+    },
+    {
+      "target": "median_household_income",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.20520706532131266,
+      "sd_lift_over_size": 0.14246218825030144
+    },
+    {
+      "target": "median_household_income",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.22593588075777116,
+      "sd_lift_over_size": 0.06702089481649989
+    },
+    {
+      "target": "median_household_income",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.23975837372692382,
+      "sd_lift_over_size": 0.014022986259967023
+    },
+    {
+      "target": "median_age",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.21838250292623296,
+      "sd_lift_over_size": 0.08927571270044103
+    },
+    {
+      "target": "median_age",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.20594897578980237,
+      "sd_lift_over_size": 0.09745762045328187
+    },
+    {
+      "target": "median_age",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.22988613246090722,
+      "sd_lift_over_size": 0.05620619168172852
+    },
+    {
+      "target": "median_age",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.22736798781343798,
+      "sd_lift_over_size": 0.03544909410249704
+    },
+    {
+      "target": "median_age",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.23540761846973846,
+      "sd_lift_over_size": 0.03736605813565888
+    }
+  ]
+}
