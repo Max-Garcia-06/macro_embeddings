@@ -1,13 +1,13 @@
 {
-  "n_targets": 3,
+  "n_targets": 5,
   "n_folds": 5,
   "fold_strategy": "GroupKFold on state_fips (spatially blocked)",
   "random_seed": 42,
-  "mean_r2_size_emacro": 0.6068376239919023,
-  "mean_lift_over_size": 0.19795376557283853,
-  "mean_lift_over_size_ablated": 0.1610411490198016,
-  "mean_r2_emacro_alone": 0.6031591678098186,
-  "targets_with_positive_lift": 3,
+  "mean_r2_size_emacro": 0.5846006941218037,
+  "mean_lift_over_size": 0.21189606053706803,
+  "mean_lift_over_size_ablated": 0.18974849060524585,
+  "mean_r2_emacro_alone": 0.5690611502062962,
+  "targets_with_positive_lift": 5,
   "by_target": {
     "broadband_rate": {
       "r2_size": 0.4205835180446834,
@@ -29,10 +29,31 @@
       "lift_over_size": 0.2562214377416915,
       "lift_over_size_ablated": 0.23878701883261078,
       "ablated_columns": "retirement_destination"
+    },
+    "median_home_value": {
+      "r2_size": 0.4875281293557764,
+      "r2_size_emacro": 0.7210179245156819,
+      "lift_over_size": 0.23348979515990553,
+      "lift_over_size_ablated": 0.23348979515990553,
+      "ablated_columns": ""
+    },
+    "mean_commute_minutes": {
+      "r2_size": 0.14934346331071036,
+      "r2_size_emacro": 0.3814726741176293,
+      "lift_over_size": 0.23212921080691895,
+      "lift_over_size_ablated": 0.23212921080691895,
+      "ablated_columns": ""
     }
   },
-  "rmse_reduction_smallest_decile": 0.18900979624972017,
-  "rmse_reduction_largest_decile": 0.28180802935285,
+  "rmse_reduction_smallest_decile": 0.20237841034782772,
+  "rmse_reduction_largest_decile": 0.2676184120728925,
+  "noise_share_smallest_decile": 0.29701384012872883,
+  "noise_share_largest_decile": 0.006146179551935982,
+  "share_of_explainable_smallest_decile": 0.21269277938800157,
+  "share_of_explainable_largest_decile": 0.5198369044790869,
+  "r2_lift_smallest_decile": 0.6144312636192901,
+  "r2_lift_largest_decile": 0.38031735869959915,
+  "r2_size_smallest_decile": -0.47447126958935365,
   "by_training_size": [
     {
       "target": "broadband_rate",
@@ -138,6 +159,76 @@
       "n_reps": 10,
       "mean_lift_over_size": 0.23540761846973846,
       "sd_lift_over_size": 0.03736605813565888
+    },
+    {
+      "target": "median_home_value",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12272675897608835,
+      "sd_lift_over_size": 0.09949807916235273
+    },
+    {
+      "target": "median_home_value",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17901935979688338,
+      "sd_lift_over_size": 0.12793260261918757
+    },
+    {
+      "target": "median_home_value",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1686146470784517,
+      "sd_lift_over_size": 0.10215592383134765
+    },
+    {
+      "target": "median_home_value",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.20226524541639587,
+      "sd_lift_over_size": 0.056774017727592385
+    },
+    {
+      "target": "median_home_value",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.21974429330043196,
+      "sd_lift_over_size": 0.06079798701318325
+    },
+    {
+      "target": "mean_commute_minutes",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.033541792508240645,
+      "sd_lift_over_size": 0.16224626663503688
+    },
+    {
+      "target": "mean_commute_minutes",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08696055370239444,
+      "sd_lift_over_size": 0.09931110221878929
+    },
+    {
+      "target": "mean_commute_minutes",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12860402840045507,
+      "sd_lift_over_size": 0.06700105343559973
+    },
+    {
+      "target": "mean_commute_minutes",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.06465226371719555,
+      "sd_lift_over_size": 0.11205284900053956
+    },
+    {
+      "target": "mean_commute_minutes",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.20997680798774332,
+      "sd_lift_over_size": 0.036543177429528874
     }
   ]
 }

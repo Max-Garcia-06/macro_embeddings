@@ -36,6 +36,20 @@ geo key are separate properties.
 
 ## The argument for a county-grain join
 
+> **[weakened 2026-08-05 by measurement]** The reasoning below is intact but its
+> conclusion is no longer supported as stated.
+> `analysis-output/cross-source/external-target-findings.md` §12 ran the three-arm
+> comparison this document scoped for Phase 1B: row count costs −0.122 mean lift
+> and **aggregation gains +0.106**, so the two roughly cancel. On three of five
+> public targets the aggregated 208-market arm matches or beats full county
+> grain. County grain is better on `broadband_rate` and `mean_commute_minutes`
+> only — the first of which matters disproportionately, being closest to the
+> consumer's domain and the one where the aggregate arm goes negative.
+>
+> **The defensible position is that the grain question is open and county is not
+> established as better.** Do not carry the argument below into a conversation as
+> though it were settled.
+
 The fixed-effect objection in problem 1 below is not a fixed property of the
 project. It is a function of **units per parameter**, and it swings hard with
 grain:
@@ -309,7 +323,23 @@ handoff. No change to any pillar.
 ## Phase 1B — DMA aggregation layer (the fallback)
 
 **Gate: Phase 0 returns Case 1, or the county-grain case is rejected.
-Cost: 1–2 days.**
+Cost: 1–2 days — revised to 2–3, see below.**
+
+> **[partly built 2026-08-05]** `scripts/geo_aggregate.py` implements the
+> re-derivation rules against a caller-supplied grouping, and
+> `scripts/analyze_grain_effect.py` runs the three-arm comparison. Both work on
+> k-means clusters of county centroids at Nielsen cardinality, which stands in
+> for DMAs without the proprietary delineation. Swapping in a real crosswalk is a
+> one-argument change.
+>
+> **Cost correction: Source B cannot be re-derived from its shipped parquet.**
+> `source_b_qcew.parquet` carries location quotients and disclosure flags and no
+> employment counts, so the widest block in the matrix — 40 columns — can only be
+> population-weighted, which is the operation §3 forbids. 62 of 118 columns are
+> approximated for this and related reasons. Fixing it means changing
+> `ingest_source_b.py` to carry `emp` alongside `lq_emp` and re-downloading the
+> ~2.2GB QCEW singlefile. Add about a day. The 1–2 day estimate assumed every
+> pillar could be rebuilt from its parquet and that assumption was wrong.
 
 - `scripts/dma_crosswalk.py` — county→DMA mapping, cached parquet, coverage
   audit against all 3,143 counties, explicit handling of unassigned counties.

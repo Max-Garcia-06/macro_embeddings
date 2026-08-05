@@ -1,0 +1,16 @@
+target,arm,n_units,mean_lift_over_size,sd_lift_over_size
+broadband_rate,county_full,3144,0.09068294462404103,0.0
+broadband_rate,market_aggregate,208,-0.10995410370657799,0.0
+broadband_rate,county_subsample,208,-0.051096987672226604,0.07811228366577379
+median_household_income,county_full,3142,0.2469569143527831,0.0
+median_household_income,market_aggregate,208,0.2712825083181558,0.0
+median_household_income,county_subsample,208,0.029586161086145278,0.05438319596228248
+median_age,county_full,3144,0.2562214377416915,0.0
+median_age,market_aggregate,208,0.35826983485787034,0.0
+median_age,county_subsample,208,0.20556240629522743,0.09346681074377018
+median_home_value,county_full,3138,0.23348979515990553,0.0
+median_home_value,market_aggregate,208,0.40434050572813984,0.0
+median_home_value,county_subsample,208,0.12363668411327473,0.11284630469606104
+mean_commute_minutes,county_full,3141,0.23212921080691895,0.0
+mean_commute_minutes,market_aggregate,208,0.05776300330248407,0.0
+mean_commute_minutes,county_subsample,208,0.14437521097371464,0.15083405099397768

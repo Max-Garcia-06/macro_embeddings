@@ -2,10 +2,16 @@
 type: results-report
 date: 2026-08-05
 experiment_line: cross-source
-round: 1
+round: 2
 purpose: first non-circular validation, and the go/no-go evidence
 status: active
 ---
+
+> **Round 2 (2026-08-05).** §1–§9 are round 1 as written. §10–§16 add two
+> targets, quantify the ACS sampling-noise floor §5 left open, and measure the
+> aggregation half of the grain penalty §4 left unmeasured. **§12 reverses round
+> 1's grain conclusion** — aggregation helps, and roughly cancels the row-count
+> loss. Read §14 before quoting anything from §4.
 
 # External Targets — Does `E_macro` Predict Anything Outside Itself?
 
@@ -242,4 +248,194 @@ On the same basis as `source-a-findings.md` §14.5.
 ```bash
 uv run python scripts/ingest_external_targets.py
 uv run python scripts/analyze_external_target.py
+```
+
+---
+
+# Round 2 — Noise floor, five targets, and the aggregation arm (2026-08-05)
+
+Three items closed, and **one of them reverses a conclusion from round 1.**
+
+## 10. The five-target headline
+
+Two targets added, on the same argument that motivated three rather than one:
+`median_home_value` (B25077, asset rather than income flow) and
+`mean_commute_minutes` (B08013 over B08012, settlement geometry). Neither has a
+pillar column measuring its construct, so neither carries an ablation.
+
+| target | `size` | `size+emacro` | **lift, ablated** |
+|---|---|---|---|
+| `broadband_rate` | +0.421 | +0.511 | **+0.091** |
+| `median_household_income` | +0.579 | +0.826 | **+0.154** |
+| `median_age` | +0.227 | +0.483 | **+0.239** |
+| `median_home_value` | +0.488 | +0.721 | **+0.234** |
+| `mean_commute_minutes` | +0.149 | +0.382 | **+0.232** |
+| **mean** | | | **+0.190** |
+
+Five of five positive. The headline moves +0.161 → **+0.190** with the basket
+widened, which is the direction that matters: broadening a basket usually dilutes
+a result, and this one strengthened.
+
+## 11. The sampling-noise floor, and what it does to §5
+
+ACS publishes a 90% margin of error per estimate, and these are now ingested
+alongside the values (`{column}_se`, from the summary file's `_M` columns, using
+the General Handbook's proportion and ratio formulas). A share of each target's
+variance is sampling error no model can explain, and it is concentrated exactly
+where §5's open question sat.
+
+Mean across the five targets, by county population decile:
+
+| decile | median pop | noise share | R² ceiling | R² `size` | R² `size+emacro` | share of explainable |
+|---|---|---|---|---|---|---|
+| 1 (smallest) | 2,631 | **29.7%** | 0.703 | **−0.474** | +0.140 | 0.213 |
+| 2 | 6,762 | 10.3% | 0.897 | +0.228 | +0.421 | 0.467 |
+| 5 | 21,833 | 6.0% | 0.940 | +0.378 | +0.614 | 0.648 |
+| 9 | 144,842 | 1.5% | 0.985 | +0.252 | +0.567 | 0.573 |
+| 10 (largest) | 468,058 | 0.6% | 0.994 | +0.137 | +0.517 | 0.520 |
+
+**The confound was real and it does not rescue the hypothesis.** Nearly 30% of
+the smallest decile's variance is sampling noise against 0.6% in the largest, so
+small counties genuinely are harder to predict for reasons having nothing to do
+with `E_macro`. But correcting for it — the `share of explainable` column — leaves
+the pattern intact: 0.213 in the smallest decile against 0.520 in the largest,
+peaking mid-distribution. **`E_macro` does not capture more of the available
+signal in thin counties.**
+
+One finding here is worth more than the hypothesis it failed to save. **A
+size-only model is actively harmful on the smallest counties: R² = −0.474**,
+worse than predicting the decile's own mean. A global size relationship
+extrapolates badly to the bottom of the distribution, and `E_macro` pulls it back
+to +0.140. Whatever a consumer holding only population would do, it fails hardest
+exactly where a feature layer is supposed to help.
+
+**Two metrics disagree here and both are in the artifacts.** Proportional RMSE
+reduction is flat-to-rising across deciles; R² lift over size is largest in
+decile 1 (+0.614 mean). They diverge because decile 1's variance is enormous, so
+a small proportional error reduction is a large variance-explained gain. The R²
+lift is also carried by two targets — `median_household_income` (+1.316) and
+`median_home_value` (+1.416) — while the other three sit between +0.034 and
++0.212. That is the same concentration problem `source-a-findings.md` §14.5
+forbids publishing without composition. **Neither metric supports a general
+thin-unit claim.**
+
+Both dollar-denominated targets are the ones favouring small counties, and the
+rate, the demographic median and the physical quantity all favour large ones.
+Recorded as a pattern worth a hypothesis, not as a finding.
+
+## 12. Aggregation helps — a correction to round 1
+
+§4 measured the row-count half of the DMA penalty and left the aggregation half
+explicitly unmeasured, with the caveat that it "could cut either way." It cuts,
+and it cuts the other way.
+
+`scripts/geo_aggregate.py` re-derives the matrix at a coarser geography under the
+rule in `dma_regrain.md` §3 — aggregate the inputs, not the outputs. Groups are
+k-means clusters of county centroids at Nielsen cardinality: 208 usable groups,
+median 16 counties each, matching a DMA in count and character. **They are not
+DMAs**; that delineation is proprietary. Three arms, same five targets:
+
+| target | `county_full` | `county_subsample` (n=208) | `market_aggregate` (n=208) | aggregation effect |
+|---|---|---|---|---|
+| `broadband_rate` | +0.091 | −0.051 | **−0.110** | −0.059 |
+| `mean_commute_minutes` | +0.232 | +0.144 | +0.058 | −0.087 |
+| `median_age` | +0.256 | +0.206 | **+0.358** | +0.153 |
+| `median_household_income` | +0.247 | +0.030 | **+0.271** | +0.242 |
+| `median_home_value` | +0.234 | +0.124 | **+0.404** | +0.281 |
+| **mean** | +0.212 | +0.091 | +0.196 | **+0.106** |
+
+- **Row-count effect: −0.122.** Fewer rows hurt, as §4 found.
+- **Aggregation effect: +0.106.** Aggregation *helps*, and nearly cancels it.
+
+**On three of five targets the aggregated 208-market arm matches or beats full
+county grain.** Median home value goes +0.234 → +0.404. The mechanism is
+plausible rather than artefactual: population-weighted aggregation converts
+sparse, noisy county columns — suppressed LQ cells, single-article Wikipedia
+booleans — into stable continuous shares, and does the same to the target.
+
+### What this does to the county-grain argument
+
+It weakens it substantially, and that has to be said plainly rather than
+qualified into survival.
+
+The argument as recorded in `dma_regrain.md` and `PROJECT_GOAL.md` is that DMA
+grain is the worse answer. On this evidence it is **worse only on two of five
+targets** — and the two are `broadband_rate` and `mean_commute_minutes`. That
+`broadband_rate` is among them matters more than a 2-of-5 tally suggests, since
+it is the target closest to the consumer's domain and it is the one where the
+market arm goes outright negative. But that is one target, and one target is a
+basket of one.
+
+**The defensible position is now: the grain question is open, and county is not
+established as better.**
+
+### Two biases, both favouring the aggregate arm
+
+Neither is corrected, so the +0.106 should be read as an upper bound:
+
+1. **The aggregated target is cleaner.** Averaging five ACS estimates over ~16
+   counties removes much of the sampling error §11 quantifies. The market arm
+   predicts a less noisy outcome than the county arms do.
+2. **k-means markets are spatially compact by construction**, so within-market
+   homogeneity is near the maximum for a county grouping of that size. Real DMAs
+   are drawn on media-market boundaries, not economic ones.
+
+### And one bias against it
+
+**62 of the 118 pillar columns are approximated rather than re-derived** at group
+grain — Source B's 40 location quotients chief among them. The aggregate arm is a
+lower bound in that respect. Which brings the cost finding:
+
+## 13. Source B cannot be aggregated from its shipped parquet
+
+`data/source_b_qcew.parquet` carries `lq_emp_{naics2}` and
+`disclosure_{naics2}` and **no employment counts**. A group-level location
+quotient is summed employment by sector over summed total employment against the
+national base; without `emp` there is nothing to sum, so the 40-column widest
+block in the matrix can only be population-weighted, which is the operation §3 of
+the plan forbids.
+
+Source F is approximated for a different reason — its typology flags are
+categorical classifications with no underlying quantity — and Source D's two HHIs
+need the partner-flow table.
+
+`dma_regrain.md` Phase 1B estimated 1–2 days assuming every pillar could be
+rebuilt from its parquet. **Source B cannot, and fixing it is a change to
+`ingest_source_b.py` to carry `emp` alongside `lq_emp`, plus a re-download of the
+~2.2GB QCEW singlefile.** Add roughly a day, and note the estimate was wrong
+rather than quietly absorbing it.
+
+## 14. Revised scorecard
+
+| round-1 prediction | round-2 verdict |
+|---|---|
+| Lift of +0.03 to +0.08 | Still wrong, still understated. Five-target ablated mean **+0.190**. |
+| County grain beats DMA | **Now doubtful.** Row count −0.122, aggregation +0.106; they roughly cancel, and 3 of 5 targets prefer the aggregate. |
+| Advantage concentrates in small counties | **Still wrong**, and the noise floor does not rescue it. Share of explainable variance is 0.213 in the smallest decile against 0.520 in the largest. |
+
+## 15. Forbidden wording, round 2
+
+Additions to §7, which stands.
+
+- **Do not say the aggregation half of the grain penalty is unmeasured.** It is
+  measured, at +0.106, and it points the opposite way from the row-count half.
+- **Do not quote the aggregate arm as a DMA result.** k-means clusters at
+  Nielsen cardinality are a mechanism stand-in, not the delineation.
+- **Do not claim county grain is established as better.** On five public targets
+  it is better on two.
+- **Do not report the R² lift by decile without its composition.** Two
+  dollar-denominated targets carry the decile-1 mean.
+
+## 16. Round 2 artifact index
+
+- `scripts/geo_aggregate.py` — re-derivation rules and the provenance map
+- `scripts/analyze_grain_effect.py` — the three-arm comparison
+- `outputs/grain_effect.csv`, `analysis-output/cross-source/grain_effect_stats.json`
+- `outputs/external_target_by_decile.csv` — now carries `noise_share`,
+  `r2_ceiling`, `share_of_explainable` and `r2_lift_over_size`
+
+```bash
+uv run python scripts/ingest_external_targets.py
+uv run python scripts/analyze_external_target.py
+uv run python scripts/analyze_grain_effect.py
 ```

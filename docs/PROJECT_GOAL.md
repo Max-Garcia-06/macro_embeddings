@@ -193,13 +193,21 @@ to −0.057 once size is controlled.
    has been tested here.
 
    **But the impression row almost certainly carries ZIP**, so county is
-   derivable and the DMA join is a *choice* rather than a constraint. That
-   reframes the work: the primary path is making the case for a county-grain
-   join, not aggregating to DMA. The case is that the fixed-effect objection
-   scales with units per parameter — fatal at 210 DMAs with millions of rows
-   each, weak at 3,143 counties where most units are thin, which is exactly where
-   economic features substitute for history the consumer does not have.
-   **Nothing built yet; the plan is `docs/plans/dma_regrain.md`.**
+   derivable and the DMA join is a *choice* rather than a constraint. The
+   reasoning for preferring county was that the fixed-effect objection scales
+   with units per parameter — fatal at 210 DMAs with millions of rows each,
+   weaker at 3,143 counties where most units are thin.
+
+   **That preference is no longer supported as stated.**
+   `analysis-output/cross-source/external-target-findings.md` §12 measured both
+   halves of the grain penalty against five public targets: losing rows costs
+   −0.122 mean lift, aggregating gains **+0.106**, and they roughly cancel. On
+   three of five targets an aggregated 208-market arm matches or beats full
+   county grain. County wins on `broadband_rate` and `mean_commute_minutes` only
+   — the first mattering more than a 2-of-5 tally suggests, since it is closest
+   to the consumer's domain and is where the aggregate arm goes negative.
+   **The grain question is open; county is not established as better.** Plan and
+   caveats in `docs/plans/dma_regrain.md`.
 
    The ZIP claim is recollection, not verification, and under the access
    constraints above it **cannot be verified from inside this repo**. It is

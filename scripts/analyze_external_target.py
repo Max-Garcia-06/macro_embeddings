@@ -125,10 +125,16 @@ logger = logging.getLogger(__name__)
 #
 # Every target is reported twice, with and without its restatements. The ablated
 # figure is the defensible one.
+# `median_home_value` and `mean_commute_minutes` have no entry because no pillar
+# column measures either construct. Source F's `housing_stress` is a cost-burden
+# share rather than a value, which is related but not definitional, so it stays
+# in the design.
 TARGET_RESTATEMENTS: dict[str, tuple[str, ...]] = {
     "median_household_income": ("wage_per_return_thousands",),
     "median_age": ("retirement_destination",),
     "broadband_rate": (),
+    "median_home_value": (),
+    "mean_commute_minutes": (),
 }
 
 
@@ -180,7 +186,10 @@ def load_panel() -> tuple[pd.DataFrame, list[str]]:
     pillar_columns = [column for columns in blocks.values() for column in columns]
 
     targets = fetch_external_targets()
+    # Each target ships a `_se` companion carrying its ACS standard error, which
+    # `score_by_decile` needs to compute the per-stratum noise floor.
     target_columns = [target.column for target in EXTERNAL_TARGETS]
+    target_columns += [f"{column}_se" for column in target_columns]
     population = fetch_county_population()[["fips_code", "population"]]
 
     panel = (
@@ -332,35 +341,74 @@ def score_by_decile(
 ) -> pd.DataFrame:
     """Break one target's out-of-fold error down by county population decile.
 
+    Carries the **sampling-noise floor** alongside the fit. ACS estimates in
+    small counties are noisy, so part of the within-decile variance is sampling
+    error that no model can explain. Without that quantified, a model scoring
+    badly on small counties is indistinguishable from a target that is mostly
+    noise there -- the ambiguity that left the first round of this analysis
+    unable to settle whether E_macro helps more or less on thin units.
+
+    `r2_ceiling` is `1 - mean(SE^2) / var(y)` within the decile: the largest R2
+    any model could reach against a target measured this precisely.
+    `share_of_explainable` divides the observed R2 by that ceiling, and is the
+    figure that compares fairly across deciles.
+
     Args:
         panel: Joined panel from `load_panel`.
         column: Target column name.
         predictions: Out-of-fold predictions per model, from `score_target`.
 
     Returns:
-        DataFrame with one row per decile carrying each model's RMSE and the
-        proportional error reduction from `size` to `size_emacro`.
+        DataFrame with one row per decile.
     """
     usable = panel[panel[column].notna()].reset_index(drop=True)
     y = usable[column].astype(float).to_numpy()
+    standard_error = usable[f"{column}_se"].astype(float).to_numpy()
     decile = pd.qcut(usable["population"], N_DECILES, labels=False, duplicates="drop")
 
     rows: list[dict[str, object]] = []
     for index in sorted(pd.unique(decile.dropna())):
         mask = (decile == index).to_numpy()
+        observed = y[mask]
+        total_variance = float(np.var(observed, ddof=1))
+        noise_variance = float(np.nanmean(standard_error[mask] ** 2))
+
         row: dict[str, object] = {
             "target": column,
             "population_decile": int(index) + 1,
             "n": int(mask.sum()),
             "median_population": float(usable.loc[mask, "population"].median()),
+            "variance_total": total_variance,
+            "variance_sampling_noise": noise_variance,
+            "noise_share": noise_variance / total_variance if total_variance > 0 else np.nan,
         }
+        row["r2_ceiling"] = 1.0 - float(row["noise_share"])
+
         for name, predicted in predictions.items():
-            row[f"rmse_{name}"] = float(np.sqrt(np.mean((y[mask] - predicted[mask]) ** 2)))
+            residual = observed - predicted[mask]
+            row[f"rmse_{name}"] = float(np.sqrt(np.mean(residual**2)))
+            # R2 against the decile's own mean, so deciles are comparable.
+            row[f"r2_{name}"] = (
+                1.0 - float(np.mean(residual**2)) / total_variance
+                if total_variance > 0
+                else np.nan
+            )
+
         size_rmse = float(row["rmse_size"])
         combined_rmse = float(row["rmse_size_emacro"])
         row["rmse_reduction"] = (
-            (size_rmse - combined_rmse) / size_rmse if size_rmse > 0 else float("nan")
+            (size_rmse - combined_rmse) / size_rmse if size_rmse > 0 else np.nan
         )
+        ceiling = float(row["r2_ceiling"])
+        row["share_of_explainable"] = (
+            float(row["r2_size_emacro"]) / ceiling if ceiling > 0 else np.nan
+        )
+        # Lift over the baseline a consumer holding only population would have.
+        # This and `rmse_reduction` diverge by construction and answer different
+        # questions: proportional error reduction is scale-free, while variance
+        # explained is measured against a decile's own spread, which is much
+        # wider among small counties.
+        row["r2_lift_over_size"] = float(row["r2_size_emacro"]) - float(row["r2_size"])
         rows.append(row)
     return pd.DataFrame(rows)
 
@@ -457,6 +505,27 @@ def summarize(scores: pd.DataFrame, deciles: pd.DataFrame) -> dict[str, object]:
         ),
         "rmse_reduction_largest_decile": float(
             deciles[deciles["population_decile"] == N_DECILES]["rmse_reduction"].mean()
+        ),
+        "noise_share_smallest_decile": float(
+            deciles[deciles["population_decile"] == 1]["noise_share"].mean()
+        ),
+        "noise_share_largest_decile": float(
+            deciles[deciles["population_decile"] == N_DECILES]["noise_share"].mean()
+        ),
+        "share_of_explainable_smallest_decile": float(
+            deciles[deciles["population_decile"] == 1]["share_of_explainable"].mean()
+        ),
+        "share_of_explainable_largest_decile": float(
+            deciles[deciles["population_decile"] == N_DECILES]["share_of_explainable"].mean()
+        ),
+        "r2_lift_smallest_decile": float(
+            deciles[deciles["population_decile"] == 1]["r2_lift_over_size"].mean()
+        ),
+        "r2_lift_largest_decile": float(
+            deciles[deciles["population_decile"] == N_DECILES]["r2_lift_over_size"].mean()
+        ),
+        "r2_size_smallest_decile": float(
+            deciles[deciles["population_decile"] == 1]["r2_size"].mean()
         ),
     }
 
