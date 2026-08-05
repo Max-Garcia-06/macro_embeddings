@@ -13,13 +13,14 @@ Two conventions matter for anything built on top of this module:
   consumer's decision, made per model, not baked in here.
 - **Size is not a pillar.** The pillar-pair sweep established that county size
   drives most of the raw cross-pillar correlation, so the pure scale measures
-  are pulled out of their pillars entirely and exposed as `SIZE_FEATURES`.
-  Three columns qualify -- tax returns filed, total AGI, and GDP level -- and
-  none is any pillar's headline signal, so removing them costs no pillar its
+  are held out of every pillar block in `SIZE_COLUMNS` and the control handed to
+  each baseline is the three-column `SIZE_FEATURES`. None of the held-out
+  columns is any pillar's headline signal, so removing them costs no pillar its
   case. Freight tonnage is deliberately *not* treated as size: it correlates
   with scale, but it is the whole of Source D's signal, and folding it into the
   control would decide Source D's verdict by construction rather than by
-  evidence.
+  evidence. Source D instead gains the commodity *shares* its raw per-commodity
+  tonnages were standing in for.
 """
 
 from __future__ import annotations
@@ -50,6 +51,27 @@ DISTRESS_FLAGS: tuple[str, ...] = (
 # Source D ships raw tonnage by commodity group; these are the two directional
 # totals that get log-scaled, since county tonnage spans six orders of magnitude.
 D_TONNAGE_COLUMNS: tuple[str, ...] = ("total_outbound_tons", "total_inbound_tons")
+
+# FAF5 commodity supergroups, as shipped by `ingest_source_d.py`.
+D_COMMODITY_GROUPS: tuple[str, ...] = (
+    "sctg0109", "sctg1014", "sctg1519", "sctg2033", "sctg3499",
+)
+
+# No `tons_per_capita` column, deliberately. `docs/downstream_target.md` proposes
+# it as the highest-value change a rate target would imply, and it is not one:
+#
+#   log10(tons / population) == log_total_tons - log_population
+#
+# to floating-point precision, and both of those already sit in the matrix --
+# `log_total_tons` in D's block, `log_population` in SIZE_FEATURES, held in every
+# baseline. The per-capita column is an exact linear combination of two columns
+# any model here already has, so it adds nothing a linear model cannot already
+# reach. Measured rather than assumed: D freight against F metro status is
+# -0.036 size-controlled whether the input is raw log tonnage or per-capita
+# tonnage, to three decimals (`source-d-findings.md` §10).
+#
+# It would matter for a consumer fitting *without* a size control, which is a
+# serving-format question rather than a feature question.
 
 # Pure scale measures, pulled out of their pillars and re-exposed log-scaled as
 # SIZE_FEATURES. `wages_salaries_thousands` joins them because it is a dollar
@@ -193,10 +215,23 @@ def _derive_pillar_columns(frames: dict[str, pd.DataFrame]) -> dict[str, pd.Data
 
     d = frames["D"]
     total_tons = d[list(D_TONNAGE_COLUMNS)].sum(axis=1)
+    # Commodity mix as a share of the county's own directional total. The raw
+    # per-commodity tonnages run 0.52-0.97 Spearman against population -- they
+    # are levels wearing a commodity label. The shares are the composition those
+    # levels were standing in for, and four of the ten clear the size-free bar
+    # the raw columns all fail (`source-d-findings.md` §9).
+    commodity_shares = {
+        f"share_{direction}_{group}": (
+            d[f"{direction}_{group}"] / d[f"total_{'outbound' if direction == 'out' else 'inbound'}_tons"]
+        )
+        for direction in ("out", "in")
+        for group in D_COMMODITY_GROUPS
+    }
     derived["D"] = d.assign(
         log_total_tons=np.log10(total_tons.clip(lower=1)),
         log_outbound_tons=np.log10(d["total_outbound_tons"].clip(lower=1)),
         log_inbound_tons=np.log10(d["total_inbound_tons"].clip(lower=1)),
+        **commodity_shares,
     ).drop(columns=list(D_TONNAGE_COLUMNS))
 
     f = frames["F"]

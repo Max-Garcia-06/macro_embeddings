@@ -1,11 +1,16 @@
 ---
 type: results-report
-date: 2026-07-14
+date: 2026-08-04
 experiment_line: source-d
-round: 1
-purpose: initial-ingestion-and-findings
+round: 2
+purpose: initial-ingestion-and-findings, then rate refeaturization
 status: active
 ---
+
+> **Round 2 (2026-08-04).** §1–§8 are the round-1 report as written. §9–§11 test
+> the rate normalization `docs/downstream_target.md` calls the highest-value
+> change a rate target would imply. It is not one, for a provable reason (§10).
+> What did help was a different transformation the doc did not propose (§11).
 
 # Source D — BTS FAF5 Experimental County Commodity Flows (Trade Gravity)
 
@@ -120,3 +125,176 @@ The proposal frames Source D as isolating "a logistical pass-through corridor or
 - **Deviation 1 — combinatorial-explosion problem already solved upstream, differently than proposed**: BTS's own county/FAF-zone hybrid table structure (full county granularity only for nearby geography, FAF-zone aggregation for everything farther) already prevents the dense 9.87M-edge matrix both scoping docs worried about. This supersedes the spec's proposed top-K-per-origin truncation entirely — that scheme would have solved a problem the source data doesn't actually present in that form, and would have discarded the zone-level long-tail structure BTS already preserves.
 - **Deviation 2 — no dollar-value column**: both scoping docs describe Source D as tracking "freight tonnage and dollar value." The experimental county-level product ships tonnage only (`tons_2022`); the base (non-experimental) FAF5 product does carry `value`/`current_value` fields, per the general user guide, but that field was dropped in the county-level disaggregation. This is a real scope reduction, not a parsing gap — confirmed against the FAF5 data dictionary directly.
 - **New finding not anticipated by either doc**: the HHI concentration signal's *direction* is scale-dependent (§3.2) — a design detail neither scoping doc could have anticipated, since neither analyzed the disaggregation model's gravity-artifact behavior at regional vs. national scope. Anyone extending this concentration metric should be aware it only reads correctly at full national coverage.
+
+---
+
+# Round 2 — Rate refeaturization (2026-08-04)
+
+## 9. Every Source D column is a level
+
+Round 1 shipped two directional tonnage totals, ten per-commodity tonnages, and
+two trade-partner concentration indices. Measured against Census population
+(Spearman, so the heavy right skew in raw tons does not understate it), twelve
+of the fourteen are size measures:
+
+| column | Spearman vs population |
+|---|---|
+| `total_inbound_tons` | +0.894 |
+| `in_sctg3499` (manufactured goods, inbound) | **+0.971** |
+| `in_sctg2033` | +0.931 |
+| `out_sctg3499` | +0.921 |
+| `in_sctg1014` | +0.921 |
+| `out_sctg2033` | +0.900 |
+| `out_sctg1014` | +0.848 |
+| `in_sctg1519` | +0.767 |
+| `in_sctg0109` | +0.630 |
+| `out_sctg1519` | +0.554 |
+| `out_sctg0109` | +0.523 |
+| `out_partner_hhi` | +0.272 |
+| `in_partner_hhi` | +0.278 |
+
+The per-commodity columns are worse than the totals they decompose. That is not
+surprising once stated plainly: a county's inbound manufactured-goods tonnage is
+close to a restatement of how many people live there. The two HHIs are the only
+columns that were ever composition rather than level, and they are the only two
+under 0.30. `docs/downstream_target.md` flagged them at 0.33 and asked whether a
+concentration index should carry that much size; on the scale-invariant measure
+they carry less than the doc feared.
+
+## 10. The rate normalization is a re-expression, not a fix
+
+`docs/downstream_target.md` (§ *Refeaturization implied by a rate target*) calls
+`tons_per_capita` the "highest-value single change implied here." It is not a
+change at all under any model that already controls for size:
+
+```
+log10(tons / population) == log_total_tons − log_population
+```
+
+to floating-point precision (max absolute difference 8.9e-16 across 3,144
+counties). `log_total_tons` is in Source D's block and `log_population` is in
+`SIZE_FEATURES`, held in every baseline — so the per-capita column is an exact
+linear combination of two columns the design already contains.
+
+Measured rather than argued, against Source F:
+
+| Source D feature | raw r vs `metro_2023` | size-controlled |
+|---|---|---|
+| `log_total_tons` (current) | +0.495 | **−0.036** |
+| `log_tons_per_capita` | −0.400 | **−0.036** |
+| `share_out_sctg3499` | +0.320 | +0.026 |
+| `out_partner_hhi` | +0.275 | **+0.115** |
+
+The raw correlation swings 0.9 points and *flips sign* — per-capita freight is
+higher in small counties, since rural counties move bulk agriculture and mining
+against tiny populations. The size-controlled correlation does not move at all.
+The same holds against `distress_count`: −0.138 either way.
+
+**Source D's problem was never its units.** It is that once county size is
+removed there is very little left — and no re-expression of the same quantity
+can add information that was not there. The normalization matters only for a
+consumer fitting *without* a size control, which is a serving-format question,
+not a feature question. No `tons_per_capita` column ships; the reasoning is
+recorded in `pillar_matrix.py` beside `D_COMMODITY_GROUPS` so it is not
+rediscovered and re-proposed.
+
+`out_partner_hhi` is the finding that survives here, and it was already in the
+block: +0.275 raw to **+0.115** size-controlled is the least size-dependent
+thing Source D has, and it is a concentration measure rather than a level.
+
+## 11. What did help: commodity shares
+
+The transformation that does add something is the one the doc did not propose —
+each commodity group as a share of the county's own directional total, which is
+composition rather than volume. It is the same move that rescued Source B (ship
+the LQ vector, not a scalar) and Source E (ship participation and intensity, not
+the ratio).
+
+Against `log_population` (Pearson, on the shares' natural scale):
+
+| share column | r | tier | was, as raw tons |
+|---|---|---|---|
+| `share_out_sctg1519` | −0.024 | 3 size-free | +0.554 |
+| `share_in_sctg1519` | +0.104 | 3 size-free | +0.767 |
+| `share_in_sctg2033` | +0.212 | 3 size-free | +0.931 |
+| `share_out_sctg2033` | +0.213 | 3 size-free | +0.900 |
+| `share_out_sctg1014` | +0.259 | 3 size-free | +0.848 |
+| `share_in_sctg1014` | +0.365 | 2 partly size | +0.921 |
+| `share_in_sctg3499` | +0.392 | 2 partly size | +0.971 |
+| `share_out_sctg0109` | −0.425 | 2 partly size | +0.523 |
+| `share_in_sctg0109` | −0.475 | 2 partly size | +0.630 |
+| `share_out_sctg3499` | +0.513 | 2 partly size | +0.921 |
+
+**Five of ten clear the size-free bar that none of the raw columns cleared.** No
+nulls: every county has non-zero outbound and inbound totals, so every share is
+defined.
+
+The ten shares are added to Source D's block in `pillar_matrix._derive_pillar_columns`,
+alongside the three log tonnage columns that were already derived there. Nothing
+is removed. The raw per-commodity tonnages stay in the block for now even though
+§9 shows they are levels, because cutting them is a decision that depends on the
+unanswered rate-versus-count question in `docs/downstream_target.md` Part 1 —
+under a count target they are legitimately predictive. The recommendation, once
+that answer exists and if it is "rate", is to move all ten into `SIZE_COLUMNS`
+on the same rule that moved Source E's dollar totals there.
+
+## 12. Sweep result: the shares pay, and they pay to Source B
+
+`analyze_pillar_matrix_signal.py` re-run with the ten shares added to Source D's
+block (25 features, up from 15):
+
+| | before shares | after |
+|---|---|---|
+| targets carrying signal | 24 of 29 | **25 of 29** |
+| mean lift | +0.0808 | **+0.0847** |
+| mean ablated lift | +0.0329 | **+0.0405** |
+| median ablated lift | +0.0264 | **+0.0348** |
+| definitional share of mean lift | 0.592 | **0.522** |
+| mean GBM lift | +0.1159 | +0.1157 |
+
+Mean ablated lift up 23%, median up 32%, and the definitional share falls seven
+points — the largest single drop it has taken. More of what the matrix knows is
+now corroboration between agencies rather than one federal product restating
+another.
+
+**The gain is almost entirely Source B's, and it is interpretable.** Source D
+does not predict itself any better — its own row is unchanged at +0.0194, as it
+must be, since a pillar's targets are predicted by the *other* five. What moved:
+
+| target | ablated lift before | after |
+|---|---|---|
+| Agriculture, Forestry, Fishing & Hunting LQ | +0.0004 | **+0.0430** |
+| Manufacturing LQ | +0.0673 | **+0.1072** |
+| Transportation & Warehousing LQ | +0.0342 | **+0.0635** |
+| Accommodation & Food Services LQ | +0.0880 | +0.1065 |
+| Health Care & Social Assistance LQ | +0.0195 | +0.0348 |
+| Utilities LQ | −0.0070 | +0.0009 (newly carrying) |
+
+A county whose outbound freight is mostly agricultural products has
+agricultural employment; a county shipping manufactured goods has manufacturing
+employment. That is the freight-to-industry link the proposal claimed and round
+1 could not demonstrate, because raw tonnage could only say *how much* a county
+ships. The shares say *what*, and BLS payroll data agrees. Agriculture LQ moving
+from indistinguishable-from-zero to +0.0430 is the clearest instance.
+
+**One honest caveat: the GBM lift did not move** (+0.1159 to +0.1157). The
+gradient-boosted model was already recovering this structure from the raw
+tonnages nonlinearly; the shares make it available to the linear model, which is
+what the ridge-based headline measures. Read the gain as "the composition signal
+is now reachable without a nonlinear learner," not as new information appearing
+in the matrix.
+
+Source A's ablated lift slips −0.0012 and Source E's −0.0005, both inside the
+noise of adding eight columns to a 128-column design.
+
+## 13. Round 2 Artifact Index
+
+- Feature derivation: `scripts/pillar_matrix.py` — `D_COMMODITY_GROUPS` and the
+  `share_{out,in}_{sctg*}` block in `_derive_pillar_columns`. No ingestion change,
+  so no re-download of the 51 state zips.
+- Re-scored sweep: `scripts/analyze_pillar_matrix_signal.py` →
+  `outputs/pillar_matrix_signal.csv`,
+  `analysis-output/cross-source/pillar_matrix_signal_stats.json`
+- Still open, and blocked on `docs/downstream_target.md` Part 1: whether the ten
+  raw per-commodity tonnages move to `SIZE_COLUMNS` (§11), and whether Source D
+  survives at all under a rate target given §10.

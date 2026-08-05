@@ -1,41 +1,41 @@
 {
   "n_targets": 29,
   "n_significant": 28,
-  "n_carrying_signal": 24,
+  "n_carrying_signal": 25,
   "n_folds": 5,
   "n_null_reps": 99,
   "random_seed": 42,
-  "mean_lift": 0.0807466880537756,
-  "mean_lift_ablated": 0.032931868275675374,
-  "median_lift_ablated": 0.026350507152524405,
-  "mean_lift_gbm": 0.11588351182046418,
-  "mean_r2_baseline": 0.2609825793510732,
-  "definitional_share_of_mean_lift": 0.5921582783216639,
+  "mean_lift": 0.08468305829774411,
+  "mean_lift_ablated": 0.0404953024630241,
+  "median_lift_ablated": 0.034777192968336146,
+  "mean_lift_gbm": 0.11573352122708871,
+  "mean_r2_baseline": 0.2609825793510733,
+  "definitional_share_of_mean_lift": 0.521801606164915,
   "best_target": "distress_count",
-  "best_lift_ablated": 0.11718101426321592,
+  "best_lift_ablated": 0.11970785541117668,
   "by_pillar": {
     "A": {
       "n_targets": 1,
       "n_carrying_signal": 1,
-      "mean_lift": 0.0491253061,
-      "mean_lift_ablated": 0.0509941883,
-      "max_lift_ablated": 0.0509941883,
+      "mean_lift": 0.0477931078,
+      "mean_lift_ablated": 0.0498020735,
+      "max_lift_ablated": 0.0498020735,
       "mean_r2_baseline": 0.2390698522
     },
     "B": {
       "n_targets": 20,
-      "n_carrying_signal": 16,
-      "mean_lift": 0.1000870186,
-      "mean_lift_ablated": 0.0309658939,
-      "max_lift_ablated": 0.0920374682,
+      "n_carrying_signal": 17,
+      "mean_lift": 0.1053014085,
+      "mean_lift_ablated": 0.0414781223,
+      "max_lift_ablated": 0.1072106663,
       "mean_r2_baseline": 0.1970306019
     },
     "C": {
       "n_targets": 3,
       "n_carrying_signal": 2,
-      "mean_lift": 0.0140305087,
-      "mean_lift_ablated": 0.0133494808,
-      "max_lift_ablated": 0.0492274744,
+      "mean_lift": 0.0172785865,
+      "mean_lift_ablated": 0.0161011629,
+      "max_lift_ablated": 0.0518178862,
       "mean_r2_baseline": 0.3921491665
     },
     "D": {
@@ -49,17 +49,17 @@
     "E": {
       "n_targets": 1,
       "n_carrying_signal": 1,
-      "mean_lift": 0.0728547018,
-      "mean_lift_ablated": 0.0694128371,
-      "max_lift_ablated": 0.0694128371,
+      "mean_lift": 0.0714628577,
+      "mean_lift_ablated": 0.0689180878,
+      "max_lift_ablated": 0.0689180878,
       "mean_r2_baseline": 0.368996975
     },
     "F": {
       "n_targets": 1,
       "n_carrying_signal": 1,
-      "mean_lift": 0.1212963236,
-      "mean_lift_ablated": 0.1171810143,
-      "max_lift_ablated": 0.1171810143,
+      "mean_lift": 0.1241430734,
+      "mean_lift_ablated": 0.1197078554,
+      "max_lift_ablated": 0.1197078554,
       "mean_r2_baseline": 0.2024425905
     }
   }

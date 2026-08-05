@@ -92,7 +92,15 @@ Verdict per pillar (detail in `analysis-output/E_macro_key_findings.ipynb`):
 - **B** — keep, change the feature: ship the 20-dim LQ vector, not a scalar.
 - **C** — keep, fix the metric: use `gdp_velocity_pct`, not dollar-denominated
   `gdp_velocity`. Done.
-- **D** — keep. Weak, but clean and independent.
+- **D** — keep, change the feature: ship the ten commodity *shares*, not the raw
+  per-commodity tonnages, which run 0.52–0.97 Spearman against population. The
+  shares are what let freight composition predict industry composition —
+  Agriculture LQ moved from indistinguishable-from-zero to +0.0430 ablated,
+  Manufacturing LQ +0.067 → +0.107 — which is the freight-to-industry link the
+  proposal claimed and round 1 could not show. The `tons_per_capita`
+  normalization this repo planned is **not** worth doing: it equals
+  `log_total_tons − log_population` exactly, so it adds nothing to any model that
+  already controls for size (`source-d-findings.md` §10).
 - **E** — keep, change the feature: the capital-to-wage ratio is a product of
   three separable drivers (R² = 0.975 on its log) and its *level* is set by the
   market year, not the county — the unweighted county mean runs 0.095 / 0.156 /

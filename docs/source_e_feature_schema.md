@@ -130,12 +130,25 @@ size-heavy E column is partly the control restated.
 definitional — another reason to read it as materiality rather than as a feature.
 
 `wage_per_return_thousands` sits above the r = 0.550 at which Source A's
-`n_body_sections` was cut from its scored block, and it ships anyway. The
-justification is that it is income per filer, not a count of filers — wealth
-level rather than county size — and it is the term that separates "capital-rich"
-from "job-thin" (`source-e-findings.md` §9). A consumer that wants a strictly
-size-free block should drop it; it is flagged here rather than removed so that
-is an informed choice.
+`n_body_sections` was cut from its scored block, and it ships anyway. **Ratified
+2026-08-04 on a measurement rather than an argument.** Residualized on
+`log_population` plus state fixed effects, 55% of its variance survives
+(R² = 0.448), and the residual still tracks real outcomes:
+
+| against | raw r | after size + state removed |
+|---|---|---|
+| `unemployment_rate_latest` | −0.224 | **−0.281** |
+| `capital_to_wage_ratio_normalized_mean` | +0.277 | +0.248 |
+| `distress_count` | −0.302 | −0.216 |
+| `metro_2023` | +0.500 | +0.195 |
+
+The unemployment row decides it: the correlation *strengthens* once size is
+removed. A genuine size proxy has every correlation shrink toward zero — which
+is exactly what `metro_2023` does, 0.500 → 0.195. A column whose association
+moves the other way is carrying something size does not. That is the difference
+from `n_body_sections`, which was a count of article sections with no meaning
+apart from bigness; this is average wage per filer, a real quantity that merely
+correlates with metro status.
 
 The two remaining Source E dollar totals, `qualified_dividends_thousands` and
 `net_cap_gain_thousands`, are **not** scored columns. They stay in the parquet
