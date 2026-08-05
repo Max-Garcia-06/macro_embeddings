@@ -75,17 +75,24 @@ worth having for three things it would settle that this reasoning does not:
 3. **Whether the outcome is time-varying with a backtest window**, which would
    move the vintage spread from a documentation gap to a blocking defect.
 
-## What is still open, and now ranks above everything else
+## The geo key — answered 2026-08-05: DMA
 
-**What geo key do the models join county features on?**
+Same provenance as the rate answer, same pending-confirmation caveat. It is the
+worst of the three possible answers.
 
-- **County** — ships as-is.
-- **DMA** — 3,143 counties collapse to 210 markets. DMAs are defined as sets of
-  counties so the mapping is clean, but the effective sample size drops roughly
-  15×, and most of this repo's county-level resolution is wasted on the
-  consumer. Every power figure computed here would need restating.
-- **ZIP** — county-to-ZIP is many-to-many and needs a population-weighted
-  crosswalk that does not exist in this repo. Real unbuilt work, 1–2 days.
+- ~~**County**~~ — would have shipped as-is.
+- **DMA** ← **this one.** 3,143 counties collapse to 210 markets. DMAs are
+  defined as sets of whole counties so the mapping is clean, but effective sample
+  size drops ~15×, critical |r| moves 0.035 → 0.136, and every power figure in
+  this repo needs restating. The larger problem is not resolution: a DMA fixed
+  effect is cheap and precise at 210 units with millions of rows each, and any
+  static DMA-keyed feature is **exactly collinear with it by construction**.
+- ~~**ZIP**~~ — would have needed a population-weighted many-to-many crosswalk.
+
+**Full consequences and the staged plan: `docs/plans/dma_regrain.md`.** Nothing
+is built. Its Phase 0 is three zero-cost questions that come before any code, the
+first of which — does the impression row carry sub-DMA geo? — could make most of
+the work unnecessary.
 
 ## The grain mismatch is now a live defect, not a hypothetical
 
@@ -249,10 +256,12 @@ whoever consumes it, with less context than we have.
 
 ## Still to ask — these did not get answered by the row grain
 
-### 0. What geo key do the models join on — county, ZIP, or DMA?
+### 0. ~~What geo key do the models join on?~~ Answered: DMA
 
-Now the highest-leverage open question in the project. Consequences in "What is
-still open" above.
+Superseded by three new questions, all zero-cost and all blocking:
+does the impression row carry sub-DMA geo (ZIP or lat/long)? Can we have their
+DMA crosswalk? Does their model already carry a DMA-level effect?
+`docs/plans/dma_regrain.md` Phase 0.
 
 ### 1. Is there any path to a real label — at any horizon?
 

@@ -147,9 +147,17 @@ to −0.057 once size is controlled.
    nothing — matrix-sweep mean lift +0.0847 → +0.0851, definitional share
    0.522 → 0.514, one noise-level target dropped.
 
-   **The question now in this slot is the geo join key** — county, ZIP, or DMA.
-   DMA collapses 3,143 counties to 210 markets and wastes most of this repo's
-   resolution; ZIP needs a population-weighted crosswalk that does not exist yet.
+   **The question that took this slot — the geo join key — is also answered:
+   DMA.** Same provenance and same caveat. It is the worse of the three possible
+   answers and it opens a larger problem than resolution loss: with 210 DMAs and
+   millions of impressions each, a DMA fixed effect is cheap and precise, and any
+   static DMA-keyed feature is exactly collinear with it. Cross-sectionally,
+   `E_macro` adds zero over `C(dma)` — and cross-sectional association is what
+   every test in this repo measures. The value proposition has to move to cold
+   start, partial pooling, temporal transfer and interpretability, none of which
+   has been tested here. **Nothing built yet; the plan is
+   `docs/plans/dma_regrain.md`, and its Phase 0 is three questions that come
+   before any code.**
 2. **Does B ↔ E get privileged weight?** It is roughly five times stronger than
    anything else surviving the size control.
 3. **Confirm the Source A *embedding* cut.** The pillar itself is not cut — it
