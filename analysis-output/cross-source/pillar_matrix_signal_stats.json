@@ -1,41 +1,41 @@
 {
   "n_targets": 29,
   "n_significant": 28,
-  "n_carrying_signal": 25,
+  "n_carrying_signal": 24,
   "n_folds": 5,
   "n_null_reps": 99,
   "random_seed": 42,
-  "mean_lift": 0.08468305829774411,
-  "mean_lift_ablated": 0.0404953024630241,
-  "median_lift_ablated": 0.034777192968336146,
-  "mean_lift_gbm": 0.11573352122708871,
+  "mean_lift": 0.08509960303424453,
+  "mean_lift_ablated": 0.041320555243380935,
+  "median_lift_ablated": 0.029805115356242085,
+  "mean_lift_gbm": 0.11475822503728274,
   "mean_r2_baseline": 0.2609825793510733,
-  "definitional_share_of_mean_lift": 0.521801606164915,
+  "definitional_share_of_mean_lift": 0.5144447944515873,
   "best_target": "distress_count",
-  "best_lift_ablated": 0.11970785541117668,
+  "best_lift_ablated": 0.12058767955012384,
   "by_pillar": {
     "A": {
       "n_targets": 1,
       "n_carrying_signal": 1,
-      "mean_lift": 0.0477931078,
-      "mean_lift_ablated": 0.0498020735,
-      "max_lift_ablated": 0.0498020735,
+      "mean_lift": 0.0529330329,
+      "mean_lift_ablated": 0.0548888908,
+      "max_lift_ablated": 0.0548888908,
       "mean_r2_baseline": 0.2390698522
     },
     "B": {
       "n_targets": 20,
-      "n_carrying_signal": 17,
-      "mean_lift": 0.1053014085,
-      "mean_lift_ablated": 0.0414781223,
-      "max_lift_ablated": 0.1072106663,
+      "n_carrying_signal": 16,
+      "mean_lift": 0.1053795956,
+      "mean_lift_ablated": 0.0421415225,
+      "max_lift_ablated": 0.1163378501,
       "mean_r2_baseline": 0.1970306019
     },
     "C": {
       "n_targets": 3,
       "n_carrying_signal": 2,
-      "mean_lift": 0.0172785865,
-      "mean_lift_ablated": 0.0161011629,
-      "max_lift_ablated": 0.0518178862,
+      "mean_lift": 0.0180574784,
+      "mean_lift_ablated": 0.0173579305,
+      "max_lift_ablated": 0.0521873745,
       "mean_r2_baseline": 0.3921491665
     },
     "D": {
@@ -49,17 +49,17 @@
     "E": {
       "n_targets": 1,
       "n_carrying_signal": 1,
-      "mean_lift": 0.0714628577,
-      "mean_lift_ablated": 0.0689180878,
-      "max_lift_ablated": 0.0689180878,
+      "mean_lift": 0.0727988768,
+      "mean_lift_ablated": 0.0698454717,
+      "max_lift_ablated": 0.0698454717,
       "mean_r2_baseline": 0.368996975
     },
     "F": {
       "n_targets": 1,
       "n_carrying_signal": 1,
-      "mean_lift": 0.1241430734,
-      "mean_lift_ablated": 0.1197078554,
-      "max_lift_ablated": 0.1197078554,
+      "mean_lift": 0.1258465085,
+      "mean_lift_ablated": 0.1205876796,
+      "max_lift_ablated": 0.1205876796,
       "mean_r2_baseline": 0.2024425905
     }
   }

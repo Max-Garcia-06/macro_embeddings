@@ -57,6 +57,18 @@ D_COMMODITY_GROUPS: tuple[str, ...] = (
     "sctg0109", "sctg1014", "sctg1519", "sctg2033", "sctg3499",
 )
 
+# The ten raw per-commodity tonnages, held out of D's scored block as size
+# columns. They are levels wearing a commodity label -- 0.52-0.97 Spearman
+# against population (`source-d-findings.md` §9) -- and §11 kept them in the
+# block only because a count-shaped downstream target would have made them
+# legitimately predictive. That target is a rate (see `docs/downstream_target.md`
+# Part 1), so the exclusion rule already applied to Source E's dollar totals
+# applies here too. Their composition counterparts, the ten `share_*` columns
+# derived in `_derive_pillar_columns`, are the size-free version and stay.
+D_COMMODITY_TONNAGE_COLUMNS: tuple[str, ...] = tuple(
+    f"{direction}_{group}" for direction in ("out", "in") for group in D_COMMODITY_GROUPS
+)
+
 # No `tons_per_capita` column, deliberately. `docs/downstream_target.md` proposes
 # it as the highest-value change a rate target would imply, and it is not one:
 #
@@ -98,6 +110,9 @@ SIZE_COLUMNS: tuple[str, ...] = (
     "n_returns_wages",
     "n_returns_qualified_dividends",
     "n_returns_net_cap_gain",
+    # Source D's ten raw per-commodity tonnages, on the same rule. See
+    # `D_COMMODITY_TONNAGE_COLUMNS` for why they moved here on 2026-08-05.
+    *D_COMMODITY_TONNAGE_COLUMNS,
 )
 
 # The size control handed to every baseline model, alongside state dummies.

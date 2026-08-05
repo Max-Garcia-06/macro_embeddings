@@ -21,10 +21,25 @@ could be done without an answer from the downstream team
 4. The cross-source notebook no longer reads as though Source A ships a
    character count.
 
-**Still open: which of Plans 1, 3, 4 or 5 follows.** That is a decision about
-scope and budget, not about evidence, and the questions that select among them
-are at the end of this document unchanged. **Nothing further can be done here
-without asking question 4.**
+**Question 4 answered 2026-08-05: the downstream target is a rate.** The
+consumer is Comcast FreeWheel Revenue Science and one row in their training data
+is an impression, request, auction, household, or device — asserted by Max,
+pending written confirmation (`docs/downstream_target.md` Part 1). Consequences
+for this document:
+
+- **Plan 3 is dead.** The only comparison it could have won is typed-versus-
+  scalar, and question 4 settled that comparison for free. Do not spend the 1–2
+  days.
+- **Plan 1 stands** — declare done, ship the 29 columns — unless question 2
+  returns "no label, ever," in which case Plan 4.
+- **Question 2 is now the open one**, and it is the last question in this
+  document that changes what gets built.
+
+The typed-versus-scalar verdict, resolved: under a rate target `content_length`
+sits at +0.355 with county size while `sec_n_industry_mentions` — the single
+column carrying 97.6% of the section gain — sits at +0.110. **The typed block
+wins on construction, not on a p-value.** The 110-target comparison is retired
+rather than run, exactly as question 4 predicted it would be.
 
 ## Context
 
@@ -357,11 +372,12 @@ likely way to waste the next week.
 - *"E_macro certifies Source A adds value"* → certification against pillar
   features is circular by construction. Plan 4 is the minimum.
 
-### 4. Is the downstream target a rate or a count?
+### 4. Is the downstream target a rate or a count? — **ANSWERED: rate**
 
 Already identified in `docs/downstream_target.md` as the property
 that decides everything. **Plan 2 strengthened this question's leverage.** The
-size-dependence scan now covers all 29 shipping columns, and the split is sharp:
+size-dependence scan now covers all 29 shipping columns, and the split is sharp.
+The **rate** branch below is the live one:
 
 - **Rate** → county size is a control → `content_length` (r = +0.355 with size)
   is compromised, while 22 of the block's 29 columns sit below |r| = 0.15 and the
@@ -391,17 +407,19 @@ it — now enforced by the reporting rule in §14.5 and the per-pillar CSVs.
 
 ## Recommendation
 
-Plan 2 is done. **Then Plan 1**, unless question 2 returns "no label, ever," in
-which case Plan 4 with broadband adoption as the external target.
+Plan 2 is done. Question 4 is answered. **Plan 1** — declare done, ship the 29
+columns — unless question 2 returns "no label, ever," in which case Plan 4 with
+broadband adoption as the external target.
 
-Skip Plan 3 — but for a narrower reason than this document originally gave. It
-is not that added targets fail to convert into effective n; measurement showed
+Skip Plan 3 — and the reason has now been realised rather than predicted. It was
+never that added targets fail to convert into effective n; measurement showed
 they largely would. It is that the only comparison Plan 3 could win is
-typed-versus-scalar, and question 4 settles that comparison for the cost of one
-email. The proxy swap sharpened this: reaching 80% power on that comparison now
-needs 110 targets, not 91.
+typed-versus-scalar, and question 4 settled that comparison at no cost. The proxy
+swap had sharpened the point: 80% power on that comparison needed 110 targets,
+not 91. None of them will be run.
 
-**Ask question 4 before spending anything.**
+**Question 2 is the remaining one worth asking**, and it decides between staying
+at Plan 1 and moving to Plan 4.
 
 ---
 

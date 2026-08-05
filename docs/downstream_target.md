@@ -1,21 +1,118 @@
-# Downstream Target — The Open Question, and the Placeholder Standing In For It
+# Downstream Target — The Answered Question, and What It Settles
 
-> **STATUS: NO TARGET VARIABLE HAS BEEN SUPPLIED TO THIS REPO.**
+> **STATUS: TARGET SHAPE IS A RATE. Asserted by Max 2026-08-05, pending written
+> confirmation from the consuming team.**
 >
-> Part 1 is the question to put to the downstream team — the one property of the
-> real target that decides more than everything else combined. Part 2 adopts
-> **revenue per request** as a working placeholder so pillar-selection can be
-> reasoned about instead of deferred; every conclusion there is conditional on
-> that assumption. Part 1 is how the placeholder gets retired.
+> The consumer is the **Comcast FreeWheel Revenue Science** team. One row in
+> their training data is an impression, ad request, auction, household, or
+> device — not a county. Every such row carries a per-row target, so county
+> population is not on the left-hand side under any of them. **County size is a
+> control, not a feature.**
+>
+> No target *variable* has been supplied, and none is needed for this decision:
+> the row grain settles it. Part 1 records the question, why row grain answers
+> it, and what confirmation would still add. Part 2 was written as a conditional
+> placeholder and is now **operative** — its predictions were made in advance and
+> can be scored.
+>
+> **Confidence and its limit.** The assertion is Max's knowledge of the consuming
+> team, not a written statement from them. It is strong enough to build on and
+> is recorded as the repo's operating assumption. If written confirmation comes
+> back contradicting it, the invalidation conditions at the end of Part 2 are the
+> rollback path and every one of them still applies.
 >
 > Merged 2026-08-04 from `downstream_target_assumptions.md` and
 > `plans/downstream_target_question.md`. Content refreshed against
 > `source-a-findings.md` §13–§17, which reinstated Source A as 29 typed columns
-> and changed its refeaturization row from "stays cut" to "ship".
+> and changed its refeaturization row from "stays cut" to "ship". Answered
+> 2026-08-05.
 
 ---
 
-# Part 1 — The question to ask the downstream team
+# Part 1 — The question, and why the row grain answers it
+
+## The answer
+
+**Rate.** County size is a control. `r_size_controlled` is the operative
+scorecard everywhere in this repo, and the raw `r` column must not be quoted
+without its size-controlled partner.
+
+## How it was settled — row grain, not the metric
+
+The question below was written to be put to the downstream team. It did not need
+to be asked in that form, because a weaker and more certain fact answers it:
+
+> **What is one row in your training data?**
+
+For FreeWheel Revenue Science the row is an impression, ad request, auction,
+household, or device. The answer is the same across all five:
+
+| Row | Target example | County population on the left-hand side? |
+|---|---|---|
+| impression / request / auction | clearing price, eCPM, fill, win rate | no — population sets the row *count*, not the row *value* |
+| household | ARPU, lifetime value, churn | no — household spend does not scale with county size |
+| device | completion rate, engagement | no |
+
+There is no per-row target for which county population is part of the outcome.
+Population determines how many rows a county contributes, not what any one of
+them is worth. That is what makes size a control here, and it is why the answer
+is robust to not yet knowing the exact metric.
+
+**Row grain is the better question to ask in general.** It is factual, teams
+always know it, and it answers rate-versus-count as a byproduct. A team that
+cannot name its metric can always name its row.
+
+## What written confirmation would still add
+
+Not the rate/count answer — that follows from the row grain. Confirmation is
+worth having for three things it would settle that this reasoning does not:
+
+1. **The geo join key** — county, ZIP, or DMA. Now the highest-value open
+   question in the project; see "What is still open" below.
+2. **Whether they hold a size feature already.** An ad-tech model holds request
+   volume per geography, which is a better population proxy than anything this
+   repo would ship. If so, `E_macro` should ship no size column at all.
+3. **Whether the outcome is time-varying with a backtest window**, which would
+   move the vintage spread from a documentation gap to a blocking defect.
+
+## What is still open, and now ranks above everything else
+
+**What geo key do the models join county features on?**
+
+- **County** — ships as-is.
+- **DMA** — 3,143 counties collapse to 210 markets. DMAs are defined as sets of
+  counties so the mapping is clean, but the effective sample size drops roughly
+  15×, and most of this repo's county-level resolution is wasted on the
+  consumer. Every power figure computed here would need restating.
+- **ZIP** — county-to-ZIP is many-to-many and needs a population-weighted
+  crosswalk that does not exist in this repo. Real unbuilt work, 1–2 days.
+
+## The grain mismatch is now a live defect, not a hypothetical
+
+This was trap 1 in Part 2 and was written while the target was unknown. With the
+row confirmed as impression-level it is the single most important thing to hand
+to the consuming team — **more important than which columns ship.**
+
+Millions of training rows carry only **3,143 distinct feature values**. Effective
+sample size is the county count, not the row count. A model evaluated with random
+k-fold over impression rows puts every county in both train and test with
+identical feature values; measured performance for `E_macro` will be inflated,
+confidence intervals will be far too tight, and the failure will surface in
+production rather than in evaluation. This is the same error as the naive
+correlation test over 3.9M county *pairs* caught in the Source A analysis, one
+level up.
+
+Both mitigations are required, not recommended:
+
+- Cluster standard errors by `fips_code`.
+- Grouped, **spatially blocked** CV folds. Never random k-fold — counties are
+  spatially autocorrelated, so random folds put a neighbour of every test county
+  into train.
+
+## The question as it was written, retained for reuse
+
+The framing below is kept because the same question has to be asked of any future
+consumer, and because it records what each answer would have changed.
 
 ## The question
 
@@ -55,38 +152,66 @@ tax-return count until 2026-08-04; swapping it changed no tier membership above
 \|r\| = 0.30 and moved `has_university` across the 0.15 line
 (`source-a-findings.md` §18).
 
-### It also settles something no amount of further testing can
+### It settled something no amount of further testing could — and did
 
 Whether Source A's 29 typed columns beat the `content_length` scalar they
 replaced is powered at **0.34** and would need **110 targets** to resolve
-statistically (`source-a-findings.md` §17.3). That comparison will not be settled
-in this repo by adding targets.
+statistically (`source-a-findings.md` §17.3). That comparison was never going to
+be settled in this repo by adding targets.
 
-Under a rate target it does not need to be. `content_length` sits at +0.355 with
-county size; `sec_n_industry_mentions` — the single column carrying 97.6% of the
-section gain — sits at +0.110. The typed block wins on construction rather than
-on a p-value.
+Under the rate answer it does not need to be. `content_length` sits at +0.355
+with county size; `sec_n_industry_mentions` — the single column carrying 97.6% of
+the section gain — sits at +0.110. **The typed block wins on construction rather
+than on a p-value.** The comparison is closed, and Plan 3 in
+`docs/plans/source_a_next_steps.md` — expand the in-repo target set — is dead,
+because the only comparison it could have won is this one.
 
-**One answer here resolves what 110 targets could not.** That is the strongest
-argument for asking rather than for running another sweep.
+## What the answer changes
 
-## What each answer changes
+### Rate — the live branch
 
-### If the answer is "rate"
-
-- County size becomes a control. Regress it out of every pillar before fusion.
-- `r_size_controlled` becomes the operative scorecard; the raw `r` column becomes
-  actively misleading and should not be quoted without its partner.
-- **Source D needs refeaturization** — normalize to `tons_per_return` or
-  `tons_per_capita`. Highest-value single change implied by a rate target: a raw
-  total cannot work against a per-unit outcome.
+- County size is a control.
+- `r_size_controlled` is the operative scorecard; the raw `r` column is actively
+  misleading and must not be quoted without its partner.
+- **Source D's ten raw per-commodity tonnages move into `SIZE_COLUMNS`**
+  (done 2026-08-05, `pillar_matrix.py`). This was pre-registered in
+  `source-d-findings.md` §11 as the action a rate answer would trigger: the raw
+  tonnages are levels wearing a commodity label and were retained only because a
+  count target would have made them legitimate. The ten `share_*` composition
+  columns stay. Cost of the removal, measured: mean lift across the 29-target
+  matrix sweep moved +0.0847 → +0.0851 and the definitional share of that lift
+  fell 0.522 → 0.514. One target (`lq_emp_22`, Utilities LQ) dropped below the
+  signal bar from an ablated lift of +0.0009, which is noise-level. **Removing
+  ten size-in-disguise columns cost nothing.**
 - Demote Source F's `metro_2023`, `population_loss`, `housing_stress`.
-- Source A ships the typed block, and the case for it is now structural rather
-  than statistical.
+- Source A ships the typed block, and the case for it is structural rather than
+  statistical.
 - Add pillars in cleanliness order: C, E and Source A's typed block first, then
-  the B LQ vector, then normalized D, then F's distress flags.
+  the B LQ vector, then D's shares and HHIs, then F's distress flags.
 
-### If the answer is "count"
+### "Control" does not mean "delete" — a correction this document needed
+
+An earlier version of this line read *"regress it out of every pillar before
+fusion."* That is wrong for this consumer, and the error is worth recording
+because it would have destroyed real signal.
+
+Advertiser demand is genuinely denser in metro markets. A size-correlated column
+such as `metro_2023` may be predicting ad price **through** urbanicity, which is
+a causal driver, not through a population artifact. Deleting every size-loaded
+column would delete that.
+
+The correct operation is the one Part 2's validation plan already specifies:
+fit `target ~ log_population + density` as the floor, then add each pillar and
+take **marginal lift over that baseline**. A size-loaded column is kept if and
+only if it beats size alone. That is an empirical test run per column, not a
+policy applied to a whole pillar — and it is the same procedure under either
+answer, which is why the fusion build was never truly blocked on this question.
+
+What the answer does decide: `E_macro` **ships no size column**. The consuming
+team holds request volume per geography, which is a better population proxy than
+anything in these six pillars.
+
+### Count — the branch not taken
 
 - Size is a legitimate feature and the raw correlations stand.
 - D and F recover most of their apparent value.
@@ -95,13 +220,14 @@ argument for asking rather than for running another sweep.
 - Flag honestly that the project is then partly a population model, and that this
   is a choice rather than an accident.
 
-### If the answer is "already size-normalized upstream"
+### "Already size-normalized upstream" — still worth confirming
 
-Different failure mode, worth catching explicitly. If they supply per-capita
-features themselves, double-normalization removes real signal. Ask whether they
-normalize before or after joining county features.
+A different failure mode, and the one branch the row-grain argument does *not*
+close. If the consuming team supplies per-capita features themselves,
+double-normalization removes real signal. Ask whether they normalize before or
+after joining county features. Carry this into the confirmation conversation.
 
-## If they push back
+## If they push back — retained for the confirmation conversation
 
 **"Why does it matter — just give me all the features."**
 You can, and the features ship either way. But 18 of the 50 cross-pillar
@@ -121,7 +247,12 @@ the two point at opposite feature sets, and shipping a feature store means
 committing to one. Publishing both without a decision pushes the decision onto
 whoever consumes it, with less context than we have.
 
-## Two more, if the conversation is going well
+## Still to ask — these did not get answered by the row grain
+
+### 0. What geo key do the models join on — county, ZIP, or DMA?
+
+Now the highest-leverage open question in the project. Consequences in "What is
+still open" above.
 
 ### 1. Is there any path to a real label — at any horizon?
 
@@ -163,12 +294,19 @@ that composition attached.
 cannot, and it invites a decision they are not positioned to make. Source A's
 typed block ships either way — it costs one regex pass and no model download.
 
-**The rate-versus-count question is the only one whose answer changes what gets
-built.**
+**The rate-versus-count question was the only one whose answer changed what gets
+built.** It is answered. The geo-key question is what now sits in that position.
 
 ---
 
-# Part 2 — The placeholder currently standing in
+# Part 2 — The analysis, now operative
+
+> Written 2026-08-04 as a conditional placeholder assuming a rate-shaped target.
+> That assumption was confirmed by row grain on 2026-08-05, so **everything below
+> is the repo's operative analysis rather than a hypothesis** — with the one
+> correction recorded in Part 1: "control" means scored over a size baseline, not
+> regressed out and discarded. Its predictions were stated before the answer
+> arrived and can be scored on the record.
 
 ## Why a placeholder was needed
 
@@ -182,20 +320,26 @@ target in both is another pillar's feature, which penalizes a source precisely
 for agreeing with the pillars it will ship alongside.
 
 Without a target, `docs/PROJECT_GOAL.md` open decision #1 — *is county size a
-control or a feature?* — is unanswerable, and it blocks the fusion step. The
-placeholder exists to unblock that reasoning, not to pre-empt the downstream
-team's actual choice.
+control or a feature?* — was unanswerable, and it blocked the fusion step. The
+placeholder existed to unblock that reasoning, not to pre-empt the downstream
+team's actual choice. **Part 1 has since closed it on row grain**, and the
+placeholder's shape turned out to be the right one.
 
-## What the placeholder assumes
+## The target shape, and what it makes county size
 
 | Target shape | Example | What county size is |
 |---|---|---|
 | **Count / total** | total revenue, total subscribers, request volume | A **feature**. The target scales mechanically with population; a model without size is badly specified. |
-| **Rate / ratio** | revenue **per request**, ARPU, margin % | A **control**. The denominator already normalizes for volume. Size enters only through correlates such as urbanicity and pricing tier. |
+| **Rate / ratio** ← **this one** | revenue **per request**, eCPM, ARPU, margin % | A **control**. The denominator already normalizes for volume. Size enters only through correlates such as urbanicity and pricing tier. |
 
-Revenue per request is a rate. Under this placeholder, **county size is a
-control, not a feature** — so `r_size_controlled` is the operative scorecard and
-the raw `r` column should not be quoted without its size-controlled partner.
+Revenue per request was adopted as the placeholder metric and is a rate. The row
+grain confirms the shape independently of the metric: **county size is a control,
+not a feature** — so `r_size_controlled` is the operative scorecard and the raw
+`r` column should not be quoted without its size-controlled partner.
+
+Note the second row's final clause, which the earlier "regress it out" framing
+contradicted: size enters legitimately through urbanicity and pricing tier. That
+is why the operation is marginal lift over a size baseline rather than deletion.
 
 ## Evidence: which features are size in disguise
 
@@ -320,14 +464,17 @@ tiering is unchanged — but the self-reference was real, and removing it moved
 the old table showed rather than dirtier. Full accounting in
 `source-a-findings.md` §18.
 
-## Refeaturization implied by a rate target
+## Refeaturization the rate target implies
+
+Every row below is now an instruction rather than a conditional. A, D and E have
+landed; B, C and F are annotation and demotion work carried into the fusion step.
 
 | Pillar | Action | Rationale |
 |---|---|---|
 | **A** | **Ship the 29 typed columns, not the `content_length` scalar alone** | Reverses this document's original row, which predated `source-a-findings.md` §13–§17. The embedding stays cut; the text source does not. 22 of the 29 columns are Tier 3, and the signal-carrying `sec_n_industry_mentions` sits at +0.110 against `content_length`'s +0.355 — so a rate target *strengthens* Source A's case rather than confirming a cut. Exclude `has_metro_attachment` (+0.541, duplicates F's `metro_2023`), treat `founding_year` (−0.395, n = 1,214) as low-coverage, and annotate `content_length` and `n_distinct_proper_nouns` as the block's size-loaded columns. |
 | **B** | Ship the 20-dim LQ vector; annotate per-column size loading | LQs are **not** uniformly size-neutral. `lq_emp_11`/`lq_emp_54` are urbanicity axes; `lq_emp_23`/`lq_emp_71` are clean. Both usable — the point is knowing which is which. |
 | **C** | Ship as-is | Both velocities are near-orthogonal to size. |
-| **D** | **Normalize to a rate** — `tons_per_return`, `tons_per_capita` | Highest-value single change implied here. A raw total cannot work against a per-request target. Recheck `out_partner_hhi` (0.33) as well; a concentration index should not carry that much size. |
+| **D** | **[corrected 2026-08-05]** Ship the ten commodity *shares* and the two HHIs; the ten raw per-commodity tonnages moved to `SIZE_COLUMNS` | This row originally read "normalize to `tons_per_return` / `tons_per_capita`, the highest-value single change implied here." **That was wrong.** `log10(tons / population) == log_total_tons − log_population` to 8.9e-16, and both terms already sit in the design — so the per-capita column is an exact linear combination of columns every baseline holds, and D-vs-F is −0.036 size-controlled whichever input is used (`source-d-findings.md` §10). No `tons_per_capita` column ships. What did help was the transformation this document never proposed: composition rather than volume. Five of the ten shares clear the size-free bar that none of the raw tonnages cleared (§11). `out_partner_hhi` was rechecked as this row asked — +0.275 raw to +0.115 size-controlled, the least size-dependent thing D has. |
 | **E** | Ship as-is | Cleanest pillar under this target. |
 | **F** | Demote `metro_2023`, `population_loss`, `housing_stress`; keep the rest | `metro_2023` (0.596) duplicates population, which the downstream model very likely already holds. `population_loss` (−0.393) and `housing_stress` (+0.349) are also size-loaded — the "distress flags are size-light" reading only holds for `persistent_poverty` (−0.139), `low_employment` (−0.197), and `retirement_destination` (+0.052). |
 
@@ -335,14 +482,21 @@ the old table showed rather than dirtier. Full accounting in
 
 ### 1. Grain mismatch — the Mantel problem one level up
 
-Features are county-level (n = 3,143). The target is per-request. Joining county
+**Promoted 2026-08-05 from hypothetical to live.** The row grain is confirmed as
+impression / request / auction / household / device, so this trap is not a risk
+the consuming team might run into — it is one they are exposed to by default, and
+it is the most important item in this document to hand them.
+
+Features are county-level (n = 3,143). The target is per-row. Joining county
 features onto request rows produces millions of rows carrying only 3,143
 distinct feature values.
 
 **Effective sample size is the county count, not the request count.** A model
 reporting significance on request-level rows will report absurdly tight
 confidence intervals, for exactly the reason a naive correlation test on 3.9M
-county *pairs* did in the Source A analysis.
+county *pairs* did in the Source A analysis. Under random k-fold, every county
+appears in both train and test carrying identical feature values, so `E_macro`
+will measure well in evaluation and do nothing in production.
 
 Mitigations, both required:
 - Cluster standard errors by `fips_code`.
@@ -389,17 +543,25 @@ the correction in that row: Source F is the **2025 edition** — `metro_2023` is
 named for the OMB delineation it uses, not for the release year, and this table
 previously said "USDA 2023 typology".
 
-## Validation plan under this placeholder
+## Validation plan
 
-1. **Confirm grain with the downstream team** — per-request rows, or
-   county-aggregated revenue-per-request? Changes the modeling setup, not the
-   feature work.
-2. **Census population swap.** Unblocks trust in the size table above.
-3. **Refeaturize D as a rate.** Turns a dead pillar into a possibly live one.
+1. ~~**Confirm grain with the downstream team**~~ **Done 2026-08-05** — rows are
+   per impression / request / auction / household / device. This settled the
+   target shape (Part 1) and promoted trap 1 to a live defect. What it did *not*
+   settle is the **geo join key** (county / ZIP / DMA), which is now the open
+   item in its place.
+2. ~~**Census population swap.**~~ **Done 2026-08-04** —
+   `scripts/county_population.py`.
+3. ~~**Refeaturize D as a rate.**~~ **Superseded 2026-08-04, closed
+   2026-08-05.** The rate normalization was a re-expression, not a fix; the ten
+   commodity shares were the transformation that helped, and the ten raw
+   tonnages have now moved to `SIZE_COLUMNS`. See the corrected D row above.
 4. **Baseline: target ~ county size + population density only.** This is the bar
-   every pillar must clear.
+   every pillar must clear, and it is the operation "size is a control" actually
+   means — marginal lift over this floor, scored per column, rather than
+   regressing size out of the pillars.
 5. **Add pillars in cleanliness order** — C, E and the Source A typed block
-   first, then the B LQ vector, then normalized D, then F distress flags.
+   first, then the B LQ vector, then D's shares and HHIs, then F distress flags.
    Permutation importance at each step, grouped CV throughout.
 6. **Cut on the same standard applied to the Source A embedding.** Any pillar
    that fails to beat the size-only baseline goes, regardless of its cross-pillar
@@ -407,14 +569,21 @@ previously said "USDA 2023 typology".
    source survived the same test in typed form — the standard is not a proxy for
    a verdict about a source, only about a representation of it.
 
-Expected outcome if the placeholder is roughly right: C, E, the B vector and
-Source A's typed block clear the bar; D clears it only once normalized; F
-contributes through `persistent_poverty` and `low_employment` rather than metro
-status. Stated in advance so it can be wrong on the record.
+Steps 4–6 are the fusion build, and they are no longer blocked. They were never
+as blocked as this document assumed: the procedure is identical under either
+target shape, and the answer changes which pillars survive it rather than what
+has to be written.
+
+Expected outcome, stated in advance so it can be wrong on the record: C, E, the B
+vector and Source A's typed block clear the bar; D clears it through its shares
+and HHIs rather than its tonnages; F contributes through `persistent_poverty` and
+`low_employment` rather than metro status.
 
 ## Invalidation conditions
 
-Re-derive Part 2 if the real target is:
+**These are now the rollback path**, not a hypothetical. The rate answer rests on
+Max's assertion of the consuming team's row grain, pending written confirmation.
+Re-derive Part 2 if the real target turns out to be:
 
 - **A count or total** (total revenue, subscriber counts, request volume). Size
   becomes a feature, the raw `r` column becomes the operative one, D and F
@@ -424,17 +593,21 @@ Re-derive Part 2 if the real target is:
   per-capita features themselves). Double-normalization would remove real signal.
 - **Time-varying with a backtest window.** The vintage table above moves from a
   documentation gap to a blocking defect.
-- **Defined at a grain finer than county** (household, address, H3 cell).
-  `E_macro` is keyed on `fips_code`; a finer target makes these features
-  group-level covariates and the clustering requirements in trap 1 become
-  non-negotiable.
+- ~~**Defined at a grain finer than county**~~ **This one has already fired, and
+  it does not invalidate anything.** The target *is* finer than county —
+  impression, household, device. That makes `E_macro`'s columns group-level
+  covariates and makes the trap-1 clustering requirements non-negotiable, which
+  is now recorded there. It does not touch the rate conclusion: a finer grain is
+  what *produces* a per-row target, so it corroborates Part 1 rather than
+  contradicting it. Listed here originally as a risk to the analysis; in the
+  event it is a risk to the *consumer's evaluation setup*.
 
 ---
 
 ## Related
 
-- `docs/PROJECT_GOAL.md` — open decision #1 is Part 1's question, stated from the
-  repo's side; Part 2 conditionally resolves it.
+- `docs/PROJECT_GOAL.md` — open decision #1 was Part 1's question, stated from the
+  repo's side; both are now closed.
 - `analysis-output/E_macro_key_findings.ipynb` — section "What a downstream
   target would settle" presents this analysis for review.
 - `outputs/pillar_pair_crossvalidation.csv` — the 50-test sweep this reinterprets.

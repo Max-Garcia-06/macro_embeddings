@@ -2,7 +2,7 @@
 type: results-report
 date: 2026-08-04
 experiment_line: source-d
-round: 2
+round: 3
 purpose: initial-ingestion-and-findings, then rate refeaturization
 status: active
 ---
@@ -11,6 +11,10 @@ status: active
 > the rate normalization `docs/downstream_target.md` calls the highest-value
 > change a rate target would imply. It is not one, for a provable reason (§10).
 > What did help was a different transformation the doc did not propose (§11).
+>
+> **Round 3 (2026-08-05).** The rate-versus-count question is answered — rate —
+> so §11's pre-registered action fires: the ten raw per-commodity tonnages move
+> to `SIZE_COLUMNS`, at no measured cost (§14). §15 states what survives.
 
 # Source D — BTS FAF5 Experimental County Commodity Flows (Trade Gravity)
 
@@ -238,6 +242,10 @@ under a count target they are legitimately predictive. The recommendation, once
 that answer exists and if it is "rate", is to move all ten into `SIZE_COLUMNS`
 on the same rule that moved Source E's dollar totals there.
 
+> **Fired 2026-08-05 — see §14.** The answer came back "rate" and all ten moved.
+> The paragraph above is left as written because it is the pre-registration the
+> action was taken against.
+
 ## 12. Sweep result: the shares pay, and they pay to Source B
 
 `analyze_pillar_matrix_signal.py` re-run with the ten shares added to Source D's
@@ -295,6 +303,66 @@ noise of adding eight columns to a 128-column design.
 - Re-scored sweep: `scripts/analyze_pillar_matrix_signal.py` →
   `outputs/pillar_matrix_signal.csv`,
   `analysis-output/cross-source/pillar_matrix_signal_stats.json`
-- Still open, and blocked on `docs/downstream_target.md` Part 1: whether the ten
-  raw per-commodity tonnages move to `SIZE_COLUMNS` (§11), and whether Source D
-  survives at all under a rate target given §10.
+- **Closed 2026-08-05** (§14): the ten raw per-commodity tonnages moved to
+  `SIZE_COLUMNS`, and Source D survives a rate target through composition rather
+  than volume.
+
+---
+
+# Round 3 — The rate answer lands (2026-08-05)
+
+## 14. The ten raw tonnages move to `SIZE_COLUMNS`
+
+§11 held the ten raw per-commodity tonnages in Source D's scored block for one
+stated reason: cutting them depended on the unanswered rate-versus-count question
+in `docs/downstream_target.md` Part 1, and under a count target they are
+legitimately predictive. That question is answered — the consumer is Comcast
+FreeWheel Revenue Science, one row in their training data is an impression,
+request, auction, household, or device, and every such row carries a per-row
+target. **Rate.** (Asserted by Max, pending written confirmation.)
+
+So the pre-registered action fires. `D_COMMODITY_TONNAGE_COLUMNS` is now part of
+`SIZE_COLUMNS` in `pillar_matrix.py`, on the same rule that moved Source E's
+dollar totals there. Source D's scored block goes from 25 columns to 15: the
+three log tonnage columns, the two partner HHIs, and the ten commodity shares.
+
+**Measured cost of the removal**, `analyze_pillar_matrix_signal.py` re-run at
+seed 42:
+
+| statistic | before | after |
+|---|---|---|
+| targets carrying signal | 25 of 29 | 24 of 29 |
+| mean lift | +0.0847 | **+0.0851** |
+| mean lift, ablated | +0.0405 | +0.0413 |
+| definitional share of mean lift | 0.522 | **0.514** |
+| best target (`distress_count`), ablated | +0.1197 | +0.1206 |
+
+The mean lift went *up* and the definitional share went *down*. The single target
+that dropped below the signal bar is `lq_emp_22` (Utilities LQ), which fell from
+an ablated lift of +0.0009 to −0.0020 — both sides of zero at noise level, and
+the weakest surviving target in the sweep before the change.
+
+**Removing ten size-in-disguise columns cost nothing.** That is the same result
+the Source E dollar totals produced (−0.0011), and it is the expected one: a
+column that is a level wearing a commodity label carries information the size
+control already holds.
+
+## 15. Does Source D survive a rate target?
+
+Yes, but not on the strength §3.1 reported. What survives is composition, not
+volume:
+
+- **The ten shares.** Five of ten sit below |r| = 0.15 with log population where
+  none of the raw tonnages did (§11), and the shares are what moved Agriculture
+  LQ off zero and Manufacturing LQ from +0.067 to +0.107 ablated (§12).
+- **`out_partner_hhi`.** +0.275 raw to +0.115 size-controlled — the least
+  size-dependent thing Source D has, and a concentration measure rather than a
+  level (§10).
+- **`log_total_tons`** stays in the block but is honest about what it is: r =
+  +0.865 with log population, Tier 1, and worth +0.008 lift against its own
+  target with a baseline R² of +0.886. It is retained for the fusion step to
+  score against the size baseline rather than pre-emptively cut, on the standard
+  in `docs/downstream_target.md` Part 2 step 4.
+
+The pillar's verdict is unchanged from round 2 — keep, ship composition — and the
+rate answer converts that from a preference into the operative configuration.

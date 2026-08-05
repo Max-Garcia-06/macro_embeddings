@@ -26,7 +26,10 @@ Cleveland. It is keyed on `fips_code` at N ≈ 3,143 US counties and equivalents
 
 ## Who consumes it
 
-**This feeds downstream ML models at Comcast.** `E_macro` is not the deliverable
+**This feeds downstream ML models on the Comcast FreeWheel Revenue Science
+team** — ad-tech revenue modelling over video/CTV inventory. One row in their
+training data is an impression, ad request, auction, household, or device, which
+is what settles open decision #1 below. `E_macro` is not the deliverable
 on its own — it is a geospatial feature layer those models pull from, so the bar
 is production feature-store quality, not a one-off analysis: stable schema keyed
 on `fips_code`, documented coverage and null semantics, and every feature
@@ -100,7 +103,10 @@ Verdict per pillar (detail in `analysis-output/E_macro_key_findings.ipynb`):
   proposal claimed and round 1 could not show. The `tons_per_capita`
   normalization this repo planned is **not** worth doing: it equals
   `log_total_tons − log_population` exactly, so it adds nothing to any model that
-  already controls for size (`source-d-findings.md` §10).
+  already controls for size (`source-d-findings.md` §10). The ten raw tonnages
+  moved into `SIZE_COLUMNS` on 2026-08-05 once the target was confirmed as a
+  rate; they were retained until then only because a count target would have made
+  them legitimately predictive. Done.
 - **E** — keep, change the feature: the capital-to-wage ratio is a product of
   three separable drivers (R² = 0.975 on its log) and its *level* is set by the
   market year, not the county — the unweighted county mean runs 0.095 / 0.156 /
@@ -120,13 +126,30 @@ to −0.057 once size is controlled.
 
 ## Open decisions blocking the next phase
 
-1. **Is county size a control or a feature?** If `E_macro` must distinguish counties
-   *beyond* how big they are, size gets regressed out of every pillar before fusion,
-   which shrinks most of the cross-pillar structure found so far. If size is part of
-   the target, the raw correlations stand but the project is partly a population
-   model. Everything downstream hangs on this. **This is not answerable in-repo —
-   it is one question for the downstream team, written out in
-   `docs/downstream_target.md` Part 1.**
+1. ~~**Is county size a control or a feature?**~~ **Answered 2026-08-05: it is a
+   control.** The consumer is Comcast **FreeWheel Revenue Science**, and one row
+   in their training data is an impression, ad request, auction, household, or
+   device. Every one of those carries a per-row target, so county population is
+   not on the left-hand side — it sets how many rows a county contributes, not
+   what any row is worth. *Asserted by Max, pending written confirmation from the
+   consuming team*; `docs/downstream_target.md` Part 2's invalidation conditions
+   are the rollback path.
+
+   Two things this does **not** mean. It does not mean regressing size out of
+   every pillar — advertiser demand really is denser in metro markets, so a
+   size-loaded column can be earning its slot causally. The operation is marginal
+   lift over a `target ~ log_population + density` baseline, scored per column.
+   And it does not mean the fusion step was ever as blocked as this document
+   claimed: that procedure is identical under either answer.
+
+   What it did change, concretely: Source D's ten raw per-commodity tonnages
+   moved into `SIZE_COLUMNS` (`pillar_matrix.py`, 2026-08-05), which cost
+   nothing — matrix-sweep mean lift +0.0847 → +0.0851, definitional share
+   0.522 → 0.514, one noise-level target dropped.
+
+   **The question now in this slot is the geo join key** — county, ZIP, or DMA.
+   DMA collapses 3,143 counties to 210 markets and wastes most of this repo's
+   resolution; ZIP needs a population-weighted crosswalk that does not exist yet.
 2. **Does B ↔ E get privileged weight?** It is roughly five times stronger than
    anything else surviving the size control.
 3. **Confirm the Source A *embedding* cut.** The pillar itself is not cut — it
@@ -143,11 +166,25 @@ to −0.057 once size is controlled.
    proxy.~~ **Done 2026-08-04** — `scripts/county_population.py`, results in
    `source-a-findings.md` §18. Same tiering, same verdicts, one self-reference
    removed.
-3. Build the fusion — **only after** the size question is settled, or the confound
-   gets baked into the output.
-4. Hand off to the Comcast downstream models: publish the pillar parquets behind
-   the feature store with a frozen schema and documented null semantics. Sources
-   A and E are ready (`docs/source_a_feature_schema.md`,
+3. **Build the fusion — unblocked 2026-08-05.** The size question is settled, so
+   the confound cannot get baked in. Structure it as
+   `target ~ log_population + density` baseline, then pillars added in
+   cleanliness order with permutation importance at each step and grouped,
+   spatially blocked CV throughout (`docs/downstream_target.md` Part 2,
+   validation plan steps 4–6).
+4. **Ask the geo-key question** — county, ZIP, or DMA. It sits where the
+   rate-versus-count question used to, and a DMA answer would restate every power
+   figure in the repo.
+5. Hand off to the FreeWheel Revenue Science models: publish the pillar parquets
+   behind the feature store with a frozen schema and documented null semantics.
+   Sources A and E are ready (`docs/source_a_feature_schema.md`,
    `docs/source_e_feature_schema.md`); every pillar now carries an
    `as_of_date` (`outputs/pillar_vintages.csv`). B, C, D, and F still need their
    own schema docs.
+
+   **Hand them the grain-mismatch warning first.** Impression-level rows carry
+   only 3,143 distinct feature values, so effective n is the county count. Random
+   k-fold will make `E_macro` look good in evaluation and do nothing in
+   production. Cluster standard errors by `fips_code`; use grouped, spatially
+   blocked folds. This matters more to them than which columns ship
+   (`docs/downstream_target.md` Part 2, trap 1).

@@ -253,17 +253,21 @@ every consumer of the matrix inherits the exclusion rather than re-deriving it.
 
 Tier is `|r|` with `log10(Census population)` from
 `outputs/feature_size_dependence.csv`: tier 1 at ≥0.30, tier 2 at ≥0.15, tier 3
-below. Under a rate-shaped downstream target, county size is a control and tier 3
-is what transfers cleanly; under a count-shaped target the tiering is
-informational. That question is unanswered — see `docs/downstream_target.md`
-Part 1.
+below. **The downstream target is rate-shaped** (Comcast FreeWheel Revenue
+Science; one row is an impression, request, auction, household, or device —
+asserted 2026-08-05, pending written confirmation). So county size is a control
+and tier 3 is what transfers cleanly. See `docs/downstream_target.md` Part 1.
+
+Tier 1 is not a cut list. Size-loaded columns are scored on marginal lift over a
+`target ~ log_population + density` baseline and kept if they beat it — some
+carry urbanicity, which is a real driver rather than a population artifact.
 
 ## Related
 
 - `analysis-output/source-a/source-a-findings.md` §13–§17 — how these columns
   were built and what they are worth.
-- `docs/downstream_target.md` — the rate-versus-count question that decides how
-  the size tiers should be read.
+- `docs/downstream_target.md` — the answered rate-versus-count question, and how
+  the size tiers should be read under it.
 - `outputs/pillar_vintages.csv` — `as_of_date` for all six pillars.
 """
 

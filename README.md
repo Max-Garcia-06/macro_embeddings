@@ -186,7 +186,7 @@ Outputs `outputs/pillar_pair_crossvalidation.csv` (per feature pair) and `analys
 
 **The size control matters:** 19 of 50 tests lose more than half their effect size once it is applied, including 17 of the 33 that survived the FDR correction. The largest raw effect in the sweep, Source D freight tonnage against Source F metro status at r = 0.495, falls to -0.057. The strongest surviving link is Source B's Real Estate & Rental & Leasing LQ against Source E's capital-to-wage ratio -- r = 0.394 raw, 0.382 size-controlled -- two independent federal sources identifying the same underlying economy.
 
-Whether the size-controlled column or the raw column is the operative one depends on a question the downstream team has not yet answered — see `docs/downstream_target.md`.
+**The size-controlled column is the operative one.** The downstream consumer is the Comcast FreeWheel Revenue Science team, whose training rows are impressions, ad requests, auctions, households, or devices — all per-row targets, so county size is a control rather than a feature (`docs/downstream_target.md` Part 1; asserted 2026-08-05, pending written confirmation). Do not quote a raw `r` without its size-controlled partner.
 
 ## Findings
 
