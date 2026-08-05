@@ -280,6 +280,10 @@ flag.
 - Data-volume tiers: `scripts/analyze_source_e_tiers.py` -> `outputs/source_e_tiers.csv`, `analysis-output/source-e/source_e_tier_stats.json`
 - Frozen schema, including the per-column size tiering: `docs/source_e_feature_schema.md`
 - Re-scored sweep (§15): `scripts/analyze_pillar_matrix_signal.py` -> `outputs/pillar_matrix_signal.csv`, `analysis-output/cross-source/pillar_matrix_signal_stats.json`
+- Figures: `scripts/generate_source_e_round2_figures.py` -> `analysis-output/source-e/figures/source-e-figure-0{4,5,6}-*.png`
+  - `source-e-figure-04-tier-economics.png` — share of counties against share of national investment income, per tier (§11). The T1/T4 asymmetry: each about a tenth of counties, 0.14% versus 82.6% of the money.
+  - `source-e-figure-05-vintage-effect.png` — national aggregate ratio and unweighted county mean, TY2018–TY2022 (§10). Both series are ratios on one axis; the gap between them is county-equal-weighting, the shape of both is the equity market.
+  - `source-e-figure-06-tier-behavior.png` — the two round-1 corrections side by side (§11): year-over-year movement rising with county size, and the B × E correlation absent in T1.
 
 ## 15. Re-scored leave-one-pillar-out sweep
 
