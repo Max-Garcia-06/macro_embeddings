@@ -79,8 +79,12 @@ that cannot be done.
   `docs/plans/source_a_next_steps.md` question 2 with "no," which per that
   document makes an **external public target mandatory rather than optional** —
   it is the only non-circular evidence this project can ever produce.
-- **Requests for company data are policy asks**, not small favors, including a
-  single sample row. Plan around not getting one.
+- **A data extract is a policy ask; a schema look is not.** Being shown rows on a
+  screen during a scheduled conversation is expected to be available. What the
+  open questions need is column names rather than values, so this is usually
+  enough — see the checklist in `docs/plans/dma_regrain.md` §0.0. Copies of
+  company data are a different request and should be planned around, not
+  assumed.
 - **Communication with the commissioning side is in person only**, four days a
   week, with no async channel. Questions must be batched into a written
   one-pager rather than asked one at a time; there is no "email the downstream

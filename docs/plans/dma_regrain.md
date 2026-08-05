@@ -193,11 +193,36 @@ every effect size in `analysis-output/`. All were computed at county grain.
 > carried into a scheduled conversation, and they should be batched into a single
 > pass rather than asked one at a time.
 >
-> Two consequences. **A sample impression row is a policy ask, not a favor** —
-> the project exists because it needs no company data, and requesting some cuts
-> against that. Ask, but plan for "no." And **none of Phase 0 blocks Phase 1A or
-> Phase 3**, both of which run entirely on public data. Nothing here should stall
-> waiting for an answer.
+> Two consequences. **A data *extract* is a policy ask; a schema *look* is not.**
+> What Phase 0 actually needs is column names, not values — one row's values
+> answer nothing, and its schema answers most of 0.1 and 0.2. Being shown a row
+> on a screen in a scheduled conversation is expected to be available, and is a
+> far smaller request than a copy of the data. Record column names, not values.
+>
+> And **none of Phase 0 blocks Phase 1A or Phase 3**, both of which run entirely
+> on public data. Nothing here should stall waiting for an answer.
+
+### 0.0 Schema-inspection checklist
+
+For the in-person look. Priority order, most decisive first.
+
+| Look for | What it settles |
+|---|---|
+| A fine-geo column **alongside** a DMA column (`zip`, `postal_code`, `lat`/`lon`, `fips`, next to `dma`/`metro_code`) | The most valuable observation available. If both exist, DMA is a **proven choice** rather than a constraint, and the county-grain argument stops being an inference. |
+| What one row is — impression, bid request, auction, pre-bid | Independently confirms the rate answer, and pre-bid versus post-bid rows carry different geo. |
+| Target-shaped columns (`price`, `clearing_price`, `revenue`, `cpm`, `won`, `filled`) | Shows what is actually predictable, rather than reasoning about the target from first principles. |
+| A geo-source or precision column (`geo_type`, `geo_source`, `location_precision`, an IAB-style accuracy code) | The only way to tell genuine lat/long from an IP-derived centroid. Otherwise unknowable. |
+| Timestamp or date-partition columns | Whether models train on rolling windows, which decides if the vintage spread is a leakage defect. |
+| Any volume or count column | Whether impressions-per-geo-unit is derivable, which is what Phase 3's thin-tail stratification needs at their grain rather than proxied by population. |
+
+Three questions a single row cannot answer, so ask them aloud during the look:
+
+1. **Is ZIP usually populated, or often null?** One row proves the column exists,
+   not that it is filled. Coverage is the real question.
+2. **Is this the serving-time payload, or an enriched table downstream?** Only
+   serving-time geo supports a county-grain join.
+3. **Does the model read these geo columns, or only DMA?** This is 0.3 — whether
+   `E_macro` is arguing against an incumbent geo effect or filling a gap.
 
 ### 0.1 Does the impression row carry sub-DMA geo? — **probably yes: ZIP**
 
