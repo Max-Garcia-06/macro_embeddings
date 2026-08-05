@@ -52,6 +52,14 @@ TARGET_QTR: str = "4"
 PRIVATE_OWN_CODE: str = "5"
 COUNTY_AGGLVL_CODE: str = "74"
 
+# County total-private rows, kept alongside the per-sector slice so a re-derived
+# location quotient at a coarser geography has a correct denominator. Summing
+# the 20 sector employment levels instead undercounts by every BLS-suppressed
+# cell, which inflates the quotient -- measured at a median 1.08x to 1.83x
+# depending on the sector before this row was captured.
+COUNTY_TOTAL_AGGLVL_CODE: str = "71"
+TOTAL_INDUSTRY_CODE: str = "10"
+
 # The 20 primary 2-digit NAICS sectors QCEW ships pre-computed Location
 # Quotients for at the private/county slice (confirmed in Phase 0/1b).
 NAICS2_CODES: tuple[str, ...] = (
@@ -121,8 +129,9 @@ def stream_filter_county_sectors(zip_path: Path) -> pd.DataFrame:
         zip_path: Path to the downloaded `{year}_qtrly_singlefile.zip`.
 
     Returns:
-        Long-format DataFrame (one row per county x NAICS-2 sector) with all
-        original QCEW columns, string-typed.
+        Long-format DataFrame with all original QCEW columns, string-typed. One
+        row per county x NAICS-2 sector, plus one county total-private row per
+        county at `agglvl_code=71` / `industry_code=10`.
 
     Raises:
         SourceBError: If no rows match the target filter.
@@ -136,10 +145,15 @@ def stream_filter_county_sectors(zip_path: Path) -> pd.DataFrame:
                 raise SourceBError("No CSV member found in QCEW singlefile zip.")
             with archive.open(csv_name) as f:
                 for i, chunk in enumerate(pd.read_csv(f, dtype=str, chunksize=CHUNK_ROWS)):
-                    mask = (
-                        (chunk["qtr"] == TARGET_QTR)
-                        & (chunk["own_code"] == PRIVATE_OWN_CODE)
-                        & (chunk["agglvl_code"] == COUNTY_AGGLVL_CODE)
+                    quarter_slice = (chunk["qtr"] == TARGET_QTR) & (
+                        chunk["own_code"] == PRIVATE_OWN_CODE
+                    )
+                    mask = quarter_slice & (
+                        (chunk["agglvl_code"] == COUNTY_AGGLVL_CODE)
+                        | (
+                            (chunk["agglvl_code"] == COUNTY_TOTAL_AGGLVL_CODE)
+                            & (chunk["industry_code"] == TOTAL_INDUSTRY_CODE)
+                        )
                     )
                     filtered = chunk.loc[mask]
                     if not filtered.empty:
@@ -172,16 +186,41 @@ def transform_wide(long_df: pd.DataFrame) -> pd.DataFrame:
 
     Returns:
         Wide DataFrame indexed by `fips_code`, with `lq_emp_{naics2}`
-        (nullable float) and `disclosure_{naics2}` (nullable boolean, True =
+        (nullable float), `emp_{naics2}` (nullable float, third-month
+        employment level) and `disclosure_{naics2}` (nullable boolean, True =
         BLS-suppressed) columns for each of the 20 NAICS-2 sectors.
+
+    The `emp_{naics2}` block exists so the pillar can be **re-derived at a
+    coarser geography**. A location quotient is a share measured against a
+    national base, so a market-level LQ is summed sector employment over summed
+    total employment against that base -- it is not the mean of its counties'
+    quotients. Without the employment levels that computation is impossible, and
+    `analysis-output/cross-source/external-target-findings.md` §13 records
+    Source B's 40 columns as the one block that could not be aggregated
+    correctly. These columns close that gap. They are held out of the scored
+    matrix as size measures; only the quotients are features.
     """
     long_df = long_df.copy()
     long_df["lq_month3_emplvl"] = pd.to_numeric(long_df["lq_month3_emplvl"], errors="coerce")
+    long_df["month3_emplvl"] = pd.to_numeric(long_df["month3_emplvl"], errors="coerce")
     long_df["suppressed"] = (long_df["disclosure_code"] == "N").astype("boolean")
+
+    # Split the total-private rows out before pivoting the sector rows.
+    is_total = long_df["agglvl_code"] == COUNTY_TOTAL_AGGLVL_CODE
+    total_private = (
+        long_df.loc[is_total]
+        .set_index("area_fips")["month3_emplvl"]
+        .rename("emp_total_private")
+    )
+    long_df = long_df.loc[~is_total]
 
     lq_wide = long_df.pivot(index="area_fips", columns="industry_code", values="lq_month3_emplvl")
     lq_wide = lq_wide.reindex(columns=NAICS2_CODES)
     lq_wide.columns = [f"lq_emp_{code}" for code in NAICS2_CODES]
+
+    emp_wide = long_df.pivot(index="area_fips", columns="industry_code", values="month3_emplvl")
+    emp_wide = emp_wide.reindex(columns=NAICS2_CODES)
+    emp_wide.columns = [f"emp_{code}" for code in NAICS2_CODES]
 
     disclosure_wide = long_df.pivot(index="area_fips", columns="industry_code", values="suppressed")
     disclosure_wide = disclosure_wide.reindex(columns=NAICS2_CODES)
@@ -190,11 +229,16 @@ def transform_wide(long_df: pd.DataFrame) -> pd.DataFrame:
     # BLS reports a suppressed cell's lq_* value as 0 rather than blank, which
     # is indistinguishable from a genuine zero LQ without the disclosure flag
     # (confirmed in docs/plans/ingestion_recon.md (Source B)'s Phase 0) -- null it out explicitly here
-    # rather than trust the raw value at face value.
+    # rather than trust the raw value at face value. The employment level is
+    # suppressed the same way and gets the same treatment, so a re-derived
+    # market LQ undercounts by the suppressed cells rather than by counting
+    # them as genuine zeros.
     for code in NAICS2_CODES:
-        lq_wide.loc[disclosure_wide[f"disclosure_{code}"].fillna(False), f"lq_emp_{code}"] = pd.NA
+        suppressed = disclosure_wide[f"disclosure_{code}"].fillna(False)
+        lq_wide.loc[suppressed, f"lq_emp_{code}"] = pd.NA
+        emp_wide.loc[suppressed, f"emp_{code}"] = pd.NA
 
-    result = lq_wide.join(disclosure_wide)
+    result = lq_wide.join(emp_wide).join(disclosure_wide).join(total_private)
     result.index.name = "fips_code"
     return result.reset_index()
 

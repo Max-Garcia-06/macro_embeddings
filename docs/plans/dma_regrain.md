@@ -332,14 +332,22 @@ Cost: 1–2 days — revised to 2–3, see below.**
 > for DMAs without the proprietary delineation. Swapping in a real crosswalk is a
 > one-argument change.
 >
-> **Cost correction: Source B cannot be re-derived from its shipped parquet.**
-> `source_b_qcew.parquet` carries location quotients and disclosure flags and no
-> employment counts, so the widest block in the matrix — 40 columns — can only be
-> population-weighted, which is the operation §3 forbids. 62 of 118 columns are
-> approximated for this and related reasons. Fixing it means changing
-> `ingest_source_b.py` to carry `emp` alongside `lq_emp` and re-downloading the
-> ~2.2GB QCEW singlefile. Add about a day. The 1–2 day estimate assumed every
-> pillar could be rebuilt from its parquet and that assumption was wrong.
+> ~~**Cost correction: Source B cannot be re-derived from its shipped
+> parquet.**~~ **Fixed the same day.** `ingest_source_b.py` now captures
+> `emp_{naics2}` and `emp_total_private` (the `agglvl_code=71` county
+> total-private row, which is the quotient's denominator), so Source B's 40
+> columns are re-derived rather than approximated. Provenance moves from 49
+> re-derived / 62 approximated to **72 / 42**. Reconstructing county LQs from the
+> employment block reproduces BLS's published values at mean r = 0.963.
+>
+> The cost was one re-download and two script changes, not the extra day
+> estimated. What remains approximated is Source F's typology flags, which have
+> no underlying quantity to re-sum, and Source D's two partner-concentration
+> indices, which need the partner-level flow table.
+>
+> **And it did not change the answer** — re-running the three arms on the correct
+> Source B moved the aggregation effect by 0.001
+> (`external-target-findings.md` §18).
 
 - `scripts/dma_crosswalk.py` — county→DMA mapping, cached parquet, coverage
   audit against all 3,143 counties, explicit handling of unassigned counties.

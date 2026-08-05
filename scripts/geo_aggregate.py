@@ -19,16 +19,24 @@ and -- more importantly -- **records where the rule cannot be followed.**
 | **D** | **re-derived** (tonnage) | Per-commodity and directional tonnages are levels, so they sum. Shares are recomputed from the summed totals. |
 | **A** | **re-derived** | Booleans become the population-weighted share of the group's residents whose county carries the flag, which is strictly more informative than the boolean was. Counts sum. |
 | **C** | population-weighted | Velocities are slopes; a weighted mean is defensible but is not the slope of the summed series. `gdp_latest` sums. |
-| **B** | **approximated** | `source_b_qcew.parquet` ships only location quotients and disclosure flags. **The underlying employment counts are not in the parquet**, so a group-level LQ cannot be computed without re-ingesting QCEW. |
+| **B** | **re-derived** (since 2026-08-05) | `ingest_source_b.py` now carries `emp_{naics2}` alongside `lq_emp_{naics2}`, so a group LQ is summed sector employment over summed total employment against the national base -- the actual definition, rather than a mean of quotients. |
 | **F** | **approximated** | USDA typology flags are categorical classifications with no underlying quantity to re-sum. A population-weighted share is a reasonable reading but a different construct. |
 | **D** (HHI) | **approximated** | Partner concentration needs the partner-level flow table, which the parquet does not carry. |
 
-**Source B needing re-ingestion is a cost finding, not a detail.**
-`dma_regrain.md` Phase 1B estimated 1-2 days on the assumption that every pillar
-could be rebuilt from its shipped parquet. Source B cannot, and it is the widest
-block in the matrix at 40 columns. Any real DMA delivery has to re-ingest QCEW
-carrying `emp` alongside `lq_emp`, which is a change to `ingest_source_b.py`
-rather than a change to this module.
+**Source B's re-derivation carries one known bias.** BLS suppresses a cell when
+small employer counts could expose an individual operation, and a suppressed cell
+has no employment level to sum. Group employment therefore undercounts by
+whatever the suppressed counties held. Suppression concentrates in small-employer
+counties, so the undercount is small relative to a market total -- but it is a
+downward bias on the sectors BLS suppresses most (`lq_emp_21` at 67.4%,
+`lq_emp_99` at 65.8%), and any market-level LQ for those sectors should be read
+with that in mind.
+
+The national base is computed by summing the county rows in this same file rather
+than taken from BLS's published national totals, so it inherits the same
+suppression and excludes non-county areas. That makes it internally consistent
+across groups, which is what the comparison needs, and slightly different from
+BLS's own denominator.
 
 `aggregate_matrix` returns the aggregated frame together with a per-column
 provenance map, so every downstream report can state which columns are exact and
@@ -47,15 +55,32 @@ must say so.
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 
 from county_population import fetch_county_population
+from ingest_source_b import NAICS2_CODES
 from pillar_matrix import SIZE_FEATURES, build_matrix
 
 RANDOM_SEED: int = 42
+
+DATA_DIR: Path = Path(__file__).resolve().parent.parent / "data"
+SOURCE_B_PATH: Path = DATA_DIR / "source_b_qcew.parquet"
+SOURCE_E_PATH: Path = DATA_DIR / "source_e_irs_soi.parquet"
+
+# Raw Source E totals the ratio re-derivation sums before dividing.
+SOURCE_E_TOTALS: tuple[str, ...] = (
+    "num_returns",
+    "wages_salaries_thousands",
+    "qualified_dividends_thousands",
+    "net_cap_gain_thousands",
+    "n_returns_wages",
+    "n_returns_qualified_dividends",
+    "n_returns_net_cap_gain",
+)
 
 # Matches the Nielsen DMA count. See the module docstring on why this is a
 # stand-in rather than the real delineation.
@@ -194,6 +219,60 @@ def _rederive_source_e(group: pd.DataFrame) -> dict[str, float]:
     }
 
 
+def national_sector_shares(employment: pd.DataFrame) -> dict[str, float]:
+    """Compute each sector's share of national private employment.
+
+    The denominator of a location quotient. Summed from the same county rows the
+    groups are built from, so the base is internally consistent across groups --
+    see the module docstring on how that differs from BLS's own denominator.
+
+    Args:
+        employment: Frame carrying `emp_{naics2}` columns.
+
+    Returns:
+        Mapping of NAICS-2 code to its national employment share.
+    """
+    totals = {
+        code: float(employment[f"emp_{code}"].sum(skipna=True))
+        for code in NAICS2_CODES
+        if f"emp_{code}" in employment.columns
+    }
+    national = float(employment["emp_total_private"].sum(skipna=True))
+    return {code: value / national for code, value in totals.items()} if national > 0 else {}
+
+
+def _rederive_source_b(group: pd.DataFrame, shares: dict[str, float]) -> dict[str, float]:
+    """Recompute Source B's location quotients from summed employment.
+
+    A group's LQ for a sector is its share of the group's private employment
+    divided by that sector's national share. This is the definition; the mean of
+    the member counties' quotients is a different and meaningless quantity.
+
+    Args:
+        group: County rows for one group, carrying `emp_{naics2}` columns.
+        shares: National sector shares from `national_sector_shares`.
+
+    Returns:
+        Mapping of `lq_emp_{naics2}` to its re-derived group value.
+    """
+    sector_totals = {
+        code: float(group[f"emp_{code}"].sum(skipna=True))
+        for code in NAICS2_CODES
+        if f"emp_{code}" in group.columns
+    }
+    group_total = float(group["emp_total_private"].sum(skipna=True))
+    if group_total <= 0:
+        return {f"lq_emp_{code}": np.nan for code in sector_totals}
+
+    derived: dict[str, float] = {}
+    for code, total in sector_totals.items():
+        national_share = shares.get(code, 0.0)
+        derived[f"lq_emp_{code}"] = (
+            (total / group_total) / national_share if national_share > 0 else np.nan
+        )
+    return derived
+
+
 def _rederive_source_d(group: pd.DataFrame) -> dict[str, float]:
     """Recompute Source D's commodity shares from summed tonnage.
 
@@ -244,40 +323,48 @@ def aggregate_matrix(
         KeyError: If `group_column` is absent from `group_map`.
     """
     population = fetch_county_population()[["fips_code", "population"]]
-    raw_e = pd.read_parquet(matrix.attrs.get("source_e_path", "data/source_e_irs_soi.parquet"))
+    raw_e = pd.read_parquet(SOURCE_E_PATH)[["fips_code", *SOURCE_E_TOTALS]]
+
+    raw_b = pd.read_parquet(SOURCE_B_PATH)
+    employment_columns = [f"emp_{code}" for code in NAICS2_CODES if f"emp_{code}" in raw_b.columns]
+    # The total-private row is the LQ denominator; without it the sector sums
+    # undercount by every suppressed cell and inflate the quotient.
+    has_employment = bool(employment_columns) and "emp_total_private" in raw_b.columns
+    if has_employment:
+        employment_columns.append("emp_total_private")
+    if not has_employment:
+        logger.warning(
+            "source_b_qcew.parquet carries no emp_* columns; Source B will be "
+            "population-weighted rather than re-derived. Re-run ingest_source_b.py."
+        )
 
     panel = (
         matrix.merge(group_map[["fips_code", group_column]], on="fips_code", how="inner")
         .merge(population, on="fips_code", how="inner")
-        .merge(
-            raw_e[
-                [
-                    "fips_code",
-                    "num_returns",
-                    "wages_salaries_thousands",
-                    "qualified_dividends_thousands",
-                    "net_cap_gain_thousands",
-                    "n_returns_wages",
-                    "n_returns_qualified_dividends",
-                    "n_returns_net_cap_gain",
-                ]
-            ],
-            on="fips_code",
-            how="left",
-            suffixes=("", "_raw"),
-        )
+        .merge(raw_e, on="fips_code", how="left", suffixes=("", "_raw"))
     )
+    if has_employment:
+        panel = panel.merge(
+            raw_b[["fips_code", *employment_columns]], on="fips_code", how="left"
+        )
+    shares = national_sector_shares(panel) if has_employment else {}
 
     provenance: dict[str, str] = {}
     for pillar, columns in blocks.items():
         for column in columns:
-            if pillar == "E":
+            if pillar in {"A", "E"}:
                 provenance[column] = "re-derived"
-            elif pillar == "A" or (pillar == "D" and column.startswith("share_")):
-                provenance[column] = "re-derived"
-            elif pillar == "D" and "hhi" in column:
-                provenance[column] = "approximated"
-            elif pillar in {"B", "F"}:
+            elif pillar == "D":
+                provenance[column] = (
+                    "approximated" if "hhi" in column else "re-derived"
+                )
+            elif pillar == "B":
+                provenance[column] = (
+                    "re-derived"
+                    if has_employment and column.startswith("lq_emp_")
+                    else "approximated"
+                )
+            elif pillar == "F":
                 provenance[column] = "approximated"
             else:
                 provenance[column] = "population-weighted"
@@ -300,6 +387,8 @@ def aggregate_matrix(
                 row[column] = _weighted_mean(group[column], weights)
         row.update(_rederive_source_e(group))
         row.update(_rederive_source_d(group))
+        if has_employment:
+            row.update(_rederive_source_b(group, shares))
         rows.append(row)
 
     aggregated = pd.DataFrame(rows)

@@ -95,7 +95,9 @@ No credentials are required (downloads the public bulk singlefile, ~2.2GB uncomp
 uv run scripts/ingest_source_b.py
 ```
 
-Output: `data/source_b_qcew.parquet` with columns `county_name`, `fips_code`, `lq_emp_{naics2}` (20 columns, one per 2-digit NAICS sector) and `disclosure_{naics2}` (20 matching boolean suppression flags).
+Output: `data/source_b_qcew.parquet` with columns `county_name`, `fips_code`, `lq_emp_{naics2}` (20 columns, one per 2-digit NAICS sector), `disclosure_{naics2}` (20 matching boolean suppression flags), `emp_{naics2}` (20 third-month employment levels) and `emp_total_private` (the county total-private row, `agglvl_code=71`).
+
+The employment block is **not** a feature — it is held out of the scored matrix in `SIZE_COLUMNS` on the same rule as Source E's dollar totals. It exists so the pillar can be re-derived at a coarser geography: a market-level location quotient is summed sector employment over summed total employment against the national base, never the mean of its counties' quotients. Reconstructing county LQs from these columns reproduces BLS's published values at mean r = 0.963 across the 20 sectors (`analysis-output/cross-source/external-target-findings.md` §17).
 
 ## Source C: FRED Time-Series Slope Derivatives
 

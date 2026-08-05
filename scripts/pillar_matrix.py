@@ -69,6 +69,15 @@ D_COMMODITY_TONNAGE_COLUMNS: tuple[str, ...] = tuple(
     f"{direction}_{group}" for direction in ("out", "in") for group in D_COMMODITY_GROUPS
 )
 
+# The 20 primary 2-digit NAICS sectors Source B ships. Mirrored here rather than
+# imported from `ingest_source_b` so the matrix does not depend on an ingestion
+# module; the two are checked against each other by the column-collision guard
+# in `build_matrix`.
+B_NAICS2_CODES: tuple[str, ...] = (
+    "11", "21", "22", "23", "31-33", "42", "44-45", "48-49", "51", "52",
+    "53", "54", "55", "56", "61", "62", "71", "72", "81", "99",
+)
+
 # No `tons_per_capita` column, deliberately. `docs/downstream_target.md` proposes
 # it as the highest-value change a rate target would imply, and it is not one:
 #
@@ -113,6 +122,13 @@ SIZE_COLUMNS: tuple[str, ...] = (
     # Source D's ten raw per-commodity tonnages, on the same rule. See
     # `D_COMMODITY_TONNAGE_COLUMNS` for why they moved here on 2026-08-05.
     *D_COMMODITY_TONNAGE_COLUMNS,
+    # Source B's employment levels, added to the parquet 2026-08-05 so the
+    # pillar can be re-derived at a coarser geography (`geo_aggregate.py`). They
+    # are raw scale measures -- a county's employment in a sector is a level, and
+    # the location quotient built from it is the composition that pillar ships.
+    # Held out on exactly the rule that holds out Source E's dollar totals.
+    "emp_total_private",
+    *(f"emp_{code}" for code in B_NAICS2_CODES),
 )
 
 # The size control handed to every baseline model, alongside state dummies.

@@ -4,37 +4,37 @@
   "grouping": "k-means on county centroids at Nielsen DMA cardinality (NOT DMAs)",
   "mean_lift_county_full": 0.21189606053706803,
   "mean_lift_county_subsample": 0.09041269495922709,
-  "mean_lift_market_aggregate": 0.1963403497000144,
-  "aggregation_effect": 0.10592765474078732,
+  "mean_lift_market_aggregate": 0.1954093409872118,
+  "aggregation_effect": 0.10499664602798471,
   "row_count_effect": -0.12148336557784092,
-  "columns_rederived": 49,
-  "columns_approximated": 62,
-  "columns_weighted": 7,
+  "columns_rederived": 72,
+  "columns_approximated": 42,
+  "columns_weighted": 4,
   "by_target": {
     "broadband_rate": {
       "county_full": 0.09068294462404103,
       "county_subsample": -0.051096987672226604,
-      "market_aggregate": -0.10995410370657799
+      "market_aggregate": -0.11891441056901675
     },
     "mean_commute_minutes": {
       "county_full": 0.23212921080691895,
       "county_subsample": 0.14437521097371464,
-      "market_aggregate": 0.05776300330248407
+      "market_aggregate": 0.06646375503260138
     },
     "median_age": {
       "county_full": 0.2562214377416915,
       "county_subsample": 0.20556240629522743,
-      "market_aggregate": 0.35826983485787034
+      "market_aggregate": 0.4045121499109551
     },
     "median_home_value": {
       "county_full": 0.23348979515990553,
       "county_subsample": 0.12363668411327473,
-      "market_aggregate": 0.40434050572813984
+      "market_aggregate": 0.33769696838949226
     },
     "median_household_income": {
       "county_full": 0.2469569143527831,
       "county_subsample": 0.029586161086145278,
-      "market_aggregate": 0.2712825083181558
+      "market_aggregate": 0.2872882421720271
     }
   }
 }

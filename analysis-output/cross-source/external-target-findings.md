@@ -2,7 +2,7 @@
 type: results-report
 date: 2026-08-05
 experiment_line: cross-source
-round: 2
+round: 3
 purpose: first non-circular validation, and the go/no-go evidence
 status: active
 ---
@@ -12,6 +12,12 @@ status: active
 > aggregation half of the grain penalty §4 left unmeasured. **§12 reverses round
 > 1's grain conclusion** — aggregation helps, and roughly cancels the row-count
 > loss. Read §14 before quoting anything from §4.
+>
+> **Round 3 (2026-08-05).** §17–§20 close §13's cost finding: Source B now ships
+> employment levels, so its 40 location quotients are re-derived rather than
+> approximated at group grain. §18 re-runs §12 on 72 of 118 columns re-derived
+> instead of 49 — **the aggregation effect moves by 0.001 and no target changes
+> sign.** §12's hedge is retired; the finding is not an artifact of approximation.
 
 # External Targets — Does `E_macro` Predict Anything Outside Itself?
 
@@ -439,3 +445,99 @@ uv run python scripts/ingest_external_targets.py
 uv run python scripts/analyze_external_target.py
 uv run python scripts/analyze_grain_effect.py
 ```
+
+---
+
+# Round 3 — Source B re-derived, and the aggregation result holds (2026-08-05)
+
+§13 recorded Source B as the one block that could not be aggregated correctly,
+and §12's aggregation finding therefore carried an explicit caveat: 62 of 118
+columns were approximations, so the market arm was a lower bound. That gap is
+now closed, and **closing it did not move the conclusion.**
+
+## 17. The re-ingest, and validating it
+
+`ingest_source_b.py` now captures two things it previously discarded:
+
+- `emp_{naics2}` — third-month employment level per county × sector, nulled on
+  suppression exactly as the quotients are.
+- `emp_total_private` — the county total-private row (`agglvl_code=71`,
+  `industry_code=10`), which is the location quotient's denominator.
+
+The second turned out to matter more than the first. A first attempt summed the
+20 sector employment levels to get a county total, which undercounts by every
+suppressed cell and inflates the quotient. Reconstructing county LQs that way
+reproduced BLS's published values at **mean r = 0.764**, with median ratios
+running 1.08× to 1.83× — worst on the most-suppressed sectors. Capturing the
+published total-private row instead lifts that to **mean r = 0.963**:
+
+| | summed sectors | published total |
+|---|---|---|
+| mean r vs published LQ | 0.764 | **0.963** |
+| worst sector | `44-45` at 0.310 | `44-45` at 0.860 |
+| median of median ratios | 1.27 | 1.11 |
+
+A residual level bias remains — median ratio 1.11, worst on `11` (1.58) and `99`
+(1.77), the two most-suppressed sectors — because the national base here is summed
+from these county rows rather than taken from BLS's own national denominator,
+which includes non-county areas. It is a near-constant multiplicative offset per
+sector, which a standardized ridge absorbs, and the correlation says the shape is
+right. **This is the validation that licenses using the re-derivation at group
+grain**, and it should travel with any market-level LQ this repo produces.
+
+The employment block is held out of the scored matrix in `SIZE_COLUMNS`, on the
+rule that already excludes Source E's dollar totals: a sector's employment is a
+level, and the quotient built from it is the composition the pillar ships. The
+matrix is unchanged at 118 features and the county arm reproduces §10 to four
+decimals.
+
+## 18. The aggregation result survives a correct Source B
+
+Provenance moves from 49 re-derived / 62 approximated / 7 weighted to
+**72 / 42 / 4**. Re-running the three arms:
+
+| target | `county_full` | `county_subsample` | `market_aggregate` (B approximated) | `market_aggregate` (B re-derived) |
+|---|---|---|---|---|
+| `broadband_rate` | +0.091 | −0.051 | −0.110 | **−0.119** |
+| `mean_commute_minutes` | +0.232 | +0.144 | +0.058 | **+0.067** |
+| `median_age` | +0.256 | +0.206 | +0.358 | **+0.405** |
+| `median_household_income` | +0.247 | +0.030 | +0.271 | **+0.287** |
+| `median_home_value` | +0.234 | +0.124 | +0.404 | **+0.338** |
+| **mean** | +0.212 | +0.091 | +0.196 | **+0.195** |
+
+- Row-count effect: **−0.122**, unchanged.
+- Aggregation effect: +0.106 → **+0.105**.
+
+**A correct Source B changes the aggregation effect by 0.001.** Individual
+targets move — median age gains 0.047, median home value loses 0.066 — but they
+cancel, and no target changes sign. The 2-of-5 split stands, with
+`broadband_rate` and `mean_commute_minutes` still the two favouring county grain.
+
+This is worth more than a confirmation. §12's finding was hedged on the grounds
+that 62 approximated columns made the market arm a lower bound; that hedge is now
+retired. **The aggregation effect is real, it is not an artifact of sloppy
+aggregation, and the county-grain argument does not recover.**
+
+The two biases named in §12 still stand uncorrected and still favour the
+aggregate arm: the aggregated target is much less noisy, and k-means markets are
+spatially compact where real DMAs follow media boundaries. +0.105 remains an
+upper bound for that reason, not for the Source B reason.
+
+## 19. Cost note, resolved
+
+`dma_regrain.md` Phase 1B was re-estimated at 2–3 days on the strength of §13.
+The QCEW re-ingest took one download and two script changes — the filter now
+keeps `agglvl_code=71` alongside `74`, and the transform pivots employment
+alongside quotients. **Phase 1B's blocking cost finding is closed**; what remains
+approximated is Source F's typology flags, which have no underlying quantity to
+re-sum, and Source D's two partner-concentration indices, which need the
+partner-level flow table.
+
+## 20. Forbidden wording, round 3
+
+- **Do not cite §13's "Source B cannot be aggregated" as current.** It was true
+  of the parquet as shipped on 2026-08-05 and was fixed the same day.
+- **Do not quote a market-level LQ without the r = 0.963 validation** and the
+  residual 1.11 median level offset.
+- **Do not attribute §12's aggregation finding to approximated columns.** It was
+  re-run with 72 of 118 re-derived and moved by 0.001.
