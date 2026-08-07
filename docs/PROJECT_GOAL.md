@@ -201,7 +201,9 @@ to −0.057 once size is controlled.
    **That preference is no longer supported as stated.**
    `analysis-output/cross-source/external-target-findings.md` §12 measured both
    halves of the grain penalty against five public targets: losing rows costs
-   −0.122 mean lift, aggregating gains **+0.106**, and they roughly cancel. On
+   −0.122 mean lift, aggregating gains **+0.099** (+0.106 before Source D's
+   partner-concentration indices were re-derived on 2026-08-07), and they
+   roughly cancel. On
    three of five targets an aggregated 208-market arm matches or beats full
    county grain. County wins on `broadband_rate` and `mean_commute_minutes` only
    — the first mattering more than a 2-of-5 tally suggests, since it is closest

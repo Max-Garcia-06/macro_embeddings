@@ -379,7 +379,7 @@ md("""
 
 - **Grain moved from blocker to non-issue.** Monday's read said joining at market
   grain would destroy the signal; that was half a finding, and the other half
-  reverses it. Net cost of a market-grain join: **0.017 R²**. Section 5.
+  reverses it. Net cost of a market-grain join: **0.022 R²**. Section 5.
 - **The validation stopped being circular.** Everything before this week scored the
   pillars against each other. `E_macro` is now scored against five public outcomes
   outside all six pillars, on held-out states. Sections 3, 4 and 6.
@@ -537,7 +537,7 @@ Monday I measured only one:
    distinction `E_macro` exists to capture can partly live *inside* a single market.
    Not measured Monday. I said it "could cut either way."
 
-**It cuts the other way.** Aggregation is worth **+0.105** — very nearly cancelling
+**It cuts the other way.** Aggregation is worth **+0.099** — very nearly cancelling
 the row-count loss.
 
 **One implementation detail decides whether that number is real: aggregate the inputs,
@@ -645,11 +645,17 @@ is whether those rows are lone counties or aggregated markets.
 
 - Obvious objection: most columns were *approximated* at market level rather than
   properly re-derived, which would flatter the market arm.
-- So Source B was re-ingested to ship raw employment levels — 72 of 118 columns moved
-  from approximated to correctly re-derived.
-- Re-running everything moved the aggregation effect by **0.001**. No outcome changed
-  sign.
-- Estimated cost of that fix: 2–3 days. Actual: one download and two script changes.
+- So the inputs were re-ingested to make the aggregation honest. Source B now ships
+  raw employment levels (72 of 118 columns re-derived instead of 49), and Source D now
+  ships the partner-tons distribution behind its two concentration indices (**74 of
+  118**).
+- Re-running after Source B moved the aggregation effect by **0.001**. Re-running
+  after Source D moved it by **0.006**, to +0.099. **No outcome changed sign either
+  time.**
+- The 40 columns still approximated are Source F's typology flags, which have no
+  underlying quantity to re-sum. That is the floor, not a to-do.
+- Estimated cost of the Source B fix: 2–3 days. Actual: one download and two script
+  changes.
 
 **The caveat that still stands:**
 
@@ -657,18 +663,18 @@ is whether those rows are lone counties or aggregated markets.
   **not** DMAs — that delineation is proprietary.
 - Real markets follow media boundaries and are less spatially compact; the aggregated
   outcome is genuinely less noisy than a county one.
-- Both biases favour the market arm, so **+0.105 is an upper bound.**
+- Both biases favour the market arm, so **+0.099 is an upper bound.** Re-deriving
+  the inputs fixed a third bias; it did not touch these two.
 
 **Two thresholds, worth keeping apart:**
 
 - For market grain to be a **blocker** again — signal destroyed rather than merely
-  reduced — essentially the whole +0.105 would have to be an artifact of the proxy.
-  That is a large claim and I don't think the biases named above are anywhere near
-  big enough to support it.
+  reduced — essentially the whole +0.099 would have to be an artifact of the proxy.
+  That is a large claim, and the biases named above are nowhere near big enough for it.
 - For county grain to be **strictly better**, the overstatement only has to be
-  **0.017** — that is the gap between the full-county arm (+0.212) and the market
-  arm (+0.195). That is a small enough margin that I would not argue the market arm
-  is *better*, only that it is not disqualifying.
+  **0.022** — the gap between the full-county arm (+0.212) and the market arm
+  (+0.189). Small enough that I would not argue the market arm is *better*, only that
+  it is not disqualifying.
 """)
 
 # --------------------------------------------------------------------------
@@ -769,13 +775,16 @@ Doesn't change the story; does change what ships.
 
 ### What's next, regardless
 
-1. Re-derive Source D's two partner-concentration indices from the partner-level flow
-   table — the last columns that are still approximated at market grain with an
-   underlying quantity to re-sum.
-2. Build the assembly step. The go/no-go evidence now exists, which was the thing
-   gating it.
-3. Keep the grain caveat live: if a real DMA delineation ever becomes available, the
-   market-arm result is worth re-running against it once.
+1. **Done 2026-08-07** — Source D's two partner-concentration indices are re-derived
+   from the partner-tons distribution it now ships. Provenance 72/42/4 → **74/40/4**,
+   aggregation effect +0.105 → **+0.099**, no target changing sign. What stays
+   approximated is Source F's typology flags, which have no underlying quantity to
+   re-sum.
+2. **Build the assembly step.** The go/no-go evidence exists and `PROJECT_GOAL.md` is
+   explicit that this was never blocked on the size decision. This is the next real
+   piece of work.
+3. **Keep the grain caveat live.** If a real DMA delineation ever becomes available,
+   the market-arm result is worth re-running against it once.
 
 """)
 

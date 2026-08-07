@@ -40,7 +40,8 @@ geo key are separate properties.
 > conclusion is no longer supported as stated.
 > `analysis-output/cross-source/external-target-findings.md` §12 ran the three-arm
 > comparison this document scoped for Phase 1B: row count costs −0.122 mean lift
-> and **aggregation gains +0.106**, so the two roughly cancel. On three of five
+> and **aggregation gains +0.106** (+0.099 once Source D's HHIs are re-derived
+> too, 2026-08-07), so the two roughly cancel. On three of five
 > public targets the aggregated 208-market arm matches or beats full county
 > grain. County grain is better on `broadband_rate` and `mean_commute_minutes`
 > only — the first of which matters disproportionately, being closest to the
@@ -337,7 +338,8 @@ Cost: 1–2 days — revised to 2–3, see below.**
 > `emp_{naics2}` and `emp_total_private` (the `agglvl_code=71` county
 > total-private row, which is the quotient's denominator), so Source B's 40
 > columns are re-derived rather than approximated. Provenance moves from 49
-> re-derived / 62 approximated to **72 / 42**. Reconstructing county LQs from the
+> re-derived / 62 approximated to **72 / 42**, and Source D's partner re-ingest
+> (2026-08-07) took it to **74 / 40**. Reconstructing county LQs from the
 > employment block reproduces BLS's published values at mean r = 0.963.
 >
 > The cost was one re-download and two script changes, not the extra day

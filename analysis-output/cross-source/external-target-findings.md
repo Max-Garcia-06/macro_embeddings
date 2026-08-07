@@ -18,6 +18,13 @@ status: active
 > approximated at group grain. §18 re-runs §12 on 72 of 118 columns re-derived
 > instead of 49 — **the aggregation effect moves by 0.001 and no target changes
 > sign.** §12's hedge is retired; the finding is not an artifact of approximation.
+>
+> **Round 4 (2026-08-07).** §21–§23 close the last approximation with an
+> underlying quantity to re-sum: `ingest_source_d.py` now ships the partner-tons
+> distribution, so both HHIs are re-derived at group grain and provenance reaches
+> **74 / 40 / 4**. The aggregation effect moves +0.105 → **+0.099** and no target
+> changes sign. Quote +0.099 and the 0.022 county-versus-market gap, not §18's
+> +0.105 and 0.017.
 
 # External Targets — Does `E_macro` Predict Anything Outside Itself?
 
@@ -541,3 +548,83 @@ partner-level flow table.
   residual 1.11 median level offset.
 - **Do not attribute §12's aggregation finding to approximated columns.** It was
   re-run with 72 of 118 re-derived and moved by 0.001.
+
+## 21. Source D's partner concentration, re-derived
+
+§19 left two columns approximated with an underlying quantity to re-sum:
+`out_partner_hhi` and `in_partner_hhi`. An HHI is a ratio of sums and cannot be
+averaged from per-county HHIs, so re-deriving one at market grain needs the
+partner distribution itself. `ingest_source_d.py` computed that distribution and
+discarded it; it now writes it to `data/source_d_partners.parquet` — **3,724,763
+rows over all 3,144 counties, 31MB** — exactly as `ingest_source_b.py` was
+changed to ship employment levels alongside its quotients.
+
+`geo_aggregate.rederive_partner_hhi` rebuilds both indices under three rules,
+each a judgement rather than a mechanic:
+
+1. **Partner counties are remapped to their own group.** Concentration at market
+   grain means concentration across *markets*; two partner counties inside one
+   market are one partner. Not remapping would leave the index measuring county
+   spread while every other column measures the market.
+2. **FAF-zone partners keep their own key.** A zone is not a county and has no
+   market, so it stays a distinct partner — the same treatment it gets at county
+   grain.
+3. **Flows inside the group are dropped.** A shipment between two counties of the
+   same market is internal to that unit at this grain. Keeping it would inflate
+   concentration for large multi-county markets specifically, which is a
+   size-correlated artifact in a column whose purpose is not to be one.
+
+**Two verifications before the run.** On Rhode Island the persisted rows
+reproduce every shipped county HHI to **0.0 absolute error**, so the file is the
+distribution the index was actually built from. And the three rules were checked
+against a hand-computed three-county fixture: internal flow dropped, two partners
+in one market pooled to one, zone partner preserved.
+
+**The re-ingest changed nothing else.** The 50-state re-download was diffed
+column-by-column against the previous parquet: identical on every numeric column
+to 0.0, same 3,144 rows, 51 of 51 states succeeding. No upstream revision slipped
+in alongside the new file, so nothing already published from Source D moves.
+
+## 22. The aggregation effect with both HHIs correct
+
+Provenance moves 72 re-derived / 42 approximated / 4 weighted to **74 / 40 / 4**.
+The 40 that remain are Source F's typology flags, which have no underlying
+quantity to re-sum — the honest floor for this matrix.
+
+| target | `county_full` | `county_subsample` | `market_aggregate` (D approximated) | `market_aggregate` (D re-derived) |
+|---|---|---|---|---|
+| `broadband_rate` | +0.091 | −0.051 | −0.119 | **−0.119** |
+| `mean_commute_minutes` | +0.232 | +0.144 | +0.066 | **+0.043** |
+| `median_age` | +0.256 | +0.206 | +0.405 | **+0.396** |
+| `median_household_income` | +0.247 | +0.030 | +0.287 | **+0.274** |
+| `median_home_value` | +0.233 | +0.124 | +0.338 | **+0.354** |
+| **mean** | +0.212 | +0.090 | +0.195 | **+0.189** |
+
+- Row-count effect: **−0.122**, unchanged.
+- Aggregation effect: +0.105 → **+0.099**.
+- **No target changes sign.** Four of five move by less than 0.02; the largest
+  single move is `mean_commute_minutes` at −0.023.
+
+**The correction runs the way §18's caveat said it would.** Approximating an
+index by population-weighting county values was flattering the market arm, and
+removing that approximation costs it 0.006. That is the third time this matrix
+has been re-derived rather than approximated and the third time the aggregation
+finding survived: 49 → 72 columns moved it by 0.001, 72 → 74 moves it by 0.006.
+
+**The county-versus-market gap widens slightly, and it is the number to quote.**
+Full county grain +0.212 against the market arm +0.189 is a **0.022** gap, not
+§18's 0.017. That does not change the reading — a market join costs about a tenth
+of the +0.190 headline — but the figure to state is 0.022.
+
+## 23. Forbidden wording, round 4
+
+- **Do not cite "Source D's HHIs cannot be re-derived" as current.** It was true
+  of the parquet as shipped through 2026-08-06 and was fixed on 2026-08-07.
+- **Do not quote +0.105 or the 0.017 gap.** Both are superseded by +0.099 and
+  0.022. §18's table stays as the record of what was true with D approximated.
+- **Do not describe the remaining 40 approximated columns as a gap that can be
+  closed.** Source F's typology flags are categorical classifications with no
+  underlying quantity; re-summing them is not a matter of shipping more data.
+- **Do not read the +0.099 as free of the §12 biases.** The k-means markets are
+  still not DMAs and the aggregated target is still less noisy. Re-deriving the
+  inputs fixes one bias, not those two.
