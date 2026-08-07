@@ -53,6 +53,8 @@ grain = pd.read_csv(OUTPUTS / "grain_effect.csv")
 decile = pd.read_csv(OUTPUTS / "external_target_by_decile.csv")
 ext = json.loads((ANALYSIS / "cross-source" / "external_target_stats.json").read_text())
 gst = json.loads((ANALYSIS / "cross-source" / "grain_effect_stats.json").read_text())
+a_tiers = json.loads((ANALYSIS / "source-a" / "source_a_tier_stats.json").read_text())
+e_tiers = json.loads((ANALYSIS / "source-e" / "source_e_tier_stats.json").read_text())
 
 LABELS = {
     "broadband_rate": "Broadband adoption",
@@ -80,30 +82,160 @@ print(f"{ext['n_targets']} targets · {ext['fold_strategy']} · "
 md("""
 ---
 
-## 1. Where it landed
+## 1. The task you set on Monday: split A and E into groups
 
-Two positions, both of which I think the evidence now supports:
+Both pillars got cut into four groups and pushed on. Short version: **the groups are
+worth a great deal as a diagnostic and nothing as an architecture** — and in Source
+E's case they changed what I think the pillar is actually measuring.
 
-1. **`E_macro` earns its slot.** Tested against five public outcomes that live
-   outside all six pillars, on counties in states the model was never trained on,
-   it adds **+0.19 R² over a county-size baseline** — on all five, with no
-   exceptions. That is the first result in this project that measures usefulness
-   rather than internal agreement.
-2. **Grain is no longer a blocker.** Monday's read said joining at market grain
-   would destroy the signal. That turned out to be half a finding. Aggregating to
-   market level *helps* about as much as the row-count loss hurts, and on three of
-   five outcomes the market-level version is the better predictor. Net cost of
-   joining at market grain instead of county grain: **0.017 R²**, against a headline
-   of +0.19.
+### Source A — four content tiers
 
-Both were open questions on Monday. Neither is now.
+Counties split on how much text their Wikipedia intro has: **stub** (<100 chars),
+**thin** (100–283), **mid** (284–461), **rich** (≥462).
+
+The corpus turns out to be wildly uneven, and the unevenness is economic rather than
+editorial. Named industry content appears in **1.1% of thin-tier counties and 25.2%
+of rich-tier ones** — a 23× gradient — while fewer than one county in ten carries any
+at all. That is the fact that killed the dense-embedding approach: averaging 1,024
+dimensions over 3,144 articles produces a vector dominated by counties that say
+nothing economic.
+
+So the tiers earned their keep immediately — they identified *industry* as the feature
+family worth extracting, and justified refetching article sections for the counties
+where the intro says least.
+
+### Then the stronger version of the ask: should the tiers branch the model?
+
+Splitting into groups to *look* at them is one thing; letting each group get its own
+model is the real question, and it hadn't been tested. Both forms, same 28 targets,
+same folds, same seed:
+
+| approach | width | mean R² lift |
+|---|---|---|
+| one model, one global coefficient per feature | 29 | **+0.00307** |
+| one model, coefficients free to vary by tier | 120 | +0.00279 |
+| four independent models, one per tier | 29 × 4 fits | **−0.01595** |
+
+**Both branching forms lose, and the loss scales with how much branching there is.**
+Tier-specific slopes cost 9% of the lift. Fully separate per-tier models go negative —
+worse than dropping Source A altogether — because each trains on roughly a quarter of
+the rows and overfits with no shared penalty to restrain it.
+
+The mechanism is ordinary bias–variance: crossing 29 features with 4 tiers puts 120
+columns against targets whose smallest sample is n ≈ 1,026, and the ridge penalty big
+enough to control that width over-shrinks the coefficients that were doing the work.
+
+**Conclusion, stated carefully because it inverts easily:** the tiers are the right
+diagnostic and the wrong architecture. Heterogeneity is better handled by features that
+are simply *absent* when a county has nothing to say — sparsity already encodes the
+tier — than by partitioning the fit. One uniform schema, one model, and the negative
+result kept as a scored variant so it stays reproducible rather than becoming folklore.
+
+### Source E — four volume tiers, and a finding I did not expect
+
+Counties split on `num_returns`: **T1** (<2.2k), **T2** (2.2k–11.7k), **T3**
+(11.7k–100k), **T4** (≥100k). Here the groups did more than guide feature choice.
+""")
+
+code('''
+a_sum = a_tiers["summary"]
+a_lab = a_tiers["tier_labels"]
+e_lab = list(e_tiers["tiers"])
+e_sum = e_tiers["tiers"]
+
+fig, (axa, axe) = plt.subplots(1, 2, figsize=(10.6, 4.2))
+
+# --- Source A: industry content by content tier
+shares = [a_sum[t]["share_any_industry"] for t in a_lab]
+bars = axa.bar(a_lab, shares, width=0.62,
+               color=["#dbe3ef", "#b9c9e4", "#7ea2d8", "#2563eb"], zorder=3)
+for b, s in zip(bars, shares):
+    axa.text(b.get_x() + b.get_width() / 2, s + 0.007, f"{s:.1%}",
+             ha="center", fontsize=9.5, fontweight="bold", color=INK)
+axa.set_xticks(range(len(a_lab)),
+               [f"{t}\\nn={a_sum[t]['n_counties']:,}" for t in a_lab])
+axa.set_ylim(0, max(shares) * 1.22)
+axa.set_ylabel("Counties whose intro names an industry")
+axa.set_xlabel("Source A content tier")
+axa.set_title("A: the corpus is uneven, and economically so",
+              fontsize=11.5, loc="left", pad=8)
+axa.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
+axa.grid(axis="y", color="#eef0f3", zorder=0)
+
+# --- Source E: share of counties vs share of national investment income
+cty = [e_sum[t]["share_of_counties"] for t in e_lab]
+inc = [e_sum[t]["share_of_investment_income"] for t in e_lab]
+x = range(len(e_lab))
+axe.bar([i - 0.19 for i in x], cty, width=0.36, color=BASE,
+        label="Share of counties", zorder=3)
+axe.bar([i + 0.19 for i in x], inc, width=0.36, color="#0f766e",
+        label="Share of national investment income", zorder=3)
+for i, (c, v) in enumerate(zip(cty, inc)):
+    axe.text(i - 0.19, c + 0.012, f"{c:.0%}", ha="center", fontsize=9, color="#6b7280")
+    axe.text(i + 0.19, v + 0.012, f"{v:.2%}" if v < 0.05 else f"{v:.0%}",
+             ha="center", fontsize=9, fontweight="bold", color="#0f766e")
+axe.set_xticks(list(x), ["T1\\nthin", "T2\\nsmall", "T3\\nmid", "T4\\nlarge"])
+axe.set_ylim(0, 0.95)
+axe.set_xlabel("Source E volume tier (tax returns filed)")
+axe.set_title("E: equal county counts, unequal economies",
+              fontsize=11.5, loc="left", pad=8)
+axe.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
+axe.legend(frameon=False, fontsize=9, loc="upper left")
+axe.grid(axis="y", color="#eef0f3", zorder=0)
+
+fig.suptitle("What the tiers exposed", x=0.008, y=1.06, ha="left",
+             fontsize=12.5, fontweight="bold")
+plt.tight_layout()
+plt.show()
+''')
+
+md("""
+The right panel is the one to sit with. **T1 and T4 are each about 10% of counties.
+T1 holds 0.14% of national investment income; T4 holds 82.6%.** An unweighted
+county-level feature and the economy it claims to describe are not the same object —
+the national aggregate ratio is 0.156 against an unweighted county mean of 0.107.
+
+Three more things the split turned up, two of which corrected earlier conclusions:
+
+- **The strongest cross-pillar link in the whole project is a large-county
+  phenomenon.** B Real Estate LQ × E capital-to-wage runs +0.394 nationally, but
+  **+0.476 in T4 and −0.058 in T1**. It does not exist for the counties with the least
+  data. Anyone serving rural inventory needs that stated before leaning on B ↔ E.
+- **Round 1 had the stability backwards.** I had said small counties were the volatile
+  ones. On ranks it is the opposite — Spearman stability *improves* with size
+  (0.861 → 0.941), and median year-over-year moves *rise* with size (0.298 → 0.393).
+  Which means round 1's proposed fix, weighting by `num_returns`, would have upweighted
+  exactly the counties whose values move most between vintages.
+- **The dispersion is not sampling noise.** Regressing log dispersion on log median
+  returns gives a slope of **+0.026**; pure sampling error would give −0.5. Small
+  counties' spread is real economic variation, not thin-data artifact.
+
+**Net from the assigned work:** neither pillar should branch on its groups, Source A
+ships one uniform schema, and Source E ships with an explicit warning that its best
+cross-pillar result is conditional on county size. The groups did their job by
+changing what gets shipped and what gets disclosed — not by becoming part of the model.
 """)
 
 # --------------------------------------------------------------------------
 md("""
 ---
 
-## 2. The problem we actually fixed
+## 2. The rest of the week, in one line each
+
+- **Grain moved from blocker to non-issue.** Monday's read said joining at market
+  grain would destroy the signal; that was half a finding, and the other half
+  reverses it. Net cost of a market-grain join: **0.017 R²**. Section 5.
+- **The validation stopped being circular.** Everything before this week scored the
+  pillars against each other. `E_macro` is now scored against five public outcomes
+  outside all six pillars, on held-out states. Sections 3, 4 and 6.
+- **Two pillars got cleaned up** — Source D's freight tonnages were county size in
+  disguise, Source E's dollar totals likewise. Section 7.
+
+---
+
+## 3. Getting out of the circle
+
+Every validation in this repo before this week was **pillar against pillar**. We
 
 Every validation in this repo before this week was **pillar against pillar**. We
 predicted one federal source's features from the other five. That measures whether
@@ -178,7 +310,7 @@ behaving exactly as predicted — it has nothing to say.
 md("""
 ---
 
-## 3. The discount I applied to my own result
+## 4. The discount I applied to my own result
 
 The raw number was better: +0.212. I am reporting **+0.190**, and the difference is
 worth a paragraph because it is the kind of thing that gets caught in review rather
@@ -201,7 +333,7 @@ is the discounted number.
 md("""
 ---
 
-## 4. The grain reversal
+## 5. The grain reversal
 
 This is the part I got wrong on Monday and corrected twice.
 
@@ -234,7 +366,7 @@ collinear* with that effect by construction — a DMA dummy already captures eve
 3,143 units is too thin for the consumer to fit its own per-county effect.
 
 Finer grain is therefore not a nice-to-have. **Below DMA is where the feature stops
-being redundant with something the consumer already has.** (Section 2's held-out-state
+being redundant with something the consumer already has.** (Section 3's held-out-state
 design is the other escape from the same fixed effect: it has no parameter for a
 county it has never seen.)
 
@@ -384,7 +516,7 @@ How much does that matter? Two different thresholds, worth keeping apart:
 md("""
 ---
 
-## 5. Where the model cannot win, and why that is fine
+## 6. Where the model cannot win, and why that is fine
 
 One result looks alarming until you see what is under it: on the smallest counties,
 the size-only baseline scores **negative** R². Something is badly wrong there — but
@@ -448,7 +580,7 @@ no matter how good the features are.
 md("""
 ---
 
-## 6. Plumbing, briefly
+## 7. Plumbing, briefly
 
 Work that doesn't change the story but does change what ships:
 
@@ -459,14 +591,14 @@ Work that doesn't change the story but does change what ships:
   the raw columns cleared, and the gain routes almost entirely to Source B, which is
   interpretable rather than mysterious.
 - **Source E's capital-to-wage ratio was decomposed** into its components, plus a
-  five-year panel and volume tiers. Its remaining dollar totals moved into the size
-  control on the same principle as D's.
+  five-year panel — which is what made the tier work in Section 1 possible. Its
+  remaining dollar totals moved into the size control on the same principle as D's.
 - **Source B now ships raw employment levels**, so its 40 location quotients can be
   re-derived at any grain instead of approximated. This is what made the grain
   re-test above trustworthy.
-- **Source A** was measured for marginal value against a baseline that already
-  contains the other five pillars — the harder question — and the last
-  embedding-era artifacts were retired repo-wide.
+- **Source A** was also measured for marginal value against a baseline that already
+  contains the other five pillars — the harder question than the tier split — and the
+  last embedding-era artifacts were retired repo-wide.
 - **The archive notebook was re-read against regenerated outputs.** Several Section 8
   numbers had drifted after D and E moved into the size control; corrected.
 
