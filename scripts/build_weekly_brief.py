@@ -22,7 +22,17 @@ def md(text: str) -> None:
 
 
 def code(text: str) -> None:
-    cells.append(nbf.v4.new_code_cell(text.strip("\n")))
+    """Append a code cell, marked to open collapsed.
+
+    `jupyter.source_hidden` is the standard metadata flag for "show the output,
+    not the source". JupyterLab, nbclassic and the VS Code / Cursor notebook
+    editor all honour it on open, which is what makes this readable as a
+    document rather than as a program.
+    """
+    cell = nbf.v4.new_code_cell(text.strip("\n"))
+    cell.metadata["jupyter"] = {"source_hidden": True}
+    cell.metadata["collapsed"] = True
+    cells.append(cell)
 
 
 # --------------------------------------------------------------------------
