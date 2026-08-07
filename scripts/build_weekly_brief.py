@@ -50,9 +50,10 @@ code('''
 import json
 from pathlib import Path
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.graph_objects as go
+import plotly.io as pio
+from plotly.subplots import make_subplots
 
 REPO = Path.cwd().parent if Path.cwd().name == "analysis-output" else Path.cwd()
 OUTPUTS, ANALYSIS = REPO / "outputs", REPO / "analysis-output"
@@ -75,18 +76,51 @@ LABELS = {
     "mean_commute_minutes": "Mean commute",
 }
 ORDER = list(LABELS)
-INK, BASE, LIFT, WARN = "#1f2a37", "#c7cdd6", "#2563eb", "#dc2626"
 
-mpl.rcParams.update({
-    "figure.dpi": 130, "savefig.dpi": 130,
-    "font.size": 10.5, "axes.titlesize": 12.5, "axes.titleweight": "bold",
-    "axes.labelcolor": INK, "text.color": INK,
-    "axes.edgecolor": "#d1d5db", "axes.spines.top": False, "axes.spines.right": False,
-    "xtick.color": "#6b7280", "ytick.color": "#6b7280",
-    "figure.facecolor": "white", "axes.facecolor": "white",
-})
-print(f"{ext['n_targets']} targets · {ext['fold_strategy']} · "
-      f"{gst['n_markets']} market groups")
+# Categorical slots in fixed order, from the validated reference palette. Never
+# cycled: a series keeps its slot when other series are added or removed.
+SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]
+BLUE, AQUA, CRITICAL = SERIES[0], SERIES[2], "#d03b3b"
+SURFACE, INK, INK2 = "#fcfcfb", "#0b0b0b", "#52514e"
+MUTED, GRID = "#d5d4d0", "#ecebe6"
+FONT = "-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif"
+
+pio.renderers.default = "plotly_mimetype"
+
+
+def style(fig, title, subtitle="", height=440, legend=True):
+    """Apply the house chart style: hairline grid, recessive chrome, hover on."""
+    heading = f"<b>{title}</b>"
+    if subtitle:
+        heading += f"<br><span style='font-size:12.5px;color:{INK2}'>{subtitle}</span>"
+    fig.update_layout(
+        template="none",
+        paper_bgcolor=SURFACE,
+        plot_bgcolor=SURFACE,
+        font=dict(family=FONT, size=13, color=INK),
+        title=dict(text=heading, x=0, xanchor="left", y=0.96, yanchor="top",
+                   font=dict(size=17, color=INK)),
+        margin=dict(l=12, r=28, t=96 if subtitle else 72, b=104 if legend else 56),
+        height=height,
+        showlegend=legend,
+        legend=dict(orientation="h", yanchor="top", y=-0.24, x=0,
+                    font=dict(size=12, color=INK2), bgcolor="rgba(0,0,0,0)"),
+        hoverlabel=dict(bgcolor="white", bordercolor=GRID, font=dict(family=FONT, size=12.5)),
+        bargap=0.34,
+        bargroupgap=0.06,
+    )
+    # automargin so category labels on a horizontal bar chart are never clipped
+    # by a fixed left margin -- the plot area shrinks to fit the labels instead.
+    axis = dict(showgrid=True, gridcolor=GRID, gridwidth=1, zeroline=False,
+                showline=False, ticks="", automargin=True,
+                tickfont=dict(size=11.5, color=INK2),
+                title_font=dict(size=12, color=INK2))
+    fig.update_xaxes(**axis)
+    fig.update_yaxes(**axis)
+    return fig
+
+
+print(f"{ext['n_targets']} targets · {ext['fold_strategy']} · {gst['n_markets']} market groups")
 ''')
 
 # --------------------------------------------------------------------------
@@ -177,44 +211,50 @@ REP_LABEL = {
 }
 lifts = {k: embed["representations"][k]["mean_lift"] for k in REP_ORDER}
 VAR_KEYS = ["lead_only", "uniform", "tier_conditional", "tier_conditional_inverse"]
-leak = {k: embed["text_diagnostics"][k]["tier_variance_share"] for k in VAR_KEYS}
+VAR_LABEL = ["lead<br>only", "uniform", "thin reads<br>more", "rich reads<br>more"]
+leak = [embed["text_diagnostics"][k]["tier_variance_share"] for k in VAR_KEYS]
 
-fig, (axl, axr) = plt.subplots(1, 2, figsize=(11.0, 4.2),
-                               gridspec_kw={"width_ratios": [1.55, 1]})
-colors = ["#111827", "#2563eb", "#94a3b8", "#dc2626", "#7f1d1d",
-          "#bfd0ea", "#e2e8f0"]
-y = range(len(REP_ORDER))
-axl.barh(list(y), [lifts[k] for k in REP_ORDER], height=0.62, color=colors, zorder=3)
-for i, k in enumerate(REP_ORDER):
-    axl.text(lifts[k] + 0.00006, i, f"{lifts[k]:+.5f}", va="center", fontsize=9,
-             fontweight="bold" if k.startswith(("typed", "tier_")) else "normal",
-             color=INK)
-axl.axvline(lifts["typed_sections"], color="#111827", lw=1, ls=":", zorder=4)
-axl.set_yticks(list(y), [REP_LABEL[k] for k in REP_ORDER])
-axl.invert_yaxis()
-axl.set_xlim(0, max(lifts.values()) * 1.24)
-axl.set_xlabel("Mean R² lift, 28 targets")
-axl.set_title("Both directions lose", fontsize=11.5, loc="left", pad=8)
-axl.grid(axis="x", color="#eef0f3", zorder=0)
+# Emphasis, not identity: the two tier-conditional arms are the subject, the rest
+# is context. Colour marks which is which; the labels carry the values.
+lift_colour = {"typed_sections": INK, "uniform": BLUE, "lead_only": MUTED,
+               "tier_conditional": CRITICAL, "tier_conditional_inverse": "#8c2020",
+               "uniform_pca64": "#b7d3f6", "lead_only_pca64": "#e6e5e1"}
 
-bars = axr.bar(range(len(VAR_KEYS)), [leak[k] for k in VAR_KEYS], width=0.6,
-               color=["#94a3b8", "#2563eb", "#dc2626", "#7f1d1d"], zorder=3)
-for b, k in zip(bars, VAR_KEYS):
-    axr.text(b.get_x() + b.get_width() / 2, leak[k] + 0.0018, f"{leak[k]:.3f}",
-             ha="center", fontsize=9, fontweight="bold", color=INK)
-axr.set_xticks(range(len(VAR_KEYS)),
-               ["lead\\nonly", "uniform", "thin reads\\nmore", "rich reads\\nmore"],
-               fontsize=8.8)
-axr.set_ylabel("Share of vector variance that is\\njust tier membership")
-axr.set_title("…and both leak the rule into the space", fontsize=11.5, loc="left", pad=8)
-axr.grid(axis="y", color="#eef0f3", zorder=0)
+fig = make_subplots(
+    rows=1, cols=2, column_widths=[0.62, 0.38], horizontal_spacing=0.13,
+    subplot_titles=("<b>Both directions lose</b>",
+                    "<b>…and both leak the rule into the space</b>"),
+)
+fig.add_trace(go.Bar(
+    y=[REP_LABEL[k] for k in REP_ORDER][::-1],
+    x=[lifts[k] for k in REP_ORDER][::-1],
+    orientation="h", marker_color=[lift_colour[k] for k in REP_ORDER][::-1],
+    marker_cornerradius=4, showlegend=False,
+    text=[f"{lifts[k]:+.5f}" for k in REP_ORDER][::-1], textposition="outside",
+    textfont=dict(size=11.5, color=INK),
+    hovertemplate="<b>%{y}</b><br>mean R² lift %{x:+.5f}<extra></extra>",
+), row=1, col=1)
+fig.add_vline(x=lifts["typed_sections"], line=dict(color=INK, width=1, dash="dot"),
+              row=1, col=1)
 
-fig.suptitle("A 384-d embedding, fed four ways", x=0.008, y=1.05, ha="left",
-             fontsize=12.5, fontweight="bold")
-fig.text(0.008, 0.985, f"{embed['encoder'].split('/')[-1]} · dotted line is what "
-         "Source A ships today", ha="left", fontsize=9.5, color="#6b7280")
-plt.tight_layout()
-plt.show()
+fig.add_trace(go.Bar(
+    x=VAR_LABEL, y=leak,
+    marker_color=[MUTED, BLUE, CRITICAL, "#8c2020"], marker_cornerradius=4,
+    showlegend=False, text=[f"{v:.3f}" for v in leak], textposition="outside",
+    textfont=dict(size=11.5, color=INK),
+    hovertemplate="<b>%{x}</b><br>%{y:.1%} of vector variance is tier alone<extra></extra>",
+), row=1, col=2)
+
+fig.update_xaxes(title_text="Mean R² lift, 28 targets",
+                 range=[0, max(lifts.values()) * 1.3], row=1, col=1)
+fig.update_yaxes(showgrid=False, row=1, col=1)
+fig.update_yaxes(title_text="Variance explained by tier", tickformat=".2f",
+                 range=[0, max(leak) * 1.25], row=1, col=2)
+style(fig, "A 384-d embedding, fed four ways",
+      f"{embed['encoder'].split('/')[-1]} · dotted line is what Source A ships today",
+      height=470, legend=False)
+fig.update_annotations(font=dict(size=13, color=INK))
+fig.show()
 ''')
 
 md("""
@@ -253,55 +293,48 @@ Counties split on `num_returns`: **T1** (<2.2k), **T2** (2.2k–11.7k), **T3**
 """)
 
 code('''
-a_sum = a_tiers["summary"]
-a_lab = a_tiers["tier_labels"]
-e_lab = list(e_tiers["tiers"])
-e_sum = e_tiers["tiers"]
+a_sum, a_lab = a_tiers["summary"], a_tiers["tier_labels"]
+e_lab, e_sum = list(e_tiers["tiers"]), e_tiers["tiers"]
 
-fig, (axa, axe) = plt.subplots(1, 2, figsize=(10.6, 4.2))
+fig = make_subplots(
+    rows=1, cols=2, horizontal_spacing=0.13,
+    subplot_titles=("<b>A: the corpus is uneven, and economically so</b>",
+                    "<b>E: equal county counts, unequal economies</b>"),
+)
 
-# --- Source A: industry content by content tier
 shares = [a_sum[t]["share_any_industry"] for t in a_lab]
-bars = axa.bar(a_lab, shares, width=0.62,
-               color=["#dbe3ef", "#b9c9e4", "#7ea2d8", "#2563eb"], zorder=3)
-for b, s in zip(bars, shares):
-    axa.text(b.get_x() + b.get_width() / 2, s + 0.007, f"{s:.1%}",
-             ha="center", fontsize=9.5, fontweight="bold", color=INK)
-axa.set_xticks(range(len(a_lab)),
-               [f"{t}\\nn={a_sum[t]['n_counties']:,}" for t in a_lab])
-axa.set_ylim(0, max(shares) * 1.22)
-axa.set_ylabel("Counties whose intro names an industry")
-axa.set_xlabel("Source A content tier")
-axa.set_title("A: the corpus is uneven, and economically so",
-              fontsize=11.5, loc="left", pad=8)
-axa.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
-axa.grid(axis="y", color="#eef0f3", zorder=0)
+fig.add_trace(go.Bar(
+    x=[f"{t.capitalize()}<br>n={a_sum[t]['n_counties']:,}" for t in a_lab],
+    y=shares, marker_color=BLUE,
+    marker_cornerradius=4, showlegend=False,
+    text=[f"{s:.1%}" for s in shares], textposition="outside",
+    textfont=dict(size=12, color=INK),
+    customdata=[[a_sum[t]["n_counties"], a_sum[t]["mean_length"]] for t in a_lab],
+    hovertemplate="%{y:.1%} name an industry<br>%{customdata[0]:,} counties"
+                  "<br>%{customdata[1]:.0f} chars mean intro<extra></extra>",
+), row=1, col=1)
 
-# --- Source E: share of counties vs share of national investment income
 cty = [e_sum[t]["share_of_counties"] for t in e_lab]
 inc = [e_sum[t]["share_of_investment_income"] for t in e_lab]
-x = range(len(e_lab))
-axe.bar([i - 0.19 for i in x], cty, width=0.36, color=BASE,
-        label="Share of counties", zorder=3)
-axe.bar([i + 0.19 for i in x], inc, width=0.36, color="#0f766e",
-        label="Share of national investment income", zorder=3)
-for i, (c, v) in enumerate(zip(cty, inc)):
-    axe.text(i - 0.19, c + 0.012, f"{c:.0%}", ha="center", fontsize=9, color="#6b7280")
-    axe.text(i + 0.19, v + 0.012, f"{v:.2%}" if v < 0.05 else f"{v:.0%}",
-             ha="center", fontsize=9, fontweight="bold", color="#0f766e")
-axe.set_xticks(list(x), ["T1\\nthin", "T2\\nsmall", "T3\\nmid", "T4\\nlarge"])
-axe.set_ylim(0, 0.95)
-axe.set_xlabel("Source E volume tier (tax returns filed)")
-axe.set_title("E: equal county counts, unequal economies",
-              fontsize=11.5, loc="left", pad=8)
-axe.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
-axe.legend(frameon=False, fontsize=9, loc="upper left")
-axe.grid(axis="y", color="#eef0f3", zorder=0)
+tiers_short = ["T1 thin", "T2 small", "T3 mid", "T4 large"]
+for name, values, colour in (("Share of counties", cty, MUTED),
+                             ("Share of national investment income", inc, AQUA)):
+    fig.add_trace(go.Bar(
+        x=tiers_short, y=values, name=name, marker_color=colour, marker_cornerradius=4,
+        text=[f"{v:.2%}" if v < 0.05 else f"{v:.0%}" for v in values],
+        textposition="outside", textfont=dict(size=11, color=INK),
+        hovertemplate=f"<b>%{{x}}</b><br>{name}: %{{y:.2%}}<extra></extra>",
+    ), row=1, col=2)
 
-fig.suptitle("What the tiers exposed", x=0.008, y=1.06, ha="left",
-             fontsize=12.5, fontweight="bold")
-plt.tight_layout()
-plt.show()
+fig.update_yaxes(tickformat=".0%", title_text="Intro names an industry",
+                 range=[0, max(shares) * 1.25], row=1, col=1)
+fig.update_yaxes(tickformat=".0%", range=[0, 0.95], row=1, col=2)
+fig.update_xaxes(title_text="Content tier", row=1, col=1)
+fig.update_xaxes(title_text="Volume tier (tax returns filed)", row=1, col=2)
+style(fig, "What the tiers exposed",
+      "Source A splits on article length; Source E on returns filed.", height=460)
+fig.update_annotations(font=dict(size=13, color=INK))
+fig.show()
 ''')
 
 md("""
@@ -388,39 +421,32 @@ no downstream label exists here.
 
 code('''
 piv = (scores[scores.model.isin(["size", "size_emacro"])]
-       .pivot(index="target", columns="model", values="r2_ablated")
-       .reindex(ORDER))
+       .pivot(index="target", columns="model", values="r2_ablated").reindex(ORDER))
 lift = (scores[scores.model.eq("size_emacro")]
         .set_index("target")["lift_over_size_ablated"].reindex(ORDER))
+names = [LABELS[t] for t in ORDER][::-1]
 
-fig, ax = plt.subplots(figsize=(9.2, 4.4))
-y = range(len(ORDER))
-ax.barh([i + 0.19 for i in y], piv["size"], height=0.36, color=BASE,
-        label="County size only", zorder=3)
-ax.barh([i - 0.19 for i in y], piv["size_emacro"], height=0.36, color=LIFT,
-        label="County size + $E_{macro}$", zorder=3)
+fig = go.Figure()
+for label, column, colour in (("County size only", "size", MUTED),
+                              ("County size + E_macro", "size_emacro", BLUE)):
+    fig.add_trace(go.Bar(
+        y=names, x=piv[column][::-1], orientation="h", name=label,
+        marker_color=colour, marker_cornerradius=4,
+        text=[f"{v:.2f}" for v in piv[column][::-1]], textposition="outside",
+        textfont=dict(size=11, color=INK2 if column == "size" else INK),
+        hovertemplate=f"<b>%{{y}}</b><br>{label}: R² %{{x:.3f}}<extra></extra>",
+    ))
+for i, target in enumerate(ORDER[::-1]):
+    fig.add_annotation(x=1.0, y=i, xref="x", yref="y", xanchor="right",
+                       text=f"<b>+{lift[target]:.3f}</b>", showarrow=False,
+                       font=dict(size=12.5, color=INK))
 
-for i, t in enumerate(ORDER):
-    ax.text(piv["size"][t] + 0.012, i + 0.19, f"{piv['size'][t]:.2f}",
-            va="center", fontsize=9, color="#6b7280")
-    ax.text(piv["size_emacro"][t] + 0.012, i - 0.19, f"{piv['size_emacro'][t]:.2f}",
-            va="center", fontsize=9, color=LIFT, fontweight="bold")
-    ax.text(0.985, i, f"+{lift[t]:.3f}", transform=ax.get_yaxis_transform(),
-            ha="right", va="center", fontsize=10, fontweight="bold", color=INK)
-
-ax.set_yticks(list(y), [LABELS[t] for t in ORDER])
-ax.invert_yaxis()
-ax.set_xlabel("R² on held-out states")
-ax.set_xlim(0, 1.0)
-ax.set_title("Five outcomes outside every pillar. Five for five.", pad=26, loc="left")
-ax.text(0, 1.045, f"Mean gain over size alone: +{ext['mean_lift_over_size_ablated']:.3f} R²"
-        "        (gain per outcome at right)",
-        transform=ax.transAxes, fontsize=10, color="#6b7280")
-ax.legend(frameon=False, fontsize=9.5, loc="upper left",
-          bbox_to_anchor=(0, -0.14), ncol=2)
-ax.grid(axis="x", color="#eef0f3", zorder=0)
-plt.tight_layout()
-plt.show()
+fig.update_xaxes(title_text="R² on held-out states", range=[0, 1.03])
+fig.update_yaxes(showgrid=False)
+style(fig, "Five outcomes outside every pillar. Five for five.",
+      f"Mean gain over size alone: +{ext['mean_lift_over_size_ablated']:.3f} R²"
+      "  ·  gain per outcome at right", height=470)
+fig.show()
 ''')
 
 md("""
@@ -524,45 +550,50 @@ not the outputs.**
 """)
 
 code('''
+import numpy as np
+
 by_size = pd.DataFrame(ext["by_training_size"])
-
 TICKS = [210, 400, 800, 1600, 3000]
-palette = ["#2563eb", "#0f766e", "#b45309", "#7c3aed", "#be185d"]
 
-fig, (axl, axr) = plt.subplots(1, 2, figsize=(10.6, 4.3),
-                               gridspec_kw={"width_ratios": [1.35, 1]})
-for c, t in zip(palette, ORDER):
-    d = by_size[by_size.target.eq(t)].sort_values("n_train_units")
-    axl.plot(d.n_train_units, d.mean_lift_over_size, "-o", color=c, ms=4.5,
-             lw=2.0, label=LABELS[t], zorder=3)
-    axr.plot(d.n_train_units, d.sd_lift_over_size, "-o", color=c, ms=4.5,
-             lw=2.0, zorder=3)
+fig = make_subplots(
+    rows=1, cols=2, column_widths=[0.56, 0.44], horizontal_spacing=0.11,
+    subplot_titles=("<b>The gain shrinks…</b>", "<b>…and stops being reliable</b>"),
+)
+for slot, target in zip(SERIES, ORDER):
+    d = by_size[by_size.target.eq(target)].sort_values("n_train_units")
+    fig.add_trace(go.Scatter(
+        x=d.n_train_units, y=d.mean_lift_over_size, name=LABELS[target],
+        mode="lines+markers", line=dict(color=slot, width=2),
+        marker=dict(size=8, color=slot, line=dict(color=SURFACE, width=2)),
+        legendgroup=target,
+        hovertemplate=f"<b>{LABELS[target]}</b><br>%{{x:,}} counties"
+                      "<br>lift %{y:+.3f}<extra></extra>",
+    ), row=1, col=1)
+    fig.add_trace(go.Scatter(
+        x=d.n_train_units, y=d.sd_lift_over_size, name=LABELS[target],
+        mode="lines+markers", line=dict(color=slot, width=2),
+        marker=dict(size=8, color=slot, line=dict(color=SURFACE, width=2)),
+        legendgroup=target, showlegend=False,
+        hovertemplate=f"<b>{LABELS[target]}</b><br>%{{x:,}} counties"
+                      "<br>spread %{y:.3f}<extra></extra>",
+    ), row=1, col=2)
 
-for ax in (axl, axr):
-    ax.set_xscale("log")
-    ax.set_xticks(TICKS, ["210", "400", "800", "1,600", "3,000"])
-    ax.axvline(210, color=WARN, lw=1.3, ls="--", zorder=4)
-    ax.set_xlabel("Counties available for training  (log)")
-    ax.grid(color="#eef0f3", zorder=0)
-
-axl.axhline(0, color="#9ca3af", lw=1)
-axl.text(228, axl.get_ylim()[1] * 0.95, "≈ DMA count", color=WARN,
-         fontsize=9.5, fontweight="bold", va="top")
-axl.set_ylabel("Gain over size-only baseline (R²)")
-axl.set_title("The gain shrinks…", fontsize=11.5, loc="left", pad=8)
-axr.set_ylabel("Spread across 10 random draws (sd)")
-axr.set_title("…and stops being reliable", fontsize=11.5, loc="left", pad=8)
-axr.text(228, axr.get_ylim()[1] * 0.95, "≈ DMA count", color=WARN,
-         fontsize=9.5, fontweight="bold", va="top")
-
-fig.suptitle("Half the story: fewer rows hurt, and get unreliable",
-             x=0.008, y=1.06, ha="left", fontsize=12.5, fontweight="bold")
-fig.text(0.008, 0.99, "At 210 units the spread on some outcomes is wider than the "
-         "effect being measured.", ha="left", fontsize=9.5, color="#6b7280")
-fig.legend(frameon=False, fontsize=9.5, loc="lower left",
-           bbox_to_anchor=(0.008, -0.12), ncol=3)
-plt.tight_layout()
-plt.show()
+for col in (1, 2):
+    fig.add_vline(x=210, line=dict(color=CRITICAL, width=1.3, dash="dot"), row=1, col=col)
+    fig.update_xaxes(type="log", tickvals=TICKS, ticktext=[f"{t:,}" for t in TICKS],
+                     title_text="Counties available for training", row=1, col=col)
+fig.add_annotation(x=np.log10(215), y=1.0, xref="x", yref="paper", xanchor="left",
+                   yanchor="bottom", text="≈ DMA count", showarrow=False,
+                   font=dict(size=11.5, color=CRITICAL))
+fig.add_hline(y=0, line=dict(color="#9ca3af", width=1), row=1, col=1)
+fig.update_yaxes(title_text="Gain over size-only baseline (R²)", row=1, col=1)
+fig.update_yaxes(title_text="Spread across 10 random draws", row=1, col=2)
+style(fig, "Half the story: fewer rows hurt, and get unreliable",
+      "At 210 units the spread on some outcomes is wider than the effect being measured.",
+      height=470)
+fig.update_layout(hovermode="x unified")
+fig.update_annotations(font=dict(size=13, color=INK))
+fig.show()
 ''')
 
 md("""
@@ -577,35 +608,28 @@ Then the other half got measured:
 code('''
 arms = (grain.pivot(index="target", columns="arm", values="mean_lift_over_size")
         .reindex(ORDER))
-ARMS = [("county_full", "All 3,143 counties", "#2563eb"),
-        ("county_subsample", "208 counties (row-count loss only)", "#c7cdd6"),
-        ("market_aggregate", "208 aggregated markets", "#0f766e")]
+ARMS = (("county_full", "All 3,143 counties", BLUE),
+        ("county_subsample", "208 counties (row-count loss only)", MUTED),
+        ("market_aggregate", "208 aggregated markets", AQUA))
 
-fig, ax = plt.subplots(figsize=(9.6, 4.6))
-x = range(len(ORDER))
-for k, (col, lab, c) in enumerate(ARMS):
-    off = (k - 1) * 0.27
-    vals = arms[col]
-    ax.bar([i + off for i in x], vals, width=0.25, color=c, label=lab, zorder=3)
-    for i, v in enumerate(vals):
-        ax.text(i + off, v + (0.012 if v >= 0 else -0.028), f"{v:+.2f}",
-                ha="center", fontsize=8.6,
-                color=WARN if v < 0 else "#374151",
-                fontweight="bold" if col == "market_aggregate" else "normal")
-
-ax.axhline(0, color="#6b7280", lw=1)
-ax.set_xticks(list(x), [LABELS[t].replace(" ", "\\n", 1) for t in ORDER])
-ax.set_ylabel("Gain over size-only baseline (R²)")
-ax.set_title("The other half: aggregation helps, and nearly cancels the loss",
-             pad=26, loc="left")
-ax.text(0, 1.05, f"Row-count effect {gst['row_count_effect']:+.3f}   ·   "
-        f"aggregation effect {gst['aggregation_effect']:+.3f}   ·   "
-        "market arm wins on 3 of 5",
-        transform=ax.transAxes, fontsize=10, color="#6b7280")
-ax.legend(frameon=False, fontsize=9.5, loc="upper left", bbox_to_anchor=(0, -0.12), ncol=3)
-ax.grid(axis="y", color="#eef0f3", zorder=0)
-plt.tight_layout()
-plt.show()
+fig = go.Figure()
+for column, label, colour in ARMS:
+    values = arms[column]
+    fig.add_trace(go.Bar(
+        x=[LABELS[t] for t in ORDER], y=values, name=label,
+        marker_color=colour, marker_cornerradius=4,
+        text=[f"{v:+.2f}" for v in values], textposition="outside",
+        textfont=dict(size=10.5, color=INK),
+        hovertemplate=f"<b>%{{x}}</b><br>{label}: %{{y:+.3f}}<extra></extra>",
+    ))
+fig.add_hline(y=0, line=dict(color=INK2, width=1))
+fig.update_yaxes(title_text="Gain over size-only baseline (R²)",
+                 range=[min(arms.min()) - 0.09, max(arms.max()) + 0.09])
+fig.update_xaxes(showgrid=False)
+style(fig, "The other half: aggregation helps, and nearly cancels the loss",
+      f"Row-count effect {gst['row_count_effect']:+.3f}  ·  aggregation effect "
+      f"{gst['aggregation_effect']:+.3f}  ·  market arm wins on 3 of 5", height=480)
+fig.show()
 ''')
 
 md("""
@@ -670,35 +694,39 @@ dec = (decile.groupby("population_decile")
             r2_size=("r2_size", "mean"),
             r2_size_emacro=("r2_size_emacro", "mean"))
        .reset_index())
+ticks = [f"{int(round(p, -2)):,}" for p in dec.median_population]
 
-fig, ax = plt.subplots(figsize=(9.4, 4.5))
-ax.bar(dec.population_decile, dec.noise_share, width=0.62, color="#fde2e2",
-       edgecolor="#f5b8b8", label="Share of variance that is ACS sampling noise", zorder=2)
-ax.plot(dec.population_decile, dec.r2_size, "-o", color="#9ca3af", ms=5, lw=1.9,
-        label="County size only", zorder=4)
-ax.plot(dec.population_decile, dec.r2_size_emacro, "-o", color=LIFT, ms=5, lw=2.2,
-        label="County size + $E_{macro}$", zorder=5)
-ax.axhline(0, color="#6b7280", lw=1, zorder=3)
-
-worst = dec.iloc[0]
-ax.annotate(f"{worst.r2_size:.2f}", xy=(1, worst.r2_size), xytext=(1.35, -0.40),
-            fontsize=9.5, color=WARN, fontweight="bold",
-            arrowprops=dict(arrowstyle="-", color=WARN, lw=1))
-ax.text(1.0, worst.noise_share + 0.03, f"{worst.noise_share:.0%}\\nnoise",
-        ha="center", fontsize=9, color="#b91c1c", fontweight="bold")
-
-ax.set_xticks(range(1, 11),
-              [f"{int(p):,}" for p in dec.median_population.round(-2)], fontsize=8.4)
-ax.set_xlabel("County population decile  (median population in each)")
-ax.set_ylabel("R², averaged over the five outcomes")
-ax.set_title("Small counties are mostly measurement error", pad=24, loc="left")
-ax.text(0, 1.045, "Where the grey line dives, the data is noise — and $E_{macro}$ still "
-        "recovers usable signal there.",
-        transform=ax.transAxes, fontsize=9.5, color="#6b7280")
-ax.legend(frameon=False, fontsize=9.5, loc="lower right")
-ax.grid(axis="y", color="#eef0f3", zorder=0)
-plt.tight_layout()
-plt.show()
+fig = go.Figure()
+fig.add_trace(go.Bar(
+    x=dec.population_decile, y=dec.noise_share, name="ACS sampling noise (share of variance)",
+    marker_color="#f7dcdc", marker_cornerradius=4,
+    hovertemplate="<b>%{customdata:,} median population</b><br>"
+                  "sampling noise %{y:.1%} of variance<extra></extra>",
+    customdata=dec.median_population.round(-2).astype(int),
+))
+for label, column, colour, width in (("County size only", "r2_size", MUTED, 2),
+                                     ("County size + E_macro", "r2_size_emacro", BLUE, 2.4)):
+    fig.add_trace(go.Scatter(
+        x=dec.population_decile, y=dec[column], name=label, mode="lines+markers",
+        line=dict(color=colour, width=width),
+        marker=dict(size=8, color=colour, line=dict(color=SURFACE, width=2)),
+        hovertemplate=f"{label}: R² %{{y:.3f}}<extra></extra>",
+    ))
+fig.add_hline(y=0, line=dict(color=INK2, width=1))
+fig.add_annotation(x=1, y=dec.r2_size.iloc[0], text=f"<b>{dec.r2_size.iloc[0]:.2f}</b>",
+                   showarrow=True, arrowhead=0, arrowcolor=CRITICAL, ax=34, ay=26,
+                   font=dict(size=12, color=CRITICAL))
+fig.add_annotation(x=1, y=dec.noise_share.iloc[0] + 0.05,
+                   text=f"<b>{dec.noise_share.iloc[0]:.0%} noise</b>", showarrow=False,
+                   font=dict(size=11.5, color="#b91c1c"))
+fig.update_xaxes(tickvals=dec.population_decile, ticktext=ticks,
+                 title_text="County population decile (median population)", showgrid=False)
+fig.update_yaxes(title_text="R², averaged over the five outcomes")
+style(fig, "Small counties are mostly measurement error",
+      "Where the grey line dives, the data is noise — and E_macro still recovers "
+      "usable signal there.", height=470)
+fig.update_layout(hovermode="x unified")
+fig.show()
 ''')
 
 md("""
