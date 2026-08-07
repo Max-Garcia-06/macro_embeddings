@@ -21,7 +21,7 @@ and -- more importantly -- **records where the rule cannot be followed.**
 | **C** | population-weighted | Velocities are slopes; a weighted mean is defensible but is not the slope of the summed series. `gdp_latest` sums. |
 | **B** | **re-derived** (since 2026-08-05) | `ingest_source_b.py` now carries `emp_{naics2}` alongside `lq_emp_{naics2}`, so a group LQ is summed sector employment over summed total employment against the national base -- the actual definition, rather than a mean of quotients. |
 | **F** | **approximated** | USDA typology flags are categorical classifications with no underlying quantity to re-sum. A population-weighted share is a reasonable reading but a different construct. |
-| **D** (HHI) | **approximated** | Partner concentration needs the partner-level flow table, which the parquet does not carry. |
+| **D** (HHI) | **re-derived** (since 2026-08-07) | `ingest_source_d.py` now writes `source_d_partners.parquet`, the partner-tons distribution the index is built from, so a group HHI is re-summed over partner *groups* rather than averaged from county HHIs. |
 
 **Source B's re-derivation carries one known bias.** BLS suppresses a cell when
 small employer counts could expose an individual operation, and a suppressed cell
@@ -70,6 +70,7 @@ RANDOM_SEED: int = 42
 DATA_DIR: Path = Path(__file__).resolve().parent.parent / "data"
 SOURCE_B_PATH: Path = DATA_DIR / "source_b_qcew.parquet"
 SOURCE_E_PATH: Path = DATA_DIR / "source_e_irs_soi.parquet"
+SOURCE_D_PARTNERS_PATH: Path = DATA_DIR / "source_d_partners.parquet"
 
 # Raw Source E totals the ratio re-derivation sums before dividing.
 SOURCE_E_TOTALS: tuple[str, ...] = (
@@ -299,6 +300,62 @@ def _rederive_source_d(group: pd.DataFrame) -> dict[str, float]:
     return derived
 
 
+def rederive_partner_hhi(
+    group_map: pd.DataFrame, group_column: str, partners: pd.DataFrame
+) -> pd.DataFrame:
+    """Recompute both partner-concentration indices at group grain.
+
+    An HHI is a ratio of sums, so it cannot be averaged from county HHIs; it has
+    to be rebuilt from the partner-tons distribution itself
+    (`data/source_d_partners.parquet`, written by `ingest_source_d.py`). Three
+    rules, each a judgement worth stating:
+
+    - **Partner counties are remapped to their own group.** Concentration at
+      market grain means concentration across *markets*, so two partner counties
+      inside the same market are one partner, not two. Not remapping would leave
+      the index measuring county spread while every other column measures the
+      market.
+    - **FAF-zone partners keep their own key.** A zone is not a county and cannot
+      be assigned to a market; it stays a distinct partner, exactly as it is at
+      county grain.
+    - **Flows inside the group are dropped.** A shipment from one county in a
+      market to another county in the same market is internal to that unit at
+      this grain, not trade with a partner. Keeping it would inflate
+      concentration for large multi-county markets specifically -- a size-
+      correlated artifact in a column whose whole purpose is to not be one.
+
+    Args:
+        group_map: Frame with `fips_code` and the group column.
+        group_column: Name of the group key column.
+        partners: Long-format partner rows: `fips_code`, `direction`,
+            `partner_key`, `tons`.
+
+    Returns:
+        Frame indexed by group with `out_partner_hhi` and `in_partner_hhi`.
+    """
+    county_group = group_map.set_index("fips_code")[group_column]
+    frame = partners.copy()
+    frame["home_group"] = frame["fips_code"].map(county_group)
+    frame = frame[frame["home_group"].notna()]
+
+    # Zone keys carry a "zone:" prefix and never match a FIPS code, so the map
+    # leaves them untouched and `fillna` keeps them as their own partner.
+    frame["partner_group"] = frame["partner_key"].map(county_group).fillna(frame["partner_key"])
+    frame = frame[frame["partner_group"] != frame["home_group"]]
+
+    pooled = frame.groupby(["home_group", "direction", "partner_group"])["tons"].sum()
+    totals = pooled.groupby(level=["home_group", "direction"]).transform("sum")
+    hhi = (
+        (pooled / totals.where(totals > 0)).pow(2)
+        .groupby(level=["home_group", "direction"])
+        .sum()
+        .unstack("direction")
+    )
+    hhi.columns = [f"{direction}_partner_hhi" for direction in hhi.columns]
+    hhi.index.name = group_column
+    return hhi
+
+
 def aggregate_matrix(
     matrix: pd.DataFrame,
     blocks: dict[str, list[str]],
@@ -349,6 +406,13 @@ def aggregate_matrix(
         )
     shares = national_sector_shares(panel) if has_employment else {}
 
+    has_partners = SOURCE_D_PARTNERS_PATH.exists()
+    partner_hhi = (
+        rederive_partner_hhi(group_map, group_column, pd.read_parquet(SOURCE_D_PARTNERS_PATH))
+        if has_partners
+        else pd.DataFrame()
+    )
+
     provenance: dict[str, str] = {}
     for pillar, columns in blocks.items():
         for column in columns:
@@ -356,7 +420,9 @@ def aggregate_matrix(
                 provenance[column] = "re-derived"
             elif pillar == "D":
                 provenance[column] = (
-                    "approximated" if "hhi" in column else "re-derived"
+                    "re-derived"
+                    if "hhi" not in column or has_partners
+                    else "approximated"
                 )
             elif pillar == "B":
                 provenance[column] = (
@@ -387,6 +453,8 @@ def aggregate_matrix(
                 row[column] = _weighted_mean(group[column], weights)
         row.update(_rederive_source_e(group))
         row.update(_rederive_source_d(group))
+        if has_partners and key in partner_hhi.index:
+            row.update(partner_hhi.loc[key].to_dict())
         if has_employment:
             row.update(_rederive_source_b(group, shares))
         rows.append(row)
@@ -419,10 +487,12 @@ def main() -> None:
         by_status.setdefault(status, []).append(column)
     for status, columns in sorted(by_status.items()):
         logger.info("%-22s %3d columns", status, len(columns))
-    logger.info(
-        "Source B needs QCEW employment counts to re-derive; the shipped parquet "
-        "carries location quotients only. See this module's docstring."
-    )
+    if not SOURCE_D_PARTNERS_PATH.exists():
+        logger.info(
+            "Source D's two HHIs are approximated: %s is absent. Re-run "
+            "ingest_source_d.py to write it.",
+            SOURCE_D_PARTNERS_PATH.name,
+        )
 
 
 if __name__ == "__main__":

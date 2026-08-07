@@ -62,6 +62,13 @@ CURL_RETRY_DELAY_SECONDS: int = 2
 
 DATA_DIR: Path = Path(__file__).resolve().parent.parent / "data"
 OUTPUT_PARQUET_PATH: Path = DATA_DIR / "source_d_faf.parquet"
+
+# The partner-tons distributions behind `out_partner_hhi` / `in_partner_hhi`.
+# Written because an HHI is a ratio of sums: it cannot be recovered from
+# per-county HHIs, so re-deriving the pillar at any coarser geography needs the
+# partner rows themselves. Long format keeps it compact -- most counties trade
+# with a small fraction of the country.
+PARTNERS_PARQUET_PATH: Path = DATA_DIR / "source_d_partners.parquet"
 COUNTY_CROSSWALK_CACHE_PATH: Path = DATA_DIR / "county_crosswalk.parquet"
 
 logger = logging.getLogger(__name__)
@@ -283,6 +290,14 @@ class CountyTradeFlowResult:
     in_sctg1519: float
     in_sctg2033: float
     in_sctg3499: float
+    # The distributions the two HHIs are computed from, kept rather than
+    # discarded. An HHI is a ratio of sums and cannot be aggregated from
+    # per-county HHIs, so a consumer re-deriving the pillar at market grain has
+    # to re-sum partner tons -- the same reason `ingest_source_b.py` ships
+    # `emp_{naics2}` alongside its location quotients. Long format, one row per
+    # (county, direction, partner).
+    out_partner_tons: pd.Series
+    in_partner_tons: pd.Series
 
 
 def compute_county_flows(
@@ -342,6 +357,8 @@ def compute_county_flows(
         in_partner_hhi=_hhi(in_partners),
         **out_sctg,
         **in_sctg,
+        out_partner_tons=out_partners,
+        in_partner_tons=in_partners,
     )
 
 
@@ -429,8 +446,14 @@ def run_pipeline(
 # --------------------------------------------------------------------------
 
 
+PARTNER_COLUMNS: tuple[str, ...] = ("out_partner_tons", "in_partner_tons")
+
+
 def build_dataframe(results: list[CountyTradeFlowResult]) -> pd.DataFrame:
     """Assemble per-county flow results into a DataFrame.
+
+    The partner distributions are dropped here and written separately by
+    `build_partner_dataframe`, so the pillar parquet keeps one row per county.
 
     Args:
         results: List of per-county flow results.
@@ -438,7 +461,45 @@ def build_dataframe(results: list[CountyTradeFlowResult]) -> pd.DataFrame:
     Returns:
         DataFrame with one row per county, keyed by `fips_code`.
     """
-    return pd.DataFrame([vars(r) for r in results])
+    frame = pd.DataFrame([vars(r) for r in results])
+    return frame.drop(columns=list(PARTNER_COLUMNS), errors="ignore")
+
+
+def build_partner_dataframe(results: list[CountyTradeFlowResult]) -> pd.DataFrame:
+    """Flatten every county's partner-tons distributions into long format.
+
+    One row per (county, direction, partner). `partner_key` is a partner county's
+    FIPS code, or `zone:{id}` where FAF collapses the destination into a zone --
+    the two are pooled in the same distribution, matching how
+    `compute_county_flows` computes the HHI.
+
+    Args:
+        results: List of per-county flow results.
+
+    Returns:
+        DataFrame with `fips_code`, `direction`, `partner_key`, `tons`.
+    """
+    rows: list[pd.DataFrame] = []
+    for result in results:
+        for direction, series in (
+            ("out", result.out_partner_tons),
+            ("in", result.in_partner_tons),
+        ):
+            if series.empty:
+                continue
+            rows.append(
+                pd.DataFrame(
+                    {
+                        "fips_code": result.fips_code,
+                        "direction": direction,
+                        "partner_key": series.index.astype(str),
+                        "tons": series.to_numpy(dtype="float64"),
+                    }
+                )
+            )
+    if not rows:
+        return pd.DataFrame(columns=["fips_code", "direction", "partner_key", "tons"])
+    return pd.concat(rows, ignore_index=True)
 
 
 def join_county_names(flows: pd.DataFrame, crosswalk: pd.DataFrame) -> pd.DataFrame:
@@ -503,6 +564,15 @@ def main() -> None:
     df = join_county_names(df, crosswalk)
 
     export_to_parquet(df, OUTPUT_PARQUET_PATH)
+
+    partners = build_partner_dataframe(results)
+    partners.to_parquet(PARTNERS_PARQUET_PATH, engine="pyarrow", index=False)
+    logger.info(
+        "Wrote %d partner rows to %s (%d counties)",
+        len(partners),
+        PARTNERS_PARQUET_PATH,
+        partners["fips_code"].nunique(),
+    )
     logger.info("Succeeded: %d states, Failed: %d states", len(summary.succeeded), len(summary.failed))
     for state, reason in summary.failed.items():
         logger.warning("  %s -> %s", state, reason)
