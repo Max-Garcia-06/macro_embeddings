@@ -56,6 +56,7 @@ gst = json.loads((ANALYSIS / "cross-source" / "grain_effect_stats.json").read_te
 a_tiers = json.loads((ANALYSIS / "source-a" / "source_a_tier_stats.json").read_text())
 e_tiers = json.loads((ANALYSIS / "source-e" / "source_e_tier_stats.json").read_text())
 scope = json.loads((ANALYSIS / "source-a" / "source_a_section_scope_stats.json").read_text())
+embed = json.loads((ANALYSIS / "source-a" / "source_a_tiered_embedding_stats.json").read_text())
 
 LABELS = {
     "broadband_rate": "Broadband adoption",
@@ -286,6 +287,92 @@ the noise band this pillar operates in, on the same underpowered paired test tha
 §14.2a already flagged. The honest status is *measured, promising, not demonstrated* —
 it would need a human-labelled precision sample rather than my regex heuristic, and
 probably a recency filter, before it earns a schema change. Nothing was rewritten.
+
+### The one we talked about: a smaller embedding, fed by tier
+
+This is the version we discussed — bring the embedding back, but narrower than
+bge-m3's 1024 dimensions, and let the tier decide which sections go through the
+encoder. Built with `all-MiniLM-L6-v2` at **384 dimensions** (90MB against bge-m3's
+2.2GB), chunked at 900 characters and mean-pooled so a long article is not silently
+truncated inside a 256-token window.
+
+I scored the tier-conditional rule you'd expect — stub and thin counties get the
+whole article, mid counties get their economy sections, rich counties get the lead
+alone, on the logic that depth is worth spending where the lead says least — but
+alongside two controls, because the tier question is exactly the kind that answers
+itself wrongly without them. `lead_only` isolates the change of encoder and width;
+`uniform` reads the same sections for every county.
+""")
+
+code('''
+REP_ORDER = ["typed_sections", "uniform", "lead_only", "tier_conditional",
+             "uniform_pca64", "tier_conditional_pca64", "lead_only_pca64"]
+REP_LABEL = {
+    "typed_sections": "typed features (shipped)",
+    "uniform": "384-d, uniform input",
+    "lead_only": "384-d, lead only",
+    "tier_conditional": "384-d, tier-conditional input",
+    "uniform_pca64": "→ 64-d, uniform",
+    "tier_conditional_pca64": "→ 64-d, tier-conditional",
+    "lead_only_pca64": "→ 64-d, lead only",
+}
+lifts = {k: embed["representations"][k]["mean_lift"] for k in REP_ORDER}
+
+fig, ax = plt.subplots(figsize=(9.4, 4.0))
+colors = ["#111827", "#2563eb", "#94a3b8", "#dc2626",
+          "#bfd0ea", "#f0b4b4", "#e2e8f0"]
+y = range(len(REP_ORDER))
+ax.barh(list(y), [lifts[k] for k in REP_ORDER], height=0.62, color=colors, zorder=3)
+for i, k in enumerate(REP_ORDER):
+    ax.text(lifts[k] + 0.00006, i, f"{lifts[k]:+.5f}", va="center",
+            fontsize=9.5, fontweight="bold" if k in ("typed_sections", "tier_conditional")
+            else "normal", color=INK)
+
+ax.axvline(lifts["typed_sections"], color="#111827", lw=1, ls=":", zorder=4)
+ax.set_yticks(list(y), [REP_LABEL[k] for k in REP_ORDER])
+ax.invert_yaxis()
+ax.set_xlim(0, max(lifts.values()) * 1.22)
+ax.set_xlabel("Mean R² lift over the size-and-state baseline, 28 targets")
+ax.set_title("Tier-conditional input loses to reading the same thing everywhere",
+             pad=26, loc="left")
+ax.text(0, 1.06, f"{embed['encoder'].split('/')[-1]} · dotted line is what Source A "
+        "ships today",
+        transform=ax.transAxes, fontsize=9.5, color="#6b7280")
+ax.grid(axis="x", color="#eef0f3", zorder=0)
+plt.tight_layout()
+plt.show()
+''')
+
+md("""
+**The tier-conditional rule lost.** −0.00064 against the uniform rule at identical
+width, and −0.00007 against simply encoding the lead — so spending reading depth on
+thin counties while starving rich ones performed no better than not reading sections
+at all. Obvious in hindsight: the rich tier is where industry content actually lives,
+25.2% of them naming an industry in the lead alone, and the tier-conditional rule is
+precisely the rule that reads least from those counties.
+
+That is the same verdict §15 reached for branching the *model*, now measured on the
+*input* side. The tier question has been asked three ways this week — branch the
+model, branch the extraction, branch the encoder's input — and lost all three times,
+for the same underlying reason each time: partitioning a corpus of 3,144 counties
+costs more in pooled evidence than heterogeneity costs in bias.
+
+**Two things worth keeping from the run anyway:**
+
+- **Reading more helps, uniformly.** The uniform arm beats lead-only by +0.00057,
+  reproducing the section-scope result in embedding form. It just does not reach the
+  typed block (−0.00082).
+- **Smaller is worse, and this one is not noise.** Projecting to 64 dimensions costs
+  −0.00063 against native 384 at ***p* = 0.015**, agreeing in direction with the
+  retired PCA-50-of-bge-m3 result. Worth knowing, because "just make the vector
+  smaller" is the usual first answer to a feature-store cost problem.
+
+**Bottom line for the handoff:** a 384-d encoder is a real option at roughly
+three-quarters of the typed block's lift and 4% of bge-m3's disk footprint — but only
+with uniform input, and I would still ship the typed features, which win on lift,
+cost, and interpretability simultaneously. Caveat on the uniform arm: it hit its
+10-chunk cap on 1,871 counties and dropped 17M characters, so it is a lower bound on
+"read everything," not a measurement of it.
 
 ### Source E — four volume tiers, and a finding I did not expect
 
