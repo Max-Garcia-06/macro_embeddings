@@ -55,6 +55,7 @@ ext = json.loads((ANALYSIS / "cross-source" / "external_target_stats.json").read
 gst = json.loads((ANALYSIS / "cross-source" / "grain_effect_stats.json").read_text())
 a_tiers = json.loads((ANALYSIS / "source-a" / "source_a_tier_stats.json").read_text())
 e_tiers = json.loads((ANALYSIS / "source-e" / "source_e_tier_stats.json").read_text())
+scope = json.loads((ANALYSIS / "source-a" / "source_a_section_scope_stats.json").read_text())
 
 LABELS = {
     "broadband_rate": "Broadband adoption",
@@ -175,6 +176,116 @@ diagnostic and the wrong architecture. Heterogeneity is better handled by featur
 are simply *absent* when a county has nothing to say — sparsity already encodes the
 tier — than by partitioning the fit. One uniform schema, one model, and the negative
 result kept as a scored variant so it stays reproducible rather than becoming folklore.
+
+### A question the tiers raise: should we read *more* of the page for thin counties?
+
+Worth being precise about what the pipeline consumes, because the tiers turn out to
+control it without anyone deciding they should. Every county gets the same treatment
+— read the lead, plus any section whose title marks it economic — but what that
+yields is wildly unequal:
+
+| tier | median lead chars | has an economy section | econ chars when present | mean total chars used |
+|---|---|---|---|---|
+| stub | 70 | 10.5% | 405 | **127** |
+| thin | 191 | 14.2% | 445 | **303** |
+| mid | 354 | 21.2% | 564 | **588** |
+| rich | 686 | 35.7% | 1,001 | **1,267** |
+
+Rich counties give up ~10× the text a stub county does, and account for 57% of all
+economy-section text read despite being 25% of the corpus. Meanwhile the whole
+pipeline reads about 2.0M characters out of ~56M already downloaded and sitting in
+`data/source_a_sections.parquet`.
+
+**The tempting move is to read deeper only for thin counties. I think that is a
+trap**, and it is the same trap as branching the model. Tier tracks county size, so a
+tier-conditional rule would make `has_agriculture` mean "named in the lead or economy
+section" for one county and "named anywhere on the page" for another — with the
+difference correlated with population. That is a size proxy manufactured inside the
+feature, in a project whose central open question is whether size is a control or a
+target.
+
+So I widened the scope **uniformly** and measured it instead
+(`scripts/analyze_source_a_section_scope.py`, four scopes, same 28 targets, same
+protocol — the shipped whitelist reproduces +0.00307 exactly, which is the new
+harness agreeing with the old one):
+
+| scope | mean lift | coverage | paired *p* | new hits in historical framing |
+|---|---|---|---|---|
+| economy-titled only *(shipped)* | +0.00307 | 18.8% | — | — |
+| \\+ transportation, government, infrastructure | +0.00312 | 21.6% | 0.76 | 22% |
+| everything except History and Notable People | +0.00351 | 42.5% | 0.22 | 38% |
+| every section | **+0.00403** | 55.2% | **0.048** | **67%** |
+""")
+
+code('''
+a_lab = a_tiers["tier_labels"]
+cov = pd.DataFrame(scope["coverage_by_tier"])
+SCOPE_ORDER = ["economy", "economy_plus", "no_narrative", "all_sections"]
+SCOPE_LABEL = {"economy": "economy sections (shipped)",
+               "economy_plus": "+ transport / government",
+               "no_narrative": "all but History & People",
+               "all_sections": "every section"}
+SCOPE_COLOR = {"economy": "#c7cdd6", "economy_plus": "#9db4d4",
+               "no_narrative": "#2563eb", "all_sections": "#f3b0b0"}
+piv = cov.pivot(index="tier", columns="scope", values="coverage").reindex(a_lab)
+
+fig, ax = plt.subplots(figsize=(9.6, 4.3))
+x = range(len(a_lab))
+for k, key in enumerate(SCOPE_ORDER):
+    off = (k - 1.5) * 0.21
+    vals = piv[key]
+    ax.bar([i + off for i in x], vals, width=0.19, color=SCOPE_COLOR[key],
+           label=f"{SCOPE_LABEL[key]}  ({scope['scopes'][key]['mean_lift']:+.5f})",
+           zorder=3, hatch="//" if key == "all_sections" else None,
+           edgecolor="#d98b8b" if key == "all_sections" else "none")
+    for i, v in enumerate(vals):
+        ax.text(i + off, v + 0.012, f"{v:.0%}", ha="center", fontsize=8, color="#4b5563")
+
+ax.set_xticks(list(x), [t.capitalize() for t in a_lab])
+ax.set_xlabel("Source A content tier")
+ax.set_ylabel("Counties with any industry flag set")
+ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
+ax.set_ylim(0, 0.82)
+ax.set_title("Reading more of the page, uniformly", pad=26, loc="left")
+ax.text(0, 1.05, "Mean R² lift in the legend. The hatched bar wins on lift and loses on "
+        "precision — 67% of the hits it adds are historical.",
+        transform=ax.transAxes, fontsize=9.5, color="#6b7280")
+ax.legend(frameon=False, fontsize=9, loc="upper left", ncol=2)
+ax.grid(axis="y", color="#eef0f3", zorder=0)
+plt.tight_layout()
+plt.show()
+''')
+
+md("""
+**Reading more does help, and my hand-picked widening was the wrong guess.** Adding
+Transportation and Government bought nothing (+0.00005, *p* = 0.76). The value sits in
+sections I would not have nominated — Geography carries "planar areas largely devoted
+to agriculture", Recreation carries tourism.
+
+**But half of the winning number is history.** Reading everything is the only scope
+that clears *p* < 0.05, and it gets there partly on History and Notable People, where
+a sampled precision check flags **67%** of the added hits as historically framed:
+*"The South Bronx was a manufacturing center for many years"*; a county "settled
+between 1870 and 1880 as a ranching hub"; an oil flag set by a driller born in 1819.
+Those genuinely predict current industry — industrial history correlates with present
+industry — but shipping them makes `has_manufacturing` a defunct-industry detector
+wearing a current-economy label, and the feature-store documentation would be wrong.
+
+Drop the narrative sections and **+0.00044 of the +0.00096 survives**, with the
+biggest movers exactly the interpretable ones: Arts & Recreation LQ, Wholesale Trade,
+Accommodation & Food, capital-to-wage.
+
+**Two things this settles.** The thin tiers do get most of the relative benefit —
+stub coverage goes 6.1% → 34.0% and thin 9.7% → 34.9%, against rich's 39.0% → 60.3%
+— and they get it from a *uniform* rule, so the tier-conditional version buys nothing
+it doesn't also poison. And the shipped whitelist is now measured rather than
+asserted.
+
+**What this does not settle: whether to ship it.** +0.00044 at *p* = 0.22 is inside
+the noise band this pillar operates in, on the same underpowered paired test that
+§14.2a already flagged. The honest status is *measured, promising, not demonstrated* —
+it would need a human-labelled precision sample rather than my regex heuristic, and
+probably a recency filter, before it earns a schema change. Nothing was rewritten.
 
 ### Source E — four volume tiers, and a finding I did not expect
 
