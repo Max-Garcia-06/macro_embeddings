@@ -102,217 +102,58 @@ E's case they changed what I think the pillar is actually measuring.
 
 ### Source A — four content tiers
 
-Counties split on how much text their Wikipedia intro has: **stub** (<100 chars),
+Counties split on how much text their Wikipedia intro carries: **stub** (<100 chars),
 **thin** (100–283), **mid** (284–461), **rich** (≥462).
 
-The corpus turns out to be wildly uneven, and the unevenness is economic rather than
-editorial. Named industry content appears in **1.1% of thin-tier counties and 25.2%
-of rich-tier ones** — a 23× gradient — while fewer than one county in ten carries any
-at all. That is the fact that killed the dense-embedding approach: averaging 1,024
-dimensions over 3,144 articles produces a vector dominated by counties that say
-nothing economic.
+The split earned its keep immediately as a *diagnostic*. The corpus is wildly uneven
+and the unevenness is economic rather than editorial: named industry content appears
+in **1.1% of thin-tier counties against 25.2% of rich ones** — a 23× gradient — with
+fewer than one county in ten carrying any at all. That single fact is what killed the
+dense-embedding approach, since averaging 1,024 dimensions over 3,144 articles yields
+a vector dominated by counties that say nothing economic, and it is what identified
+*industry* as the feature family worth extracting.
 
-So the tiers earned their keep immediately — they identified *industry* as the feature
-family worth extracting, and justified refetching article sections for the counties
-where the intro says least.
+Then the real question: should the tiers change what we **do**, not just what we look
+at? I asked it three ways this week. All three lost.
 
-### Then the stronger version of the ask: should the tiers branch the model?
+| Should the tier decide… | Answer |
+|---|---|
+| …which **model** a county gets? | **No.** Tier-specific slopes cost 9% of the lift; four separate per-tier fits scored **−0.01595** against the flat model's +0.00307 — worse than dropping Source A entirely. |
+| …how much of its **page** gets read? | **Not conditionally.** Widening the section rule *uniformly* beat the shipped one (+0.00351 against +0.00307). A tier-conditional rule would make `has_agriculture` mean different things at different county sizes. |
+| …what goes through an **encoder**? | **No, in either direction.** Feeding thin counties more scored +0.00162; feeding rich counties more scored +0.00073; reading the same thing for everyone scored **+0.00226**. |
 
-Splitting into groups to *look* at them is one thing; letting each group get its own
-model is the real question, and it hadn't been tested. Both forms, same 28 targets,
-same folds, same seed:
+**One reason sits underneath all three.** Partitioning a 3,144-county corpus costs
+more in pooled evidence than its heterogeneity costs in bias. In the embedding run
+that becomes measurable: tier membership alone explains **0.9–1.0%** of the vector
+set's variance under a uniform rule and **3.7–6.6%** under a conditional one. The
+construction rule leaks into the space, four- to sevenfold, and tier is a size proxy
+the baseline already controls for.
 
-| approach | width | mean R² lift |
-|---|---|---|
-| one model, one global coefficient per feature | 29 | **+0.00307** |
-| one model, coefficients free to vary by tier | 120 | +0.00279 |
-| four independent models, one per tier | 29 × 4 fits | **−0.01595** |
+**And the premise was wrong anyway.** Reading the same sections for every county is
+worth **+0.00153** over reading them only for rich counties — and that difference is
+precisely what stub and thin counties contribute. Their pages are not empty: uniform
+reading lifts stub industry coverage from 6.1% to **34.0%**, and thin from 9.7% to
+34.9%.
 
-#### What "a model" is here
+One caution on the widening, since it is the tempting next step. The scope that wins
+outright — reading literally every section, +0.00403, the only arm clearing *p* < 0.05
+— gets there partly on History, where **67%** of the hits it adds sit in historical
+framing (*"The South Bronx was a manufacturing center for many years"*). That is a
+defunct-industry detector wearing a current-economy label. Excluding the narrative
+sections keeps +0.00044 of the +0.00096, at *p* = 0.22.
 
-Each of the 28 targets is a feature belonging to one of the other five pillars, and
-every target is scored the same way:
-
-1. **Control first.** Ordinary least squares on three size measures
-   (`log_population`, `log_agi`, `log_gdp_latest`) plus one dummy per state.
-   Deliberately unpenalized — ~50 controls against 3,144 rows has nothing to
-   regularize, and shrinking them would let a wide Source A block degrade them.
-2. **Source A predicts only what the control missed.** Its 29 columns are fit to the
-   control's *residual*: median-impute → standardize → ridge, with the penalty chosen
-   by an inner 5-fold search over 10⁰–10⁶.
-3. **Score = out-of-fold R² gain over the control.** Outer 5-fold, shuffled, seed 42.
-
-Only step 2 changes across the three rows of the table:
-
-- **Flat, 29 columns.** One ridge over all 3,144 counties, one coefficient per
-  feature. A stub county and a rich county share every slope.
-- **Tier-crossed, 120 columns.** Four tier dummies, plus each of the 29 features
-  copied into four slots — populated in the county's own tier's slot and zero
-  everywhere else. Every tier gets its own slope *and* its own intercept, but there
-  is still **one fit and one shared penalty**, so a tier with nothing to say gets
-  shrunk toward zero using evidence pooled from the tiers that do.
-- **Four independent fits.** The corpus is partitioned by tier and a separate ridge
-  is fit inside each partition, each selecting its own penalty on its own rows:
-  **294 / 1,274 / 788 / 788** counties. No pooling, no shared shrinkage; predictions
-  are stitched back together only for scoring.
-
-That third row is the literal reading of "handle each group differently," and it is
-the one that goes negative. Two structural reasons. The stub tier's 294 counties
-contain almost no industry content, so its private fit has nothing to find and no
-shared penalty pulling its coefficients toward zero — it contributes noise across its
-whole slice. And every tier loses the ability to borrow strength: a slope estimated
-on 788 rich counties can no longer inform the 788 mid ones.
-
-**One detail worth keeping straight**, because it is the difference between a real
-tier effect and an artifact: the per-tier *results* reported elsewhere come from
-evaluating the single global model's out-of-fold predictions on tier subsets, never
-from refitting per tier. Otherwise "this tier is more predictable" gets confused with
-"this tier got its own model."
-
-*Caveat on the table: the first two rows are the 2026-08-04 re-score against Census
-population; the third was measured once against the retired baseline and not re-run,
-since a result that far negative does not turn on a fourth-decimal baseline change.*
-
-**Both branching forms lose, and the loss scales with how much branching there is.**
-Tier-specific slopes cost 9% of the lift. Fully separate per-tier models go negative —
-worse than dropping Source A altogether — because each trains on roughly a quarter of
-the rows and overfits with no shared penalty to restrain it.
-
-The mechanism is ordinary bias–variance: crossing 29 features with 4 tiers puts 120
-columns against targets whose smallest sample is n ≈ 1,026, and the ridge penalty big
-enough to control that width over-shrinks the coefficients that were doing the work.
-
-**Conclusion, stated carefully because it inverts easily:** the tiers are the right
-diagnostic and the wrong architecture. Heterogeneity is better handled by features that
-are simply *absent* when a county has nothing to say — sparsity already encodes the
-tier — than by partitioning the fit. One uniform schema, one model, and the negative
-result kept as a scored variant so it stays reproducible rather than becoming folklore.
-
-### A question the tiers raise: should we read *more* of the page for thin counties?
-
-Worth being precise about what the pipeline consumes, because the tiers turn out to
-control it without anyone deciding they should. Every county gets the same treatment
-— read the lead, plus any section whose title marks it economic — but what that
-yields is wildly unequal:
-
-| tier | median lead chars | has an economy section | econ chars when present | mean total chars used |
-|---|---|---|---|---|
-| stub | 70 | 10.5% | 405 | **127** |
-| thin | 191 | 14.2% | 445 | **303** |
-| mid | 354 | 21.2% | 564 | **588** |
-| rich | 686 | 35.7% | 1,001 | **1,267** |
-
-Rich counties give up ~10× the text a stub county does, and account for 57% of all
-economy-section text read despite being 25% of the corpus. Meanwhile the whole
-pipeline reads about 2.0M characters out of ~56M already downloaded and sitting in
-`data/source_a_sections.parquet`.
-
-**The tempting move is to read deeper only for thin counties. I think that is a
-trap**, and it is the same trap as branching the model. Tier tracks county size, so a
-tier-conditional rule would make `has_agriculture` mean "named in the lead or economy
-section" for one county and "named anywhere on the page" for another — with the
-difference correlated with population. That is a size proxy manufactured inside the
-feature, in a project whose central open question is whether size is a control or a
-target.
-
-So I widened the scope **uniformly** and measured it instead
-(`scripts/analyze_source_a_section_scope.py`, four scopes, same 28 targets, same
-protocol — the shipped whitelist reproduces +0.00307 exactly, which is the new
-harness agreeing with the old one):
-
-| scope | mean lift | coverage | paired *p* | new hits in historical framing |
-|---|---|---|---|---|
-| economy-titled only *(shipped)* | +0.00307 | 18.8% | — | — |
-| \\+ transportation, government, infrastructure | +0.00312 | 21.6% | 0.76 | 22% |
-| everything except History and Notable People | +0.00351 | 42.5% | 0.22 | 38% |
-| every section | **+0.00403** | 55.2% | **0.048** | **67%** |
-""")
-
-code('''
-a_lab = a_tiers["tier_labels"]
-cov = pd.DataFrame(scope["coverage_by_tier"])
-SCOPE_ORDER = ["economy", "economy_plus", "no_narrative", "all_sections"]
-SCOPE_LABEL = {"economy": "economy sections (shipped)",
-               "economy_plus": "+ transport / government",
-               "no_narrative": "all but History & People",
-               "all_sections": "every section"}
-SCOPE_COLOR = {"economy": "#c7cdd6", "economy_plus": "#9db4d4",
-               "no_narrative": "#2563eb", "all_sections": "#f3b0b0"}
-piv = cov.pivot(index="tier", columns="scope", values="coverage").reindex(a_lab)
-
-fig, ax = plt.subplots(figsize=(9.6, 4.3))
-x = range(len(a_lab))
-for k, key in enumerate(SCOPE_ORDER):
-    off = (k - 1.5) * 0.21
-    vals = piv[key]
-    ax.bar([i + off for i in x], vals, width=0.19, color=SCOPE_COLOR[key],
-           label=f"{SCOPE_LABEL[key]}  ({scope['scopes'][key]['mean_lift']:+.5f})",
-           zorder=3, hatch="//" if key == "all_sections" else None,
-           edgecolor="#d98b8b" if key == "all_sections" else "none")
-    for i, v in enumerate(vals):
-        ax.text(i + off, v + 0.012, f"{v:.0%}", ha="center", fontsize=8, color="#4b5563")
-
-ax.set_xticks(list(x), [t.capitalize() for t in a_lab])
-ax.set_xlabel("Source A content tier")
-ax.set_ylabel("Counties with any industry flag set")
-ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
-ax.set_ylim(0, 0.82)
-ax.set_title("Reading more of the page, uniformly", pad=26, loc="left")
-ax.text(0, 1.05, "Mean R² lift in the legend. The hatched bar wins on lift and loses on "
-        "precision — 67% of the hits it adds are historical.",
-        transform=ax.transAxes, fontsize=9.5, color="#6b7280")
-ax.legend(frameon=False, fontsize=9, loc="upper left", ncol=2)
-ax.grid(axis="y", color="#eef0f3", zorder=0)
-plt.tight_layout()
-plt.show()
-''')
-
-md("""
-**Reading more does help, and my hand-picked widening was the wrong guess.** Adding
-Transportation and Government bought nothing (+0.00005, *p* = 0.76). The value sits in
-sections I would not have nominated — Geography carries "planar areas largely devoted
-to agriculture", Recreation carries tourism.
-
-**But half of the winning number is history.** Reading everything is the only scope
-that clears *p* < 0.05, and it gets there partly on History and Notable People, where
-a sampled precision check flags **67%** of the added hits as historically framed:
-*"The South Bronx was a manufacturing center for many years"*; a county "settled
-between 1870 and 1880 as a ranching hub"; an oil flag set by a driller born in 1819.
-Those genuinely predict current industry — industrial history correlates with present
-industry — but shipping them makes `has_manufacturing` a defunct-industry detector
-wearing a current-economy label, and the feature-store documentation would be wrong.
-
-Drop the narrative sections and **+0.00044 of the +0.00096 survives**, with the
-biggest movers exactly the interpretable ones: Arts & Recreation LQ, Wholesale Trade,
-Accommodation & Food, capital-to-wage.
-
-**Two things this settles.** The thin tiers do get most of the relative benefit —
-stub coverage goes 6.1% → 34.0% and thin 9.7% → 34.9%, against rich's 39.0% → 60.3%
-— and they get it from a *uniform* rule, so the tier-conditional version buys nothing
-it doesn't also poison. And the shipped whitelist is now measured rather than
-asserted.
-
-**What this does not settle: whether to ship it.** +0.00044 at *p* = 0.22 is inside
-the noise band this pillar operates in, on the same underpowered paired test that
-§14.2a already flagged. The honest status is *measured, promising, not demonstrated* —
-it would need a human-labelled precision sample rather than my regex heuristic, and
-probably a recency filter, before it earns a schema change. Nothing was rewritten.
+**What ships: unchanged.** One uniform schema, one model, economy-titled sections.
+Method detail for all three experiments is in the appendix.
 
 ### The one we talked about: a smaller embedding, fed by tier
 
 This is the version we discussed — bring the embedding back, but narrower than
 bge-m3's 1024 dimensions, and let the tier decide which sections go through the
-encoder. Built with `all-MiniLM-L6-v2` at **384 dimensions** (90MB against bge-m3's
-2.2GB), chunked at 900 characters and mean-pooled so a long article is not silently
-truncated inside a 256-token window.
-
-Four input rules, one encoder. The tier-conditional rule you'd expect — stub and thin
-counties get the whole article, mid counties get their economy sections, rich counties
-get the lead alone, on the logic that depth is worth spending where the lead says
-least. Its **mirror image**, which reads the article for rich counties and the lead
-for thin ones. And two controls, because the tier question is exactly the kind that
-answers itself wrongly without them: `lead_only` isolates the change of encoder and
-width, `uniform` reads the same sections for every county.
+encoder. Built with `all-MiniLM-L6-v2` at **384 dimensions** (90MB against 2.2GB),
+chunked and mean-pooled so a long article is not silently truncated. Four input rules:
+the tier-conditional one you'd expect, its mirror image, and two controls — `lead_only`
+isolates the change of encoder and width, `uniform` reads the same sections for
+everyone.
 """)
 
 code('''
@@ -370,65 +211,25 @@ plt.show()
 ''')
 
 md("""
-**Both directions lose, and the inverse loses hardest** — +0.00073, the worst arm in
-the run, below even encoding nothing but the lead.
+**Both directions lose, and the inverse loses hardest** — the worst arm in the run,
+below encoding nothing but the lead. Worth flagging that this killed my first
+explanation: I had said the original rule failed because it read least from the rich
+tier, where the industry content lives. If that were right, inverting it should have
+recovered most of `uniform`'s gain. It recovered none. The mechanism that survived
+testing is the leakage in the right-hand panel; the appendix has the one I ruled out.
 
-That second result is worth dwelling on, because **it killed my first explanation.**
-When the original rule lost I said the cause was obvious: the rich tier is where
-industry content lives, and that rule reads least from it. If that were right,
-inverting the rule should have recovered most of `uniform`'s gain. It recovered none.
+**Two things worth keeping regardless.** Reading more helps when it's uniform
+(+0.00057 over lead-only). And compressing to 64 dimensions costs −0.00063 at
+***p* = 0.015** — the only firm number in the run, and worth having because "just make
+the vector smaller" is the reflexive answer to a feature-store cost problem.
 
-Two candidate mechanisms then, one of which also failed:
+**Bottom line:** a 384-d encoder is a real option at roughly three-quarters of the
+typed block's lift and 4% of bge-m3's disk footprint, with uniform input only. I would
+still ship the typed features, which win on lift, cost, and interpretability at once.
 
-- **Magnitude — tested, not the cause.** Mean-pooling *k* unit-length chunks shrinks
-  the result, so a pooled vector's length reports how much text its county
-  contributed: flat at ~0.72 under `uniform`, but spread 0.69–1.00 across tiers under
-  the conditional rules. Standardization runs down columns and cannot remove a
-  gradient that runs across rows, so this looked clean. Scoring direction alone, with
-  every vector renormalized, recovers **+0.0001 of a 0.0015 deficit**. Not it.
-- **Leakage of the rule into the space — real.** The right-hand panel is the share of
-  the vector set's variance explained by tier membership alone: **0.009–0.010 under
-  both uniform rules, 0.037–0.066 under both conditional ones.** A four- to sevenfold
-  leak. That is the shared-metric-space objection made measurable, and it explains
-  why *neither* conditional arm beats *either* uniform one — but not why the inverse
-  is worse than the original, since the original actually leaks more.
+""")
 
-For the inverse specifically the plain reading is the best one: it dilutes the 788
-rich counties that carry the economic content into nine chunks of geography,
-demographics and politics, and gives the thin tier nothing new. It loses signal where
-signal existed and gains none where it did not.
-
-**The most useful number here is a subtraction.** `uniform` − `inverse` = **+0.00153**,
-and that gap is exactly what stub and thin counties contribute when every county is
-read the same way. **The thin tier's sections are not empty** — which is the premise
-both conditional designs were built on, and it is wrong. It also agrees with the
-section-scope result, where reading past the economy section took stub coverage from
-6.1% to 34.0%.
-
-So the tier question has now been asked four ways this week — branch the model, branch
-the extraction, branch the encoder's input, branch it the other way — and lost every
-time. The common thread is not that any particular tier deserves more attention. It is
-that **treating a 3,144-county corpus as one population beats splitting it**, whether
-the split happens in the model, the extractor, or the text.
-
-**Two things worth keeping from the run:**
-
-- **Reading more helps, uniformly.** The uniform arm beats lead-only by +0.00057,
-  reproducing the section-scope result in embedding form. It just does not reach the
-  typed block (−0.00082).
-- **Smaller is worse, and this one is not noise.** Projecting to 64 dimensions costs
-  −0.00063 against native 384 at ***p* = 0.015**, agreeing in direction with the
-  retired PCA-50-of-bge-m3 result. Worth knowing, because "just make the vector
-  smaller" is the usual first answer to a feature-store cost problem.
-
-**Bottom line for the handoff:** a 384-d encoder is a real option at roughly
-three-quarters of the typed block's lift and 4% of bge-m3's disk footprint — but only
-with uniform input, and I would still ship the typed features, which win on lift,
-cost, and interpretability simultaneously. Two caveats: the uniform arm hit its
-10-chunk cap on 1,871 counties and dropped 17M characters, so it is a lower bound on
-"read everything"; and every difference in this run sits inside the pillar's noise
-band, with *p* between 0.04 and 0.17.
-
+md("""
 ### Source E — four volume tiers, and a finding I did not expect
 
 Counties split on `num_returns`: **T1** (<2.2k), **T2** (2.2k–11.7k), **T3**
@@ -910,9 +711,135 @@ Work that doesn't change the story but does change what ships:
 3. Keep the grain caveat live: if a real DMA delineation ever becomes available, the
    market-arm result is worth re-running against it once.
 
+""")
+
+# --------------------------------------------------------------------------
+md("""
+---
+
+## Appendix — method detail for Section 1
+
+Kept out of the argument, kept in the document. Nothing here changes a conclusion;
+it is what you would need to check one.
+
+### A1. What "a model" is in the branching test
+
+Each of the 28 targets is a feature belonging to one of the other five pillars, and
+every target is scored the same way:
+
+1. **Control first.** Ordinary least squares on three size measures
+   (`log_population`, `log_agi`, `log_gdp_latest`) plus one dummy per state.
+   Deliberately unpenalized — ~50 controls against 3,144 rows has nothing to
+   regularize, and shrinking them would let a wide Source A block degrade them.
+2. **Source A predicts only what the control missed.** Its 29 columns are fit to the
+   control's *residual*: median-impute → standardize → ridge, with the penalty chosen
+   by an inner 5-fold search over 10⁰–10⁶.
+3. **Score = out-of-fold R² gain over the control.** Outer 5-fold, shuffled, seed 42.
+
+Only step 2 differs across the three architectures:
+
+- **Flat, 29 columns.** One ridge over all 3,144 counties. A stub county and a rich
+  county share every slope.
+- **Tier-crossed, 120 columns.** Four tier dummies, plus each feature copied into four
+  slots — populated in the county's own tier's slot, zero elsewhere. Every tier gets
+  its own slope and intercept, but under **one fit and one shared penalty**, so a tier
+  with nothing to say is shrunk toward zero using evidence pooled from tiers that do.
+- **Four independent fits.** The corpus is partitioned and a separate ridge fit inside
+  each partition, each selecting its own penalty on its own rows: **294 / 1,274 / 788
+  / 788** counties. No pooling, no shared shrinkage.
+
+The partitioned form loses hardest for two structural reasons. The stub tier's 294
+counties contain almost no industry content, so its private fit has nothing to find
+and no shared penalty pulling its coefficients toward zero — it emits noise across its
+whole slice. And no tier can borrow strength: a slope estimated on 788 rich counties
+can no longer inform the 788 mid ones.
+
+**One detail worth keeping straight**, because it is the difference between a real
+tier effect and a manufactured one: the per-tier *results* quoted anywhere in this
+project come from scoring the single global model's out-of-fold predictions on tier
+subsets, never from refitting per tier.
+
+*Caveat on the table in Section 1: the flat and tier-crossed numbers are the
+2026-08-04 re-score against Census population; the four-fits number was measured once
+against the retired baseline and not re-run, since a result that far negative does not
+turn on a fourth-decimal baseline change.*
+
+### A2. What the pipeline actually consumes, per tier
+
+Every county gets the same rule — read the lead, plus any section whose title marks it
+economic — but what that yields is unequal by an order of magnitude:
+
+| tier | median lead chars | has an economy section | econ chars when present | mean total chars used |
+|---|---|---|---|---|
+| stub | 70 | 10.5% | 405 | **127** |
+| thin | 191 | 14.2% | 445 | **303** |
+| mid | 354 | 21.2% | 564 | **588** |
+| rich | 686 | 35.7% | 1,001 | **1,267** |
+
+Rich counties are 25% of the corpus and 57% of all economy-section text read. The
+pipeline reads ~2.0M characters of the ~56M already downloaded and sitting in
+`data/source_a_sections.parquet`, so widening scope costs an extraction pass, not a
+refetch — which is why there is no budget argument for spending depth by tier.
+
+### A3. Section scope, full results
+
+`scripts/analyze_source_a_section_scope.py`. Four scopes, 28 targets, same protocol.
+The shipped whitelist reproduces +0.00307 exactly, which is the new harness agreeing
+with the old one.
+
+| scope | mean lift | coverage | paired *p* | new hits in historical framing |
+|---|---|---|---|---|
+| economy-titled only *(shipped)* | +0.00307 | 18.8% | — | — |
+| \\+ transportation, government, infrastructure | +0.00312 | 21.6% | 0.76 | 22% |
+| everything except History and Notable People | +0.00351 | 42.5% | 0.22 | 38% |
+| every section | **+0.00403** | 55.2% | **0.048** | **67%** |
+
+My hand-picked widening — Transportation, Government, Infrastructure — bought
+essentially nothing. The value sits in sections I would not have nominated: Geography
+carries "planar areas largely devoted to agriculture", Recreation carries tourism.
+
+Coverage by tier under the widest safe scope: stub 6.1% → 34.0%, thin 9.7% → 34.9%,
+mid 18.0% → 40.2%, rich 39.0% → 60.3%.
+
+The precision check samples the hits each widening adds and flags historical framing
+by a crude marker — a pre-1990 year or a past-tense cessation phrase — for human
+review rather than for a decision. Examples it caught: *"The South Bronx was a
+manufacturing center for many years"*; a county "settled between 1870 and 1880 as a
+ranching hub"; an oil flag set by a driller born in 1819, from a Notable People list.
+Rows are in `outputs/source_a_section_scope_precision.csv`.
+
+Any adoption would need a human-labelled precision sample rather than that heuristic,
+and probably a recency filter. Nothing was rewritten.
+
+### A4. Embedding diagnostics, including the mechanism I ruled out
+
+`scripts/analyze_source_a_tiered_embedding.py`. Encoder `all-MiniLM-L6-v2`, 384
+dimensions, text chunked at 900 characters and mean-pooled per county.
+
+**Magnitude — tested, not the cause.** Mean-pooling *k* unit-length chunks shrinks the
+result, so a pooled vector's length reports how much text its county contributed: flat
+at ~0.72 under `uniform`, but spread 0.69–1.00 across tiers under the conditional
+rules. Standardization runs down columns and cannot remove a gradient running across
+rows, so this looked like a clean culprit. Scoring direction alone, every vector
+renormalized, recovers **+0.0001 of a 0.0015 deficit**.
+
+**Leakage — the one that held.** Share of vector variance explained by tier membership
+alone: 0.009 (lead-only), 0.010 (uniform), 0.066 (thin reads more), 0.037 (rich reads
+more). It explains why neither conditional arm beats either uniform one; it does *not*
+rank the two conditional arms, since the original leaks more yet scores higher. For
+the inverse specifically the plain reading is best: it dilutes the 788 rich counties
+that carry the economic content into nine chunks of geography and demographics, and
+gives the thin tier nothing new.
+
+**Caps and noise.** The uniform arm hit its 10-chunk cap on 1,871 counties and dropped
+17M characters, so it is a lower bound on "read everything" rather than a measurement
+of it. Every difference in the run except the PCA-64 result sits inside the pillar's
+noise band, with *p* between 0.04 and 0.17.
+
 ---
 
 *Sources: `analysis-output/cross-source/external-target-findings.md` (§10–§20),
+`analysis-output/source-a/source-a-findings.md` (§13–§15),
 `analysis-output/source-d/source-d-findings.md`,
 `analysis-output/source-e/source-e-findings.md`, `docs/plans/dma_regrain.md`.*
 """)
