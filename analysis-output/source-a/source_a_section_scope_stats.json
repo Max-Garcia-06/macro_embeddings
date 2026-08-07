@@ -1,0 +1,163 @@
+{
+  "n_targets": 28,
+  "n_folds": 5,
+  "random_seed": 42,
+  "scopes": {
+    "economy": {
+      "label": "economy-titled sections (shipped)",
+      "mean_lift": 0.0030716815258553126,
+      "median_lift": 0.0013613440452437398,
+      "n_targets_better_than_economy": 0,
+      "coverage_corpus": 0.1876590330788804
+    },
+    "economy_plus": {
+      "label": "economy + activity-named sections",
+      "mean_lift": 0.003121880078063228,
+      "median_lift": 0.0013235399126583225,
+      "n_targets_better_than_economy": 15,
+      "coverage_corpus": 0.21596692111959287
+    },
+    "all_sections": {
+      "label": "every non-reference section",
+      "mean_lift": 0.004031393272048905,
+      "median_lift": 0.0017020087890900482,
+      "n_targets_better_than_economy": 18,
+      "coverage_corpus": 0.5518447837150128
+    },
+    "no_narrative": {
+      "label": "every section except history and people",
+      "mean_lift": 0.003507652170916261,
+      "median_lift": 0.0011252841090660382,
+      "n_targets_better_than_economy": 18,
+      "coverage_corpus": 0.42493638676844786
+    }
+  },
+  "coverage_by_tier": [
+    {
+      "scope": "economy",
+      "tier": "stub",
+      "n": 294,
+      "covered": 18,
+      "coverage": 0.061224489795918366
+    },
+    {
+      "scope": "economy",
+      "tier": "thin",
+      "n": 1274,
+      "covered": 123,
+      "coverage": 0.09654631083202511
+    },
+    {
+      "scope": "economy",
+      "tier": "mid",
+      "n": 788,
+      "covered": 142,
+      "coverage": 0.1802030456852792
+    },
+    {
+      "scope": "economy",
+      "tier": "rich",
+      "n": 788,
+      "covered": 307,
+      "coverage": 0.3895939086294416
+    },
+    {
+      "scope": "economy_plus",
+      "tier": "stub",
+      "n": 294,
+      "covered": 21,
+      "coverage": 0.07142857142857142
+    },
+    {
+      "scope": "economy_plus",
+      "tier": "thin",
+      "n": 1274,
+      "covered": 151,
+      "coverage": 0.1185243328100471
+    },
+    {
+      "scope": "economy_plus",
+      "tier": "mid",
+      "n": 788,
+      "covered": 162,
+      "coverage": 0.20558375634517767
+    },
+    {
+      "scope": "economy_plus",
+      "tier": "rich",
+      "n": 788,
+      "covered": 345,
+      "coverage": 0.43781725888324874
+    },
+    {
+      "scope": "all_sections",
+      "tier": "stub",
+      "n": 294,
+      "covered": 136,
+      "coverage": 0.46258503401360546
+    },
+    {
+      "scope": "all_sections",
+      "tier": "thin",
+      "n": 1274,
+      "covered": 628,
+      "coverage": 0.49293563579277866
+    },
+    {
+      "scope": "all_sections",
+      "tier": "mid",
+      "n": 788,
+      "covered": 419,
+      "coverage": 0.5317258883248731
+    },
+    {
+      "scope": "all_sections",
+      "tier": "rich",
+      "n": 788,
+      "covered": 552,
+      "coverage": 0.700507614213198
+    },
+    {
+      "scope": "no_narrative",
+      "tier": "stub",
+      "n": 294,
+      "covered": 100,
+      "coverage": 0.3401360544217687
+    },
+    {
+      "scope": "no_narrative",
+      "tier": "thin",
+      "n": 1274,
+      "covered": 444,
+      "coverage": 0.34850863422291994
+    },
+    {
+      "scope": "no_narrative",
+      "tier": "mid",
+      "n": 788,
+      "covered": 317,
+      "coverage": 0.4022842639593909
+    },
+    {
+      "scope": "no_narrative",
+      "tier": "rich",
+      "n": 788,
+      "covered": 475,
+      "coverage": 0.6027918781725888
+    }
+  ],
+  "precision_sample": {
+    "economy -> economy_plus": {
+      "n_sampled": 60,
+      "share_with_historical_marker": 0.21666666666666667
+    },
+    "economy_plus -> no_narrative": {
+      "n_sampled": 60,
+      "share_with_historical_marker": 0.38333333333333336
+    },
+    "no_narrative -> all_sections": {
+      "n_sampled": 60,
+      "share_with_historical_marker": 0.6666666666666666
+    }
+  }
+}

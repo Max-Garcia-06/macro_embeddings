@@ -1,0 +1,113 @@
+pillar,column,label,scope,n,r2_baseline,lift
+B,lq_emp_11,"Agriculture, Forestry, Fishing & Hunting LQ",economy,1457,0.3362495816743043,0.0004355354223498642
+B,lq_emp_11,"Agriculture, Forestry, Fishing & Hunting LQ",economy_plus,1457,0.3362495816743043,0.0010657365261574903
+B,lq_emp_11,"Agriculture, Forestry, Fishing & Hunting LQ",all_sections,1457,0.3362495816743043,0.002047268251734402
+B,lq_emp_11,"Agriculture, Forestry, Fishing & Hunting LQ",no_narrative,1457,0.3362495816743043,-0.0007887117476534922
+B,lq_emp_21,"Mining, Quarrying, Oil & Gas LQ",economy,1026,0.4070664866928364,-2.6237807585482997e-06
+B,lq_emp_21,"Mining, Quarrying, Oil & Gas LQ",economy_plus,1026,0.4070664866928364,-2.5268341664275162e-05
+B,lq_emp_21,"Mining, Quarrying, Oil & Gas LQ",all_sections,1026,0.4070664866928364,-0.0001110361459055742
+B,lq_emp_21,"Mining, Quarrying, Oil & Gas LQ",no_narrative,1026,0.4070664866928364,-0.0001818893332669047
+B,lq_emp_22,Utilities LQ,economy,1415,0.053968085673279154,-0.003236776401198904
+B,lq_emp_22,Utilities LQ,economy_plus,1415,0.053968085673279154,-0.003544586190630139
+B,lq_emp_22,Utilities LQ,all_sections,1415,0.053968085673279154,-0.0005834497416346007
+B,lq_emp_22,Utilities LQ,no_narrative,1415,0.053968085673279154,-0.0005277690364685617
+B,lq_emp_23,Construction LQ,economy,2469,0.09829521286403486,0.00015368633468137993
+B,lq_emp_23,Construction LQ,economy_plus,2469,0.09829521286403486,-0.00022976891704995506
+B,lq_emp_23,Construction LQ,all_sections,2469,0.09829521286403486,1.363489311922983e-05
+B,lq_emp_23,Construction LQ,no_narrative,2469,0.09829521286403486,0.0001710919128121713
+B,lq_emp_31-33,Manufacturing LQ,economy,2570,0.21533661592667597,0.005827199385416315
+B,lq_emp_31-33,Manufacturing LQ,economy_plus,2570,0.21533661592667597,0.004271699510895899
+B,lq_emp_31-33,Manufacturing LQ,all_sections,2570,0.21533661592667597,0.004256920055095148
+B,lq_emp_31-33,Manufacturing LQ,no_narrative,2570,0.21533661592667597,0.0032074611296186717
+B,lq_emp_42,Wholesale Trade LQ,economy,2346,0.21905308708738436,0.0020632411315038013
+B,lq_emp_42,Wholesale Trade LQ,economy_plus,2346,0.21905308708738436,0.0013688531548350369
+B,lq_emp_42,Wholesale Trade LQ,all_sections,2346,0.21905308708738436,0.009896048089623632
+B,lq_emp_42,Wholesale Trade LQ,no_narrative,2346,0.21905308708738436,0.005592798245677044
+B,lq_emp_44-45,Retail Trade LQ,economy,3050,0.11176030272464232,-0.001438649907400058
+B,lq_emp_44-45,Retail Trade LQ,economy_plus,3050,0.11176030272464232,0.0002992892918857182
+B,lq_emp_44-45,Retail Trade LQ,all_sections,3050,0.11176030272464232,-0.00017675240496817235
+B,lq_emp_44-45,Retail Trade LQ,no_narrative,3050,0.11176030272464232,-0.002561048176285663
+B,lq_emp_48-49,Transportation & Warehousing LQ,economy,2160,0.042099063008771975,0.005680735227677647
+B,lq_emp_48-49,Transportation & Warehousing LQ,economy_plus,2160,0.042099063008771975,0.004477715922912462
+B,lq_emp_48-49,Transportation & Warehousing LQ,all_sections,2160,0.042099063008771975,0.00235439582715391
+B,lq_emp_48-49,Transportation & Warehousing LQ,no_narrative,2160,0.042099063008771975,0.002786104405488432
+B,lq_emp_51,Information LQ,economy,1914,0.034408517348630485,0.0027931312355452542
+B,lq_emp_51,Information LQ,economy_plus,1914,0.034408517348630485,0.000413713062156873
+B,lq_emp_51,Information LQ,all_sections,1914,0.034408517348630485,0.005831632450466695
+B,lq_emp_51,Information LQ,no_narrative,1914,0.034408517348630485,0.003088208548183813
+B,lq_emp_52,Finance & Insurance LQ,economy,2638,0.12576347654606812,0.0040068973022570065
+B,lq_emp_52,Finance & Insurance LQ,economy_plus,2638,0.12576347654606812,0.005447141292332147
+B,lq_emp_52,Finance & Insurance LQ,all_sections,2638,0.12576347654606812,0.006204382128744412
+B,lq_emp_52,Finance & Insurance LQ,no_narrative,2638,0.12576347654606812,0.005982120878493369
+B,lq_emp_53,Real Estate & Rental & Leasing LQ,economy,2453,0.2626236425183559,0.0023069642659308
+B,lq_emp_53,Real Estate & Rental & Leasing LQ,economy_plus,2453,0.2626236425183559,0.0024890653247502392
+B,lq_emp_53,Real Estate & Rental & Leasing LQ,all_sections,2453,0.2626236425183559,0.0031364315285719035
+B,lq_emp_53,Real Estate & Rental & Leasing LQ,no_narrative,2453,0.2626236425183559,0.0008633490824688783
+B,lq_emp_54,"Professional, Scientific & Technical Services LQ",economy,2268,0.3267065339053543,0.002448215454308844
+B,lq_emp_54,"Professional, Scientific & Technical Services LQ",economy_plus,2268,0.3267065339053543,0.001278226670481608
+B,lq_emp_54,"Professional, Scientific & Technical Services LQ",all_sections,2268,0.3267065339053543,0.001482210257929495
+B,lq_emp_54,"Professional, Scientific & Technical Services LQ",no_narrative,2268,0.3267065339053543,0.001448208933074957
+B,lq_emp_55,Management of Companies & Enterprises LQ,economy,1296,0.1937465106412405,0.0007497288212641173
+B,lq_emp_55,Management of Companies & Enterprises LQ,economy_plus,1296,0.1937465106412405,0.001398933908785982
+B,lq_emp_55,Management of Companies & Enterprises LQ,all_sections,1296,0.1937465106412405,-0.0017265832932681358
+B,lq_emp_55,Management of Companies & Enterprises LQ,no_narrative,1296,0.1937465106412405,0.0012022412220367151
+B,lq_emp_56,Administrative & Support & Waste Management LQ,economy,2212,0.23236025404579708,-0.0008665884014354974
+B,lq_emp_56,Administrative & Support & Waste Management LQ,economy_plus,2212,0.23236025404579708,-0.0005044125456572512
+B,lq_emp_56,Administrative & Support & Waste Management LQ,all_sections,2212,0.23236025404579708,-4.3506632066758755e-05
+B,lq_emp_56,Administrative & Support & Waste Management LQ,no_narrative,2212,0.23236025404579708,-0.0007676128344967781
+B,lq_emp_61,Educational Services LQ,economy,1587,0.11605968685111279,9.412500025529624e-05
+B,lq_emp_61,Educational Services LQ,economy_plus,1587,0.11605968685111279,0.0025725113471769534
+B,lq_emp_61,Educational Services LQ,all_sections,1587,0.11605968685111279,0.003160737247770107
+B,lq_emp_61,Educational Services LQ,no_narrative,1587,0.11605968685111279,0.002777532414388606
+B,lq_emp_62,Health Care & Social Assistance LQ,economy,1942,0.1949204967431195,-0.00015609780878700352
+B,lq_emp_62,Health Care & Social Assistance LQ,economy_plus,1942,0.1949204967431195,5.027956650471843e-06
+B,lq_emp_62,Health Care & Social Assistance LQ,all_sections,1942,0.1949204967431195,6.701861668445552e-05
+B,lq_emp_62,Health Care & Social Assistance LQ,no_narrative,1942,0.1949204967431195,2.572920684262847e-05
+B,lq_emp_71,"Arts, Entertainment & Recreation LQ",economy,2243,0.1705917025261645,0.0017018719620474076
+B,lq_emp_71,"Arts, Entertainment & Recreation LQ",economy_plus,2243,0.1705917025261645,0.0018341167028184113
+B,lq_emp_71,"Arts, Entertainment & Recreation LQ",all_sections,2243,0.1705917025261645,0.0019218073202506014
+B,lq_emp_71,"Arts, Entertainment & Recreation LQ",no_narrative,2243,0.1705917025261645,0.005510778765423718
+B,lq_emp_72,Accommodation & Food Services LQ,economy,2369,0.1273463186110919,0.025305423064226562
+B,lq_emp_72,Accommodation & Food Services LQ,economy_plus,2369,0.1273463186110919,0.02682452236931998
+B,lq_emp_72,Accommodation & Food Services LQ,all_sections,2369,0.1273463186110919,0.03324601558921292
+B,lq_emp_72,Accommodation & Food Services LQ,no_narrative,2369,0.1273463186110919,0.02870168262506878
+B,lq_emp_81,Other Services (except Public Administration) LQ,economy,2579,0.197496190083839,5.966558791925536e-06
+B,lq_emp_81,Other Services (except Public Administration) LQ,economy_plus,2579,0.197496190083839,2.786970344259565e-05
+B,lq_emp_81,Other Services (except Public Administration) LQ,all_sections,2579,0.197496190083839,0.00016809321698008084
+B,lq_emp_81,Other Services (except Public Administration) LQ,no_narrative,2579,0.197496190083839,8.46221001232772e-05
+B,lq_emp_99,Unclassified LQ,economy,1075,0.4647821277214771,0.0010208161284400719
+B,lq_emp_99,Unclassified LQ,economy_plus,1075,0.4647821277214771,0.0012083226266272895
+B,lq_emp_99,Unclassified LQ,all_sections,1075,0.4647821277214771,0.0009190967518577509
+B,lq_emp_99,Unclassified LQ,no_narrative,1075,0.4647821277214771,0.0009630362781125612
+C,unemployment_velocity,unemployment velocity,economy,3143,0.5499196481999624,-7.057214899564013e-05
+C,unemployment_velocity,unemployment velocity,economy_plus,3143,0.5499196481999624,0.00010841570889141838
+C,unemployment_velocity,unemployment velocity,all_sections,3143,0.5499196481999624,0.001328923526491388
+C,unemployment_velocity,unemployment velocity,no_narrative,3143,0.5499196481999624,0.0001635792443630546
+C,unemployment_rate_latest,unemployment rate (level),economy,3143,0.5027632741932753,0.003627672914572888
+C,unemployment_rate_latest,unemployment rate (level),economy_plus,3143,0.5027632741932753,0.0034839736314014047
+C,unemployment_rate_latest,unemployment rate (level),all_sections,3143,0.5027632741932753,0.004455639647428455
+C,unemployment_rate_latest,unemployment rate (level),no_narrative,3143,0.5027632741932753,0.004283451818403172
+C,gdp_velocity_pct,GDP velocity (normalized),economy,3080,0.12332557858744797,0.001855640545938786
+C,gdp_velocity_pct,GDP velocity (normalized),economy_plus,3080,0.12332557858744797,0.0017306225166449085
+C,gdp_velocity_pct,GDP velocity (normalized),all_sections,3080,0.12332557858744797,0.0005430414064975242
+C,gdp_velocity_pct,GDP velocity (normalized),no_narrative,3080,0.12332557858744797,0.0010483269960953612
+D,log_total_tons,freight tonnage (log10),economy,3144,0.8860441073691143,0.0008769320385512147
+D,log_total_tons,freight tonnage (log10),economy_plus,3144,0.8860441073691143,0.0007027394456720071
+D,log_total_tons,freight tonnage (log10),all_sections,3144,0.8860441073691143,0.000619764328937733
+D,log_total_tons,freight tonnage (log10),no_narrative,3144,0.8860441073691143,0.0006979254886587682
+D,out_partner_hhi,outbound partner concentration,economy,3144,0.3861398493030823,0.003703168365868592
+D,out_partner_hhi,outbound partner concentration,economy_plus,3144,0.3861398493030823,0.003566150685551883
+D,out_partner_hhi,outbound partner concentration,all_sections,3144,0.3861398493030823,0.004324625810032234
+D,out_partner_hhi,outbound partner concentration,no_narrative,3144,0.3861398493030823,0.0038370010027298784
+D,in_partner_hhi,inbound partner concentration,economy,3144,0.3635412862183681,8.884130235031762e-06
+D,in_partner_hhi,inbound partner concentration,economy_plus,3144,0.3635412862183681,3.483394462999723e-05
+D,in_partner_hhi,inbound partner concentration,all_sections,3144,0.3635412862183681,0.00022605833268307673
+D,in_partner_hhi,inbound partner concentration,no_narrative,3144,0.3635412862183681,3.9732383471768884e-05
+E,capital_to_wage_ratio,capital-to-wage ratio,economy,3143,0.3703232263560705,0.005295595842387146
+E,capital_to_wage_ratio,capital-to-wage ratio,economy_plus,3143,0.3703232263560705,0.005549268062141177
+E,capital_to_wage_ratio,capital-to-wage ratio,all_sections,3143,0.3703232263560705,0.007675036872674901
+E,capital_to_wage_ratio,capital-to-wage ratio,no_narrative,3143,0.3703232263560705,0.008382697919364968
+F,distress_count,demographic distress count,economy,3144,0.20167572221044416,0.021816960040274447
+F,distress_count,demographic distress count,economy_plus,3144,0.20167572221044416,0.02155792881461005
+F,distress_count,demographic distress count,all_sections,3144,0.20167572221044416,0.02164155768527254
+F,distress_count,demographic distress count,no_narrative,3144,0.20167572221044416,0.02218361131292612
