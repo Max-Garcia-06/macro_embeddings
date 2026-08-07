@@ -296,68 +296,112 @@ encoder. Built with `all-MiniLM-L6-v2` at **384 dimensions** (90MB against bge-m
 2.2GB), chunked at 900 characters and mean-pooled so a long article is not silently
 truncated inside a 256-token window.
 
-I scored the tier-conditional rule you'd expect — stub and thin counties get the
-whole article, mid counties get their economy sections, rich counties get the lead
-alone, on the logic that depth is worth spending where the lead says least — but
-alongside two controls, because the tier question is exactly the kind that answers
-itself wrongly without them. `lead_only` isolates the change of encoder and width;
-`uniform` reads the same sections for every county.
+Four input rules, one encoder. The tier-conditional rule you'd expect — stub and thin
+counties get the whole article, mid counties get their economy sections, rich counties
+get the lead alone, on the logic that depth is worth spending where the lead says
+least. Its **mirror image**, which reads the article for rich counties and the lead
+for thin ones. And two controls, because the tier question is exactly the kind that
+answers itself wrongly without them: `lead_only` isolates the change of encoder and
+width, `uniform` reads the same sections for every county.
 """)
 
 code('''
 REP_ORDER = ["typed_sections", "uniform", "lead_only", "tier_conditional",
-             "uniform_pca64", "tier_conditional_pca64", "lead_only_pca64"]
+             "tier_conditional_inverse", "uniform_pca64", "lead_only_pca64"]
 REP_LABEL = {
     "typed_sections": "typed features (shipped)",
     "uniform": "384-d, uniform input",
     "lead_only": "384-d, lead only",
-    "tier_conditional": "384-d, tier-conditional input",
+    "tier_conditional": "384-d, thin reads more",
+    "tier_conditional_inverse": "384-d, rich reads more",
     "uniform_pca64": "→ 64-d, uniform",
-    "tier_conditional_pca64": "→ 64-d, tier-conditional",
     "lead_only_pca64": "→ 64-d, lead only",
 }
 lifts = {k: embed["representations"][k]["mean_lift"] for k in REP_ORDER}
+VAR_KEYS = ["lead_only", "uniform", "tier_conditional", "tier_conditional_inverse"]
+leak = {k: embed["text_diagnostics"][k]["tier_variance_share"] for k in VAR_KEYS}
 
-fig, ax = plt.subplots(figsize=(9.4, 4.0))
-colors = ["#111827", "#2563eb", "#94a3b8", "#dc2626",
-          "#bfd0ea", "#f0b4b4", "#e2e8f0"]
+fig, (axl, axr) = plt.subplots(1, 2, figsize=(11.0, 4.2),
+                               gridspec_kw={"width_ratios": [1.55, 1]})
+colors = ["#111827", "#2563eb", "#94a3b8", "#dc2626", "#7f1d1d",
+          "#bfd0ea", "#e2e8f0"]
 y = range(len(REP_ORDER))
-ax.barh(list(y), [lifts[k] for k in REP_ORDER], height=0.62, color=colors, zorder=3)
+axl.barh(list(y), [lifts[k] for k in REP_ORDER], height=0.62, color=colors, zorder=3)
 for i, k in enumerate(REP_ORDER):
-    ax.text(lifts[k] + 0.00006, i, f"{lifts[k]:+.5f}", va="center",
-            fontsize=9.5, fontweight="bold" if k in ("typed_sections", "tier_conditional")
-            else "normal", color=INK)
+    axl.text(lifts[k] + 0.00006, i, f"{lifts[k]:+.5f}", va="center", fontsize=9,
+             fontweight="bold" if k.startswith(("typed", "tier_")) else "normal",
+             color=INK)
+axl.axvline(lifts["typed_sections"], color="#111827", lw=1, ls=":", zorder=4)
+axl.set_yticks(list(y), [REP_LABEL[k] for k in REP_ORDER])
+axl.invert_yaxis()
+axl.set_xlim(0, max(lifts.values()) * 1.24)
+axl.set_xlabel("Mean R² lift, 28 targets")
+axl.set_title("Both directions lose", fontsize=11.5, loc="left", pad=8)
+axl.grid(axis="x", color="#eef0f3", zorder=0)
 
-ax.axvline(lifts["typed_sections"], color="#111827", lw=1, ls=":", zorder=4)
-ax.set_yticks(list(y), [REP_LABEL[k] for k in REP_ORDER])
-ax.invert_yaxis()
-ax.set_xlim(0, max(lifts.values()) * 1.22)
-ax.set_xlabel("Mean R² lift over the size-and-state baseline, 28 targets")
-ax.set_title("Tier-conditional input loses to reading the same thing everywhere",
-             pad=26, loc="left")
-ax.text(0, 1.06, f"{embed['encoder'].split('/')[-1]} · dotted line is what Source A "
-        "ships today",
-        transform=ax.transAxes, fontsize=9.5, color="#6b7280")
-ax.grid(axis="x", color="#eef0f3", zorder=0)
+bars = axr.bar(range(len(VAR_KEYS)), [leak[k] for k in VAR_KEYS], width=0.6,
+               color=["#94a3b8", "#2563eb", "#dc2626", "#7f1d1d"], zorder=3)
+for b, k in zip(bars, VAR_KEYS):
+    axr.text(b.get_x() + b.get_width() / 2, leak[k] + 0.0018, f"{leak[k]:.3f}",
+             ha="center", fontsize=9, fontweight="bold", color=INK)
+axr.set_xticks(range(len(VAR_KEYS)),
+               ["lead\\nonly", "uniform", "thin reads\\nmore", "rich reads\\nmore"],
+               fontsize=8.8)
+axr.set_ylabel("Share of vector variance that is\\njust tier membership")
+axr.set_title("…and both leak the rule into the space", fontsize=11.5, loc="left", pad=8)
+axr.grid(axis="y", color="#eef0f3", zorder=0)
+
+fig.suptitle("A 384-d embedding, fed four ways", x=0.008, y=1.05, ha="left",
+             fontsize=12.5, fontweight="bold")
+fig.text(0.008, 0.985, f"{embed['encoder'].split('/')[-1]} · dotted line is what "
+         "Source A ships today", ha="left", fontsize=9.5, color="#6b7280")
 plt.tight_layout()
 plt.show()
 ''')
 
 md("""
-**The tier-conditional rule lost.** −0.00064 against the uniform rule at identical
-width, and −0.00007 against simply encoding the lead — so spending reading depth on
-thin counties while starving rich ones performed no better than not reading sections
-at all. Obvious in hindsight: the rich tier is where industry content actually lives,
-25.2% of them naming an industry in the lead alone, and the tier-conditional rule is
-precisely the rule that reads least from those counties.
+**Both directions lose, and the inverse loses hardest** — +0.00073, the worst arm in
+the run, below even encoding nothing but the lead.
 
-That is the same verdict §15 reached for branching the *model*, now measured on the
-*input* side. The tier question has been asked three ways this week — branch the
-model, branch the extraction, branch the encoder's input — and lost all three times,
-for the same underlying reason each time: partitioning a corpus of 3,144 counties
-costs more in pooled evidence than heterogeneity costs in bias.
+That second result is worth dwelling on, because **it killed my first explanation.**
+When the original rule lost I said the cause was obvious: the rich tier is where
+industry content lives, and that rule reads least from it. If that were right,
+inverting the rule should have recovered most of `uniform`'s gain. It recovered none.
 
-**Two things worth keeping from the run anyway:**
+Two candidate mechanisms then, one of which also failed:
+
+- **Magnitude — tested, not the cause.** Mean-pooling *k* unit-length chunks shrinks
+  the result, so a pooled vector's length reports how much text its county
+  contributed: flat at ~0.72 under `uniform`, but spread 0.69–1.00 across tiers under
+  the conditional rules. Standardization runs down columns and cannot remove a
+  gradient that runs across rows, so this looked clean. Scoring direction alone, with
+  every vector renormalized, recovers **+0.0001 of a 0.0015 deficit**. Not it.
+- **Leakage of the rule into the space — real.** The right-hand panel is the share of
+  the vector set's variance explained by tier membership alone: **0.009–0.010 under
+  both uniform rules, 0.037–0.066 under both conditional ones.** A four- to sevenfold
+  leak. That is the shared-metric-space objection made measurable, and it explains
+  why *neither* conditional arm beats *either* uniform one — but not why the inverse
+  is worse than the original, since the original actually leaks more.
+
+For the inverse specifically the plain reading is the best one: it dilutes the 788
+rich counties that carry the economic content into nine chunks of geography,
+demographics and politics, and gives the thin tier nothing new. It loses signal where
+signal existed and gains none where it did not.
+
+**The most useful number here is a subtraction.** `uniform` − `inverse` = **+0.00153**,
+and that gap is exactly what stub and thin counties contribute when every county is
+read the same way. **The thin tier's sections are not empty** — which is the premise
+both conditional designs were built on, and it is wrong. It also agrees with the
+section-scope result, where reading past the economy section took stub coverage from
+6.1% to 34.0%.
+
+So the tier question has now been asked four ways this week — branch the model, branch
+the extraction, branch the encoder's input, branch it the other way — and lost every
+time. The common thread is not that any particular tier deserves more attention. It is
+that **treating a 3,144-county corpus as one population beats splitting it**, whether
+the split happens in the model, the extractor, or the text.
+
+**Two things worth keeping from the run:**
 
 - **Reading more helps, uniformly.** The uniform arm beats lead-only by +0.00057,
   reproducing the section-scope result in embedding form. It just does not reach the
@@ -370,9 +414,10 @@ costs more in pooled evidence than heterogeneity costs in bias.
 **Bottom line for the handoff:** a 384-d encoder is a real option at roughly
 three-quarters of the typed block's lift and 4% of bge-m3's disk footprint — but only
 with uniform input, and I would still ship the typed features, which win on lift,
-cost, and interpretability simultaneously. Caveat on the uniform arm: it hit its
+cost, and interpretability simultaneously. Two caveats: the uniform arm hit its
 10-chunk cap on 1,871 counties and dropped 17M characters, so it is a lower bound on
-"read everything," not a measurement of it.
+"read everything"; and every difference in this run sits inside the pillar's noise
+band, with *p* between 0.04 and 0.17.
 
 ### Source E — four volume tiers, and a finding I did not expect
 
