@@ -39,12 +39,11 @@ def code(text: str) -> None:
 md("""
 # `E_macro` — week of 3 August 2026
 
-**A brief, not an archive.** The evidence and the per-column detail live in
-`analysis-output/E_macro_key_findings.ipynb` and the per-source findings
-documents. This is what changed this week and what it means.
-
-Every number below is read from committed artifacts in `outputs/` and
-`analysis-output/`. Nothing is re-fit here.
+- **A brief, not an archive.** Evidence and per-column detail live in
+  `analysis-output/E_macro_key_findings.ipynb` and the per-source findings documents.
+- **Scope:** what changed this week, and what it means.
+- **Provenance:** every number is read from committed artifacts in `outputs/` and
+  `analysis-output/`. Nothing is re-fit here.
 """)
 
 code('''
@@ -96,64 +95,72 @@ md("""
 
 ## 1. The task you set on Monday: split A and E into groups
 
-Both pillars got cut into four groups and pushed on. Short version: **the groups are
-worth a great deal as a diagnostic and nothing as an architecture** — and in Source
-E's case they changed what I think the pillar is actually measuring.
+Both pillars cut into four groups and pushed on.
+
+- **Verdict:** the groups are worth a great deal as a *diagnostic* and nothing as an
+  *architecture*.
+- Source E is the exception that matters — there the groups changed what I think the
+  pillar is measuring.
 
 ### Source A — four content tiers
 
-Counties split on how much text their Wikipedia intro carries: **stub** (<100 chars),
-**thin** (100–283), **mid** (284–461), **rich** (≥462).
+Split on Wikipedia intro length: **stub** (<100 chars), **thin** (100–283), **mid**
+(284–461), **rich** (≥462).
 
-The split earned its keep immediately as a *diagnostic*. The corpus is wildly uneven
-and the unevenness is economic rather than editorial: named industry content appears
-in **1.1% of thin-tier counties against 25.2% of rich ones** — a 23× gradient — with
-fewer than one county in ten carrying any at all. That single fact is what killed the
-dense-embedding approach, since averaging 1,024 dimensions over 3,144 articles yields
-a vector dominated by counties that say nothing economic, and it is what identified
-*industry* as the feature family worth extracting.
+**As a diagnostic, it paid immediately:**
 
-Then the real question: should the tiers change what we **do**, not just what we look
-at? I asked it three ways this week. All three lost.
+- Named industry content: **1.1% of thin-tier counties, 25.2% of rich** — a 23×
+  gradient, with fewer than one county in ten carrying any at all.
+- That killed the dense embedding — averaging 1,024 dimensions over 3,144 articles
+  gives a vector dominated by counties saying nothing economic.
+- It also picked the feature family worth building: *industry*.
 
-| Should the tier decide… | Answer |
+**As an architecture, it lost three times.** Should the tier decide…
+
+| …what? | Answer |
 |---|---|
-| …which **model** a county gets? | **No.** Tier-specific slopes cost 9% of the lift; four separate per-tier fits scored **−0.01595** against the flat model's +0.00307 — worse than dropping Source A entirely. |
-| …how much of its **page** gets read? | **Not conditionally.** Widening the section rule *uniformly* beat the shipped one (+0.00351 against +0.00307). A tier-conditional rule would make `has_agriculture` mean different things at different county sizes. |
-| …what goes through an **encoder**? | **No, in either direction.** Feeding thin counties more scored +0.00162; feeding rich counties more scored +0.00073; reading the same thing for everyone scored **+0.00226**. |
+| which **model** a county gets | **No.** Tier-specific slopes cost 9% of the lift. Four separate per-tier fits: **−0.01595** against the flat model's +0.00307 — worse than dropping Source A entirely. |
+| how much of its **page** is read | **Not conditionally.** Uniform widening beat the shipped rule (+0.00351 vs +0.00307). A tier-conditional rule makes `has_agriculture` mean different things at different county sizes. |
+| what goes through an **encoder** | **No, either direction.** Thin reads more: +0.00162. Rich reads more: +0.00073. Everyone reads the same: **+0.00226**. |
 
-**One reason sits underneath all three.** Partitioning a 3,144-county corpus costs
-more in pooled evidence than its heterogeneity costs in bias. In the embedding run
-that becomes measurable: tier membership alone explains **0.9–1.0%** of the vector
-set's variance under a uniform rule and **3.7–6.6%** under a conditional one. The
-construction rule leaks into the space, four- to sevenfold, and tier is a size proxy
-the baseline already controls for.
+**One reason underneath all three:**
 
-**And the premise was wrong anyway.** Reading the same sections for every county is
-worth **+0.00153** over reading them only for rich counties — and that difference is
-precisely what stub and thin counties contribute. Their pages are not empty: uniform
-reading lifts stub industry coverage from 6.1% to **34.0%**, and thin from 9.7% to
-34.9%.
+- Partitioning 3,144 counties costs more in pooled evidence than heterogeneity costs
+  in bias.
+- Measurable in the embedding run: tier membership alone explains **0.9–1.0%** of
+  vector variance under a uniform rule, **3.7–6.6%** under a conditional one.
+- That's the construction rule leaking into the space, 4–7×. And tier is a size proxy
+  the baseline already controls for.
 
-One caution on the widening, since it is the tempting next step. The scope that wins
-outright — reading literally every section, +0.00403, the only arm clearing *p* < 0.05
-— gets there partly on History, where **67%** of the hits it adds sit in historical
-framing (*"The South Bronx was a manufacturing center for many years"*). That is a
-defunct-industry detector wearing a current-economy label. Excluding the narrative
-sections keeps +0.00044 of the +0.00096, at *p* = 0.22.
+**The premise was wrong anyway:**
+
+- Reading the same sections for everyone is worth **+0.00153** over reading them only
+  for rich counties — that gap *is* the stub and thin contribution.
+- Their pages are not empty. Uniform reading takes stub industry coverage 6.1% →
+  **34.0%**, thin 9.7% → 34.9%.
+
+**One caution before widening further:**
+
+- The outright winner — read every section, +0.00403, the only arm at *p* < 0.05 —
+  gets there partly on History.
+- **67%** of the hits it adds sit in historical framing (*"The South Bronx was a
+  manufacturing center for many years"*). A defunct-industry detector wearing a
+  current-economy label.
+- Excluding narrative sections keeps +0.00044 of the +0.00096, at *p* = 0.22.
 
 **What ships: unchanged.** One uniform schema, one model, economy-titled sections.
-Method detail for all three experiments is in the appendix.
+Method detail for all three experiments in the appendix.
 
 ### The one we talked about: a smaller embedding, fed by tier
 
-This is the version we discussed — bring the embedding back, but narrower than
-bge-m3's 1024 dimensions, and let the tier decide which sections go through the
-encoder. Built with `all-MiniLM-L6-v2` at **384 dimensions** (90MB against 2.2GB),
-chunked and mean-pooled so a long article is not silently truncated. Four input rules:
-the tier-conditional one you'd expect, its mirror image, and two controls — `lead_only`
-isolates the change of encoder and width, `uniform` reads the same sections for
-everyone.
+The version we discussed: embedding back, narrower than bge-m3's 1024 dimensions, tier
+decides which sections go through the encoder.
+
+- **Encoder:** `all-MiniLM-L6-v2`, **384 dimensions**, 90MB against 2.2GB.
+- **Chunked and mean-pooled**, so a long article is not silently truncated.
+- **Four input rules:** the tier-conditional one you'd expect, its mirror image, and
+  two controls — `lead_only` isolates the change of encoder and width, `uniform` reads
+  the same sections for everyone.
 """)
 
 code('''
@@ -211,21 +218,30 @@ plt.show()
 ''')
 
 md("""
-**Both directions lose, and the inverse loses hardest** — the worst arm in the run,
-below encoding nothing but the lead. Worth flagging that this killed my first
-explanation: I had said the original rule failed because it read least from the rich
-tier, where the industry content lives. If that were right, inverting it should have
-recovered most of `uniform`'s gain. It recovered none. The mechanism that survived
-testing is the leakage in the right-hand panel; the appendix has the one I ruled out.
+**Both directions lose; the inverse loses hardest** — worst arm in the run, below
+encoding nothing but the lead.
 
-**Two things worth keeping regardless.** Reading more helps when it's uniform
-(+0.00057 over lead-only). And compressing to 64 dimensions costs −0.00063 at
-***p* = 0.015** — the only firm number in the run, and worth having because "just make
-the vector smaller" is the reflexive answer to a feature-store cost problem.
+**This killed my first explanation, and that's worth flagging:**
 
-**Bottom line:** a 384-d encoder is a real option at roughly three-quarters of the
-typed block's lift and 4% of bge-m3's disk footprint, with uniform input only. I would
-still ship the typed features, which win on lift, cost, and interpretability at once.
+- I had said the original rule failed because it read least from the rich tier, where
+  the industry content lives.
+- If true, inverting it should have recovered most of `uniform`'s gain. It recovered
+  none.
+- What survived testing is the leakage in the right-hand panel. The appendix has the
+  mechanism I ruled out.
+
+**Two things worth keeping regardless:**
+
+- **Uniform reading helps** — +0.00057 over lead-only.
+- **Compression hurts, and this one is firm** — 64 dimensions costs −0.00063 at
+  ***p* = 0.015**. Worth having, since "just make the vector smaller" is the reflexive
+  answer to a feature-store cost problem.
+
+**Bottom line:**
+
+- A 384-d encoder is a real option — ~¾ of the typed block's lift, 4% of bge-m3's
+  disk footprint — **with uniform input only**.
+- Still ship the typed features. They win on lift, cost, and interpretability at once.
 
 """)
 
@@ -289,12 +305,15 @@ plt.show()
 ''')
 
 md("""
-The right panel is the one to sit with. **T1 and T4 are each about 10% of counties.
-T1 holds 0.14% of national investment income; T4 holds 82.6%.** An unweighted
-county-level feature and the economy it claims to describe are not the same object —
-the national aggregate ratio is 0.156 against an unweighted county mean of 0.107.
+**Sit with the right panel.**
 
-Three more things the split turned up, two of which corrected earlier conclusions:
+- T1 and T4 are each ~10% of counties. T1 holds **0.14%** of national investment
+  income; T4 holds **82.6%**.
+- So an unweighted county feature and the economy it claims to describe are not the
+  same object — national aggregate ratio **0.156** against an unweighted county mean
+  of **0.107**.
+
+**Three more things the split turned up. Two correct earlier conclusions:**
 
 - **The strongest cross-pillar link in the whole project is a large-county
   phenomenon.** B Real Estate LQ × E capital-to-wage runs +0.394 nationally, but
@@ -309,10 +328,14 @@ Three more things the split turned up, two of which corrected earlier conclusion
   returns gives a slope of **+0.026**; pure sampling error would give −0.5. Small
   counties' spread is real economic variation, not thin-data artifact.
 
-**Net from the assigned work:** neither pillar should branch on its groups, Source A
-ships one uniform schema, and Source E ships with an explicit warning that its best
-cross-pillar result is conditional on county size. The groups did their job by
-changing what gets shipped and what gets disclosed — not by becoming part of the model.
+**Net from the assigned work:**
+
+- Neither pillar should branch on its groups.
+- Source A ships one uniform schema.
+- Source E ships with an explicit warning that its best cross-pillar result is
+  conditional on county size.
+- The groups did their job by changing what gets **shipped** and what gets
+  **disclosed** — not by becoming part of the model.
 """)
 
 # --------------------------------------------------------------------------
@@ -334,29 +357,33 @@ md("""
 
 ## 3. Getting out of the circle
 
-Every validation in this repo before this week was **pillar against pillar**. We
+**The problem with every validation before this week:**
 
-Every validation in this repo before this week was **pillar against pillar**. We
-predicted one federal source's features from the other five. That measures whether
-six agencies agree with each other. It cannot say whether any of them is *useful*,
-and it has a bias baked in: it penalises a source precisely for agreeing with the
-others, which is the wrong penalty when the question is "does this predict an
-outcome."
+- All of them were **pillar against pillar** — predict one federal source's features
+  from the other five.
+- That measures whether six agencies agree with each other. It cannot say whether any
+  of them is *useful*.
+- Worse, the bias runs the wrong way: it penalises a source precisely for agreeing
+  with the others.
 
-There is no way to fix that with a real downstream label — the project is scoped to
-public data only, so no such label exists here. The substitute: pick public outcomes
-that **no pillar measures**, and predict those.
+**Why we can't just use a real label:** the project is scoped to public data only, so
+no downstream label exists here.
 
-The five: household broadband adoption, median household income, median age, median
-home value, and mean commute time. All from ACS, none constructed from any pillar's
-inputs.
+**The substitute — five public outcomes no pillar measures:**
 
-**The test is built around one specific objection.** The consumer joins on DMA and
-holds millions of impressions per market, so it can estimate a geographic fixed
-effect essentially for free — and a fixed effect makes any static geo-keyed feature
-look redundant. But a fixed effect has exactly one weakness: **it has no parameter
-for a place it has never seen.** So we hold out whole states, and compare against a
-model that knows only county size. That is the seam.
+- Household broadband adoption, median household income, median age, median home
+  value, mean commute time.
+- All ACS. None constructed from any pillar's inputs.
+
+**Built around one specific objection:**
+
+- The consumer joins on DMA with millions of impressions per market, so it estimates a
+  geographic fixed effect essentially for free — which makes any static geo-keyed
+  feature look redundant.
+- A fixed effect has exactly one weakness: **no parameter for a place it has never
+  seen.**
+- So: hold out whole states, compare against a model that knows only county size.
+  That's the seam.
 """)
 
 code('''
@@ -397,12 +424,10 @@ plt.show()
 ''')
 
 md("""
-Read the grey bar as the fixed-effect model's position and the blue bar as what
-`E_macro` adds on top of it. The gap on the right of each row is the whole result.
-
-One sanity check worth stating: an intercept-only model scores **≈0** on these
-held-out states. That is the fixed effect being handed a county it has never seen,
-behaving exactly as predicted — it has nothing to say.
+- **Grey bar** = the fixed-effect model's position. **Blue bar** = what `E_macro`
+  adds on top. The gap on the right of each row is the whole result.
+- **Sanity check passing:** an intercept-only model scores **≈0** on held-out states —
+  the fixed effect handed a county it has never seen, with nothing to say.
 """)
 
 # --------------------------------------------------------------------------
@@ -411,11 +436,11 @@ md("""
 
 ## 4. The discount I applied to my own result
 
-The raw number was better: +0.212. I am reporting **+0.190**, and the difference is
-worth a paragraph because it is the kind of thing that gets caught in review rather
-than found by the author.
+- Raw number: **+0.212**. Reported: **+0.190**.
+- The difference matters because it's the kind of thing that gets caught in review
+  rather than found by the author.
 
-Two pillar columns don't *predict* their target so much as **restate** it:
+**Two pillar columns don't *predict* their target so much as restate it:**
 
 - `wage_per_return_thousands` (IRS) is average wage income per tax return, which is
   very close to a definition of median household income. Removing it drops that
@@ -424,8 +449,8 @@ Two pillar columns don't *predict* their target so much as **restate** it:
 - `retirement_destination` (USDA) flags counties with heavy in-migration of people
   aged 60+, which restates age structure. Smaller effect: +0.256 → +0.239.
 
-Both are dropped from their own target's run and kept everywhere else. The headline
-is the discounted number.
+Both dropped from their own target's run, kept everywhere else. **The headline is the
+discounted number.**
 """)
 
 # --------------------------------------------------------------------------
@@ -434,12 +459,12 @@ md("""
 
 ## 5. The grain reversal
 
-This is the part I got wrong on Monday and corrected twice.
+The part I got wrong on Monday and corrected twice.
 
 ### First — what "grain" means here
 
-**Grain is what one row stands for.** Not how detailed the data inside a row is —
-the identity of the row itself. Three of them are in play:
+**Grain is what one row stands for** — not how detailed the data inside a row is, the
+identity of the row itself. Three are in play:
 
 | Grain | One row is | Count |
 |---|---|---|
@@ -447,22 +472,24 @@ the identity of the row itself. Three of them are in play:
 | The consumer's training data | one impression / ad request / household | millions |
 | The consumer's *geo key* | one Nielsen DMA (media market) | ~210 |
 
-`E_macro` is a lookup table: **geo key → vector**. The downstream model never
-consumes a county — it consumes an impression row and joins the vector on whatever
-geo key that row carries. So the embedding's grain has to match the key available at
-join time, and that is the entire question.
+**`E_macro` is a lookup table: geo key → vector.**
 
-If the impression row only carries `dma`, the table must be re-keyed to 210 rows
-before it is usable — 3,143 vectors collapse into 210. If the row carries ZIP, county
-is derivable and the table ships unchanged. Current read is that the row does carry
-ZIP, which is what makes county grain a live option rather than wishful thinking.
+- The downstream model never consumes a county. It consumes an impression row and
+  joins the vector on whatever geo key that row carries.
+- So the grain has to match the key available at join time. That's the entire question.
+- Row carries only `dma` → the table must be re-keyed to 210 rows; 3,143 vectors
+  collapse into 210.
+- Row carries ZIP → county is derivable, table ships unchanged. **Current read: it does
+  carry ZIP**, which makes county grain a live option rather than wishful thinking.
 
-**Why this is load-bearing for a geo embedding specifically.** The consumer holds
-millions of impressions per market, so it can estimate a 210-level geographic fixed
-effect essentially for free. At DMA grain, any static geo-keyed feature is *exactly
-collinear* with that effect by construction — a DMA dummy already captures everything
-`E_macro` could say, so `E_macro` adds nothing. At county grain it does not, because
-3,143 units is too thin for the consumer to fit its own per-county effect.
+**Why this is load-bearing for a geo embedding specifically:**
+
+- The consumer holds millions of impressions per market, so a 210-level geographic
+  fixed effect is free and precise.
+- At DMA grain any static geo-keyed feature is *exactly collinear* with it by
+  construction — a DMA dummy already captures everything `E_macro` could say.
+- At county grain it isn't, because 3,143 units is too thin for the consumer to fit its
+  own per-county effect.
 
 Finer grain is therefore not a nice-to-have. **Below DMA is where the feature stops
 being redundant with something the consumer already has.** (Section 3's held-out-state
@@ -484,13 +511,16 @@ Monday I measured only one:
    distinction `E_macro` exists to capture can partly live *inside* a single market.
    Not measured Monday. I said it "could cut either way."
 
-It cuts the other way. Aggregation is worth **+0.105**, which very nearly cancels the
-row-count loss.
+**It cuts the other way.** Aggregation is worth **+0.105** — very nearly cancelling
+the row-count loss.
 
-**One implementation detail that decides whether that number is real: aggregate the
-inputs, not the outputs.** A market's location quotient has to be re-derived from
-summed employment, not averaged from fifteen counties' quotients. That is why Source
-B had to ship raw employment levels this week — see the re-test below.
+**One implementation detail decides whether that number is real: aggregate the inputs,
+not the outputs.**
+
+- A market's location quotient must be re-derived from summed employment, not averaged
+  from fifteen counties' quotients.
+- That's why Source B had to ship raw employment levels this week — see the re-test
+  below.
 """)
 
 code('''
@@ -536,9 +566,10 @@ plt.show()
 ''')
 
 md("""
-The right panel matters as much as the left. At 210 units the answer depends heavily
-on which units you happen to have — that instability, more than the size of the drop,
-is what made a market-grain join look unacceptable.
+- **The right panel matters as much as the left.** At 210 units the answer depends
+  heavily on which units you happen to have.
+- That instability — more than the size of the drop — is what made a market-grain join
+  look unacceptable.
 
 Then the other half got measured:
 """)
@@ -578,28 +609,33 @@ plt.show()
 ''')
 
 md("""
-Compare the grey bar to the teal one — same 208 rows in both, the only difference is
-whether those rows are lone counties or aggregated markets. **Median home value goes
-+0.12 → +0.34. Median age goes +0.21 → +0.41.** The mechanism is not exotic:
-population-weighted aggregation turns sparse, noisy county columns — suppressed BLS
-cells, single-article Wikipedia flags — into stable continuous shares, and does the
-same favour to the outcome being predicted.
+**Compare the grey bar to the teal one** — same 208 rows in both, the only difference
+is whether those rows are lone counties or aggregated markets.
 
-**Then I tried to break it.** The obvious objection was that most columns were being
-*approximated* at market level rather than properly re-derived, which would make the
-market arm look artificially good. So Source B was re-ingested to ship raw employment
-levels, moving 72 of 118 columns from approximated to correctly re-derived. Re-running
-everything moved the aggregation effect by **0.001**, and no outcome changed sign.
+- Median home value: **+0.12 → +0.34**. Median age: **+0.21 → +0.41**.
+- Mechanism is not exotic — population-weighted aggregation turns sparse, noisy county
+  columns (suppressed BLS cells, single-article Wikipedia flags) into stable continuous
+  shares, and does the same favour to the outcome being predicted.
 
-That was expected to cost 2–3 days. It cost one download and two script changes.
+**Then I tried to break it:**
 
-**What still stands as a caveat:** the 208 market groups are k-means clusters of
-county centroids, matched to DMA cardinality — they are *not* DMAs, because that
-delineation is proprietary. Real markets follow media boundaries and are less
-spatially compact, and the aggregated outcome is genuinely less noisy than a county
-one. Both biases favour the market arm, so **+0.105 is an upper bound.**
+- Obvious objection: most columns were *approximated* at market level rather than
+  properly re-derived, which would flatter the market arm.
+- So Source B was re-ingested to ship raw employment levels — 72 of 118 columns moved
+  from approximated to correctly re-derived.
+- Re-running everything moved the aggregation effect by **0.001**. No outcome changed
+  sign.
+- Estimated cost of that fix: 2–3 days. Actual: one download and two script changes.
 
-How much does that matter? Two different thresholds, worth keeping apart:
+**The caveat that still stands:**
+
+- The 208 groups are k-means clusters of county centroids at DMA cardinality. They are
+  **not** DMAs — that delineation is proprietary.
+- Real markets follow media boundaries and are less spatially compact; the aggregated
+  outcome is genuinely less noisy than a county one.
+- Both biases favour the market arm, so **+0.105 is an upper bound.**
+
+**Two thresholds, worth keeping apart:**
 
 - For market grain to be a **blocker** again — signal destroyed rather than merely
   reduced — essentially the whole +0.105 would have to be an artifact of the proxy.
@@ -617,14 +653,14 @@ md("""
 
 ## 6. Where the model cannot win, and why that is fine
 
-One result looks alarming until you see what is under it: on the smallest counties,
-the size-only baseline scores **negative** R². Something is badly wrong there — but
-it is wrong with the data, not the model.
+**One result looks alarming until you see what's under it:** on the smallest counties
+the size-only baseline scores **negative** R².
 
-ACS publishes a margin of error with every estimate. Those are now ingested alongside
-the values, which lets us split each outcome's variance into signal and sampling
-noise. In the smallest population decile, **30% of the variance is sampling noise** —
-error no model can ever explain. By the largest decile that is under 1%.
+- Something is badly wrong there — but wrong with the *data*, not the model.
+- ACS publishes a margin of error with every estimate; those are now ingested alongside
+  the values, which splits each outcome's variance into signal and sampling noise.
+- Smallest population decile: **30% of variance is sampling noise** — error no model
+  can ever explain. Largest decile: under 1%.
 """)
 
 code('''
@@ -666,13 +702,15 @@ plt.show()
 ''')
 
 md("""
-Two things follow. First, the negative baseline on tiny counties is a property of ACS,
-not a defect in the pipeline. Second — and more useful — `E_macro` stays positive in
-exactly the decile where the size baseline collapses, which is what you would want
-from a feature meant to describe places that a size proxy describes badly.
+**Two things follow:**
 
-It also sets an honest ceiling: on the smallest counties no model can exceed R² ≈ 0.70
-no matter how good the features are.
+- The negative baseline on tiny counties is a property of ACS, not a defect in the
+  pipeline.
+- More useful: `E_macro` stays **positive** in exactly the decile where the size
+  baseline collapses — which is what you'd want from a feature meant to describe places
+  a size proxy describes badly.
+- It also sets an honest ceiling: on the smallest counties no model can exceed
+  **R² ≈ 0.70**, however good the features.
 """)
 
 # --------------------------------------------------------------------------
@@ -681,7 +719,7 @@ md("""
 
 ## 7. Plumbing, briefly
 
-Work that doesn't change the story but does change what ships:
+Doesn't change the story; does change what ships.
 
 - **Source D's freight tonnages were county size wearing a freight label.** All ten
   raw tonnage columns moved into the size control. Measured cost of removing them:
