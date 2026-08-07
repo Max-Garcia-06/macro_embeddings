@@ -116,6 +116,51 @@ same folds, same seed:
 | one model, coefficients free to vary by tier | 120 | +0.00279 |
 | four independent models, one per tier | 29 × 4 fits | **−0.01595** |
 
+#### What "a model" is here
+
+Each of the 28 targets is a feature belonging to one of the other five pillars, and
+every target is scored the same way:
+
+1. **Control first.** Ordinary least squares on three size measures
+   (`log_population`, `log_agi`, `log_gdp_latest`) plus one dummy per state.
+   Deliberately unpenalized — ~50 controls against 3,144 rows has nothing to
+   regularize, and shrinking them would let a wide Source A block degrade them.
+2. **Source A predicts only what the control missed.** Its 29 columns are fit to the
+   control's *residual*: median-impute → standardize → ridge, with the penalty chosen
+   by an inner 5-fold search over 10⁰–10⁶.
+3. **Score = out-of-fold R² gain over the control.** Outer 5-fold, shuffled, seed 42.
+
+Only step 2 changes across the three rows of the table:
+
+- **Flat, 29 columns.** One ridge over all 3,144 counties, one coefficient per
+  feature. A stub county and a rich county share every slope.
+- **Tier-crossed, 120 columns.** Four tier dummies, plus each of the 29 features
+  copied into four slots — populated in the county's own tier's slot and zero
+  everywhere else. Every tier gets its own slope *and* its own intercept, but there
+  is still **one fit and one shared penalty**, so a tier with nothing to say gets
+  shrunk toward zero using evidence pooled from the tiers that do.
+- **Four independent fits.** The corpus is partitioned by tier and a separate ridge
+  is fit inside each partition, each selecting its own penalty on its own rows:
+  **294 / 1,274 / 788 / 788** counties. No pooling, no shared shrinkage; predictions
+  are stitched back together only for scoring.
+
+That third row is the literal reading of "handle each group differently," and it is
+the one that goes negative. Two structural reasons. The stub tier's 294 counties
+contain almost no industry content, so its private fit has nothing to find and no
+shared penalty pulling its coefficients toward zero — it contributes noise across its
+whole slice. And every tier loses the ability to borrow strength: a slope estimated
+on 788 rich counties can no longer inform the 788 mid ones.
+
+**One detail worth keeping straight**, because it is the difference between a real
+tier effect and an artifact: the per-tier *results* reported elsewhere come from
+evaluating the single global model's out-of-fold predictions on tier subsets, never
+from refitting per tier. Otherwise "this tier is more predictable" gets confused with
+"this tier got its own model."
+
+*Caveat on the table: the first two rows are the 2026-08-04 re-score against Census
+population; the third was measured once against the retired baseline and not re-run,
+since a result that far negative does not turn on a fourth-decimal baseline change.*
+
 **Both branching forms lose, and the loss scales with how much branching there is.**
 Tier-specific slopes cost 9% of the lift. Fully separate per-tier models go negative —
 worse than dropping Source A altogether — because each trains on roughly a quarter of
