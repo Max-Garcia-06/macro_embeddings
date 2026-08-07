@@ -146,6 +146,22 @@ TEXT_VARIANTS: tuple[TextVariant, ...] = (
             "rich": None,
         },
     ),
+    # The mirror image, and the sharper test of why `tier_conditional` loses.
+    # If the explanation is "the rich tier is where economic content lives and
+    # that rule reads least from it", then inverting the rule should recover most
+    # of `uniform`'s gain. If it recovers all of it, the thin tier's sections are
+    # contributing nothing and could be skipped for free; if it recovers only
+    # part, they carry signal the lead does not.
+    TextVariant(
+        "tier_conditional_inverse",
+        "depth by tier, inverted: rich reads the article, thin reads its lead",
+        {
+            "stub": None,
+            "thin": None,
+            "mid": ECONOMY_TITLE_PATTERN,
+            "rich": ALL_TITLES,
+        },
+    ),
 )
 
 
@@ -221,12 +237,21 @@ def chunk_text(text: str) -> list[str]:
     return chunks[:MAX_CHUNKS_PER_COUNTY]
 
 
-def encode_variant(model, texts: pd.Series) -> tuple[np.ndarray, dict[str, float]]:
+def encode_variant(
+    model, texts: pd.Series, tiers: pd.Series
+) -> tuple[np.ndarray, dict[str, float]]:
     """Encode every county's chunks and mean-pool them into one vector.
+
+    Chunk vectors are unit-norm, so mean-pooling k of them yields a vector whose
+    length falls roughly as 1/sqrt(k) once the chunks stop pointing the same way.
+    That makes the pooled norm a direct readout of how much text a county
+    contributed -- and under a tier-conditional rule, a readout of its tier. The
+    per-tier norms are reported for exactly that reason.
 
     Args:
         model: Loaded SentenceTransformer.
         texts: Assembled input text per county.
+        tiers: Content tier per county, aligned to `texts`.
 
     Returns:
         Tuple of (vectors aligned to `texts`, diagnostics about chunking).
@@ -249,8 +274,32 @@ def encode_variant(model, texts: pd.Series) -> tuple[np.ndarray, dict[str, float
     capped = sum(1 for text, chunks in zip(texts, chunked)
                  if len(text) > CHUNK_CHARS * MAX_CHUNKS_PER_COUNTY)
     dropped = sum(max(0, len(text) - CHUNK_CHARS * MAX_CHUNKS_PER_COUNTY) for text in texts)
+    centred = vectors - vectors.mean(axis=0, keepdims=True)
+    total_ss = float((centred**2).sum())
+    between_ss = 0.0
+    for tier in ("stub", "thin", "mid", "rich"):
+        mask = tiers.to_numpy() == tier
+        between_ss += float(mask.sum()) * float((centred[mask].mean(axis=0) ** 2).sum())
+
+    norms = np.linalg.norm(vectors, axis=1)
+    chunk_counts = np.array([len(chunks) for chunks in chunked], dtype="float64")
     diagnostics = {
         "n_chunks": float(len(flat)),
+        # Share of the vector set's total variance that is explained purely by
+        # which tier a county is in. Under a uniform rule this is whatever the
+        # corpus genuinely has; under a tier-conditional rule it also absorbs the
+        # construction rule itself, and tier is a size proxy the baseline already
+        # controls for -- so any variance spent on it is variance not spent on
+        # anything the model can use.
+        "tier_variance_share": between_ss / total_ss,
+        "mean_norm_by_tier": {
+            tier: float(norms[tiers.to_numpy() == tier].mean())
+            for tier in ("stub", "thin", "mid", "rich")
+        },
+        "mean_chunks_by_tier": {
+            tier: float(chunk_counts[tiers.to_numpy() == tier].mean())
+            for tier in ("stub", "thin", "mid", "rich")
+        },
         "mean_chars": float(texts.str.len().mean()),
         "counties_hitting_cap": float(capped),
         "chars_dropped_by_cap": float(dropped),
@@ -323,9 +372,19 @@ def main() -> None:
     diagnostics: dict[str, dict[str, float]] = {}
     for variant in TEXT_VARIANTS:
         texts = build_variant_texts(matrix, sections, variant)
-        vectors, stats = encode_variant(model, texts)
+        vectors, stats = encode_variant(model, texts, matrix["tier"])
         blocks[variant.key] = (vectors, None)
         blocks[f"{variant.key}_pca{PCA_COMPONENTS}"] = (vectors, PCA_COMPONENTS)
+        # Row-normalized twin. `StandardScaler` centres and scales each dimension
+        # across counties, which does nothing to a magnitude gradient that runs
+        # across *rows* -- so a pooled norm that varies with tier survives into
+        # every column as a tier-correlated component. Scoring the direction
+        # alone isolates that channel: if a variant recovers here, its loss was
+        # the magnitude gradient rather than the text it read.
+        blocks[f"{variant.key}_l2"] = (
+            vectors / np.clip(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12, None),
+            None,
+        )
         diagnostics[variant.key] = stats
         logger.info("%s: %s", variant.key, stats)
 
