@@ -205,18 +205,61 @@ md("""
 
 This is the part I got wrong on Monday and corrected twice.
 
-The consumer joins at DMA level — about 210 markets, versus 3,143 counties. That
-penalty has **two separable halves**, and Monday I only measured one:
+### First — what "grain" means here
 
-- **Fewer rows to learn from.** Measured by retraining on random county subsets.
-  Verdict: real and bad. Worth **−0.121** on average, and badly unstable at that
-  size — on broadband, the outcome closest to the consumer's own domain, it goes
-  slightly negative.
-- **Aggregation blurring within-market detail.** Not measured Monday. I said it
-  "could cut either way."
+**Grain is what one row stands for.** Not how detailed the data inside a row is —
+the identity of the row itself. Three of them are in play:
 
-It cuts the other way. Aggregating the *inputs* to market level — not averaging the
-outputs — is worth **+0.105**, which very nearly cancels the row-count loss.
+| Grain | One row is | Count |
+|---|---|---|
+| What `E_macro` produces | one US county (`fips_code`) | 3,143 |
+| The consumer's training data | one impression / ad request / household | millions |
+| The consumer's *geo key* | one Nielsen DMA (media market) | ~210 |
+
+`E_macro` is a lookup table: **geo key → vector**. The downstream model never
+consumes a county — it consumes an impression row and joins the vector on whatever
+geo key that row carries. So the embedding's grain has to match the key available at
+join time, and that is the entire question.
+
+If the impression row only carries `dma`, the table must be re-keyed to 210 rows
+before it is usable — 3,143 vectors collapse into 210. If the row carries ZIP, county
+is derivable and the table ships unchanged. Current read is that the row does carry
+ZIP, which is what makes county grain a live option rather than wishful thinking.
+
+**Why this is load-bearing for a geo embedding specifically.** The consumer holds
+millions of impressions per market, so it can estimate a 210-level geographic fixed
+effect essentially for free. At DMA grain, any static geo-keyed feature is *exactly
+collinear* with that effect by construction — a DMA dummy already captures everything
+`E_macro` could say, so `E_macro` adds nothing. At county grain it does not, because
+3,143 units is too thin for the consumer to fit its own per-county effect.
+
+Finer grain is therefore not a nice-to-have. **Below DMA is where the feature stops
+being redundant with something the consumer already has.** (Section 2's held-out-state
+design is the other escape from the same fixed effect: it has no parameter for a
+county it has never seen.)
+
+### The penalty has two halves
+
+Collapsing 3,143 keys to ~210 costs something in **two separable ways**, and on
+Monday I measured only one:
+
+1. **Fewer distinct rows.** 210 keys means the downstream model can ever see at most
+   210 distinct values of this feature block. Measured by retraining on random county
+   subsets. Verdict: real and bad — worth **−0.121** on average, and badly unstable at
+   that size. On broadband, the outcome closest to the consumer's own domain, it goes
+   slightly negative.
+2. **Aggregation blur.** Averaging ~15 counties into one market destroys
+   within-market variation — and the suburb-outside-New-York-versus-Cleveland
+   distinction `E_macro` exists to capture can partly live *inside* a single market.
+   Not measured Monday. I said it "could cut either way."
+
+It cuts the other way. Aggregation is worth **+0.105**, which very nearly cancels the
+row-count loss.
+
+**One implementation detail that decides whether that number is real: aggregate the
+inputs, not the outputs.** A market's location quotient has to be re-derived from
+summed employment, not averaged from fifteen counties' quotients. That is why Source
+B had to ship raw employment levels this week — see the re-test below.
 """)
 
 code('''
