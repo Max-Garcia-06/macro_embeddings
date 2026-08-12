@@ -23,6 +23,29 @@ seen. So the test is extrapolation to held-out geography.
     emacro       all pillar features
     size+emacro  both
 
+## The drop-one arm
+
+Added 2026-08-12 for `docs/pillar_status.md`. Alongside the four models above,
+one model per pillar re-scores `size+emacro` with that pillar's whole block
+withheld, and the difference is what the block was worth:
+
+    contribution(P) = R2(size + all pillars) - R2(size + all pillars except P)
+
+This is the fair form of the question Source F failed on raw pairwise
+correlation. F's r = 0.495 against Source D tonnage collapsing to -0.057 under a
+size control says nothing about whether F's block explains variance the rest of
+the matrix leaves on the table, and against an external target rather than
+another pillar's column. Every pillar takes the same test, because a test only
+the suspect sits proves nothing either way.
+
+Two extra arms ride along. `size_emacro_drop_BE` withholds Sources B and E
+together, which closes `docs/PROJECT_GOAL.md` open decision #2: a joint cost
+close to the sum of the separate costs means the two are complementary, a much
+smaller one means they are substantially redundant. And because Source A's
+`has_metro_attachment` restates Source F's `metro_2023`, F's contribution is
+also measured with that column removed from both sides -- otherwise Source A
+stands in for the block under test and F is charged for A's redundancy.
+
 Scored as pooled out-of-fold R2 under **GroupKFold on `state_fips`**, so every
 evaluated county sits in a state the model never trained on. Two consequences,
 both deliberate: state dummies are excluded from every design, because under
@@ -98,6 +121,12 @@ RIDGE_ALPHAS: tuple[float, ...] = (0.1, 1.0, 10.0, 100.0, 1000.0)
 # Population deciles for the thin-unit decomposition.
 N_DECILES: int = 10
 
+# Permutations behind the drop-one noise floor. Twenty is enough to place a
+# floor that sits near zero against contributions an order of magnitude larger;
+# it is not enough to resolve a borderline one, and the writeup should say so
+# rather than quote the p-value as though it were finely resolved.
+N_PLACEBO_REPS: int = 20
+
 # Training-set sizes for the row-count sensitivity. 210 is the DMA count, which
 # is the comparison the grain question turns on; the rest bracket it.
 SUBSAMPLE_SIZES: tuple[int, ...] = (210, 400, 800, 1600, 3000)
@@ -109,6 +138,7 @@ ANALYSIS_DIR: Path = REPO_ROOT / "analysis-output" / "cross-source"
 
 SCORES_PATH: Path = OUTPUTS_DIR / "external_target_scores.csv"
 DECILE_PATH: Path = OUTPUTS_DIR / "external_target_by_decile.csv"
+PLACEBO_PATH: Path = OUTPUTS_DIR / "external_target_drop_one_placebo.csv"
 STATS_PATH: Path = ANALYSIS_DIR / "external_target_stats.json"
 
 logger = logging.getLogger(__name__)
@@ -138,6 +168,16 @@ TARGET_RESTATEMENTS: dict[str, tuple[str, ...]] = {
 }
 
 
+# Source A's `has_metro_attachment` fires when a Wikipedia intro states the
+# county belongs to a metropolitan statistical area, which is the OMB
+# delineation Source F's `metro_2023` reports directly. It therefore sits inside
+# the reduced design when Source F's block is dropped, covering for part of what
+# F was carrying and understating F's measured contribution. The two models
+# below remove it from both sides so F's contribution can be read without A
+# standing in for it.
+SOURCE_F_PROXY_IN_A: tuple[str, ...] = ("has_metro_attachment",)
+
+
 @dataclass(frozen=True)
 class ModelSpec:
     """One predictor set to be scored against every target.
@@ -147,20 +187,83 @@ class ModelSpec:
         label: Human-readable description used in reports.
         uses_size: Whether the size features enter the design.
         uses_pillars: Whether the pillar feature blocks enter the design.
+        drop_pillars: Pillar letters whose blocks are withheld, for the
+            drop-one-pillar arm.
+        drop_columns: Individual columns withheld on top of `drop_pillars`.
+        reference: Model this one is differenced against to state a
+            contribution. Empty for models that are not part of the drop-one
+            arm.
     """
 
     name: str
     label: str
     uses_size: bool
     uses_pillars: bool
+    drop_pillars: tuple[str, ...] = ()
+    drop_columns: tuple[str, ...] = ()
+    reference: str = ""
 
 
+# The drop-one arm. `docs/pillar_status.md` asks whether Source F earns its slot
+# once raw pairwise correlation is set aside; the honest form of that question is
+# whether the block explains variance the rest of the matrix does not, measured
+# against a target outside all six pillars. Every pillar takes the same test --
+# a test only the suspect sits is not a fair test, and the symmetric table is
+# what a go/no-go needs anyway.
+#
+# `size_emacro_drop_BE` closes `docs/PROJECT_GOAL.md` open decision #2 in the
+# same run: if dropping B and E together costs about what dropping each
+# separately costs, the two pillars are complementary; if it costs much less,
+# they are substantially redundant and the effective pillar count is five.
+DROP_MODELS: tuple[ModelSpec, ...] = tuple(
+    ModelSpec(
+        f"size_emacro_drop_{pillar}",
+        f"size + E_macro pillars, Source {pillar} withheld",
+        True,
+        True,
+        drop_pillars=(pillar,),
+        reference="size_emacro",
+    )
+    for pillar in "ABCDEF"
+) + (
+    ModelSpec(
+        "size_emacro_drop_BE",
+        "size + E_macro pillars, Sources B and E both withheld",
+        True,
+        True,
+        drop_pillars=("B", "E"),
+        reference="size_emacro",
+    ),
+    ModelSpec(
+        "size_emacro_no_ametro",
+        "size + E_macro pillars, Source A's metro restatement withheld",
+        True,
+        True,
+        drop_columns=SOURCE_F_PROXY_IN_A,
+        reference="size_emacro",
+    ),
+    ModelSpec(
+        "size_emacro_drop_F_no_ametro",
+        "size + E_macro pillars, Source F and A's metro restatement both withheld",
+        True,
+        True,
+        drop_pillars=("F",),
+        drop_columns=SOURCE_F_PROXY_IN_A,
+        # Differenced against the model that has already lost A's restatement,
+        # so what remains is Source F's own contribution rather than the two
+        # removals compounded.
+        reference="size_emacro_no_ametro",
+    ),
+)
+
+# Order matters: `score_by_training_size` indexes MODELS[1] and MODELS[3] for the
+# size and size+E_macro designs, so the four original specs stay at the front.
 MODELS: tuple[ModelSpec, ...] = (
     ModelSpec("grand_mean", "intercept only (= fixed effect on an unseen unit)", False, False),
     ModelSpec("size", "county size only", True, False),
     ModelSpec("emacro", "E_macro pillars only", False, True),
     ModelSpec("size_emacro", "size + E_macro pillars", True, True),
-)
+) + DROP_MODELS
 
 
 def configure_logging() -> None:
@@ -171,13 +274,14 @@ def configure_logging() -> None:
     )
 
 
-def load_panel() -> tuple[pd.DataFrame, list[str]]:
+def load_panel() -> tuple[pd.DataFrame, list[str], dict[str, list[str]]]:
     """Join the pillar matrix, the external targets, and county population.
 
     Returns:
-        Tuple of (panel, pillar_columns). `panel` carries `fips_code`,
+        Tuple of (panel, pillar_columns, blocks). `panel` carries `fips_code`,
         `state_fips`, `population`, every size and pillar feature, and one
-        column per external target.
+        column per external target. `blocks` maps pillar letter to its column
+        list, which the drop-one models need.
 
     Raises:
         FileNotFoundError: If any pillar parquet or the target cache is absent.
@@ -203,7 +307,22 @@ def load_panel() -> tuple[pd.DataFrame, list[str]]:
         len(pillar_columns),
         len(target_columns),
     )
-    return panel, pillar_columns
+    return panel, pillar_columns, blocks
+
+
+def withheld_columns(model: ModelSpec, blocks: dict[str, list[str]]) -> tuple[str, ...]:
+    """List the pillar columns a drop-one model holds out of its design.
+
+    Args:
+        model: The model being assembled.
+        blocks: Pillar-to-columns mapping from `build_matrix`.
+
+    Returns:
+        Column names to withhold, empty for the four original models.
+    """
+    dropped = [column for pillar in model.drop_pillars for column in blocks[pillar]]
+    dropped.extend(column for column in model.drop_columns if column not in dropped)
+    return tuple(dropped)
 
 
 def build_design(
@@ -274,13 +393,18 @@ def out_of_fold_predictions(
 
 
 def score_target(
-    panel: pd.DataFrame, pillar_columns: list[str], column: str, label: str
+    panel: pd.DataFrame,
+    pillar_columns: list[str],
+    blocks: dict[str, list[str]],
+    column: str,
+    label: str,
 ) -> tuple[pd.DataFrame, dict[str, np.ndarray]]:
     """Score every model against one external target.
 
     Args:
         panel: Joined panel from `load_panel`.
         pillar_columns: Every pillar feature column name.
+        blocks: Pillar-to-columns mapping, for the drop-one models.
         column: Target column name.
         label: Human-readable target description.
 
@@ -297,12 +421,15 @@ def score_target(
     rows: list[dict[str, object]] = []
     predictions: dict[str, np.ndarray] = {}
     for model in MODELS:
-        design = build_design(usable, model, pillar_columns)
+        withheld = withheld_columns(model, blocks)
+        design = build_design(usable, model, pillar_columns, ablate=withheld)
         predicted = out_of_fold_predictions(design, y, groups)
         predictions[model.name] = predicted
 
         if ablate and model.uses_pillars:
-            ablated_design = build_design(usable, model, pillar_columns, ablate=ablate)
+            ablated_design = build_design(
+                usable, model, pillar_columns, ablate=tuple(ablate) + withheld
+            )
             ablated_r2 = float(
                 r2_score(y, out_of_fold_predictions(ablated_design, y, groups))
             )
@@ -320,6 +447,8 @@ def score_target(
                 "r2_out_of_state": float(r2_score(y, predicted)),
                 "r2_ablated": ablated_r2,
                 "ablated_columns": ";".join(ablate) if model.uses_pillars else "",
+                "withheld_pillars": ";".join(model.drop_pillars),
+                "reference_model": model.reference,
                 "rmse": float(np.sqrt(np.mean((y - predicted) ** 2))),
             }
         )
@@ -331,7 +460,100 @@ def score_target(
     scores["lift_over_grand_mean"] = (
         scores["r2_out_of_state"] - by_model.loc["grand_mean", "r2_out_of_state"]
     )
+    # What the withheld block was worth: how much R2 the full model loses
+    # without it. Positive means the block carried something the rest of the
+    # matrix did not supply. The ablated column is the defensible one, on the
+    # same argument §3 of `external-target-findings.md` already makes.
+    scores["contribution"] = [
+        by_model.loc[row.reference_model, "r2_out_of_state"] - row.r2_out_of_state
+        if row.reference_model
+        else np.nan
+        for row in scores.itertuples()
+    ]
+    scores["contribution_ablated"] = [
+        by_model.loc[row.reference_model, "r2_ablated"] - row.r2_ablated
+        if row.reference_model
+        else np.nan
+        for row in scores.itertuples()
+    ]
     return scores, predictions
+
+
+def score_placebo(
+    panel: pd.DataFrame,
+    pillar_columns: list[str],
+    blocks: dict[str, list[str]],
+    column: str,
+    contributions: dict[str, float],
+) -> pd.DataFrame:
+    """Measure what a block of the same shape carrying no county alignment appears to add.
+
+    The noise floor the drop-one verdict is judged against. For each pillar, the
+    reduced design (that pillar withheld) gets the block added back with its rows
+    permuted: county alignment is destroyed while every column keeps its marginal
+    distribution and the design keeps its width. Whatever apparent contribution
+    survives that is what the measurement produces from nothing.
+
+    The permutation is applied inside the design rather than to the target, so
+    the size features and the other pillars stay aligned to `y` and only the
+    block under test is scrambled.
+
+    Args:
+        panel: Joined panel from `load_panel`.
+        pillar_columns: Every pillar feature column name.
+        blocks: Pillar-to-columns mapping from `build_matrix`.
+        column: Target column name.
+        contributions: Measured ablated contribution per pillar letter, used to
+            report how often a shuffled block matches or beats the real one.
+
+    Returns:
+        DataFrame with one row per pillar.
+    """
+    usable = panel[panel[column].notna()].reset_index(drop=True)
+    y = usable[column].astype(float).to_numpy()
+    groups = usable["state_fips"].to_numpy()
+    ablate = TARGET_RESTATEMENTS.get(column, ())
+
+    rows: list[dict[str, object]] = []
+    for pillar, block_columns in blocks.items():
+        kept = [
+            col
+            for col in pillar_columns
+            if col not in block_columns and col not in ablate
+        ]
+        shuffled_columns = [col for col in block_columns if col not in ablate]
+        reduced = np.hstack(
+            [
+                usable[list(SIZE_FEATURES)].astype(float).to_numpy(),
+                usable[kept].astype(float).to_numpy(),
+            ]
+        )
+        r2_reduced = float(r2_score(y, out_of_fold_predictions(reduced, y, groups)))
+
+        rng = np.random.default_rng(RANDOM_SEED)
+        block_values = usable[shuffled_columns].astype(float).to_numpy()
+        placebo = np.empty(N_PLACEBO_REPS)
+        for rep in range(N_PLACEBO_REPS):
+            permuted = block_values[rng.permutation(len(usable))]
+            design = np.hstack([reduced, permuted])
+            placebo[rep] = (
+                float(r2_score(y, out_of_fold_predictions(design, y, groups))) - r2_reduced
+            )
+
+        measured = contributions.get(pillar, float("nan"))
+        rows.append(
+            {
+                "target": column,
+                "pillar": pillar,
+                "n_reps": N_PLACEBO_REPS,
+                "contribution_ablated": measured,
+                "placebo_mean": float(placebo.mean()),
+                "placebo_p95": float(np.percentile(placebo, 95)),
+                "placebo_max": float(placebo.max()),
+                "p": float((np.sum(placebo >= measured) + 1) / (N_PLACEBO_REPS + 1)),
+            }
+        )
+    return pd.DataFrame(rows)
 
 
 def score_by_decile(
@@ -464,6 +686,34 @@ def score_by_training_size(
     return pd.DataFrame(rows)
 
 
+def drop_one_summary(scores: pd.DataFrame) -> dict[str, object]:
+    """Collapse the drop-one arm to one verdict row per withheld model.
+
+    Args:
+        scores: Per-target, per-model scores from `score_target`.
+
+    Returns:
+        Mapping of model name to its mean contribution across targets, the
+        count of targets where the contribution is positive, and the per-target
+        contributions themselves.
+    """
+    dropped = scores[scores["reference_model"].astype(bool)]
+    summary: dict[str, object] = {}
+    for name, frame in dropped.groupby("model"):
+        summary[str(name)] = {
+            "withheld_pillars": frame["withheld_pillars"].iloc[0],
+            "reference_model": frame["reference_model"].iloc[0],
+            "n_targets": int(len(frame)),
+            "mean_contribution": float(frame["contribution"].mean()),
+            "mean_contribution_ablated": float(frame["contribution_ablated"].mean()),
+            "n_positive_ablated": int((frame["contribution_ablated"] > 0).sum()),
+            "by_target": {
+                row.target: float(row.contribution_ablated) for row in frame.itertuples()
+            },
+        }
+    return summary
+
+
 def summarize(scores: pd.DataFrame, deciles: pd.DataFrame) -> dict[str, object]:
     """Assemble the sweep-level summary written alongside the CSVs.
 
@@ -477,6 +727,7 @@ def summarize(scores: pd.DataFrame, deciles: pd.DataFrame) -> dict[str, object]:
     combined = scores[scores["model"] == "size_emacro"]
     emacro_only = scores[scores["model"] == "emacro"]
     return {
+        "drop_one": drop_one_summary(scores),
         "n_targets": int(scores["target"].nunique()),
         "n_folds": N_FOLDS,
         "fold_strategy": "GroupKFold on state_fips (spatially blocked)",
@@ -533,15 +784,18 @@ def summarize(scores: pd.DataFrame, deciles: pd.DataFrame) -> dict[str, object]:
 def main() -> None:
     """Run the external-target sweep and write its three artifacts."""
     configure_logging()
-    panel, pillar_columns = load_panel()
+    panel, pillar_columns, blocks = load_panel()
 
     all_scores: list[pd.DataFrame] = []
     all_deciles: list[pd.DataFrame] = []
     all_sizes: list[pd.DataFrame] = []
+    all_placebos: list[pd.DataFrame] = []
 
     for target in EXTERNAL_TARGETS:
         logger.info("scoring %s (%s)", target.column, target.label)
-        scores, predictions = score_target(panel, pillar_columns, target.column, target.label)
+        scores, predictions = score_target(
+            panel, pillar_columns, blocks, target.column, target.label
+        )
         for _, row in scores.iterrows():
             logger.info(
                 "  %-12s R2=%+.4f  rmse=%.4f  lift over size=%+.4f  ablated=%+.4f",
@@ -555,21 +809,45 @@ def main() -> None:
         all_deciles.append(score_by_decile(panel, target.column, predictions))
         all_sizes.append(score_by_training_size(panel, pillar_columns, target.column))
 
+        contributions = {
+            row.withheld_pillars: float(row.contribution_ablated)
+            for row in scores.itertuples()
+            if len(str(row.withheld_pillars)) == 1
+        }
+        all_placebos.append(
+            score_placebo(panel, pillar_columns, blocks, target.column, contributions)
+        )
+
     scores = pd.concat(all_scores, ignore_index=True)
     deciles = pd.concat(all_deciles, ignore_index=True)
     sizes = pd.concat(all_sizes, ignore_index=True)
+    placebos = pd.concat(all_placebos, ignore_index=True)
 
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
     scores.to_csv(SCORES_PATH, index=False)
     deciles.to_csv(DECILE_PATH, index=False)
+    placebos.to_csv(PLACEBO_PATH, index=False)
 
     stats = summarize(scores, deciles)
     stats["by_training_size"] = sizes.to_dict(orient="records")
+    stats["drop_one_noise_floor"] = {
+        str(pillar): {
+            "n_targets": int(len(frame)),
+            "mean_contribution_ablated": float(frame["contribution_ablated"].mean()),
+            "mean_placebo": float(frame["placebo_mean"].mean()),
+            "max_placebo": float(frame["placebo_max"].max()),
+            "n_targets_above_floor": int(
+                (frame["contribution_ablated"] > frame["placebo_p95"]).sum()
+            ),
+        }
+        for pillar, frame in placebos.groupby("pillar")
+    }
     STATS_PATH.write_text(json.dumps(stats, indent=2), encoding="utf-8")
 
     logger.info("wrote %s", SCORES_PATH)
     logger.info("wrote %s", DECILE_PATH)
+    logger.info("wrote %s", PLACEBO_PATH)
     logger.info("wrote %s", STATS_PATH)
     logger.info(
         "mean lift over size across %d targets: %+.4f | RMSE reduction smallest decile %+.3f, "
@@ -579,6 +857,15 @@ def main() -> None:
         stats["rmse_reduction_smallest_decile"],
         stats["rmse_reduction_largest_decile"],
     )
+    for name, row in sorted(stats["drop_one"].items()):
+        logger.info(
+            "  %-30s contribution %+.4f raw, %+.4f ablated, positive on %d/%d targets",
+            name,
+            row["mean_contribution"],
+            row["mean_contribution_ablated"],
+            row["n_positive_ablated"],
+            row["n_targets"],
+        )
 
 
 if __name__ == "__main__":

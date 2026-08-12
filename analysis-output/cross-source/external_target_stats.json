@@ -1,4 +1,141 @@
 {
+  "drop_one": {
+    "size_emacro_drop_A": {
+      "withheld_pillars": "A",
+      "reference_model": "size_emacro",
+      "n_targets": 5,
+      "mean_contribution": 0.001915175435128469,
+      "mean_contribution_ablated": -4.573467939910092e-05,
+      "n_positive_ablated": 2,
+      "by_target": {
+        "broadband_rate": -0.0025629520333230182,
+        "median_household_income": -0.003156548411528015,
+        "median_age": 0.006960352765634226,
+        "median_home_value": -0.0025107274757792952,
+        "mean_commute_minutes": 0.0010412017580005983
+      }
+    },
+    "size_emacro_drop_B": {
+      "withheld_pillars": "B",
+      "reference_model": "size_emacro",
+      "n_targets": 5,
+      "mean_contribution": 0.004311704990239695,
+      "mean_contribution_ablated": 0.006671778906858572,
+      "n_positive_ablated": 3,
+      "by_target": {
+        "broadband_rate": 0.0034501178380634823,
+        "median_household_income": 0.02305568501480615,
+        "median_age": -0.004638121499641268,
+        "median_home_value": -0.0016178980019433409,
+        "mean_commute_minutes": 0.013109111183007838
+      }
+    },
+    "size_emacro_drop_BE": {
+      "withheld_pillars": "B;E",
+      "reference_model": "size_emacro",
+      "n_targets": 5,
+      "mean_contribution": 0.08535838900894226,
+      "mean_contribution_ablated": 0.06324439966360977,
+      "n_positive_ablated": 5,
+      "by_target": {
+        "broadband_rate": 0.027315166207315777,
+        "median_household_income": 0.10630725868699242,
+        "median_age": 0.024201723179125723,
+        "median_home_value": 0.11139935982332094,
+        "mean_commute_minutes": 0.046998490421294004
+      }
+    },
+    "size_emacro_drop_C": {
+      "withheld_pillars": "C",
+      "reference_model": "size_emacro",
+      "n_targets": 5,
+      "mean_contribution": 0.005051392427792489,
+      "mean_contribution_ablated": 0.005352013813654688,
+      "n_positive_ablated": 5,
+      "by_target": {
+        "broadband_rate": 0.003884846423541699,
+        "median_household_income": 0.0034840094904013963,
+        "median_age": 0.012041481193707182,
+        "median_home_value": 0.0070792238266707,
+        "mean_commute_minutes": 0.00027050813395246287
+      }
+    },
+    "size_emacro_drop_D": {
+      "withheld_pillars": "D",
+      "reference_model": "size_emacro",
+      "n_targets": 5,
+      "mean_contribution": 0.019570763408199056,
+      "mean_contribution_ablated": 0.019084518442214572,
+      "n_positive_ablated": 5,
+      "by_target": {
+        "broadband_rate": 0.014072529956680735,
+        "median_household_income": 0.01665517635360736,
+        "median_age": 0.024417881389467655,
+        "median_home_value": 0.027850599092755335,
+        "mean_commute_minutes": 0.01242640541856177
+      }
+    },
+    "size_emacro_drop_E": {
+      "withheld_pillars": "E",
+      "reference_model": "size_emacro",
+      "n_targets": 5,
+      "mean_contribution": 0.08040214509468857,
+      "mean_contribution_ablated": 0.05821471793287527,
+      "n_positive_ablated": 5,
+      "by_target": {
+        "broadband_rate": 0.04036425100537511,
+        "median_household_income": 0.08017867303053094,
+        "median_age": 0.03045933099995124,
+        "median_home_value": 0.10553676862000028,
+        "mean_commute_minutes": 0.034534566008518786
+      }
+    },
+    "size_emacro_drop_F": {
+      "withheld_pillars": "F",
+      "reference_model": "size_emacro",
+      "n_targets": 5,
+      "mean_contribution": 0.04227971494306639,
+      "mean_contribution_ablated": 0.041305428535710245,
+      "n_positive_ablated": 5,
+      "by_target": {
+        "broadband_rate": 0.03679207184601263,
+        "median_household_income": 0.014859093081724062,
+        "median_age": 0.10894624834440092,
+        "median_home_value": 0.023167057828809345,
+        "mean_commute_minutes": 0.022762671577604254
+      }
+    },
+    "size_emacro_drop_F_no_ametro": {
+      "withheld_pillars": "F",
+      "reference_model": "size_emacro_no_ametro",
+      "n_targets": 5,
+      "mean_contribution": 0.0415960648789921,
+      "mean_contribution_ablated": 0.040969213211295985,
+      "n_positive_ablated": 5,
+      "by_target": {
+        "broadband_rate": 0.037820531220354,
+        "median_household_income": 0.01623961046835931,
+        "median_age": 0.11029115117525612,
+        "median_home_value": 0.023462763299729184,
+        "mean_commute_minutes": 0.017032009892781308
+      }
+    },
+    "size_emacro_no_ametro": {
+      "withheld_pillars": "",
+      "reference_model": "size_emacro",
+      "n_targets": 5,
+      "mean_contribution": 0.00031216556752140524,
+      "mean_contribution_ablated": 0.0002235924544309764,
+      "n_positive_ablated": 3,
+      "by_target": {
+        "broadband_rate": 0.0001122392701742303,
+        "median_household_income": -0.00014352669519013261,
+        "median_age": 0.00045133416562848083,
+        "median_home_value": -0.0010298971451667693,
+        "mean_commute_minutes": 0.001727812676709073
+      }
+    }
+  },
   "n_targets": 5,
   "n_folds": 5,
   "fold_strategy": "GroupKFold on state_fips (spatially blocked)",
@@ -230,5 +367,49 @@
       "mean_lift_over_size": 0.20997680798774332,
       "sd_lift_over_size": 0.036543177429528874
     }
-  ]
+  ],
+  "drop_one_noise_floor": {
+    "A": {
+      "n_targets": 5,
+      "mean_contribution_ablated": -4.573467939910092e-05,
+      "mean_placebo": -0.003709922567991605,
+      "max_placebo": 0.0025395643797947454,
+      "n_targets_above_floor": 2
+    },
+    "B": {
+      "n_targets": 5,
+      "mean_contribution_ablated": 0.006671778906858572,
+      "mean_placebo": -0.007203792021061778,
+      "max_placebo": 0.0030915029800413496,
+      "n_targets_above_floor": 4
+    },
+    "C": {
+      "n_targets": 5,
+      "mean_contribution_ablated": 0.005352013813654688,
+      "mean_placebo": -0.0006019767432151523,
+      "max_placebo": 0.0022631241909358835,
+      "n_targets_above_floor": 4
+    },
+    "D": {
+      "n_targets": 5,
+      "mean_contribution_ablated": 0.019084518442214572,
+      "mean_placebo": -0.0016632818889152513,
+      "max_placebo": 0.002747359126283766,
+      "n_targets_above_floor": 5
+    },
+    "E": {
+      "n_targets": 5,
+      "mean_contribution_ablated": 0.05821471793287527,
+      "mean_placebo": -0.0017822522141685629,
+      "max_placebo": 0.0023270393319859695,
+      "n_targets_above_floor": 5
+    },
+    "F": {
+      "n_targets": 5,
+      "mean_contribution_ablated": 0.040969213211295985,
+      "mean_placebo": -0.0026582334576686862,
+      "max_placebo": 0.0024886016107726894,
+      "n_targets_above_floor": 5
+    }
+  }
 }

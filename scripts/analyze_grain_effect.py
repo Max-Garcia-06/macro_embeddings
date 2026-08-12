@@ -168,7 +168,7 @@ def main() -> None:
         level=logging.INFO,
         format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
     )
-    panel, pillar_columns = load_panel()
+    panel, pillar_columns, _ = load_panel()
     market_panel, provenance = build_market_panel(panel, pillar_columns)
     n_markets = len(market_panel)
 
