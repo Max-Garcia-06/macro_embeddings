@@ -67,8 +67,8 @@ every consumer of the matrix inherits the exclusion rather than re-deriving it.
 
 | column | dtype | fires on | nulls | size tier | description |
 |---|---|---|---|---|---|
-| `n_body_sections` | int64 | 3,144 (100.0%) | 0 | unscanned | Count of body sections in the article. DIAGNOSTIC -- a size proxy (r = 0.550 with county size) carrying 2.4% of the block's lift. |
-| `has_usda_echo` | bool | 16 (0.5%) | 0 | unscanned | Lead restates USDA's own county classification. DIAGNOSTIC -- Source F's `distress_count` is built from those classifications, so this detector must never predict them. |
+| `n_body_sections` | int64 | 3,144 (100.0%) | 0 | 1 (size in disguise) | Count of body sections in the article. DIAGNOSTIC -- a size proxy (r = 0.547 with Census population, 0.550 with the retired tax-return proxy it was cut on) carrying 2.4% of the block's lift. |
+| `has_usda_echo` | bool | 16 (0.5%) | 0 | 3 (size-free) | Lead restates USDA's own county classification. DIAGNOSTIC -- Source F's `distress_count` is built from those classifications, so this detector must never predict them. |
 
 ## Ablated in pillar-versus-pillar work only
 

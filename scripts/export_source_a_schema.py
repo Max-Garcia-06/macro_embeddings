@@ -35,11 +35,16 @@ from pathlib import Path
 
 import pandas as pd
 
-from extract_source_a_features import DIAGNOSTIC_COLUMNS, VARIANT_COLUMNS
-from extract_source_a_section_features import (
-    SECTION_DIAGNOSTIC_COLUMNS,
-    section_output_columns,
+from export_pillar_schema import (
+    SIZE_TIER_ONE_THRESHOLD,
+    SIZE_TIER_TWO_THRESHOLD,
+    _size_tier,
+    column_status,
+    load_size_dependence,
 )
+from extract_source_a_features import DIAGNOSTIC_COLUMNS, VARIANT_COLUMNS
+from extract_source_a_section_features import section_output_columns
+from pillar_matrix import build_matrix
 
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 DATA_DIR: Path = REPO_ROOT / "data"
@@ -47,14 +52,8 @@ OUTPUTS_DIR: Path = REPO_ROOT / "outputs"
 DOCS_DIR: Path = REPO_ROOT / "docs"
 
 TEXT_FEATURES_PATH: Path = DATA_DIR / "source_a_text_features.parquet"
-SIZE_DEPENDENCE_PATH: Path = OUTPUTS_DIR / "feature_size_dependence.csv"
 OUTPUT_CSV_PATH: Path = OUTPUTS_DIR / "source_a_feature_schema.csv"
 OUTPUT_DOC_PATH: Path = DOCS_DIR / "source_a_feature_schema.md"
-
-# Tier boundaries for |r| with county size, matching the tiering published in
-# `docs/downstream_target.md` Part 2.
-SIZE_TIER_ONE_THRESHOLD: float = 0.30
-SIZE_TIER_TWO_THRESHOLD: float = 0.15
 
 # One line per column, in the block's output order. Written by hand because a
 # regex is not a definition -- a consumer needs to know what the flag is
@@ -89,7 +88,7 @@ COLUMN_DESCRIPTIONS: dict[str, str] = {
     "sec_has_logistics": "Economy section names logistics.",
     "sec_n_industry_mentions": "Count of the seven industry flags that fired on the economy section. Carries 97.6% of the section gain and is effectively size-independent.",
     "has_economy_section": "Article has a body section whose title marks it economic.",
-    "n_body_sections": "Count of body sections in the article. DIAGNOSTIC -- a size proxy (r = 0.550 with county size) carrying 2.4% of the block's lift.",
+    "n_body_sections": "Count of body sections in the article. DIAGNOSTIC -- a size proxy (r = 0.547 with Census population, 0.550 with the retired tax-return proxy it was cut on) carrying 2.4% of the block's lift.",
     "has_usda_echo": "Lead restates USDA's own county classification. DIAGNOSTIC -- Source F's `distress_count` is built from those classifications, so this detector must never predict them.",
 }
 
@@ -107,15 +106,6 @@ RESTATEMENT_NOTES: dict[str, str] = {
 logger = logging.getLogger(__name__)
 
 
-def _size_tier(abs_r: float) -> str:
-    """Bucket a feature's correlation with county size into a reporting tier."""
-    if abs_r >= SIZE_TIER_ONE_THRESHOLD:
-        return "1 (size in disguise)"
-    if abs_r >= SIZE_TIER_TWO_THRESHOLD:
-        return "2 (partly size)"
-    return "3 (size-free)"
-
-
 def build_schema() -> pd.DataFrame:
     """Assemble one row per Source A column from the parquet it describes.
 
@@ -129,13 +119,13 @@ def build_schema() -> pd.DataFrame:
         ValueError: If the parquet is missing a column the schema documents.
     """
     features = pd.read_parquet(TEXT_FEATURES_PATH)
-    size_dependence = (
-        pd.read_csv(SIZE_DEPENDENCE_PATH).set_index("feature")["r_with_log_size"]
-        if SIZE_DEPENDENCE_PATH.exists()
-        else pd.Series(dtype="float64")
-    )
+    size_dependence = load_size_dependence()
 
-    diagnostics = {*DIAGNOSTIC_COLUMNS, *SECTION_DIAGNOSTIC_COLUMNS}
+    # Status comes from `pillar_matrix` rather than from this module's own idea
+    # of what ships: a column is a diagnostic exactly when the matrix withholds
+    # it. Restating that here is how a schema doc drifts into claiming a column
+    # ships when every consumer of the matrix never sees it.
+    _, blocks = build_matrix()
     ordered = list(
         dict.fromkeys(
             [*VARIANT_COLUMNS["extracted_full"], *section_output_columns(), *DIAGNOSTIC_COLUMNS]
@@ -155,7 +145,7 @@ def build_schema() -> pd.DataFrame:
             {
                 "column": column,
                 "dtype": str(values.dtype),
-                "status": "diagnostic" if column in diagnostics else "ships",
+                "status": column_status(column, "A", blocks, {}),
                 "description": COLUMN_DESCRIPTIONS[column],
                 "counties_firing": firing,
                 "fire_rate": round(firing / len(features), 4),

@@ -1,0 +1,31 @@
+column,dtype,status,description,nulls,fires_on,fire_rate,size_tier,r_with_size
+county_name,str,identifier,"e.g. `""Harris County, Texas""`, from `county_crosswalk.parquet`.",0,,,unscanned,
+fips_code,str,identifier,5-digit state+county FIPS. Join key.,0,,,unscanned,
+total_outbound_tons,float64,superseded by `log_outbound_tons`,"Total domestic outbound tonnage, 2022. Superseded in the matrix by `log_outbound_tons`; spans six orders of magnitude on the raw scale.",0,,,unscanned,
+total_inbound_tons,float64,superseded by `log_inbound_tons`,"Total domestic inbound tonnage, 2022. Superseded in the matrix by `log_inbound_tons`.",0,,,unscanned,
+out_partner_hhi,float64,ships,"Herfindahl-Hirschman concentration of outbound tonnage across partners, pooling county-level and FAF-zone-level partner rows into one distribution. Higher means flow funnels through fewer corridors.",0,,,1 (size in disguise),0.326
+in_partner_hhi,float64,ships,"Herfindahl-Hirschman concentration of inbound tonnage across partners, same construction as `out_partner_hhi`.",0,,,1 (size in disguise),0.329
+out_sctg0109,float64,size control,"Outbound tons in SCTG 01-09, agriculture and food products. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+out_sctg1014,float64,size control,"Outbound tons in SCTG 10-14, mining and nonmetallic minerals. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+out_sctg1519,float64,size control,"Outbound tons in SCTG 15-19, coal and petroleum products. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+out_sctg2033,float64,size control,"Outbound tons in SCTG 20-33, chemicals, plastics, wood, paper and base metals. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+out_sctg3499,float64,size control,"Outbound tons in SCTG 34-99, machinery, electronics, vehicles and mixed freight. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+in_sctg0109,float64,size control,"Inbound tons in SCTG 01-09, agriculture and food products. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+in_sctg1014,float64,size control,"Inbound tons in SCTG 10-14, mining and nonmetallic minerals. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+in_sctg1519,float64,size control,"Inbound tons in SCTG 15-19, coal and petroleum products. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+in_sctg2033,float64,size control,"Inbound tons in SCTG 20-33, chemicals, plastics, wood, paper and base metals. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+in_sctg3499,float64,size control,"Inbound tons in SCTG 34-99, machinery, electronics, vehicles and mixed freight. A level wearing a commodity label — held in the size control since 2026-08-05.",0,,,unscanned,
+as_of_date,str,identifier,`2022-12-31`. The oldest pillar in the matrix; FAF5 refreshes about every 5 years.,0,,,unscanned,
+log_total_tons,float64,ships,"`log10(outbound + inbound tons)`, clipped at 1. Derived in `pillar_matrix`. The pillar's headline volume measure.",0,,,1 (size in disguise),0.865
+log_outbound_tons,float64,ships,"`log10(total_outbound_tons)`, clipped at 1. Derived in `pillar_matrix`.",0,,,1 (size in disguise),0.802
+log_inbound_tons,float64,ships,"`log10(total_inbound_tons)`, clipped at 1. Derived in `pillar_matrix`.",0,,,1 (size in disguise),0.904
+share_out_sctg0109,float64,ships,"Outbound tons in SCTG 01-09, agriculture and food products as a share of the county's own outbound total. The composition the raw tonnage was standing in for.",0,,,1 (size in disguise),-0.426
+share_out_sctg1014,float64,ships,"Outbound tons in SCTG 10-14, mining and nonmetallic minerals as a share of the county's own outbound total. The composition the raw tonnage was standing in for.",0,,,2 (partly size),0.259
+share_out_sctg1519,float64,ships,"Outbound tons in SCTG 15-19, coal and petroleum products as a share of the county's own outbound total. The composition the raw tonnage was standing in for.",0,,,3 (size-free),-0.024
+share_out_sctg2033,float64,ships,"Outbound tons in SCTG 20-33, chemicals, plastics, wood, paper and base metals as a share of the county's own outbound total. The composition the raw tonnage was standing in for.",0,,,2 (partly size),0.214
+share_out_sctg3499,float64,ships,"Outbound tons in SCTG 34-99, machinery, electronics, vehicles and mixed freight as a share of the county's own outbound total. The composition the raw tonnage was standing in for.",0,,,1 (size in disguise),0.514
+share_in_sctg0109,float64,ships,"Inbound tons in SCTG 01-09, agriculture and food products as a share of the county's own inbound total. The composition the raw tonnage was standing in for.",0,,,1 (size in disguise),-0.473
+share_in_sctg1014,float64,ships,"Inbound tons in SCTG 10-14, mining and nonmetallic minerals as a share of the county's own inbound total. The composition the raw tonnage was standing in for.",0,,,1 (size in disguise),0.364
+share_in_sctg1519,float64,ships,"Inbound tons in SCTG 15-19, coal and petroleum products as a share of the county's own inbound total. The composition the raw tonnage was standing in for.",0,,,3 (size-free),0.102
+share_in_sctg2033,float64,ships,"Inbound tons in SCTG 20-33, chemicals, plastics, wood, paper and base metals as a share of the county's own inbound total. The composition the raw tonnage was standing in for.",0,,,2 (partly size),0.211
+share_in_sctg3499,float64,ships,"Inbound tons in SCTG 34-99, machinery, electronics, vehicles and mixed freight as a share of the county's own inbound total. The composition the raw tonnage was standing in for.",0,,,1 (size in disguise),0.39

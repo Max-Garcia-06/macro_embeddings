@@ -1,0 +1,24 @@
+column,dtype,status,description,nulls,fires_on,fire_rate,size_tier,r_with_size
+county_name,str,identifier,"e.g. `""Menominee County, Wisconsin""`, from `county_crosswalk.parquet`.",0,,,unscanned,
+fips_code,str,identifier,5-digit state+county FIPS. Join key.,0,,,unscanned,
+metro_2023,boolean,ships,True where OMB's 2023 delineation puts the county in a metropolitan area.,0,1186.0,0.3772,1 (size in disguise),0.592
+high_farming,boolean,ships,High concentration of farming earnings or employment.,9,453.0,0.1441,1 (size in disguise),-0.497
+high_mining,boolean,ships,High concentration of mining earnings or employment.,9,216.0,0.0687,2 (partly size),-0.175
+high_manufacturing,boolean,ships,High concentration of manufacturing earnings or employment.,9,469.0,0.1492,3 (size-free),-0.034
+high_government,boolean,ships,"High concentration of government earnings or employment. Note that Source B's location quotients are private-ownership only, so this flag has no QCEW counterpart.",9,442.0,0.1406,3 (size-free),0.034
+high_recreation,boolean,ships,High concentration of recreation earnings or employment.,9,431.0,0.1371,3 (size-free),0.005
+nonspecialized,boolean,ships,No sector concentrated enough to earn a dependence label.,9,1345.0,0.4278,1 (size in disguise),0.337
+low_postsecondary_ed,boolean,ships,Demographic risk flag: low share of adults with postsecondary education.,0,358.0,0.1139,2 (partly size),-0.191
+low_employment,boolean,ships,Demographic risk flag: low employment rate among working-age adults.,0,315.0,0.1002,2 (partly size),-0.168
+population_loss,boolean,ships,Demographic risk flag: sustained population decline.,17,912.0,0.2901,1 (size in disguise),-0.4
+housing_stress,boolean,ships,Demographic risk flag: high share of cost-burdened households.,0,668.0,0.2125,1 (size in disguise),0.35
+retirement_destination,boolean,ships,"High net in-migration of people aged 60 and over. Restates age structure by definition, so it is ablated when the target is `median_age`.",9,305.0,0.097,3 (size-free),0.05
+persistent_poverty,boolean,ships,Demographic risk flag: poverty above threshold across successive censuses.,33,318.0,0.1011,3 (size-free),-0.114
+industry_dependence_none,boolean,ships,"One-hot: no dominant industry. The modal county, at 50.0%.",9,1572.0,0.5,1 (size in disguise),0.32
+industry_dependence_farming,boolean,ships,One-hot: farming-dependent.,9,354.0,0.1126,1 (size in disguise),-0.456
+industry_dependence_mining,boolean,ships,One-hot: mining-dependent.,9,90.0,0.0286,3 (size-free),-0.134
+industry_dependence_manufacturing,boolean,ships,One-hot: manufacturing-dependent.,9,706.0,0.2246,3 (size-free),0.018
+industry_dependence_government,boolean,ships,One-hot: government-dependent.,9,146.0,0.0464,3 (size-free),0.048
+industry_dependence_recreation,boolean,ships,One-hot: recreation-dependent.,9,267.0,0.0849,3 (size-free),-0.039
+as_of_date,str,identifier,"`2025-12-31`, the publication edition rather than a period end — the codes are built from several upstream series with different windows.",0,,,unscanned,
+distress_count,float64,ships,"Sum of the six demographic risk flags, 0–6. Derived in `pillar_matrix`. Observed maximum is 5; no county carries all six.",0,,,2 (partly size),-0.172

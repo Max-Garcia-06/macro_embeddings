@@ -1,0 +1,11 @@
+column,dtype,status,description,nulls,fires_on,fire_rate,size_tier,r_with_size
+county_name,str,identifier,"e.g. `""Cook County, Illinois""`, from `county_crosswalk.parquet`.",0,,,unscanned,
+fips_code,str,identifier,5-digit state+county FIPS. Join key.,0,,,unscanned,
+unemployment_velocity,float64,ships,"3-year slope of the county's annual unemployment rate, in percentage points per year. Positive means unemployment is rising.",1,,,3 (size-free),0.075
+unemployment_rate_latest,float64,ships,"Most recent annual unemployment rate, in percent.",1,,,3 (size-free),0.063
+unemployment_latest_year,float64,identifier,"Year the unemployment reading comes from. Bookkeeping, not a feature.",1,,,unscanned,
+gdp_velocity,float64,ships,"3-year slope of real GDP, in chained dollars per year. Confounded with economy size — prefer `gdp_velocity_pct`. Still inside the matrix's Source C block; see the note above.",64,,,1 (size in disguise),0.42
+gdp_latest,float64,size control,"Most recent real GDP level. A pure scale measure, held in the size control and re-exposed as `log_gdp_latest`.",64,,,unscanned,
+gdp_latest_year,float64,identifier,"Year the GDP reading comes from. Bookkeeping, not a feature.",64,,,unscanned,
+gdp_velocity_pct,float64,ships,`gdp_velocity / gdp_latest` — GDP growth as a rate rather than a dollar amount. **The column a downstream model should prefer.**,64,,,3 (size-free),0.101
+as_of_date,str,identifier,"`2025-12-31`. Unemployment runs through 2025, real GDP through 2024; the per-row years are in `unemployment_latest_year` and `gdp_latest_year`.",0,,,unscanned,
