@@ -271,6 +271,24 @@ def _derive_pillar_columns(frames: dict[str, pd.DataFrame]) -> dict[str, pd.Data
     return derived
 
 
+def derived_pillar_frames() -> dict[str, pd.DataFrame]:
+    """Return each pillar's frame with its derived columns attached.
+
+    The public entry point to the same derivation `build_matrix` runs, for
+    callers that need Source D's commodity shares or Source F's
+    `distress_count` without the matrix's column exclusions applied --
+    `export_pillar_schema.py` documents columns this module holds out, so it
+    cannot read them from the matrix itself.
+
+    Returns:
+        Mapping of pillar letter "A".."F" to its derived DataFrame.
+
+    Raises:
+        FileNotFoundError: If any source parquet is absent.
+    """
+    return _derive_pillar_columns(_load_pillar_frames())
+
+
 def build_matrix() -> tuple[pd.DataFrame, dict[str, list[str]]]:
     """Join all six pillars into one county-keyed feature matrix.
 

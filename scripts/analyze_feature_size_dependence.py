@@ -31,9 +31,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from county_population import load_size_proxy
-from extract_source_a_features import VARIANT_COLUMNS
-from extract_source_a_section_features import section_feature_columns
+from pillar_matrix import SOURCE_A_DIAGNOSTIC_COLUMNS, build_matrix
 
 DATA_DIR: Path = Path(__file__).resolve().parent.parent / "data"
 OUTPUTS_DIR: Path = Path(__file__).resolve().parent.parent / "outputs"
@@ -65,72 +63,47 @@ def configure_logging() -> None:
 def build_feature_panel() -> tuple[pd.DataFrame, dict[str, str]]:
     """Join every pillar's candidate features onto one per-county frame.
 
+    The feature list comes from `pillar_matrix.build_matrix` rather than from a
+    per-pillar list maintained here. That matters because this scan's whole
+    purpose is to tier the columns a downstream model receives, and a hand-kept
+    list drifts: it missed Source D's ten commodity shares and half of Source
+    C's block for as long as those columns had been shipping. Sourcing from the
+    matrix makes the scan cover every shipping column by construction, and makes
+    `SIZE_COLUMNS` -- already held out of every block -- the single definition of
+    what counts as a scale measure rather than a feature.
+
+    Source A's two diagnostics are merged back in on top. `pillar_matrix` keeps
+    them out of the matrix entirely, but `docs/source_a_feature_schema.md`
+    publishes a size tier for both, and a diagnostic with no measured size
+    loading is not much of a diagnostic.
+
     Returns:
         Tuple of (panel indexed by row with a `log_size` column, mapping of
         feature name to its pillar letter).
     """
+    matrix, blocks = build_matrix()
+
     source_a = pd.read_parquet(DATA_DIR / "source_a_text_features.parquet")
-    source_b = pd.read_parquet(DATA_DIR / "source_b_qcew.parquet")
-    source_c = pd.read_parquet(DATA_DIR / "source_c_fred.parquet")
-    source_d = pd.read_parquet(DATA_DIR / "source_d_faf.parquet")
-    source_e = pd.read_parquet(DATA_DIR / "source_e_irs_soi.parquet")
-    source_f = pd.read_parquet(DATA_DIR / "source_f_usda_typology.parquet")
-
-    # Source A ships the 29 typed columns, not the `content_length` scalar
-    # (source-a-findings.md 14.5). The scalar stays in the scan as the incumbent
-    # this table was originally built to judge, but the columns that actually
-    # reach a downstream model are the typed ones, and a rate-shaped target
-    # cares about their size loading rather than the retired scalar's.
-    a_columns = ["content_length", *VARIANT_COLUMNS["extracted_full"], *section_feature_columns()]
-    a_columns = [col for col in dict.fromkeys(a_columns) if col in source_a.columns]
-
-    lq_columns = [col for col in source_b.columns if col.startswith("lq_emp_")]
-    c_columns = ["gdp_velocity_pct", "unemployment_velocity"]
-    d_columns = ["out_partner_hhi", "in_partner_hhi"]
-    f_columns = [
-        "metro_2023",
-        "low_postsecondary_ed",
-        "low_employment",
-        "population_loss",
-        "housing_stress",
-        "retirement_destination",
-        "persistent_poverty",
+    diagnostic_columns = [
+        col for col in SOURCE_A_DIAGNOSTIC_COLUMNS if col in source_a.columns
     ]
+    source_e = pd.read_parquet(DATA_DIR / "source_e_irs_soi.parquet")
 
-    panel = (
-        load_size_proxy()
-        .merge(
-            source_e[["fips_code", "num_returns", "capital_to_wage_ratio"]],
-            on="fips_code",
-            how="outer",
-        )
-        .merge(
-            source_d[["fips_code", "total_outbound_tons", "total_inbound_tons", *d_columns]],
-            on="fips_code",
-            how="outer",
-        )
-        .merge(source_c[["fips_code", *c_columns]], on="fips_code", how="outer")
-        .merge(source_f[["fips_code", *f_columns]], on="fips_code", how="outer")
-        .merge(source_a[["fips_code", *a_columns]], on="fips_code", how="outer")
-        .merge(source_b[["fips_code", *lq_columns]], on="fips_code", how="outer")
-    )
+    panel = matrix.merge(
+        source_a[["fips_code", *diagnostic_columns]], on="fips_code", how="left"
+    ).merge(source_e[["fips_code", "num_returns"]], on="fips_code", how="left")
 
-    # `log_population` arrives from county_population.load_size_proxy. The
-    # superseded tax-return proxy is kept alongside it so every row can report
-    # both, and tonnage takes the same log10 transform -- both are heavy-tailed
-    # county counts, and the sweep's partial-correlation control matches.
+    # `log_population` arrives inside the matrix, from county_population via
+    # `SIZE_FEATURES`. The superseded tax-return proxy is rebuilt alongside it so
+    # every row can report both -- `num_returns` itself is a `SIZE_COLUMNS`
+    # member and therefore absent from the matrix by design.
     panel["log_size"] = panel["log_population"]
     panel["log_returns"] = np.log10(panel["num_returns"].clip(lower=1))
-    panel["log_tons"] = np.log10(
-        (panel["total_outbound_tons"] + panel["total_inbound_tons"]).clip(lower=1)
-    )
 
-    pillar_of: dict[str, str] = {col: "A" for col in a_columns}
-    pillar_of.update({col: "B" for col in lq_columns})
-    pillar_of.update({col: "C" for col in c_columns})
-    pillar_of.update({col: "D" for col in ["log_tons", *d_columns]})
-    pillar_of["capital_to_wage_ratio"] = "E"
-    pillar_of.update({col: "F" for col in f_columns})
+    pillar_of: dict[str, str] = {
+        column: pillar for pillar, columns in blocks.items() for column in columns
+    }
+    pillar_of.update({column: "A" for column in diagnostic_columns})
     return panel, pillar_of
 
 
@@ -161,6 +134,9 @@ def compute_size_dependence(
             )
             continue
         values = paired[feature].astype(float)
+        if values.std() == 0:
+            logger.warning("Skipping %s: constant across %d counties", feature, len(paired))
+            continue
         r = float(np.corrcoef(values, paired["log_size"])[0, 1])
         r_returns = float(np.corrcoef(values, paired["log_returns"])[0, 1])
         rows.append(
