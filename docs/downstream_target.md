@@ -147,17 +147,19 @@ choice reverses conclusions across the whole repo, not just one pillar.
 |---|---|---|
 | county size | **control** — regress it out before fusion | **feature** — keep it |
 | operative sweep column | `r_size_controlled` | raw `r` |
-| Source D freight `log_tons` | dead — r = +0.871 with size | strong |
-| Source F `metro_2023` | demote — r = +0.596 | strong |
+| Source D freight `log_total_tons` | dead — r = +0.865 with size | strong |
+| Source F `metro_2023` | demote — r = +0.592 | strong |
 | Source A `content_length` | compromised — r = +0.355 | defensible, cheap size proxy |
 | Source A's 29 typed columns | **win** — 22 of 29 below \|r\| = 0.15 | interpretability only |
 | Source C velocities, Source E ratio | cleanest pillars — r ≈ 0.02–0.10 | unremarkable |
 
-Source: `outputs/feature_size_dependence.csv`, 62 features scanned against
+Source: `outputs/feature_size_dependence.csv`, 120 features scanned against
 `log10(Census population)` — full tiering in Part 2. The proxy was the
 tax-return count until 2026-08-04; swapping it changed no tier membership above
 \|r\| = 0.30 and moved `has_university` across the 0.15 line
-(`source-a-findings.md` §18).
+(`source-a-findings.md` §18). The two figures in this table were still quoted
+against that retired proxy (+0.871 and +0.596) until the 2026-08-12 rescan;
+they now read against Census population like every other number here.
 
 ### It settled something no amount of further testing could — and did
 
@@ -358,39 +360,99 @@ proxy was Source E's `num_returns` until 2026-08-04; each row's correlation
 against the retired proxy is retained in `r_with_log_returns` so the swap stays
 checkable (`source-a-findings.md` §18).
 
-62 features scanned; **15 exceed |r| = 0.30 with county size.** Full table in
-`outputs/feature_size_dependence.csv`. The scan now covers Source A's 29 shipping
-typed columns rather than the `content_length` scalar alone, which is why the
-count rose from the 34 features this analysis originally reported.
+**120 features scanned; 44 exceed |r| = 0.30 with county size.** Full table in
+`outputs/feature_size_dependence.csv`.
+
+> **Rescanned 2026-08-12.** The counts above were 62 and 15. The scan's feature
+> list is now read from `pillar_matrix.build_matrix()` rather than from a
+> hand-kept list inside `analyze_feature_size_dependence.py`, so it covers every
+> shipping column by construction. What it had been missing: Source D's ten
+> commodity shares and its three log tonnage columns, Source B's 20
+> `disclosure_*` flags, Source C's `unemployment_rate_latest` and
+> `gdp_velocity`, and Source E's whole re-featurized block. **Every correlation
+> that existed before is unchanged to the last decimal** — nothing was
+> re-estimated, the panel was widened. One rename: `log_tons` is now
+> `log_total_tons`, the name the matrix uses for the same quantity.
 
 **Tier 1 — size in disguise** (|r| ≥ 0.30). Contribute little to a rate target
 beyond what population already supplies.
 
 | Feature | Pillar | r with size | Shared variance | n |
 |---|---|---|---|---|
-| `log_tons` | D | **+0.865** | 75% | 3,143 |
+| `log_inbound_tons` | D | **+0.904** | 82% | 3,143 |
+| `log_total_tons` | D | **+0.865** | 75% | 3,143 |
+| `log_outbound_tons` | D | +0.802 | 64% | 3,143 |
+| `disclosure_61` (Education) | B | −0.614 | 38% | 2,669 |
 | `metro_2023` | F | +0.592 | 35% | 3,143 |
+| `disclosure_55` (Management) | B | −0.592 | 35% | 2,502 |
+| `wage_per_return_thousands` | E | +0.568 | 32% | 3,143 |
+| `low_return_flag` | E | −0.560 | 31% | 3,143 |
+| `n_body_sections` | A | +0.547 | 30% | 3,143 |
 | `has_metro_attachment` | A | +0.541 | 29% | 3,143 |
+| `disclosure_71` (Arts/Rec) | B | −0.538 | 29% | 2,948 |
+| `disclosure_72` (Accom/Food) | B | −0.514 | 26% | 3,126 |
+| `share_out_sctg3499` | D | +0.514 | 26% | 3,143 |
 | `lq_emp_11` (Agriculture) | B | −0.506 | 26% | 1,457 |
+| `high_farming` | F | −0.497 | 25% | 3,134 |
+| `disclosure_52` (Finance) | B | −0.478 | 23% | 3,125 |
+| `share_in_sctg0109` | D | −0.473 | 22% | 3,143 |
+| `disclosure_56` (Admin/Waste) | B | −0.470 | 22% | 3,112 |
+| `disclosure_53` (Real Estate) | B | −0.467 | 22% | 3,019 |
+| `disclosure_62` (Health Care) | B | −0.465 | 22% | 3,128 |
+| `industry_dependence_farming` | F | −0.456 | 21% | 3,134 |
 | `lq_emp_54` (Professional svcs) | B | +0.453 | 21% | 2,268 |
+| `share_out_sctg0109` | D | −0.426 | 18% | 3,143 |
+| `disclosure_22` (Utilities) | B | −0.426 | 18% | 2,852 |
+| `gdp_velocity` (dollar-denominated) | C | +0.420 | 18% | 3,080 |
 | `lq_emp_21` (Mining) | B | −0.416 | 17% | 1,026 |
 | `lq_emp_56` (Admin/Waste) | B | +0.412 | 17% | 2,212 |
 | `population_loss` | F | −0.400 | 16% | 3,126 |
 | `founding_year` | A | −0.395 | 16% | 1,214 |
+| `share_in_sctg3499` | D | +0.390 | 15% | 3,143 |
+| `disclosure_81` (Other svcs) | B | −0.384 | 15% | 3,128 |
+| `disclosure_51` (Information) | B | −0.383 | 15% | 3,028 |
+| `disclosure_31-33` (Manufacturing) | B | −0.381 | 14% | 3,083 |
+| `disclosure_48-49` (Transport) | B | −0.380 | 14% | 3,116 |
+| `share_in_sctg1014` | D | +0.364 | 13% | 3,143 |
 | `content_length` | A | +0.355 | 13% | 3,143 |
+| `disclosure_54` (Professional svcs) | B | −0.352 | 12% | 3,132 |
 | `housing_stress` | F | +0.350 | 12% | 3,143 |
+| `nonspecialized` | F | +0.337 | 11% | 3,134 |
 | `in_partner_hhi` | D | +0.329 | 11% | 3,143 |
 | `n_distinct_proper_nouns` | A | +0.328 | 11% | 3,143 |
 | `out_partner_hhi` | D | +0.326 | 11% | 3,143 |
+| `industry_dependence_none` | F | +0.320 | 10% | 3,134 |
 | `lq_emp_53` (Real Estate) | B | +0.314 | 10% | 2,453 |
 
-**Tier 2 — partly size** (0.15 ≤ |r| < 0.30). Usable; know what they carry.
-`lq_emp_22` (−0.292), `lq_emp_55` (+0.292), `has_economy_section` (+0.268),
-`lq_emp_61` (+0.251), `lq_emp_62` (+0.245), `lq_emp_42` (−0.243), `lq_emp_99`
-(−0.228), `low_postsecondary_ed` (−0.191), `lq_emp_81` (+0.189),
-`low_employment` (−0.168), `sec_has_manufacturing` (+0.163), `has_university`
-(+0.150 — 0.145 under the retired proxy, so it sits on the tier boundary rather
-than having changed character).
+Three groups joined tier 1 on the wider scan, and each says something:
+
+- **Source B's `disclosure_*` flags, 13 of 20 of them.** Suppression tracks
+  county size almost as strongly as any feature here does, which is the same
+  fact `source-b-findings.md` reports as suppressed cells having a median of 5
+  establishments against 40 for disclosed ones. They are shipped features, not
+  metadata, so their size loading belongs on this list.
+- **Source D's commodity shares, 5 of 10.** Expected and already documented in
+  `source-d-findings.md` §11: the shares are far cleaner than the raw tonnages
+  they replaced, not clean outright.
+- **`gdp_velocity`.** The dollar-denominated velocity Source C already
+  recommends against, at +0.420 while its normalized counterpart sits at +0.101.
+  It is still inside the matrix's Source C block; see
+  `docs/source_c_feature_schema.md`.
+
+**Tier 2 — partly size** (0.15 ≤ |r| < 0.30), 28 features. Usable; know what
+they carry. `lq_emp_22` (−0.292), `lq_emp_55` (+0.292), `disclosure_23`
+(−0.287), `disclosure_21` (−0.287), `disclosure_44-45` (−0.286), `disclosure_99`
+(−0.285), `has_economy_section` (+0.268), `share_out_sctg1014` (+0.259),
+`lq_emp_61` (+0.251), `lq_emp_62` (+0.245), `lq_emp_42` (−0.243),
+`thin_claimer_flag` (−0.228), `lq_emp_99` (−0.228),
+`gain_per_claimer_thousands` (+0.215), `share_out_sctg2033` (+0.214),
+`share_in_sctg2033` (+0.211), `disclosure_42` (−0.209), `low_postsecondary_ed`
+(−0.191), `lq_emp_81` (+0.189), `high_mining` (−0.175), `distress_count`
+(−0.172), `disclosure_11` (−0.172), `dividend_participation_rate` (+0.171),
+`concentrated_gain_flag` (+0.169), `low_employment` (−0.168),
+`sec_has_manufacturing` (+0.163), `capital_to_wage_ratio_normalized_std`
+(−0.159), `has_university` (+0.150 — 0.145 under the retired proxy, so it sits
+on the tier boundary rather than having changed character).
 
 **Tier 3 — effectively size-free** (|r| < 0.15). These transfer cleanly to a
 rate target.
@@ -431,6 +493,24 @@ Source A's remaining section columns — `sec_has_tourism` (+0.094),
 `sec_has_logistics` (+0.087), `sec_has_agriculture` (+0.059), `sec_has_mining`
 (+0.033), `sec_has_oil_gas` (−0.029), `sec_has_timber` (+0.009) — also sit in
 Tier 3.
+
+The 2026-08-12 rescan adds 13 more, for **48 in Tier 3 of 120 scanned**:
+`high_recreation` (F, +0.005), `industry_dependence_manufacturing` (F, +0.018),
+`has_usda_echo` (A, −0.020), `share_out_sctg1519` (D, −0.024),
+`high_manufacturing` (F, −0.034), `high_government` (F, +0.034),
+`industry_dependence_recreation` (F, −0.039), `capgain_participation_rate`
+(E, −0.039), `industry_dependence_government` (F, +0.048),
+`unemployment_rate_latest` (C, +0.063), `capital_to_wage_ratio_normalized_mean`
+(E, +0.068), `share_in_sctg1519` (D, +0.102), `industry_dependence_mining`
+(F, −0.134).
+
+Worth noting which pillar dominates that list. **Seven of the 13 are Source F**,
+and Source F's typology columns split cleanly: the industry-dependence and
+high-concentration flags for manufacturing, government, recreation and mining
+are size-free, while `metro_2023`, `high_farming`, `nonspecialized`,
+`industry_dependence_farming` and `population_loss` are tier 1. The pillar is not
+uniformly a size proxy, which matters for how its slot is argued — see
+`analysis-output/cross-source/pillar-marginal-findings.md`.
 
 **Source A's typed block is the cleanest large block in this table under a rate
 target.** Of its 29 columns, **22 fall in Tier 3, three in Tier 2, and four in

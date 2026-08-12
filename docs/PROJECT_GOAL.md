@@ -152,12 +152,38 @@ Verdict per pillar (detail in `analysis-output/E_macro_key_findings.ipynb`):
   0.683 to 0.592. Two Source E dollar totals moved into the size control at the
   same time (r ≈ 0.89 with log population) and cost only −0.0011, so the gain is
   not size. Schema frozen in `docs/source_e_feature_schema.md`. Done.
-- **F** — keep, reclassify as a structural anchor rather than a hub-tested pillar.
+- **F** — ~~keep, reclassify as a structural anchor rather than a hub-tested
+  pillar.~~ **Keep, on evidence. Settled 2026-08-12.** The reclassification is
+  withdrawn: it was a downgrade in justification adopted because the pairwise
+  hub test was the only instrument on hand, and that instrument was wrong for a
+  categorical structural variable. On the drop-one test — how much R² a model
+  loses when F's whole block is withheld, over five external ACS targets,
+  out-of-fold on held-out states — F contributes **+0.0413, second of the six
+  pillars**, positive on 5 of 5 targets and above the shuffled-feature noise
+  floor on 5 of 5. F still fails the pairwise hub test; both facts travel
+  together. Schema frozen in `docs/source_f_feature_schema.md`. Done.
 
 Strongest surviving link: Source B Real Estate & Rental & Leasing LQ against
 Source E capital-to-wage ratio, r = 0.394 raw / 0.382 size-controlled. Largest raw
 effect in the sweep — D freight tonnage against F metro status, r = 0.495 — collapses
 to −0.057 once size is controlled.
+
+**What each pillar is worth, measured** (2026-08-12,
+`analysis-output/cross-source/pillar-marginal-findings.md`). Mean R² lost when
+the block is withheld from a model holding size and the other five pillars,
+across five external ACS targets:
+
+| E | F | D | B | C | A |
+|---|---|---|---|---|---|
+| +0.0582 | +0.0413 | +0.0191 | +0.0067 | +0.0054 | −0.0000 |
+
+The ordering is not the one this document's prose implies. **Source A, marked
+done and good, contributes nothing marginal** — consistent with the +0.0010
+marginal lift its typed block was justified on, and the reason A is now the
+pillar the "every pillar earns its slot" principle points at. No cut is
+proposed: A costs almost nothing to maintain, and redundancy with the other five
+is what lets it cover for a county where another pillar is missing. The go/no-go
+deck should quote the number rather than the adjective.
 
 ## Open decisions blocking the next phase
 
@@ -217,8 +243,16 @@ to −0.057 once size is controlled.
    county-grain case is a *recommendation this project makes* rather than a
    decision it implements. Both grains are buildable here regardless — the
    ZIP→county crosswalk (HUD-USPS) and the county→DMA crosswalk are both public.
-2. **Does B ↔ E get privileged weight?** It is roughly five times stronger than
-   anything else surviving the size control.
+2. ~~**Does B ↔ E get privileged weight?**~~ **Answered 2026-08-12: no.** The
+   pair is complementary rather than redundant — withholding both blocks costs
+   +0.0632 against +0.0649 for the sum of withholding each alone, so the
+   effective pillar count does not drop by one. But the premise behind the
+   question does not survive the measurement: **almost all of the pair's
+   external value is E's.** B contributes +0.0067 and is positive on only 3 of 5
+   targets, against E's +0.0582 on 5 of 5. A strong correlation between two
+   pillars is evidence they see the same economy; it is not evidence that either
+   predicts anything, and here only one of them does. Keep both, weight neither
+   up. Detail in `analysis-output/cross-source/pillar-marginal-findings.md` §6.
 3. ~~**Confirm the Source A *embedding* cut.**~~ **Closed 2026-08-05: the cut is
    final.** The decision was ours to make and it is made. The pillar was never
    cut — it ships 29 typed columns; only the `bge-m3` step is gone. Head to head
@@ -295,10 +329,15 @@ but it is a real gap and the go/no-go should name it.
    figure in the repo.
 5. Hand off to the FreeWheel Revenue Science models: publish the pillar parquets
    behind the feature store with a frozen schema and documented null semantics.
-   Sources A and E are ready (`docs/source_a_feature_schema.md`,
-   `docs/source_e_feature_schema.md`); every pillar now carries an
-   `as_of_date` (`outputs/pillar_vintages.csv`). B, C, D, and F still need their
-   own schema docs.
+   ~~Sources A and E are ready; B, C, D, and F still need their own schema
+   docs.~~ **All six exist as of 2026-08-12**
+   (`docs/source_{a..f}_feature_schema.md`), and every pillar carries an
+   `as_of_date` (`outputs/pillar_vintages.csv`). Four of the six are generated
+   from the parquets they describe by `scripts/export_pillar_schema.py`, which
+   reads each column's shipping status from `pillar_matrix` rather than
+   restating it — so a schema doc cannot claim a column ships that the matrix
+   withholds. Source A's has its own generator; Source E's is the one
+   hand-written doc.
 
    **Hand them the grain-mismatch warning first.** Impression-level rows carry
    only 3,143 distinct feature values, so effective n is the county count. Random

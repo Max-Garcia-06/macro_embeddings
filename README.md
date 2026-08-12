@@ -99,6 +99,8 @@ Output: `data/source_b_qcew.parquet` with columns `county_name`, `fips_code`, `l
 
 The employment block is **not** a feature — it is held out of the scored matrix in `SIZE_COLUMNS` on the same rule as Source E's dollar totals. It exists so the pillar can be re-derived at a coarser geography: a market-level location quotient is summed sector employment over summed total employment against the national base, never the mean of its counties' quotients. Reconstructing county LQs from these columns reproduces BLS's published values at mean r = 0.963 across the 20 sectors (`analysis-output/cross-source/external-target-findings.md` §17).
 
+Frozen schema and null semantics in `docs/source_b_feature_schema.md`. The headline there: **34.7% of the LQ matrix arrives null** — 27.9% BLS-suppressed plus 6.7% where the sector has no county row at all — and null means unknown, never zero.
+
 ## Source C: FRED Time-Series Slope Derivatives
 
 `ingest_source_c.py` pulls county-level annual unemployment rate and real GDP series from the **FRED API** and computes the rolling 3-year first derivative (Δy/Δt) of each, rather than storing raw levels — this is the "Economic Velocity" pillar of `E_macro`.
@@ -124,6 +126,8 @@ Output: `data/source_c_fred.parquet` with columns `county_name`, `fips_code`, `u
 
 `gdp_velocity` is denominated in chained 2017 dollars, so any ranking built on it returns the largest metro economies rather than the fastest-moving counties -- the raw and normalized top-10 lists share zero counties. **Use `gdp_velocity_pct` (= `gdp_velocity` / `gdp_latest`) for anything comparative.** Three analysis scripts were recomputing this locally before it was added to the parquet.
 
+Frozen schema, coverage and null semantics in `docs/source_c_feature_schema.md`: 3,080 counties carry both series, 63 unemployment only, 1 neither, and the 64 missing GDP series are 51 Virginia independent cities plus all 9 Connecticut Planning Regions. It also flags one thing no other doc recorded — `gdp_velocity` is still a member of the matrix's Source C block at r = +0.420 with log population, against `gdp_velocity_pct`'s +0.101.
+
 ## Source D: BTS FAF5 Freight Trade Flows
 
 `ingest_source_d.py` downloads the Bureau of Transportation Statistics' Freight Analysis Framework (FAF5) county-to-county and county-to-zone flow tables and derives per-county trade-volume and concentration signals -- the "Trade Logistics" pillar of `E_macro`. Ships tonnage totals (Option A, validated across two regional samples) plus a partner-concentration HHI pooled across both county-level and FAF-zone-level partner rows (Option C) rather than explicit top-K partner columns or distance-weighted "reach", both of which were tested and dropped for lacking discriminating signal.
@@ -135,6 +139,8 @@ uv run scripts/ingest_source_d.py
 ```
 
 Output: `data/source_d_faf.parquet` with columns `county_name`, `fips_code`, `total_outbound_tons`, `total_inbound_tons`, `out_partner_hhi`, `in_partner_hhi`, and 5-way commodity-group (`sctg`) tonnage breakdowns per direction (`out_sctg0109`, `out_sctg1014`, `out_sctg1519`, `out_sctg2033`, `out_sctg3499` and the matching `in_sctg*` columns).
+
+Frozen schema in `docs/source_d_feature_schema.md`. What ships is not what the parquet holds: the ten raw per-commodity tonnages are held in `SIZE_COLUMNS`, and the ten commodity **shares** derived in `pillar_matrix` are the composition features. Zero nulls anywhere in the file — the only pillar with no null policy to state.
 
 ## Source E: IRS SOI County Capital-to-Wage Ratio
 
@@ -174,6 +180,8 @@ uv run scripts/ingest_source_f.py
 
 Output: `data/source_f_usda_typology.parquet` with columns `county_name`, `fips_code`, `metro_2023`, `high_farming`, `high_mining`, `high_manufacturing`, `high_government`, `high_recreation`, `nonspecialized`, `low_postsecondary_ed`, `low_employment`, `population_loss`, `housing_stress`, `retirement_destination`, `persistent_poverty`, and the six `industry_dependence_*` one-hot columns.
 
+Frozen schema in `docs/source_f_feature_schema.md`. This is the pillar whose slot was contested: it fails the pairwise hub test (r = 0.495 against Source D tonnage, −0.057 size-controlled) and is nonetheless the **second most valuable of the six** on the drop-one test, contributing +0.0413 mean R² across five external targets. Both facts belong together — see `analysis-output/cross-source/pillar-marginal-findings.md`.
+
 ## Cross-pillar crossvalidation
 
 `analyze_pillar_pair_crossvalidation.py` runs the full pillar-to-pillar sweep: representative scalar features from all six pillars against each other (50 feature pairs spanning all 15 pillar pairs), each permutation-tested at 499 permutations with one Benjamini-Hochberg correction across the whole sweep. Earlier crossvalidation rounds only ever tested each pillar against Source C.
@@ -189,6 +197,20 @@ Outputs `outputs/pillar_pair_crossvalidation.csv` (per feature pair) and `analys
 **The size control matters:** 19 of 50 tests lose more than half their effect size once it is applied, including 17 of the 33 that survived the FDR correction. The largest raw effect in the sweep, Source D freight tonnage against Source F metro status at r = 0.495, falls to -0.057. The strongest surviving link is Source B's Real Estate & Rental & Leasing LQ against Source E's capital-to-wage ratio -- r = 0.394 raw, 0.382 size-controlled -- two independent federal sources identifying the same underlying economy.
 
 **The size-controlled column is the operative one.** The downstream consumer is the Comcast FreeWheel Revenue Science team, whose training rows are impressions, ad requests, auctions, households, or devices — all per-row targets, so county size is a control rather than a feature (`docs/downstream_target.md` Part 1; asserted 2026-08-05, pending written confirmation). Do not quote a raw `r` without its size-controlled partner.
+
+## What each pillar is worth
+
+`analyze_pillar_block_marginal.py` and the drop-one arm of `analyze_external_target.py` measure the same quantity two ways: how much R² a model loses when one pillar's whole block is withheld, given county size and the other five pillars. Against five external ACS targets, out-of-fold on held-out states, restatements ablated:
+
+| E | F | D | B | C | A |
+|---|---|---|---|---|---|
+| +0.0582 | +0.0413 | +0.0191 | +0.0067 | +0.0054 | −0.0000 |
+
+```bash
+uv run scripts/analyze_pillar_block_marginal.py
+```
+
+Two results worth carrying: **Source F earns its slot** on the test `docs/pillar_status.md` asked for, after failing the pairwise one; and **Source A contributes nothing marginal**, which is consistent with the +0.0010 lift its typed block was justified on and makes it the pillar the "every pillar earns its slot" principle now points at. Pre-registered decision rule, noise floor and limitations in `analysis-output/cross-source/pillar-marginal-findings.md`.
 
 ## Findings
 
