@@ -4,6 +4,18 @@ An executive status notebook, presented live to the commissioning side and their
 leadership in roughly 30 minutes. A progress artifact, not the go/no-go: it
 reports what the project knows, and does not ask for the decision.
 
+**Present from the HTML, not from the notebook.**
+
+    uv run scripts/build_status_notebook.py --for-html
+
+The notebook is the reproducible source of truth and belongs in git; the HTML in
+outputs/ is what goes on a screen. The code cells here carry
+`jupyter.source_hidden`, which folds them in JupyterLab but is **ignored by the
+VS Code and Cursor notebook editors** — there they render expanded, and the only
+remedy inside the editor is the "Notebook: Collapse All Cell Inputs" command,
+re-run every time the file is reopened. `--for-html` removes the cells outright
+instead, so there is nothing to forget.
+
 Design: docs/superpowers/specs/2026-08-13-exec-status-notebook-design.md
 
 This notebook **supersedes and absorbs** analysis-output/weekly-brief-2026-08-06.ipynb,
@@ -73,12 +85,16 @@ def md(text: str) -> None:
 
 
 def code(text: str) -> None:
-    """Append a code cell that opens collapsed, showing output but not source.
+    """Append a code cell tagged to open with its source folded.
 
-    Same convention as the brief this notebook replaces: `jupyter.source_hidden`
-    is honoured by JupyterLab, nbclassic and the VS Code / Cursor notebook
-    editor, which is what lets this be read as a document while it is presented.
-    The HTML route drops the cells entirely instead — see `--for-html`.
+    `jupyter.source_hidden` is a JupyterLab convention and JupyterLab honours it.
+    The VS Code and Cursor notebook editors do not — they have their own collapse
+    state and ignore this metadata, so the cells open expanded there. The brief
+    this notebook replaces claimed otherwise in its own docstring; that claim was
+    wrong and is corrected here.
+
+    The metadata is kept because it costs nothing and helps in JupyterLab, but the
+    presenting path is `--for-html`, which drops the cells entirely.
     """
     cell = nbf.v4.new_code_cell(text.strip("\n").replace("__RENDERER__", RENDERER))
     cell.metadata["jupyter"] = {"source_hidden": True}

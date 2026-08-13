@@ -4,7 +4,36 @@
 `scripts/build_status_notebook.py`, plus doc-sync edits to `docs/pillar_status.md`
 and `docs/PROJECT_GOAL.md`.
 
-## Revision — 13 August, after the first build
+## Revision 2 — 13 August, the presenting format
+
+**The HTML export is the presentation artifact; the notebook is the source of
+truth.** Build it with `uv run scripts/build_status_notebook.py --for-html`,
+present `outputs/E_macro_pillar_worth_2026-08-13.html` full-screen in a browser.
+
+The reason is a correction. This document and the builder both claimed that
+`jupyter.source_hidden` folds the code cells in "JupyterLab, nbclassic and the
+VS Code / Cursor notebook editor" — inherited from the brief's docstring and not
+checked. **It is a JupyterLab convention and VS Code / Cursor ignore it.**
+Measured both ways on 13 August:
+
+- **JupyterLab** — 11 of 11 code cells open folded, input placeholders in place.
+  The claim holds here.
+- **VS Code / Cursor** — cells open expanded. The only in-editor remedy is the
+  "Notebook: Collapse All Cell Inputs" palette command, which has to be re-run
+  every time the file is reopened.
+
+Max presents from Cursor, so the metadata route does not work for this delivery.
+`--for-html` removes the code cells outright via `nbconvert --no-input`, leaving
+nothing to collapse or forget.
+
+One trap that route hides: exporting naively produces the full document with
+**every figure missing**, because `plotly_mimetype` emits a MIME bundle
+nbconvert's HTML template does not render. `--for-html` therefore also swaps the
+renderer to one that writes real script output. Default builds keep the lean
+renderer, so the committed notebook stays ~95KB rather than 5MB. `--offline`
+embeds plotly.js for a room with no reliable network.
+
+## Revision 1 — 13 August, after the first build
 
 Two changes, both from Max after seeing the built notebook. **This section
 supersedes the "Structure" section below where they conflict**; everything else in

@@ -21,6 +21,7 @@ wheels/
 # Ephemeral runtime artifacts
 logs/
 .playwright-mcp/
+.ipynb_checkpoints/
 
 # Regenerable folium/plotly renders (~5MB each; rebuild with the visualize_* /
 # analyze_* script named in the findings doc that references them)
