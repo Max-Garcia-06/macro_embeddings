@@ -58,22 +58,12 @@ def code(text: str) -> None:
 md("""
 # `E_macro` — what each pillar is actually worth
 
-**Status report, 13 August 2026**, covering two weeks of work. Roughly 30 minutes.
-Sections 1–6 are the talk; the appendix is there so the notebook stands on its own
+**Status report, 13 August 2026**, covering two weeks of work. Roughly 30 minutes;
+sections 1–6 are the talk, the appendix is so the notebook stands on its own
 afterwards.
 
-**The idea both weeks turn on.** Every validation before them measured whether the
-six pillars *correlate with each other*. That measures coherence — whether two
-federal agencies see the same economy — and coherence is not usefulness. These two
-weeks measure something different: **what each pillar adds to a model that already
-has the other five**, scored against outcomes that live outside the project
-entirely.
-
-Two pillars moved on that measurement. One of them is the pillar this project had
-marked "done."
-
-**Scope, as set:** public and open-source data only, no company data, no downstream
-label. That boundary is why the evidence below is built the way it is.
+Every validation before these two weeks asked whether the six pillars agree with
+each other. These two weeks ask what each one is worth.
 """)
 
 code('''
@@ -206,48 +196,33 @@ md("""
 
 ## 1. Getting out of the circle
 
-**The problem with every validation before these two weeks.**
+**Every validation before these two weeks was pillar against pillar** — predict one
+federal source's features from the other five. That measures whether six agencies
+agree with each other; it cannot say whether any of them is *useful*. The bias even
+runs the wrong way, penalising a source precisely for agreeing with the others. And
+a real label is not available: the project is scoped to public data only, which is
+a boundary, not an oversight.
 
-- All of them were **pillar against pillar** — predict one federal source's features
-  from the other five.
-- That measures whether six agencies agree with each other. It cannot say whether
-  any of them is *useful*.
-- The bias even runs the wrong way: it penalises a source precisely for agreeing
-  with the others.
-
-**Why not just use a real label.** The project is scoped to public data only, so no
-downstream label exists here. That is a boundary, not an oversight.
-
-**The substitute — five public outcomes no pillar measures.** Household broadband
+**The substitute is five public outcomes no pillar measures** — ACS broadband
 adoption, median household income, median age, median home value, mean commute.
-All ACS, none constructed from any pillar's inputs.
+None is constructed from any pillar's inputs.
 
 **The design is built around one specific objection.** The consuming team joins on
 DMA with millions of impressions per market, so it can estimate a geographic fixed
 effect essentially for free — which makes any static geo-keyed feature look
 redundant. A fixed effect has exactly one weakness: **no parameter for a place it
 has never seen.** So the test holds out **whole states** and compares against a
-model that knows only county size. That seam is the whole design.
+model that knows only county size. That seam is the whole design, and it is what
+section 4 returns to.
 
-**Then, this week, the same idea turned inward.** Withhold one pillar's entire
-block from a model that already holds county size and the other five, and measure
-the R² it loses. Three decisions make that result survivable:
+**The same seam then goes one level down.** Withhold a single pillar's block from a
+model that already holds county size *and the other five*, and measure the R² it
+loses. Three decisions make the result survivable: every pillar takes the same test;
+restatements are ablated, so no pillar is paid for repeating a neighbour; and the
+noise floor is measured by shuffling each block rather than assumed.
 
-- **Every pillar takes the same test.** A test only the suspect sits proves nothing.
-- **Restatements are ablated.** Where one pillar's column restates another's, it is
-  removed from both sides, so no pillar is paid for repeating a neighbour.
-- **A noise floor is measured, not assumed.** Each block is shuffled and re-scored;
-  the largest contribution shuffled data produces is the bar a real one must clear.
-
-**The rule was written before the numbers arrived**, verbatim from the plan:
-
-> F ships as a pillar if its marginal contribution — R²(size + all pillars) −
-> R²(size + all pillars except F), pooled out-of-fold over the five external ACS
-> targets, with restatement columns ablated — is positive on a majority of targets
-> and above the shuffled-feature noise floor. Otherwise `E_macro` ships five
-> pillars and the go/no-go deck says so plainly.
-
-Nothing about it was renegotiated afterwards.
+The pass/fail rule was written down before the numbers arrived and was not
+renegotiated afterwards — full text in appendix A2.
 """)
 
 # ==========================================================================
@@ -499,25 +474,21 @@ that effect size predicts. A is also the only block negative in **both** arms:
 earns its slot on evidence now points at Source A rather than Source F. That is
 uncomfortable and it is the honest reading.
 
-**Three arguments against acting on it.** A is nearly free — no API key, no model,
-no inference. The targets are ACS demographics, and A's columns encode named
-industries, universities, ports and protected land. And redundancy inside a feature
-store is not uselessness — it is what a downstream model leans on for a county
-where another pillar is missing.
-
 ### The open question this puts to the room
 
 > **Does Source A ship?** The recommendation is to cut it — *unless* the consuming
-> team's real target rewards what A encodes. Of the three arguments above, only the
-> second survives scrutiny: cost is about cost, not worth, and the insurance
-> argument is untested. The second is live, and it is not something this project
-> can settle.
+> team's real target rewards what A encodes.
 >
-> **What would settle it:** whether the downstream target is closer to "who lives
-> here" — where A adds nothing — or "what happens here economically," where A's
-> industry, port and university flags are the kind of thing that could matter. Only
-> the commissioning side can answer that, which is why this is raised rather than
-> decided.
+> Three arguments defend keeping it, and only one survives. *A is nearly free* is
+> about cost, not worth. *Redundancy is insurance for a county missing another
+> pillar* is plausible and untested. But *the ACS targets are a poor match for what
+> A encodes* is live: A carries named industries, universities, ports and protected
+> land, and whether that is worth anything depends on whether the downstream target
+> is closer to "who lives here" — where A adds nothing — or "what happens here
+> economically."
+>
+> Only the commissioning side can answer that, which is why this is raised rather
+> than decided.
 """)
 
 # ==========================================================================
@@ -528,11 +499,10 @@ md("""
 
 ## 4. Three honest limits
 
-**1. The fixed-effect objection is unanswered.** If the consuming team joins at DMA
-grain, a 210-level dummy supplies everything a static DMA-keyed feature could.
-Cross-sectionally `E_macro` would add nothing over it, and no correlation measured
-anywhere in this project is evidence against that. What the grain question costs in
-each direction:
+**1. The fixed-effect objection from section 1 is still unanswered.** Holding out
+states shows `E_macro` beats a size baseline on places it has never seen; it does
+not show it beats a DMA dummy on places the consumer sees constantly. What the
+grain question costs in each direction:
 """)
 
 code('''
@@ -649,20 +619,15 @@ fig.show()
 md("""
 **And the plumbing, which does change what ships.**
 
-- **Source D's freight tonnages were county size wearing a freight label.** All ten
-  raw tonnage columns moved into the size control, at no measured cost. Commodity
-  shares replaced them — 5 of 10 clear a size-free bar that none of the raw columns
-  cleared.
-- **Source E's capital-to-wage ratio was decomposed** into its components plus a
-  five-year panel. Its remaining dollar totals moved into the size control on the
-  same principle as D's.
-- **Source B now ships raw employment levels**, so its location quotients can be
-  re-derived at any grain instead of approximated. That is what made the grain
-  re-test above trustworthy.
-- **Source D's two partner-concentration indices were re-derived** at market grain
-  rather than approximated, moving the measured gain from aggregation +0.106 →
-  **+0.099** — a correction against this project's own favoured direction.
-- **All six pillars now carry a frozen schema and an `as_of_date`** (appendix A5).
+- **Size in disguise, removed.** Source D's ten raw freight tonnages and Source E's
+  dollar totals moved into the size control at no measured cost; commodity shares
+  replaced D's, and 5 of 10 clear a bar none of the raw columns did.
+- **Re-derivable at any grain.** Source B now ships raw employment levels and
+  Source D its partner-tons distribution, so both can be re-summed rather than
+  approximated — which is what makes the grain test above trustworthy. Re-deriving
+  D's two concentration indices moved the aggregation gain +0.106 → **+0.099**, a
+  correction against this project's own favoured direction.
+- **All six pillars carry a frozen schema and an `as_of_date`** (appendix A5).
 """)
 
 # ==========================================================================
@@ -695,21 +660,18 @@ display(readiness.set_index("What a go/no-go needs"))
 ''')
 
 md("""
-**The remaining path, in the currency that binds it** — calendar weeks of
-availability:
+**The remaining path**, in order, measured in weeks of availability:
 
-1. **Settle the join grain.** Everything downstream is cheap; nothing downstream is
-   safe to build first. The single highest-leverage unblock.
-2. **Benchmark against a geographic fixed effect.** Once the grain is known, this is
-   the test that decides whether `E_macro` earns a slot in a production model.
-3. **Test temporal transfer.** The one argument a fixed effect cannot answer, and
-   the one this project has not yet made.
-4. **Then package.** `pillar_matrix.build_matrix()` already joins all six pillars
-   into a 3,144 × 124 matrix. What remains of "fusion" is a schema freeze, an
-   imputation policy and a serving format — days, not weeks.
+1. **Settle the join grain** — the single highest-leverage unblock; nothing after it
+   is safe to build first.
+2. **Benchmark against a geographic fixed effect** — the test that decides whether
+   `E_macro` earns a slot in a production model.
+3. **Test temporal transfer** — the one argument a fixed effect cannot answer.
+4. **Then package** — schema freeze, imputation policy, serving format. Days, not
+   weeks: `build_matrix()` already joins all six pillars.
 
-**Not blocked by any of the above:** ingestion, validation, schema freeze and the
-external benchmark are complete and stand on their own.
+**Not blocked by any of it:** ingestion, validation, schema freeze and the external
+benchmark are complete and stand on their own.
 """)
 
 # ==========================================================================
@@ -744,33 +706,34 @@ predicts anything at all. Moving to an external target replaces a circular
 measurement with a non-circular one. That is a real gain in evidential status even
 though the target is a proxy.
 
-**What the proxies license.**
+**What the proxies license.** That the six pillars carry information counties'
+*size* does not already carry — the baseline is population and density and the lift
+is measured on held-out states, so it is not memorisation. That the pillars are not
+interchangeable, since the drop-one design holds the other five constant. And that
+the ordering among them is not arbitrary — E and F clear the noise floor on 5 of 5
+targets by an order of magnitude, A does not.
 
-- That the six pillars carry **information about counties that county size does not
-  already carry** — the baseline is population and density, and the lift over it is
-  measured on states held out of training, so it is not memorisation of local
-  idiosyncrasy.
-- That the pillars are **not interchangeable with each other** — the drop-one design
-  holds the other five constant, so each contribution is genuinely marginal.
-- That the **ordering among pillars is not arbitrary** — E and F clear the noise
-  floor on 5 of 5 targets by an order of magnitude; A does not.
-
-**What they do not license.**
-
-- Any claim about **magnitude** against an ad-tech target. +0.190 mean R² on ACS
-  outcomes is not a forecast of anything.
-- Any claim that the **ordering transfers**. Source A could plausibly rank higher
-  against an economically-flavoured target than against median age — which is
-  precisely the argument in section 3 for not cutting it unilaterally.
-- Any answer to the **fixed-effect objection**, which is a different question and is
-  unanswered.
+**What they do not license.** Any claim about **magnitude** against an ad-tech
+target; +0.190 on ACS outcomes forecasts nothing. Any claim that the **ordering
+transfers** — Source A could rank higher against an economically-flavoured target,
+which is precisely the section 3 argument for not cutting it unilaterally. And any
+answer to the **fixed-effect objection**, which is a different question.
 
 **What would settle it.** One pass of the same drop-one design against a real
-downstream target, at the grain the consuming team actually joins on. That requires
-either a label or a collaborator inside the consuming team, and is the single most
-valuable thing that could be added to this project.
+downstream target, at the grain the consuming team actually joins on. That needs
+either a label or a collaborator inside that team, and is the single most valuable
+thing that could be added to this project.
 
 ## A2 — Method
+
+**The pre-registered rule**, verbatim from the implementation plan, written before
+either script was run and not renegotiated afterwards:
+
+> F ships as a pillar if its marginal contribution — R²(size + all pillars) −
+> R²(size + all pillars except F), pooled out-of-fold over the five external ACS
+> targets, with restatement columns ablated — is positive on a majority of targets
+> and above the shuffled-feature noise floor. Otherwise `E_macro` ships five
+> pillars and the go/no-go deck says so plainly.
 
 **Design.** For each pillar, fit two models: one holding county size plus all six
 pillars, one holding county size plus five. The difference in out-of-fold R² is that
@@ -891,16 +854,11 @@ the effective sample size is the county count — not the row count. Random k-fo
 will make this feature layer look good in evaluation and do nothing in production.
 **Cluster standard errors by `fips_code`; use grouped, spatially blocked folds.**
 
-**Null semantics are explicit and must stay that way.** BLS suppresses ~35% of the
-Source B LQ matrix and those cells are null with a matching `disclosure_*` flag. IRS
-ships no suppression flag at all, and that limitation is disclosed rather than
-papered over. A downstream model must be able to tell "missing" from "zero."
-
-**Size columns are held out deliberately.** Source B's employment levels, Source D's
-raw tonnages and two Source E dollar totals sit in `SIZE_COLUMNS` — they exist so a
-pillar can be re-derived at a coarser geography, not as features. A market-level
-location quotient is summed sector employment over summed total employment, never
-the mean of its counties' quotients.
+Two shorter notes. **Nulls are explicit**: BLS suppresses ~35% of the Source B LQ
+matrix, those cells stay null with a `disclosure_*` flag, and IRS publishes no
+suppression flag at all — a model must be able to tell "missing" from "zero."
+**Size columns are held out deliberately** in `SIZE_COLUMNS`, so a pillar can be
+re-derived at a coarser geography; they are not features.
 
 ## A7 — Artifact index
 
