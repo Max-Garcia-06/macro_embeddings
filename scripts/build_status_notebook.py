@@ -1,10 +1,18 @@
 """Generate analysis-output/E_macro_pillar_worth_2026-08-13.ipynb.
 
 An executive status notebook, presented live to the commissioning side and their
-leadership. A progress artifact, not the go/no-go: it reports what the project
-knows, and does not ask for the decision.
+leadership in roughly 30 minutes. A progress artifact, not the go/no-go: it
+reports what the project knows, and does not ask for the decision.
 
 Design: docs/superpowers/specs/2026-08-13-exec-status-notebook-design.md
+
+This notebook **supersedes and absorbs** analysis-output/weekly-brief-2026-08-06.ipynb,
+which was written for a conversation that never happened. Everything from that
+brief that still matters lives here: the discount applied to the headline result
+(section 2), the small-county noise ceiling and the Source B x E size
+conditionality (section 4), the plumbing changes (section 5), and the Source A
+and E tier work (appendix A4). The brief and its generator were removed in the
+same commit that added this file; recover them from git history if needed.
 
 Every figure is computed from the committed artifacts in outputs/ and
 analysis-output/, which were regenerated from data/*.parquet on 2026-08-13.
@@ -34,9 +42,9 @@ def md(text: str) -> None:
 def code(text: str) -> None:
     """Append a code cell that opens collapsed, showing output but not source.
 
-    Same convention as build_weekly_brief.py: `jupyter.source_hidden` is honoured
-    by JupyterLab, nbclassic and the VS Code / Cursor notebook editor, which is
-    what lets this be read as a document while it is presented.
+    Same convention as the brief this notebook replaces: `jupyter.source_hidden`
+    is honoured by JupyterLab, nbclassic and the VS Code / Cursor notebook
+    editor, which is what lets this be read as a document while it is presented.
     """
     cell = nbf.v4.new_code_cell(text.strip("\n"))
     cell.metadata["jupyter"] = {"source_hidden": True}
@@ -50,21 +58,22 @@ def code(text: str) -> None:
 md("""
 # `E_macro` — what each pillar is actually worth
 
-**Status report, 13 August 2026.** Presented, not circulated: the detail behind
-every number is in `analysis-output/`, and this notebook is the tour.
+**Status report, 13 August 2026**, covering two weeks of work. Roughly 30 minutes.
+Sections 1–6 are the talk; the appendix is there so the notebook stands on its own
+afterwards.
 
-**The idea this round turns on.** Every previous update measured whether the six
-pillars *correlate with each other*. That measures coherence — whether two
-federal agencies see the same economy — and coherence is not usefulness. This
-round measures something different: **what each pillar adds to a model that
-already has the other five**, scored against outcomes that live outside the
-project entirely.
+**The idea both weeks turn on.** Every validation before them measured whether the
+six pillars *correlate with each other*. That measures coherence — whether two
+federal agencies see the same economy — and coherence is not usefulness. These two
+weeks measure something different: **what each pillar adds to a model that already
+has the other five**, scored against outcomes that live outside the project
+entirely.
 
-Two pillars moved on that measurement. One of them is the pillar this project
-had marked "done."
+Two pillars moved on that measurement. One of them is the pillar this project had
+marked "done."
 
-**Scope, as set:** public and open-source data only, no company data, no
-downstream label. That boundary is why the evidence below is built the way it is.
+**Scope, as set:** public and open-source data only, no company data, no downstream
+label. That boundary is why the evidence below is built the way it is.
 """)
 
 code('''
@@ -87,15 +96,34 @@ blk = json.loads((XSRC / "pillar_block_marginal_stats.json").read_text())
 gst = json.loads((XSRC / "grain_effect_stats.json").read_text())
 scope = json.loads((ANALYSIS / "source-a" / "source_a_section_scope_stats.json").read_text())
 embed = json.loads((ANALYSIS / "source-a" / "source_a_tiered_embedding_stats.json").read_text())
+etier = json.loads((ANALYSIS / "source-e" / "source_e_tier_stats.json").read_text())
 
-scores = pd.read_csv(OUTPUTS / "external_target_scores.csv")
 placebo = pd.read_csv(OUTPUTS / "external_target_drop_one_placebo.csv")
-grain = pd.read_csv(OUTPUTS / "grain_effect.csv")
+decile = pd.read_csv(OUTPUTS / "external_target_by_decile.csv")
 vintages = pd.read_csv(OUTPUTS / "pillar_vintages.csv")
 
+PILLARS = ["A", "B", "C", "D", "E", "F"]
+PILLAR_NAME = {
+    "A": "A · Place identity",
+    "B": "B · Industrial core",
+    "C": "C · Economic velocity",
+    "D": "D · Trade logistics",
+    "E": "E · Capital flow",
+    "F": "F · Structural resilience",
+}
+TARGET_LABEL = {
+    "broadband_rate": "Broadband adoption",
+    "median_household_income": "Median household income",
+    "median_age": "Median age",
+    "median_home_value": "Median home value",
+    "mean_commute_minutes": "Mean commute",
+}
+TARGET_ORDER = list(TARGET_LABEL)
+
 # ---- palette -------------------------------------------------------------
-# Same validated reference palette as the weekly brief. Categorical slots are
-# fixed, never cycled: a series keeps its slot when others are added or removed.
+# Same validated reference palette as the brief this notebook replaces.
+# Categorical slots are fixed, never cycled: a series keeps its slot when
+# others are added or removed.
 SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]
 BLUE, AQUA, CRITICAL = SERIES[0], SERIES[2], "#d03b3b"
 SURFACE, INK, INK2 = "#fcfcfb", "#0b0b0b", "#52514e"
@@ -108,10 +136,9 @@ pio.renderers.default = "plotly_mimetype"
 def style(fig, title, subtitle="", height=440, legend=True):
     """House chart style, sized for a projector rather than a laptop.
 
-    Differences from the weekly brief's screen-oriented version: 16px base type
-    against 13px, 21px titles against 17px, and heavier tick labels. Everything
-    else — hairline grid, recessive chrome, legend below the plot — is the same,
-    so the two documents read as one system.
+    Differences from the brief's screen-oriented version: 16px base type against
+    13px, 21px titles against 17px, heavier tick labels. Everything else —
+    hairline grid, recessive chrome, legend below the plot — is the same.
     """
     heading = f"<b>{title}</b>"
     if subtitle:
@@ -146,23 +173,6 @@ def style(fig, title, subtitle="", height=440, legend=True):
     fig.update_yaxes(**axis)
     return fig
 
-PILLARS = ["A", "B", "C", "D", "E", "F"]
-PILLAR_NAME = {
-    "A": "A · Place identity",
-    "B": "B · Industrial core",
-    "C": "C · Economic velocity",
-    "D": "D · Trade logistics",
-    "E": "E · Capital flow",
-    "F": "F · Structural resilience",
-}
-TARGET_LABEL = {
-    "broadband_rate": "Broadband adoption",
-    "median_household_income": "Median household income",
-    "median_age": "Median age",
-    "median_home_value": "Median home value",
-    "mean_commute_minutes": "Mean commute",
-}
-TARGET_ORDER = list(TARGET_LABEL)
 
 # ---- provenance ----------------------------------------------------------
 sha = subprocess.run(
@@ -170,8 +180,8 @@ sha = subprocess.run(
     capture_output=True, text=True,
 ).stdout.strip()
 # Tracked modifications only, and notebooks excluded: this notebook lives under
-# analysis-output/ and its own execution would otherwise register as drift in the
-# artifacts it is reporting on.
+# analysis-output/ and its own execution would otherwise register as drift in
+# the artifacts it is reporting on.
 dirty = subprocess.run(
     ["git", "-C", str(REPO), "status", "--porcelain", "--untracked-files=no",
      "--", "outputs", "analysis-output", ":(exclude)*.ipynb"],
@@ -179,9 +189,9 @@ dirty = subprocess.run(
 ).stdout.strip()
 
 print(f"Run stamp · {date.today():%d %B %Y} · commit {sha}")
-print(f"Every figure below is computed from outputs/ and analysis-output/,")
-print(f"regenerated from data/*.parquet by the six analysis scripts on 13 Aug 2026.")
-print(f"Regenerated artifacts vs. committed: "
+print("Every figure below is computed from outputs/ and analysis-output/,")
+print("regenerated from data/*.parquet by the six analysis scripts on 13 Aug 2026.")
+print("Regenerated artifacts vs. committed: "
       f"{'IDENTICAL — no drift' if not dirty else 'DIFFER — see git diff'}")
 print()
 print(f"Evidence base · {ext['n_targets']} external targets · {ext['fold_strategy']} "
@@ -189,64 +199,113 @@ print(f"Evidence base · {ext['n_targets']} external targets · {ext['fold_strat
 ''')
 
 # ==========================================================================
-# 1. The turn
+# 1. Getting out of the circle
 # ==========================================================================
 md("""
 ---
 
-## 1. The turn — from *what correlates* to *what pays*
+## 1. Getting out of the circle
 
-**What the last update could say.** All six pillars ingested at county grain
-(N ≈ 3,143). A full 15-pillar-pair sweep: 50 feature pairs, 499 permutations, one
-Benjamini-Hochberg correction, every correlation recomputed controlling for
-county size.
+**The problem with every validation before these two weeks.**
 
-**What it could not say.** Whether any of it is *useful*. Pillar-versus-pillar
-tests are circular by construction — they can tell you Source B and Source E see
-the same economy, and tell you nothing about whether either predicts anything.
+- All of them were **pillar against pillar** — predict one federal source's features
+  from the other five.
+- That measures whether six agencies agree with each other. It cannot say whether
+  any of them is *useful*.
+- The bias even runs the wrong way: it penalises a source precisely for agreeing
+  with the others.
 
-**The instrument built this round.** Withhold one pillar's entire block from a
-model that already holds county size and the other five pillars, and measure the
-R² it loses. Run it against **five public county outcomes that are not in the
-project** — ACS broadband adoption, median household income, median age, median
-home value, mean commute — scored out-of-fold on **states the model never trained
-on**.
+**Why not just use a real label.** The project is scoped to public data only, so no
+downstream label exists here. That is a boundary, not an oversight.
 
-Three design decisions worth naming, because they are what make the result
-survivable:
+**The substitute — five public outcomes no pillar measures.** Household broadband
+adoption, median household income, median age, median home value, mean commute.
+All ACS, none constructed from any pillar's inputs.
 
-- **Every pillar takes the same test.** A test only the suspect sits proves
-  nothing in either direction.
-- **Restatements are ablated.** Where one pillar's column restates another's, it
-  is removed from both sides, so no pillar gets credit for repeating a neighbour.
-- **A noise floor is measured, not assumed.** Each pillar's block is shuffled and
-  re-scored many times; the largest contribution shuffled data produces is the
-  bar a real contribution has to clear.
+**The design is built around one specific objection.** The consuming team joins on
+DMA with millions of impressions per market, so it can estimate a geographic fixed
+effect essentially for free — which makes any static geo-keyed feature look
+redundant. A fixed effect has exactly one weakness: **no parameter for a place it
+has never seen.** So the test holds out **whole states** and compares against a
+model that knows only county size. That seam is the whole design.
 
-**The rule was written before the numbers arrived**, and is reproduced verbatim
-from the implementation plan:
+**Then, this week, the same idea turned inward.** Withhold one pillar's entire
+block from a model that already holds county size and the other five, and measure
+the R² it loses. Three decisions make that result survivable:
+
+- **Every pillar takes the same test.** A test only the suspect sits proves nothing.
+- **Restatements are ablated.** Where one pillar's column restates another's, it is
+  removed from both sides, so no pillar is paid for repeating a neighbour.
+- **A noise floor is measured, not assumed.** Each block is shuffled and re-scored;
+  the largest contribution shuffled data produces is the bar a real one must clear.
+
+**The rule was written before the numbers arrived**, verbatim from the plan:
 
 > F ships as a pillar if its marginal contribution — R²(size + all pillars) −
 > R²(size + all pillars except F), pooled out-of-fold over the five external ACS
-> targets, with restatement columns ablated — is positive on a majority of
-> targets and above the shuffled-feature noise floor. Otherwise `E_macro` ships
-> five pillars and the go/no-go deck says so plainly.
+> targets, with restatement columns ablated — is positive on a majority of targets
+> and above the shuffled-feature noise floor. Otherwise `E_macro` ships five
+> pillars and the go/no-go deck says so plainly.
 
-Nothing about it was renegotiated afterwards. The failure mode this exists to
-avoid is choosing the justification after seeing the result.
+Nothing about it was renegotiated afterwards.
 """)
 
 # ==========================================================================
-# 2. The headline
+# 2. The result and the discount
 # ==========================================================================
 md("""
 ---
 
-## 2. What the six pillars are worth
+## 2. The result, and the discount applied to it
 
-Read the figure as: **how much predictive power the matrix loses when this pillar
-is taken out of it.** The grey band is the noise floor — the most any *shuffled*
-version of that block managed.
+The raw number is **+0.212**. The number reported is **+0.190**. The gap is
+deliberate, and it is the part worth showing first — it is the kind of thing that
+normally gets caught in review rather than found by the author.
+
+**Two pillar columns don't so much predict their target as restate it:**
+
+- **`wage_per_return_thousands`** (IRS) is average wage income per tax return —
+  very close to a definition of median household income. Removing it drops that
+  outcome's gain from +0.247 to **+0.154**. One column was carrying **38%** of the
+  apparent result.
+- **`retirement_destination`** (USDA) flags counties with heavy in-migration of
+  people aged 60+, which restates age structure. Smaller effect: +0.256 → +0.239.
+
+Both are dropped from their own target's run and kept everywhere else. **The
+headline is the discounted number.**
+""")
+
+code('''
+by_t = ext["by_target"]
+labels = [TARGET_LABEL[t] for t in TARGET_ORDER]
+raw = [by_t[t]["lift_over_size"] for t in TARGET_ORDER]
+rep = [by_t[t]["lift_over_size_ablated"] for t in TARGET_ORDER]
+
+fig = go.Figure()
+fig.add_trace(go.Bar(x=labels, y=raw, name="raw lift", marker_color=MUTED,
+                     text=[f"+{v:.3f}" for v in raw], textposition="outside",
+                     textfont=dict(size=13), cliponaxis=False,
+                     hovertemplate="%{x}<br>raw %{y:+.3f}<extra></extra>"))
+fig.add_trace(go.Bar(x=labels, y=rep, name="reported, restatements removed",
+                     marker_color=BLUE,
+                     text=[f"+{v:.3f}" for v in rep], textposition="outside",
+                     textfont=dict(size=13), cliponaxis=False,
+                     hovertemplate="%{x}<br>reported %{y:+.3f}<extra></extra>"))
+style(fig,
+      f"E_macro over a county-size baseline: {ext['mean_lift_over_size']:+.3f} raw, "
+      f"{ext['mean_lift_over_size_ablated']:+.3f} reported",
+      f"Positive on {ext['targets_with_positive_lift']} of {ext['n_targets']} targets, "
+      "out-of-fold on states never trained on. Where the two bars differ, a column "
+      "was restating the target.",
+      height=490)
+fig.update_yaxes(title="R² added over county size", range=[0, max(raw) * 1.22])
+fig.show()
+''')
+
+md("""
+**And within that result, what each pillar is worth.** Read the figure as: how much
+predictive power the matrix loses when this pillar is taken out of it. The grey
+band is the noise floor — the most any *shuffled* version of a block managed.
 """)
 
 code('''
@@ -275,15 +334,15 @@ fig.add_trace(go.Bar(
     hovertemplate="%{y}<br>contribution %{x:+.4f}<extra></extra>",
     showlegend=False,
 ))
-# Values are set in a fixed right-hand column rather than as outside bar labels.
+# Values sit in a fixed right-hand column rather than as outside bar labels.
 # Outside labels track the bar end, which puts Source A's near-zero value on top
 # of its own category label and pushes Source E's off the canvas.
 value_x = hi * 1.06
 for lab, v in zip(worth["label"], worth["contribution"]):
     fig.add_annotation(x=value_x, y=lab, text=f"<b>{v:+.4f}</b>", showarrow=False,
                        xanchor="left", font=dict(size=15, color=INK))
-# The noise floor is a property of the measurement, not a series — drawn as a
-# shaded band rather than a legend entry so it reads as the bar to clear.
+# The noise floor is a property of the measurement, not a series — a shaded band
+# rather than a legend entry, so it reads as the bar to clear.
 fig.add_vrect(x0=-band, x1=band, fillcolor=MUTED, opacity=0.45, line_width=0,
               annotation_text="noise floor", annotation_position="top",
               annotation_font=dict(size=13, color=INK2))
@@ -291,7 +350,7 @@ style(fig,
       "What each pillar adds that the other five do not",
       "Mean R² lost when the block is withheld · 5 public ACS targets · "
       "out-of-fold on held-out states · restatements ablated",
-      height=520, legend=False)
+      height=500, legend=False)
 fig.update_xaxes(title="marginal R²", tickformat="+.3f",
                  range=[lo * 1.25, hi * 1.28])
 fig.show()
@@ -308,44 +367,11 @@ display(table[["label", "Marginal R²", "Positive on", "Above noise floor on"]]
 ''')
 
 md("""
-**The matrix as a whole clears its baseline.** Against a model that already knows
-county population and density, the six pillars together add the lift shown below
-— positive on all five targets, scored on states held out of training. The
-weakest is broadband adoption, which is also the target closest to the consuming
-team's domain.
-""")
-
-code('''
-by_t = ext["by_target"]
-lifts = [by_t[t]["lift_over_size_ablated"] for t in TARGET_ORDER]
-base = [by_t[t]["r2_size"] for t in TARGET_ORDER]
-labels = [TARGET_LABEL[t] for t in TARGET_ORDER]
-
-fig = go.Figure()
-fig.add_trace(go.Bar(x=labels, y=base, name="county size alone",
-                     marker_color=MUTED,
-                     hovertemplate="%{x}<br>size baseline R² %{y:.3f}<extra></extra>"))
-fig.add_trace(go.Bar(x=labels, y=lifts, name="added by E_macro",
-                     marker_color=BLUE,
-                     text=[f"+{v:.3f}" for v in lifts],
-                     textposition="inside", textfont=dict(size=14, color="white"),
-                     hovertemplate="%{x}<br>added %{y:+.3f}<extra></extra>"))
-style(fig,
-      f"E_macro over a county-size baseline: {ext['mean_lift_over_size_ablated']:+.3f} mean R²",
-      f"Positive on {ext['targets_with_positive_lift']} of {ext['n_targets']} targets · "
-      "stacked on the baseline each target starts from",
-      height=470)
-fig.update_layout(barmode="stack")
-fig.update_yaxes(title="out-of-state R²")
-fig.show()
-''')
-
-md("""
 **The caveat travels with the headline, not after it.** These five targets are
 **public proxies, not the consuming team's label** — which is unobtainable under
-the scope this project was given. Everything above is an argument by analogy. It
-is the strongest non-circular evidence this project can produce, and it is still
-an analogy. Appendix A1 takes that objection seriously rather than footnoting it.
+the scope this project was given. Everything above is an argument by analogy. It is
+the strongest non-circular evidence this project can produce, and it is still an
+analogy. Appendix A1 takes that objection seriously rather than footnoting it.
 """)
 
 # ==========================================================================
@@ -358,25 +384,25 @@ md("""
 
 ### Source F — kept, on a test it could have failed
 
-F was the pillar the last status doc flagged as falling short, and the reason was
-real: its one strong relationship in the whole 15-pair sweep was against Source D
-freight tonnage, **r = 0.495 raw — the largest raw effect anywhere in that sweep
-— collapsing to r = −0.057 once county size is controlled.** The apparent link
-was population riding along in both variables.
+F was flagged as the pillar falling short, for a real reason: its one strong
+relationship in the whole 15-pair sweep was against Source D freight tonnage,
+**r = 0.495 raw — the largest raw effect anywhere in that sweep — collapsing to
+r = −0.057 once county size is controlled.** The apparent link was population
+riding along in both variables.
 
 The resolution on file was to keep F and reclassify it as a "structural anchor,"
 justified by what county typology definitionally *is* rather than by measured
 performance. That was a rationalisation, and it was withdrawn.
 
-**What replaced it.** The status doc named the fairer test itself — does F
-explain residual variance once B/C/D/E are already in the model — and that test
-was run. F contributes **+0.0413**, second of the six pillars, positive on 5 of 5
-targets and above the noise floor on 5 of 5, where the largest contribution any
-shuffled block produced anywhere was +0.0031.
+**What replaced it.** The status doc named the fairer test itself — does F explain
+residual variance once B/C/D/E are already in the model — and that test was run. F
+contributes **+0.0413**, second of the six, positive on 5 of 5 targets and above
+the noise floor on 5 of 5, where the largest contribution any shuffled block
+produced anywhere was +0.0031.
 
 **Both facts travel together.** F still fails the pairwise hub test. It passed the
 residual-variance test that was pre-registered for it. The first instrument was
-wrong for a categorical structural variable; that was said before the numbers
+wrong for a categorical structural variable, and that was said before the numbers
 existed, not after.
 """)
 
@@ -397,14 +423,14 @@ fig = go.Figure(go.Bar(
     x=[b[0] for b in bars], y=[b[1] for b in bars],
     marker_color=[b[2] for b in bars],
     text=[f"{b[1]:+.4f}" for b in bars], textposition="outside",
-    textfont=dict(size=16),
+    textfont=dict(size=16), cliponaxis=False,
     hovertemplate="%{x}<br>%{y:+.4f}<extra></extra>", showlegend=False,
 ))
 style(fig,
       "Source F: the internal number is mostly USDA restating BLS",
       "Roughly seven eighths of F's apparent internal contribution disappears once "
       "columns that restate Source B are removed. The external number does not move.",
-      height=470, legend=False)
+      height=450, legend=False)
 fig.update_yaxes(title="mean R² contribution", tickformat="+.3f",
                  range=[0, max(b[1] for b in bars) * 1.2])
 fig.show()
@@ -412,16 +438,16 @@ fig.show()
 
 md("""
 The middle bar is the one to sit with. **Seven eighths of F's apparent internal
-contribution is USDA restating industry composition that BLS already measures.**
-That redundancy is real inside the six-pillar system. It does not bind against
-outcomes outside it — the same ablation moves F's external figure by 0.0003 —
-which is precisely why the external arm is the one the verdict rests on.
+contribution is USDA restating industry composition BLS already measures.** That
+redundancy is real inside the six-pillar system, and it does not bind against
+outcomes outside it — the same ablation moves F's external figure by 0.0003. Which
+is exactly why the external arm is the one the verdict rests on.
 
 ### Source A — the uncomfortable finding
 
-Source A is the pillar this project marked **"Good shape. Done."** Its embedding
-was cut on evidence, its 29 typed columns were validated, its schema was frozen
-first. It contributes **−0.0000**.
+Source A is the pillar this project marked **"Good shape. Done."** Its embedding was
+cut on evidence, its 29 typed columns were validated, its schema was frozen first.
+It contributes **−0.0000**.
 """)
 
 code('''
@@ -448,9 +474,9 @@ fig.add_trace(go.Scatter(
 ))
 style(fig,
       "Source A, target by target: small in both directions",
-      "Contributions run −0.0032 to +0.0070. A broken block looks wildly negative; "
-      "this is the signature of one that is genuinely redundant.",
-      height=500)
+      "A broken block looks wildly negative. This is the signature of one that is "
+      "genuinely redundant with the rest of the matrix.",
+      height=470)
 span = max(vals + band) - min(vals + band)
 fig.update_yaxes(title="marginal R²", tickformat="+.4f",
                  range=[min(vals + band) - span * 0.25, max(vals + band) + span * 0.25])
@@ -458,70 +484,140 @@ fig.show()
 ''')
 
 md("""
-**This is not a harness failure.** The same code path produces +0.0582 for E and
-+0.0413 for F, the placebo distributions behave, and A's per-target numbers are
-small in *both* directions rather than wildly negative.
+**Not a harness failure.** The same code path produces +0.0582 for E and +0.0413
+for F, the placebo distributions behave, and A's per-target numbers are small in
+*both* directions rather than wildly negative.
 
-**It is not a contradiction of the evidence on file either.** A's typed block was
+**Not a contradiction of the evidence on file either.** A's typed block was
 justified on a marginal lift of **+0.0010** over a baseline holding every other
 pillar — a real effect, at p = 0.010 with power 0.92, and a tiny one. A
 contribution indistinguishable from zero against five external outcomes is what
 that effect size predicts. A is also the only block negative in **both** arms:
 −0.0031 internally, −0.0000 externally.
 
-**What it means.** Applied consistently, the operating principle that every
-pillar earns its slot on evidence now points at Source A rather than Source F.
-That is uncomfortable and it is the honest reading.
+**What it means.** Applied consistently, the operating principle that every pillar
+earns its slot on evidence now points at Source A rather than Source F. That is
+uncomfortable and it is the honest reading.
 
-**Three arguments against acting on it, all genuine:**
-
-1. **A is nearly free.** No API key, no model, no inference. The cost of keeping
-   it is a schema document that already exists.
-2. **The targets are ACS demographics.** A's columns encode named industries,
-   universities, ports, protected land — plausibly more useful for an ad-tech
-   outcome than for median age.
-3. **Redundancy inside a feature store is not uselessness.** A is redundant *with
-   the other five pillars*, which is exactly the position a downstream model can
-   exploit for a county where another pillar is missing.
+**Three arguments against acting on it.** A is nearly free — no API key, no model,
+no inference. The targets are ACS demographics, and A's columns encode named
+industries, universities, ports and protected land. And redundancy inside a feature
+store is not uselessness — it is what a downstream model leans on for a county
+where another pillar is missing.
 
 ### The open question this puts to the room
 
-> **Does Source A ship?** The recommendation is to cut it — *unless* the
-> consuming team's real target rewards what A encodes. Argument 2 above is the
-> only one of the three that survives scrutiny, and it is not something this
-> project can settle: it depends on a label that is structurally unobtainable
-> from inside this scope.
+> **Does Source A ship?** The recommendation is to cut it — *unless* the consuming
+> team's real target rewards what A encodes. Of the three arguments above, only the
+> second survives scrutiny: cost is about cost, not worth, and the insurance
+> argument is untested. The second is live, and it is not something this project
+> can settle.
 >
-> **What would settle it:** knowing whether the downstream target is closer to
-> "who lives here" (where A adds nothing) or "what happens here economically"
-> (where A's industry, port and university flags are the kind of thing that could
-> matter). That is a question only the commissioning side can answer, and it is
-> the reason this is raised here rather than decided.
+> **What would settle it:** whether the downstream target is closer to "who lives
+> here" — where A adds nothing — or "what happens here economically," where A's
+> industry, port and university flags are the kind of thing that could matter. Only
+> the commissioning side can answer that, which is why this is raised rather than
+> decided.
 """)
 
 # ==========================================================================
-# 4. What was ruled out
+# 4. Three honest limits
 # ==========================================================================
 md("""
 ---
 
-## 4. What was ruled out
+## 4. Three honest limits
 
-Negative results, kept short. Three Source A experiments were run and all three
-came back against the change; the shipped design is unchanged as a result, which
-is itself the finding.
+**1. The fixed-effect objection is unanswered.** If the consuming team joins at DMA
+grain, a 210-level dummy supplies everything a static DMA-keyed feature could.
+Cross-sectionally `E_macro` would add nothing over it, and no correlation measured
+anywhere in this project is evidence against that. What the grain question costs in
+each direction:
+""")
 
-- **Section scope** — reading every section beats reading only economy-titled
-  ones (+0.00403 vs +0.00307), but **67% of the hits it adds sit in historical
-  framing**. A defunct-industry detector wearing a current-economy label. Not
-  shipped.
-- **A smaller embedding** — `all-MiniLM-L6-v2` at 384 dimensions, 90MB against
-  bge-m3's 2.2GB, chunked and mean-pooled. Best arm reaches +0.00226 against the
-  typed block's +0.00307. The embedding still loses, at one twenty-fourth the
-  download.
-- **Tier-conditional reading** — letting article length decide how much of a page
-  is read, in both directions. Both lose to reading the same sections for
-  everyone.
+code('''
+arms = [("County grain, all rows", gst["mean_lift_county_full"], BLUE),
+        ("County grain, subsampled to market row count", gst["mean_lift_county_subsample"], MUTED),
+        (f"Aggregated to {gst['n_markets']} markets", gst["mean_lift_market_aggregate"], AQUA)]
+fig = go.Figure(go.Bar(
+    x=[a[0] for a in arms], y=[a[1] for a in arms],
+    marker_color=[a[2] for a in arms],
+    text=[f"{a[1]:+.3f}" for a in arms], textposition="outside",
+    textfont=dict(size=16), cliponaxis=False,
+    hovertemplate="%{x}<br>%{y:+.3f}<extra></extra>", showlegend=False,
+))
+style(fig,
+      "Coarsening the join: two effects that roughly cancel",
+      f"Losing rows costs {gst['row_count_effect']:+.3f}; aggregating itself gains "
+      f"{gst['aggregation_effect']:+.3f}. County grain is this project's "
+      "recommendation, not an established win.",
+      height=440, legend=False)
+fig.update_yaxes(title="mean lift over size baseline", tickformat="+.2f",
+                 range=[0, max(a[1] for a in arms) * 1.2])
+fig.show()
+''')
+
+md("""
+**2. On the smallest counties the model cannot win — and that is a data fact, not a
+model failure.** The size-only baseline scores a *negative* R² there. ACS publishes
+a margin of error with every estimate, and ingesting those alongside the values
+splits each outcome's variance into signal and sampling noise. In the smallest
+population decile, **30% of the variance is sampling noise** — error no model can
+ever explain. In the largest, under 1%.
+""")
+
+code('''
+d = (decile.groupby("population_decile")
+     .agg(noise_share=("noise_share", "mean"),
+          median_population=("median_population", "median"))
+     .reset_index())
+fig = go.Figure(go.Bar(
+    x=d["population_decile"], y=d["noise_share"],
+    marker_color=[CRITICAL if v > 0.15 else BLUE for v in d["noise_share"]],
+    text=[f"{v:.0%}" for v in d["noise_share"]], textposition="outside",
+    textfont=dict(size=14), cliponaxis=False,
+    hovertemplate="decile %{x}<br>%{y:.1%} of variance is sampling noise<extra></extra>",
+    showlegend=False,
+))
+style(fig,
+      "How much of each outcome is unexplainable by anyone",
+      "Share of outcome variance that is ACS sampling error, by county population "
+      "decile (1 = smallest). Averaged over the five targets.",
+      height=430, legend=False)
+fig.update_xaxes(title="population decile", dtick=1)
+fig.update_yaxes(title="share of variance that is noise", tickformat=".0%",
+                 range=[0, float(d["noise_share"].max()) * 1.25])
+fig.show()
+''')
+
+md("""
+**3. The strongest cross-pillar link in the project is a large-county phenomenon.**
+Source B Real Estate LQ against Source E capital-to-wage runs +0.394 nationally,
+but **+0.476 in the largest tier and −0.058 in the thinnest**. It does not exist for
+the counties with the least data — which anyone serving rural inventory needs stated
+before leaning on it.
+
+**Three more, in a line each.** There is **no downstream label** and cannot be one
+under this scope. Everything here is **cross-sectional and single-period** —
+temporal transfer, which is the one thing a fixed effect genuinely fails at, is
+untested. And the **sibling tiers do not line up**: `E_local` is at H3 res-8,
+`E_census` does not exist, and nobody owns the reconciliation.
+""")
+
+# ==========================================================================
+# 5. Ruled out and cleaned up
+# ==========================================================================
+md("""
+---
+
+## 5. Ruled out, and cleaned up
+
+**Three Source A experiments, none of which changed what ships.** Reading every
+section beats reading only economy-titled ones, but **67% of the hits it adds sit
+in historical framing** — a defunct-industry detector wearing a current-economy
+label. A 384-dimension encoder at 90MB against bge-m3's 2.2GB still loses to the
+typed columns. And letting article length decide how much of a page is read loses
+in both directions.
 """)
 
 code('''
@@ -538,115 +634,52 @@ fig = go.Figure(go.Bar(
     x=[a[1] for a in arms], y=[a[0] for a in arms], orientation="h",
     marker_color=[a[2] for a in arms],
     text=[f"{a[1]:+.5f}" for a in arms], textposition="outside",
-    textfont=dict(size=14),
+    textfont=dict(size=14), cliponaxis=False,
     hovertemplate="%{y}<br>%{x:+.5f}<extra></extra>", showlegend=False,
 ))
 style(fig,
       "Three Source A experiments, none of which changed what ships",
-      "Mean lift over the crowded baseline. Blue is the shipped design; nothing "
-      "beats it that is worth what it costs.",
-      height=470, legend=False)
+      "Mean lift over the crowded baseline. Blue is the shipped design.",
+      height=440, legend=False)
 fig.update_xaxes(title="mean lift", tickformat="+.4f",
                  range=[0, max(a[1] for a in arms) * 1.22])
 fig.show()
 ''')
 
 md("""
-**One thing that did change.** Source D's two partner-concentration indices were
-re-derived at market grain rather than approximated. That moved the measured
-gain from aggregation from +0.106 to **+0.099** — a correction against the
-project's own favoured direction, which is the kind that is worth making.
+**And the plumbing, which does change what ships.**
+
+- **Source D's freight tonnages were county size wearing a freight label.** All ten
+  raw tonnage columns moved into the size control, at no measured cost. Commodity
+  shares replaced them — 5 of 10 clear a size-free bar that none of the raw columns
+  cleared.
+- **Source E's capital-to-wage ratio was decomposed** into its components plus a
+  five-year panel. Its remaining dollar totals moved into the size control on the
+  same principle as D's.
+- **Source B now ships raw employment levels**, so its location quotients can be
+  re-derived at any grain instead of approximated. That is what made the grain
+  re-test above trustworthy.
+- **Source D's two partner-concentration indices were re-derived** at market grain
+  rather than approximated, moving the measured gain from aggregation +0.106 →
+  **+0.099** — a correction against this project's own favoured direction.
+- **All six pillars now carry a frozen schema and an `as_of_date`** (appendix A5).
 """)
 
 # ==========================================================================
-# 5. What this still cannot answer
-# ==========================================================================
-md("""
----
-
-## 5. What this still cannot answer
-
-Four items, stated plainly.
-
-**1. The fixed-effect objection is unanswered.** If the consuming team joins
-geography at DMA grain, a 210-level dummy — cheap and precise to estimate from
-millions of impressions per market — supplies everything a static DMA-keyed
-feature could. Cross-sectionally, `E_macro` would add nothing over it, and no
-correlation measured anywhere in this project is evidence against that. The chart
-below is what the grain question costs in each direction.
-""")
-
-code('''
-arms = [("County grain, all rows", gst["mean_lift_county_full"], BLUE),
-        ("County grain, subsampled to market row count", gst["mean_lift_county_subsample"], MUTED),
-        (f"Aggregated to {gst['n_markets']} markets", gst["mean_lift_market_aggregate"], AQUA)]
-fig = go.Figure(go.Bar(
-    x=[a[0] for a in arms], y=[a[1] for a in arms],
-    marker_color=[a[2] for a in arms],
-    text=[f"{a[1]:+.3f}" for a in arms], textposition="outside",
-    textfont=dict(size=16),
-    hovertemplate="%{x}<br>%{y:+.3f}<extra></extra>", showlegend=False,
-))
-style(fig,
-      "Coarsening the join: two effects that roughly cancel",
-      f"Losing rows costs {gst['row_count_effect']:+.3f}; aggregating itself gains "
-      f"{gst['aggregation_effect']:+.3f}. County grain is this project's "
-      "recommendation, not an established win.",
-      height=470, legend=False)
-fig.update_yaxes(title="mean lift over size baseline", tickformat="+.2f",
-                 range=[0, max(a[1] for a in arms) * 1.2])
-fig.show()
-''')
-
-md("""
-**2. There is no downstream label**, and there cannot be one under the scope this
-project was given. Structural, not an oversight — and the reason every result
-above is by analogy.
-
-**3. Everything here is cross-sectional and single-period.** Temporal transfer —
-one of the things a geographic fixed effect genuinely fails at, and therefore one
-of the strongest available arguments *for* this feature layer — is untested
-anywhere in this repo.
-
-**4. The sibling tiers do not line up.** `E_local` is under construction at H3
-res-8; `E_census` does not exist. The three-tier stack is currently one tier at
-county grain, one at hex grain, and one missing, with nobody owning the
-reconciliation. Outside this repo's scope, flagged rather than solved.
-""")
-
-# ==========================================================================
-# 6. Readiness
+# 6. Readiness and next
 # ==========================================================================
 md("""
 ---
 
 ## 6. Where this leaves the project
-
-**Everything a handover needs, exists.** Six pillars ingested, coverage 3,143–3,144
-counties on five of six, six frozen schemas with documented null semantics, an
-`as_of_date` on every pillar, and a measured worth per pillar rather than an
-adjective.
 """)
 
 code('''
-v = vintages.copy()
-v["Pillar"] = v["pillar"].map(PILLAR_NAME)
-v = v.rename(columns={"as_of_date": "As of", "reference_period": "Reference period",
-                      "cadence": "Update cadence"})
-display(v[["Pillar", "As of", "Reference period", "Update cadence"]].set_index("Pillar"))
-''')
-
-code('''
 readiness = pd.DataFrame([
-    ("Six sources ingested at county grain", "Done",
-     "3,143–3,144 counties on five of six"),
-    ("Per-pillar evidence", "Done",
-     "findings report per source in analysis-output/"),
-    ("Frozen schema + null semantics", "Done",
-     "docs/source_{a..f}_feature_schema.md, all six"),
-    ("Vintage stamped per pillar", "Done", "outputs/pillar_vintages.csv"),
+    ("Six sources ingested, validated, schema frozen", "Done",
+     "3,143–3,144 counties; six schema docs; vintage per pillar"),
     ("Evidence against a target outside the six pillars", "Done",
-     f"{ext['mean_lift_over_size_ablated']:+.3f} mean R² over a size baseline"),
+     f"{ext['mean_lift_over_size_ablated']:+.3f} mean R² over a size baseline, 5 of 5 positive"),
     ("Each pillar's worth measured, not asserted", "Done",
      "drop-one, restatements ablated, noise floor measured"),
     ("Evidence against the consumer's real target", "Not possible in scope",
@@ -663,21 +696,20 @@ display(readiness.set_index("What a go/no-go needs"))
 
 md("""
 **The remaining path, in the currency that binds it** — calendar weeks of
-availability, not permission or budget:
+availability:
 
-- **Settle the join grain.** Everything downstream of it is cheap; nothing
-  downstream of it is safe to build first. This is the single highest-leverage
-  unblock.
-- **Benchmark against a geographic fixed effect.** Once the grain is known, this
-  is the test that decides whether `E_macro` earns a slot in a production model.
-- **Test temporal transfer.** The one argument a fixed effect cannot answer, and
-  the one this project has not yet made.
-- **Then package.** `pillar_matrix.build_matrix()` already joins all six pillars
-  into a 3,144 × 124 matrix. What remains of "fusion" is a schema freeze, an
-  imputation policy and a serving format — days, not weeks.
+1. **Settle the join grain.** Everything downstream is cheap; nothing downstream is
+   safe to build first. The single highest-leverage unblock.
+2. **Benchmark against a geographic fixed effect.** Once the grain is known, this is
+   the test that decides whether `E_macro` earns a slot in a production model.
+3. **Test temporal transfer.** The one argument a fixed effect cannot answer, and
+   the one this project has not yet made.
+4. **Then package.** `pillar_matrix.build_matrix()` already joins all six pillars
+   into a 3,144 × 124 matrix. What remains of "fusion" is a schema freeze, an
+   imputation policy and a serving format — days, not weeks.
 
-**What is not blocked by any of the above:** ingestion, validation, schema freeze
-and the external benchmark are complete and stand on their own.
+**Not blocked by any of the above:** ingestion, validation, schema freeze and the
+external benchmark are complete and stand on their own.
 """)
 
 # ==========================================================================
@@ -692,36 +724,34 @@ Written to be read without a narrator.
 
 ## A1 — Do public proxies mean anything?
 
-This is the strongest objection available against everything in section 2, and it
-deserves a straight answer rather than a footnote.
+The strongest objection available against section 2, and it deserves a straight
+answer rather than a footnote.
 
-**The objection.** `E_macro` is being scored against ACS broadband adoption,
-median household income, median age, median home value and mean commute. The
-consuming team predicts none of those things. A feature layer that explains
-median age tells you nothing about whether it explains revenue per ad request.
+**The objection.** `E_macro` is scored against ACS broadband adoption, median
+household income, median age, median home value and mean commute. The consuming
+team predicts none of those. A feature layer that explains median age tells you
+nothing about whether it explains revenue per ad request.
 
-**What is conceded immediately.** The objection is correct on its own terms. No
-result in this project is a direct test of usefulness to the consuming team, and
-none is presented as one. The label that would make such a test possible is
-unobtainable: the project was scoped to public and open-source data only, from
-the start and deliberately.
+**Conceded immediately.** The objection is correct on its own terms. No result here
+is a direct test of usefulness to the consuming team, and none is presented as one.
+The label that would make such a test possible is unobtainable: the project was
+scoped to public and open-source data only, deliberately and from the start.
 
-**Why the proxies are still worth what they cost.** The alternative was not a
-better test — it was the pillar-versus-pillar sweep, which is *circular*. It can
-establish that Source B and Source E see the same economy and cannot establish
-that either predicts anything at all. Moving to an external target replaces a
-circular measurement with a non-circular one. That is a real gain in evidential
-status even though the target is a proxy.
+**Why the proxies are still worth what they cost.** The alternative was not a better
+test — it was the pillar-versus-pillar sweep, which is *circular*. It can establish
+that Source B and Source E see the same economy and cannot establish that either
+predicts anything at all. Moving to an external target replaces a circular
+measurement with a non-circular one. That is a real gain in evidential status even
+though the target is a proxy.
 
-**What the proxies do license.**
+**What the proxies license.**
 
-- That the six pillars carry **information about counties that county size does
-  not already carry** — the baseline is population and density, and the lift over
-  it is measured on states held out of training, so it is not memorisation of
-  local idiosyncrasy.
-- That the pillars are **not interchangeable with each other** — the drop-one
-  design holds the other five constant, so each contribution is genuinely
-  marginal.
+- That the six pillars carry **information about counties that county size does not
+  already carry** — the baseline is population and density, and the lift over it is
+  measured on states held out of training, so it is not memorisation of local
+  idiosyncrasy.
+- That the pillars are **not interchangeable with each other** — the drop-one design
+  holds the other five constant, so each contribution is genuinely marginal.
 - That the **ordering among pillars is not arbitrary** — E and F clear the noise
   floor on 5 of 5 targets by an order of magnitude; A does not.
 
@@ -730,47 +760,45 @@ status even though the target is a proxy.
 - Any claim about **magnitude** against an ad-tech target. +0.190 mean R² on ACS
   outcomes is not a forecast of anything.
 - Any claim that the **ordering transfers**. Source A could plausibly rank higher
-  against an economically-flavoured target than against median age; that is
+  against an economically-flavoured target than against median age — which is
   precisely the argument in section 3 for not cutting it unilaterally.
-- Any answer to the **fixed-effect objection**, which is a different question
-  entirely and is unanswered.
+- Any answer to the **fixed-effect objection**, which is a different question and is
+  unanswered.
 
 **What would settle it.** One pass of the same drop-one design against a real
-downstream target, at the grain the consuming team actually joins on. That
-requires either a label or a collaborator inside the consuming team, and is the
-single most valuable thing that could be added to this project.
+downstream target, at the grain the consuming team actually joins on. That requires
+either a label or a collaborator inside the consuming team, and is the single most
+valuable thing that could be added to this project.
 
 ## A2 — Method
 
 **Design.** For each pillar, fit two models: one holding county size plus all six
-pillars, one holding county size plus five. The difference in out-of-fold R² is
-that pillar's marginal contribution. Repeated for all six pillars and for the B+E
-pair.
+pillars, one holding county size plus five. The difference in out-of-fold R² is that
+pillar's marginal contribution. Repeated for all six and for the B+E pair.
 
 **Estimator.** Ridge regression on an imputed design matrix. Missing values are
 imputed rather than dropped, because the null patterns are themselves informative
-(BLS suppresses ~35% of the LQ matrix) and listwise deletion would silently
-change the county population under test.
+(BLS suppresses ~35% of the LQ matrix) and listwise deletion would silently change
+the county population under test.
 
 **Folds.** `GroupKFold` on `state_fips` — spatially blocked, so a model never
-predicts a county in a state it trained on. This is stricter than random k-fold,
-and it is the right strictness: county-level features are spatially
-autocorrelated, and random folds would let a neighbouring county leak the answer.
+predicts a county in a state it trained on. Stricter than random k-fold, and the
+right strictness: county features are spatially autocorrelated, and random folds
+would let a neighbouring county leak the answer.
 
-**Restatement ablation.** Where a column in one pillar restates a column in
-another (Source A's `has_metro_attachment` against Source F's `metro_2023`; Source
-F's industry flags against Source B's location quotients), it is removed from both
-the full and the reduced model. A pillar that only restated a neighbour would then
-score zero by construction, which is the intended behaviour.
+**Restatement ablation.** Where a column in one pillar restates a column in another
+(Source A's `has_metro_attachment` against Source F's `metro_2023`; Source F's
+industry flags against Source B's location quotients), it is removed from both the
+full and the reduced model. A pillar that only restated a neighbour then scores zero
+by construction, which is the intended behaviour.
 
-**Noise floor.** Each pillar's block is shuffled and re-scored — 49 reps in the
-internal arm, 20 per pillar × target in the external arm. The largest contribution
-any shuffled block produced anywhere in the sweep is +0.0031, and that is the bar
-drawn on the section 2 figure.
+**Noise floor.** Each block is shuffled and re-scored — 49 reps in the internal arm,
+20 per pillar × target in the external arm. The largest contribution any shuffled
+block produced anywhere is +0.0031, and that is the bar drawn in section 2.
 
 **Two arms.** The internal arm scores against 29 in-matrix targets and measures
 coherence. The external arm scores against the five ACS targets and is the one the
-verdicts rest on. Where they disagree, the external arm wins — being unpredictable
+verdicts rest on. Where they disagree the external arm wins — being unpredictable
 from the other five pillars is also exactly what an independent information source
 looks like.
 
@@ -778,51 +806,117 @@ looks like.
 
 - **The targets are public proxies, not the consumer's label**, which is
   structurally unobtainable. Every conclusion is by analogy.
-- **20 placebo reps per pillar × target, 49 in the internal arm.** Enough to place
-  a floor near zero against contributions an order of magnitude larger. **Not
-  enough to resolve a borderline contribution — B's and C's ordering (+0.0067,
-  +0.0054) should not be quoted as settled.**
-- **Contribution is not importance under a different model class.** Everything
-  here is ridge on an imputed design. A gradient-boosted consumer might
-  distribute credit differently; only the internal arm carries a GBM cross-check.
+- **20 placebo reps per pillar × target, 49 in the internal arm.** Enough to place a
+  floor near zero against contributions an order of magnitude larger. **Not enough
+  to resolve a borderline contribution — B's and C's ordering (+0.0067, +0.0054)
+  should not be quoted as settled.**
+- **Contribution is not importance under a different model class.** Everything here
+  is ridge on an imputed design. A gradient-boosted consumer might distribute credit
+  differently; only the internal arm carries a GBM cross-check.
 - **Cross-sectional and single-period.** Temporal transfer is untested.
 - **This does not answer the fixed-effect objection.** It reallocates credit among
-  pillars, given that the matrix as a whole beats a size baseline on held-out
-  states.
+  pillars, given that the matrix as a whole beats a size baseline on held-out states.
 
-## A4 — For the consuming team, when it comes to that
+## A4 — The tier work on Sources A and E
+
+Carried forward from the 6 August brief, which this notebook replaces. The
+assignment was to split both pillars into groups and see what the groups changed.
+
+**Verdict: the groups were worth a great deal as a diagnostic and nothing as an
+architecture.**
+
+**Source A — four content tiers** on Wikipedia intro length: stub (<100 chars), thin
+(100–283), mid (284–461), rich (≥462).
+
+As a diagnostic it paid immediately. Named industry content appears in **1.1% of
+thin-tier counties and 25.2% of rich** — a 23× gradient, with fewer than one county
+in ten carrying any at all. That killed the dense embedding: averaging 1,024
+dimensions over 3,144 articles gives a vector dominated by counties saying nothing
+economic. It also picked the feature family worth building — *industry*.
+
+As an architecture it lost three times. Tier-specific slopes cost 9% of the lift,
+and four separate per-tier fits scored **−0.01595** against the flat model's
++0.00307 — worse than dropping Source A entirely. Uniform section-widening beat the
+tier-conditional rule (+0.00351 vs +0.00307). And through an encoder, in either
+direction, uniform won (+0.00226 against +0.00162 and +0.00073).
+
+One reason underneath all three: **partitioning 3,144 counties costs more in pooled
+evidence than heterogeneity costs in bias.** Measurable in the embedding run — tier
+membership alone explains 0.9–1.0% of vector variance under a uniform rule and
+3.7–6.6% under a conditional one. That is the construction rule leaking into the
+space, 4–7×, for a variable the baseline already controls for.
+
+The premise was wrong anyway: uniform reading takes stub industry coverage from
+6.1% to **34.0%**, thin from 9.7% to 34.9%. Their pages are not empty.
+
+**Source E — four volume tiers** on `num_returns`: T1 (<2.2k), T2 (2.2k–11.7k), T3
+(11.7k–100k), T4 (≥100k). Here the groups did more than guide feature choice.
+
+T1 and T4 are each roughly 10% of counties. **T1 holds 0.14% of national investment
+income; T4 holds 82.6%.** So an unweighted county feature and the economy it claims
+to describe are not the same object — national aggregate ratio 0.156 against an
+unweighted county mean of 0.107.
+
+Two earlier conclusions were corrected by the split. **Round 1 had the stability
+backwards**: on ranks, Spearman stability *improves* with size (0.861 → 0.941) and
+median year-over-year moves *rise* with size (0.298 → 0.393) — so round 1's proposed
+fix of weighting by `num_returns` would have upweighted exactly the counties whose
+values move most between vintages. And **the dispersion is not sampling noise**:
+regressing log dispersion on log median returns gives a slope of +0.026, where pure
+sampling error would give −0.5. Small counties' spread is real economic variation.
+
+**Net from the assigned work.** Neither pillar branches on its groups. Source A
+ships one uniform schema. Source E ships with an explicit warning that its best
+cross-pillar result is conditional on county size. The groups did their job by
+changing what gets **shipped** and what gets **disclosed**, not by becoming part of
+the model.
+
+## A5 — Pillar vintages
+""")
+
+code('''
+v = vintages.copy()
+v["Pillar"] = v["pillar"].map(PILLAR_NAME)
+v = v.rename(columns={"as_of_date": "As of", "reference_period": "Reference period",
+                      "cadence": "Update cadence"})
+display(v[["Pillar", "As of", "Reference period", "Update cadence"]].set_index("Pillar"))
+''')
+
+md("""
+## A6 — For the consuming team, when it comes to that
 
 **The warning that matters more than which columns ship.** An impression-level
 training table joined to `E_macro` carries only 3,143 distinct feature values, so
 the effective sample size is the county count — not the row count. Random k-fold
-will make this feature layer look good in evaluation and do nothing in
-production. **Cluster standard errors by `fips_code`; use grouped, spatially
-blocked folds.**
+will make this feature layer look good in evaluation and do nothing in production.
+**Cluster standard errors by `fips_code`; use grouped, spatially blocked folds.**
 
 **Null semantics are explicit and must stay that way.** BLS suppresses ~35% of the
-Source B LQ matrix and those cells are null with a matching `disclosure_*` flag.
-IRS ships no suppression flag at all, and that limitation is disclosed rather than
+Source B LQ matrix and those cells are null with a matching `disclosure_*` flag. IRS
+ships no suppression flag at all, and that limitation is disclosed rather than
 papered over. A downstream model must be able to tell "missing" from "zero."
 
-**Size columns are held out deliberately.** Source B's employment levels, Source
-D's raw tonnages and two Source E dollar totals sit in `SIZE_COLUMNS` — they exist
-so a pillar can be re-derived at a coarser geography, not as features. A
-market-level location quotient is summed sector employment over summed total
-employment, never the mean of its counties' quotients.
+**Size columns are held out deliberately.** Source B's employment levels, Source D's
+raw tonnages and two Source E dollar totals sit in `SIZE_COLUMNS` — they exist so a
+pillar can be re-derived at a coarser geography, not as features. A market-level
+location quotient is summed sector employment over summed total employment, never
+the mean of its counties' quotients.
 
-## A5 — Artifact index
+## A7 — Artifact index
 
 Every figure above is computed from a committed artifact. Nothing is hardcoded.
 
 | Section | Reads | Produced by |
 |---|---|---|
+| 2 · the discount | `external_target_stats.json` (`by_target`) | `scripts/analyze_external_target.py` |
 | 2 · pillar worth | `external_target_stats.json` (`drop_one`, `drop_one_noise_floor`) | `scripts/analyze_external_target.py` |
-| 2 · baseline lift | `external_target_stats.json` (`by_target`) | `scripts/analyze_external_target.py` |
 | 3 · Source F | `pillar_block_marginal_stats.json` (`by_block`) | `scripts/analyze_pillar_block_marginal.py` |
 | 3 · Source A | `external_target_drop_one_placebo.csv` | `scripts/analyze_external_target.py` |
-| 4 · ruled out | `source_a_section_scope_stats.json`, `source_a_tiered_embedding_stats.json` | `scripts/analyze_source_a_section_scope.py`, `scripts/analyze_source_a_tiered_embedding.py` |
-| 5 · grain | `grain_effect_stats.json` | `scripts/analyze_grain_effect.py` |
-| 6 · vintages | `outputs/pillar_vintages.csv` | `scripts/pillar_vintage.py` |
+| 4 · grain | `grain_effect_stats.json` | `scripts/analyze_grain_effect.py` |
+| 4 · sampling noise | `outputs/external_target_by_decile.csv` | `scripts/analyze_external_target.py` |
+| 5 · ruled out | `source_a_section_scope_stats.json`, `source_a_tiered_embedding_stats.json` | `scripts/analyze_source_a_section_scope.py`, `scripts/analyze_source_a_tiered_embedding.py` |
+| A4 · Source E tiers | `source_e_tier_stats.json` | `scripts/analyze_source_e_tiers.py` |
+| A5 · vintages | `outputs/pillar_vintages.csv` | `scripts/pillar_vintage.py` |
 
 Long-form evidence:
 `analysis-output/cross-source/pillar-marginal-findings.md`,

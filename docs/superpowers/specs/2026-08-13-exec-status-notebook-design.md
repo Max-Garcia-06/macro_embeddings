@@ -4,6 +4,52 @@
 `scripts/build_status_notebook.py`, plus doc-sync edits to `docs/pillar_status.md`
 and `docs/PROJECT_GOAL.md`.
 
+## Revision — 13 August, after the first build
+
+Two changes, both from Max after seeing the built notebook. **This section
+supersedes the "Structure" section below where they conflict**; everything else in
+this document stands.
+
+**1. Presenting time drops from 45–60 minutes to ~30.**
+
+**2. The notebook absorbs `analysis-output/weekly-brief-2026-08-06.ipynb`**, which
+was written for a conversation that never happened, so the room has not seen it.
+The baseline for "progress" therefore moves back a week, to cover 3–12 August.
+The brief and its generator `scripts/build_weekly_brief.py` are deleted in the same
+commit; git history is the archive.
+
+Most of the brief was already subsumed — its "getting out of the circle" framing
+duplicated the new section 1, and the grain reversal and plumbing were covered.
+Three things were not, and all three are kept:
+
+- **The discount applied to the headline** — raw +0.212, reported +0.190, because
+  `wage_per_return_thousands` nearly defines median household income (38% of that
+  target's apparent result) and `retirement_destination` restates age structure.
+  Folded into section 2 so it *explains* the headline rather than sitting apart
+  from it.
+- **The small-county noise ceiling** — 30% of ACS variance in the smallest
+  population decile is sampling error, under 1% in the largest, and the size-only
+  baseline scores negative R² there. Section 4.
+- **Source B × E is a large-county phenomenon** — +0.394 nationally, +0.476 in the
+  largest tier, −0.058 in the thinnest. One line in section 4, per Max.
+
+The Source A and E tier work — the task originally assigned by the commissioning
+side — moves to appendix A4 rather than being dropped with the brief.
+
+**Revised structure**, six sections, ~30 minutes:
+
+| § | Content | Min |
+|---|---|---|
+| 1 | Getting out of the circle — both notebooks' framing merged | 5 |
+| 2 | The result, and the discount applied to it | 7 |
+| 3 | Two pillars moved — F kept on evidence, A the uncomfortable finding | 8 |
+| 4 | Three honest limits — grain, small-county noise, B × E conditionality | 6 |
+| 5 | Ruled out, and cleaned up | 3 |
+| 6 | Where this leaves the project | 2 |
+
+Appendix: A1 public proxies, A2 method, A3 limitations, A4 the tier work, A5
+vintages, A6 notes for the consuming team, A7 artifact index.
+
 ## Purpose and audience
 
 A **progress artifact, not a decision artifact.** It reports what the project has
