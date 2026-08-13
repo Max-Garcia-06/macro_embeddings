@@ -42,12 +42,28 @@ redundant with the rest of the matrix, and redundancy inside a feature store is
 not the same as uselessness — a consumer can lean on A for a county where
 another pillar is missing.
 
-No action proposed. **But the go/no-go deck should state A's marginal
-contribution rather than let "done" imply "valuable"**, and if the operating
-principle "every pillar earns its slot on evidence" is applied consistently, A
-is now the pillar it points at. Reasons not to act yet — near-zero maintenance
-cost, ACS targets that are a poor match for what A's columns encode — are in
-`pillar-marginal-findings.md` §7.
+**Raised as a conditional open question on 2026-08-13**, in the status notebook
+`analysis-output/E_macro_pillar_worth_2026-08-13.ipynb` §3. Applied
+consistently, the operating principle "every pillar earns its slot on evidence"
+now points at A, and the recommendation put to the commissioning side is to cut
+it **unless the consuming team's real target rewards what A encodes**.
+
+Of the three reasons in `pillar-marginal-findings.md` §7 for not acting, only
+one survives scrutiny as a reason rather than a convenience:
+
+- *A is nearly free* — an argument about cost, not about worth. It justifies
+  leaving A in place; it does not justify calling it a pillar.
+- *Redundancy is insurance for a county missing another pillar* — plausible, but
+  untested. No coverage-failure scenario in this repo has been scored with and
+  without A.
+- *The ACS targets are a poor match for what A's columns encode* — **this is the
+  live one.** A encodes named industries, universities, ports and protected
+  land. Whether that is worth anything depends on whether the downstream target
+  is closer to "who lives here" or "what happens here economically", and that is
+  structurally unanswerable from inside this repo's scope.
+
+So the question is not settled here and is not settled unilaterally. It goes to
+the commissioning side, and until it comes back, A ships unchanged.
 
 ## B — Industrial Core (BLS QCEW location quotients)
 
@@ -241,7 +257,7 @@ on held-out states. Full table and caveats in
 
 | Pillar | Marginal contribution | Positive on | Paperwork | Verdict |
 |---|---|---|---|---|
-| A | −0.0000 | 2/5 | Done | Ships; contributes nothing marginal — the new open item |
+| A | −0.0000 | 2/5 | Done | Ships for now; cut recommended **conditional** on the downstream target — question is with the commissioning side |
 | B | +0.0067 | 3/5 | Done 2026-08-12 | Ships; individually thin, complementary to E |
 | C | +0.0054 | 5/5 | Done 2026-08-12 | Ships; small but consistent |
 | D | +0.0191 | 5/5 | Done 2026-08-12 | Ships |

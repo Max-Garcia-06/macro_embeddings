@@ -180,10 +180,16 @@ across five external ACS targets:
 The ordering is not the one this document's prose implies. **Source A, marked
 done and good, contributes nothing marginal** — consistent with the +0.0010
 marginal lift its typed block was justified on, and the reason A is now the
-pillar the "every pillar earns its slot" principle points at. No cut is
-proposed: A costs almost nothing to maintain, and redundancy with the other five
-is what lets it cover for a county where another pillar is missing. The go/no-go
-deck should quote the number rather than the adjective.
+pillar the "every pillar earns its slot" principle points at.
+
+**A's slot is now a conditional open question, raised 2026-08-13** in
+`analysis-output/E_macro_pillar_worth_2026-08-13.ipynb` §3 and detailed in
+`docs/pillar_status.md`. The recommendation is to cut A **unless the consuming
+team's real target rewards what its columns encode** — named industries,
+universities, ports, protected land. That condition cannot be evaluated from
+inside this repo: it depends on a downstream label the operating constraints
+above make unobtainable. Until the commissioning side answers, A ships
+unchanged. The go/no-go deck should quote the number rather than the adjective.
 
 ## Open decisions blocking the next phase
 
