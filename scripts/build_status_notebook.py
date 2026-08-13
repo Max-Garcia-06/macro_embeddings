@@ -24,12 +24,45 @@ spec's "Wording constraints" section before editing those cells.
 """
 from __future__ import annotations
 
+import argparse
+import subprocess
+import sys
 from pathlib import Path
 
 import nbformat as nbf
 
 REPO = Path("/Users/maxgarcia/Desktop/MacroEmbeddings")
-OUT = REPO / "analysis-output" / "E_macro_pillar_worth_2026-08-13.ipynb"
+STEM = "E_macro_pillar_worth_2026-08-13"
+OUT = REPO / "analysis-output" / f"{STEM}.ipynb"
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--for-html", action="store_true",
+    help="Build, execute and export a code-free HTML to outputs/ instead of "
+         "writing the committed notebook. Use this to present without any code "
+         "cells at all; the notebook route keeps them, merely folded.",
+)
+parser.add_argument(
+    "--offline", action="store_true",
+    help="With --for-html, embed plotly.js in the page (~5MB) instead of "
+         "loading it from a CDN (~350KB). Use when the room's network cannot "
+         "be relied on.",
+)
+args = parser.parse_args()
+
+# Which plotly renderer the notebook's setup cell installs.
+#
+# `plotly_mimetype` alone emits a MIME bundle that JupyterLab, VS Code and
+# Cursor render natively but nbconvert's HTML template does not — an HTML export
+# built from it comes out with the prose intact and every figure missing. The
+# `notebook*` renderers additionally write real <script> output, which is what
+# survives the export.
+if not args.for_html:
+    RENDERER = "plotly_mimetype"
+elif args.offline:
+    RENDERER = "plotly_mimetype+notebook"
+else:
+    RENDERER = "plotly_mimetype+notebook_connected"
 
 nb = nbf.v4.new_notebook()
 cells: list = []
@@ -45,8 +78,9 @@ def code(text: str) -> None:
     Same convention as the brief this notebook replaces: `jupyter.source_hidden`
     is honoured by JupyterLab, nbclassic and the VS Code / Cursor notebook
     editor, which is what lets this be read as a document while it is presented.
+    The HTML route drops the cells entirely instead — see `--for-html`.
     """
-    cell = nbf.v4.new_code_cell(text.strip("\n"))
+    cell = nbf.v4.new_code_cell(text.strip("\n").replace("__RENDERER__", RENDERER))
     cell.metadata["jupyter"] = {"source_hidden": True}
     cell.metadata["collapsed"] = True
     cells.append(cell)
@@ -76,7 +110,12 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
 
-REPO = Path.cwd().parent if Path.cwd().name == "analysis-output" else Path.cwd()
+# Walk up to the repo root rather than assuming a directory name: this notebook
+# is executed from analysis-output/ when it is the deliverable and from build/
+# when it is staged for the HTML export, and both have to resolve the same way.
+REPO = Path.cwd()
+while not (REPO / "analysis-output").is_dir() and REPO != REPO.parent:
+    REPO = REPO.parent
 OUTPUTS, ANALYSIS = REPO / "outputs", REPO / "analysis-output"
 XSRC = ANALYSIS / "cross-source"
 
@@ -120,7 +159,7 @@ SURFACE, INK, INK2 = "#fcfcfb", "#0b0b0b", "#52514e"
 MUTED, GRID = "#d5d4d0", "#ecebe6"
 FONT = "-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif"
 
-pio.renderers.default = "plotly_mimetype"
+pio.renderers.default = "__RENDERER__"
 
 
 def style(fig, title, subtitle="", height=440, legend=True):
@@ -887,6 +926,38 @@ Long-form evidence:
 nb["cells"] = cells
 nb.metadata["kernelspec"] = {"display_name": "Python 3", "language": "python", "name": "python3"}
 nb.metadata["language_info"] = {"name": "python"}
-OUT.parent.mkdir(parents=True, exist_ok=True)
-nbf.write(nb, OUT)
-print(f"wrote {OUT} ({len(cells)} cells)")
+
+
+def nbconvert(*argv: str) -> None:
+    subprocess.run([sys.executable, "-m", "nbconvert", *argv], check=True)
+
+
+if not args.for_html:
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    nbf.write(nb, OUT)
+    print(f"wrote {OUT} ({len(cells)} cells)")
+    print("execute it with:")
+    print(f"  uv run --with nbconvert --with ipykernel jupyter nbconvert "
+          f"--to notebook --execute --inplace {OUT.relative_to(REPO)}")
+else:
+    # The intermediate notebook is a build artifact, not the deliverable: it
+    # carries a different plotly renderer and must never overwrite the committed
+    # copy. build/ and outputs/*.html are both already gitignored.
+    staging = REPO / "build" / f"{STEM}.ipynb"
+    html = REPO / "outputs" / f"{STEM}.html"
+    staging.parent.mkdir(parents=True, exist_ok=True)
+    html.parent.mkdir(parents=True, exist_ok=True)
+    nbf.write(nb, staging)
+    print(f"staged {staging} ({len(cells)} cells, renderer {RENDERER})")
+
+    nbconvert("--to", "notebook", "--execute", "--inplace", str(staging))
+    # --no-input drops the code cells outright, rather than folding them the way
+    # the notebook's source_hidden metadata does.
+    nbconvert("--to", "html", "--no-input",
+              "--output-dir", str(html.parent), "--output", html.name,
+              str(staging))
+    size = html.stat().st_size / 1e6
+    print(f"\nwrote {html} ({size:.1f} MB, no code cells)")
+    if not args.offline:
+        print("plotly.js loads from a CDN — the room needs network. "
+              "Rebuild with --offline to embed it.")
