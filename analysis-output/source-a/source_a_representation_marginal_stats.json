@@ -1,0 +1,50 @@
+{
+  "question": "Is Source A's near-zero marginal contribution a fact about the pillar or about its representation?",
+  "encoder": "sentence-transformers/all-MiniLM-L6-v2",
+  "text_variant": "uniform",
+  "n_targets": 5,
+  "by_representation": {
+    "minilm_uniform": {
+      "mean_contribution": -0.04375286326909518,
+      "median_contribution": -0.048451994660575926,
+      "n_positive": 0,
+      "n_targets": 5,
+      "n_columns": 384,
+      "by_target": {
+        "broadband_rate": -0.019840563999047434,
+        "median_household_income": -0.04216361238650357,
+        "median_age": -0.05394118635345568,
+        "median_home_value": -0.048451994660575926,
+        "mean_commute_minutes": -0.05436695894589327
+      }
+    },
+    "minilm_uniform_l2": {
+      "mean_contribution": -0.03498519558373405,
+      "median_contribution": -0.035593482015396805,
+      "n_positive": 0,
+      "n_targets": 5,
+      "n_columns": 384,
+      "by_target": {
+        "broadband_rate": -0.016067175099833797,
+        "median_household_income": -0.035593482015396805,
+        "median_age": -0.04141243245113313,
+        "median_home_value": -0.031040319550595608,
+        "mean_commute_minutes": -0.05081256880171092
+      }
+    },
+    "typed": {
+      "mean_contribution": -4.573467945852005e-05,
+      "median_contribution": -0.0025107274757893983,
+      "n_positive": 2,
+      "n_targets": 5,
+      "n_columns": 29,
+      "by_target": {
+        "broadband_rate": -0.0025629520333230182,
+        "median_household_income": -0.0031565484115253506,
+        "median_age": 0.0069603527656034725,
+        "median_home_value": -0.0025107274757893983,
+        "mean_commute_minutes": 0.0010412017577416943
+      }
+    }
+  }
+}

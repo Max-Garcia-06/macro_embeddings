@@ -1772,3 +1772,164 @@ Corrected there and here.
 `as_of_date` is excluded from the feature matrix via
 `pillar_matrix.NON_FEATURE_COLUMNS`, so it travels with the data without
 entering any model.
+
+## 20. A Small Encoder, Read Properly — And a Truncation Defect (2026-08-17)
+
+**Context.** §14–§15 settled that Source A ships 29 typed columns and does not
+branch on tier. Two questions stayed open and were tested together in
+`analyze_source_a_tiered_embedding.py`: does a *natively small* encoder work
+where the 1024-dim `bge-m3` did not, and should the text fed to an encoder depend
+on the tier? The encoder is `all-MiniLM-L6-v2` at 384 dimensions and ~90MB
+against bge-m3's 2.2GB. Long inputs are chunked at 900 characters and
+mean-pooled, because MiniLM's window is 256 word-pieces.
+
+Until 2026-08-17 this section did not exist: the experiment had a script, a stats
+file and a CSV, and no writeup. That is the gap this closes.
+
+### 20.1 The defect: the best arm was reading a fraction of its input
+
+`MAX_CHUNKS_PER_COUNTY` was 10, capping input at ~9,000 characters. The
+diagnostic the script already logged shows what that cost:
+
+| arm | counties hitting the cap | characters dropped |
+|---|---|---|
+| `lead_only` | 0 of 3,144 | 0 |
+| **`uniform`** | **1,871 (59.5%)** | **17.1M (~43% of its own input)** |
+| `tier_conditional` | 821 | 3.8M |
+
+So the headline — "a small encoder still loses to the typed block" — was a claim
+about an arm that had read at most 9,000 characters for six counties in ten. The
+cap was chosen so one 40,000-word article could not dominate runtime, and its
+effect was reported honestly at the time; nobody read the number back.
+
+**Raised to 64 chunks (~57,600 characters) and re-run.** The cap now binds on 47
+counties and drops 1.4M characters, so it is effectively non-binding.
+
+### 20.2 The result reverses
+
+Mean R² lift over the crowded baseline, 28 targets, same folds and seed as §14:
+
+| arm | capped at 10 | uncapped (64) |
+|---|---|---|
+| `typed_sections` (shipped) | +0.00307 | +0.00307 |
+| MiniLM `uniform` | +0.00226 | **+0.00322** |
+| MiniLM `uniform_l2` | +0.00218 | **+0.00351** |
+| MiniLM `tier_conditional` | +0.00162 | +0.00180 |
+| MiniLM `tier_conditional_inverse` | +0.00073 | +0.00068 |
+
+**Read properly, the small encoder no longer loses.** But it does not win either.
+Paired against the typed block across the 28 targets:
+
+| comparison | mean | median | wins | Wilcoxon p |
+|---|---|---|---|---|
+| `uniform_l2` − `typed_sections` | +0.00044 | **−0.00001** | 14/28 | **0.762** |
+| `uniform` − `typed_sections` | +0.00015 | −0.00028 | 13/28 | 0.745 |
+
+A median of −0.00001 on exactly half the targets is a tie, and this file's own
+standard (§14.2a) is that 28 targets cannot resolve differences this small.
+
+### 20.3 What that does and does not change
+
+**It does not change what ships.** The typed block's case was never lift — §14.5
+already says so of bge-m3, whose head-to-head is also a tie (11/28, p = 0.52).
+What is new is that the same is now true against a 90MB encoder, so the argument
+rests entirely on cost and interpretability rather than partly on measured
+advantage. That is a narrower defence than "it also scores better", and it should
+be stated that way.
+
+**It strengthens §15 rather than weakening it.** The tier ordering survives
+uncapped and is cleaner: `uniform` (+0.00322) beats `tier_conditional` (+0.00180)
+beats `tier_conditional_inverse` (+0.00068). §15 asked whether the *model* should
+branch on tier and answered no; this asks it of the *input*, on different
+machinery, and answers no again. Two independent tests, one conclusion.
+
+**It leaves one thing untested, which §21 takes up.** Everything here is
+cross-pillar lift. Source A's slot in the matrix rests on its *marginal*
+contribution against five external ACS targets, which is −0.0000 — and that was
+measured with Source A represented as typed columns.
+
+- **Allowed wording**: "a natively small encoder reading the full article is a
+  statistical tie with the 29 typed columns (mean +0.00044, median −0.00001,
+  14/28, p = 0.76), so the typed block ships on cost and interpretability rather
+  than on measured lift."
+- **Forbidden wording**: "a small encoder still loses" — that was the truncated
+  result, corrected here. "The embedding beats the typed block" — 14 of 28 at
+  p = 0.76 is a tie, and the median favours the typed block. Any figure from this
+  section quoted without noting it is the 64-chunk re-run.
+- **Status**: resolved for representation choice; see §21 for the marginal test.
+
+## 21. Is Source A's −0.0000 About the Pillar or About Its Representation? (2026-08-17)
+
+**The question §20 leaves open.** Source A contributes **−0.0000** on the drop-one
+test in `analyze_external_target.py` — withhold its block from a model holding
+county size and the other five pillars, and nothing measurable is lost. That was
+measured with Source A represented as its 29 typed columns. §20 then showed a
+384-dim MiniLM embedding is a statistical tie with those columns on cross-pillar
+lift. Two representations that tie on one measurement need not tie on another,
+and the drop-one is the measurement Source A's slot depends on.
+
+So: is the near-zero contribution a fact about the pillar, or an artifact of how
+the pillar is encoded? `analyze_source_a_representation_marginal.py` answers it
+by holding the reduced model fixed — size plus the other five pillars, identical
+in every arm — and varying only what Source A contributes with.
+
+### 21.1 The typed baseline reproduces
+
+| Source A as | columns | mean contribution | positive on |
+|---|---|---|---|
+| 29 typed columns | 29 | **−0.00005** | 2 of 5 |
+| MiniLM `uniform` | 384 | **−0.04375** | 0 of 5 |
+| MiniLM `uniform_l2` | 384 | **−0.03499** | 0 of 5 |
+
+The typed arm's −0.00005 reproduces the published −0.0000 from a separately
+assembled harness, which is the check that makes the other two rows worth
+reading.
+
+### 21.2 The embedding does not rescue Source A — it makes it much worse
+
+Per target, and negative on every one:
+
+| target | typed | MiniLM `uniform` | MiniLM `uniform_l2` |
+|---|---|---|---|
+| broadband_rate | −0.00256 | −0.01984 | −0.01607 |
+| median_household_income | −0.00316 | −0.04216 | −0.03559 |
+| median_age | **+0.00696** | −0.05394 | −0.04141 |
+| median_home_value | −0.00251 | −0.04845 | −0.03104 |
+| mean_commute_minutes | **+0.00104** | −0.05437 | −0.05081 |
+
+**The two measurements disagree, and the disagreement is the result.** On
+standalone cross-pillar lift the representations tie (§20). Added to a model that
+already holds five other pillars and scored out-of-fold on held-out states, the
+typed block is decisively better. The embedding's 384 dense dimensions are largely
+redundant with what B–F already carry, and the width costs more than the content
+returns.
+
+**Limitation, stated rather than buried.** The embedding arms carry 384 columns
+against the typed block's 29, so part of the penalty is width rather than content.
+A PCA-64 arm would separate the two and has not been run. The gap is roughly
+700×, which is far larger than width alone would plausibly explain, but that is a
+judgement rather than a measurement.
+
+Five targets is also too few for a paired test to mean much. The claim rests on
+the sign being consistent across all five and the magnitude being three orders
+apart, not on a p-value.
+
+### 21.3 What it settles
+
+**Source A's near-zero marginal contribution is a fact about the pillar, not
+about its encoding.** The most natural defence of A — that it looks worthless
+because typed regex columns are a thin representation of an article — is now
+tested and fails: the richer representation scores worse on the measurement that
+governs A's slot.
+
+- **Allowed wording**: "swapping Source A's typed columns for a 384-dim
+  embedding, holding the rest of the matrix fixed, moves its marginal
+  contribution from −0.0000 to −0.044 — so the near-zero figure is not a
+  representation artifact."
+- **Forbidden wording**: "the embedding is useless" — it ties the typed block on
+  standalone lift (§20); what fails is its marginal value in a crowded model.
+  "Source A has been proven worthless" — this tests one alternative
+  representation against five public proxies, which is not the consumer's target.
+- **Status**: resolved for the representation question. Whether Source A ships at
+  all remains open and depends on the downstream target, which is unobtainable
+  from inside this repo's scope.

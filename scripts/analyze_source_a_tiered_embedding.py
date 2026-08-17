@@ -95,10 +95,18 @@ ENCODER_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"
 # not silently truncated inside the encoder.
 CHUNK_CHARS: int = 900
 
-# Chunks kept per county. Ten chunks is ~9,000 characters, which covers the
-# median county's entire non-narrative body. The cap exists so one 40,000-word
-# article cannot dominate runtime, and what it drops is reported.
-MAX_CHUNKS_PER_COUNTY: int = 10
+# Chunks kept per county. The cap exists so one 40,000-word article cannot
+# dominate runtime, and what it drops is reported.
+#
+# **Raised from 10 to 64 on 2026-08-17.** Ten chunks is ~9,000 characters, which
+# covers the median county's non-narrative body but *not* the mean one: at that
+# setting the `uniform` arm hit the cap for 1,871 of 3,144 counties (59.5%) and
+# discarded 17.1M characters, roughly 43% of its own input. That made the
+# headline result -- "the small encoder still loses to the typed block" -- a
+# claim about an arm that had read at most 9,000 characters per county, which is
+# a weaker claim than it appeared. 64 chunks is ~57,600 characters; the
+# diagnostic below reports what still binds.
+MAX_CHUNKS_PER_COUNTY: int = 64
 
 # Reduced width scored alongside the native one, since "smaller" was part of the
 # question and 64 is where a projection starts being meaningfully cheaper to

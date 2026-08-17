@@ -306,11 +306,19 @@ characters), **thin** (100–283), **mid** (284–461), **rich** (≥462).
 
 **One piece of context first, because it is why Source A looks the way it does.**
 Source A used to ship a 1,024-dimension `bge-m3` embedding of each county's lead
-section. It was cut, on its own evidence rather than on anything below: k-means
-over the vectors peaks at a silhouette of **0.028**, meaning no recoverable cluster
-structure, and head to head against the 29 typed columns that replaced it the two
-are a **statistical tie** — mean difference +0.0003, 11 of 28 targets, p = 0.52.
-A 2.2GB model download and CPU inference over 3,144 articles, for a tie.
+section. It was cut and replaced by 29 typed columns — named industries,
+universities, ports, protected land — extracted with a fixed lexicon.
+
+**Two encoders have now been tested against those columns, and both are ties.**
+bge-m3 at 1,024 dimensions and 2.2GB: 11 of 28 targets, p = 0.52. `all-MiniLM-L6-v2`
+at 384 dimensions and 90MB, reading the full article rather than the lead: 14 of
+28 targets, p = 0.76, with the median favouring the typed columns. Neither
+encoder is beaten and neither wins.
+
+**So the typed block ships on cost and interpretability, not on measured lift** —
+and it is worth saying that plainly rather than implying the columns scored
+better. What they buy is no model download, no inference, and a column you can
+read the name of.
 
 **What the tiers then contributed was the answer to "so what do we build
 instead?"** The split showed where economic content actually lives in the corpus.
@@ -564,6 +572,13 @@ against **0.9–1.0%** under a uniform rule — four to seven times more, for a 
 the baseline already controls for. The model was partly learning how the input was
 built rather than anything about the counties.
 
+**And the same answer comes back from an independent test.** Section 2 branched the
+*model* on tier. The encoder experiment branched the *input* — deciding how much of
+each article to read based on its tier — on different machinery entirely. Reading
+the same text for everyone wins there too: **+0.00322 uniform against +0.00180
+tier-conditional and +0.00068 for the inverted rule.** Two tests, two layers, one
+conclusion.
+
 **So what shipped instead:**
 
 - **Source A ships one uniform schema** — 29 typed columns, same for every county,
@@ -772,21 +787,34 @@ answer if A were the strongest pillar in the matrix. Nothing in it anticipated
 −0.0000. What is fair to say is narrower and still worth saying: the pillar this
 project spent the most instrument time on is the one that turned out to add least.
 
+**And it is not the representation's fault.** The natural defence of A is that
+29 regex columns are a thin way to represent an article. That was tested: swapping
+in the 384-dimension embedding — which *ties* those columns on standalone lift —
+moves A's marginal contribution from −0.0000 to **−0.044**, negative on all five
+targets. A richer encoding does not rescue A; it costs more width than it returns
+against a matrix that already holds five other pillars.
+
 ### The open question this puts to the room
 
-> **Does Source A ship?** The recommendation is to cut it — *unless* the consuming
-> team's real target rewards what A encodes.
+> **Does Source A ship?** The recommendation is to cut it from the shipped
+> matrix. Three arguments defend keeping it and two of them have now failed.
 >
-> Three arguments defend keeping it, and only one survives. *A is nearly free* is
-> about cost, not worth. *Redundancy is insurance for a county missing another
-> pillar* is plausible and untested. But *the ACS targets are a poor match for what
-> A encodes* is live: A carries named industries, universities, ports and protected
-> land, and whether that is worth anything depends on whether the downstream target
-> is closer to "who lives here" — where A adds nothing — or "what happens here
-> economically."
+> *A is nearly free* is an argument about cost, not worth — it justifies leaving
+> the code in the repo, not calling A a pillar. *A better representation would
+> rescue it* has been tested and does the opposite. *Redundancy is insurance for a
+> county missing another pillar* is plausible and remains untested; no
+> coverage-failure scenario in this repo has been scored with and without A.
 >
-> Only the commissioning side can answer that, which is why this is raised rather
-> than decided.
+> **One argument is still live, and it is the one this project cannot settle.**
+> A encodes named industries, universities, ports and protected land. Whether that
+> is worth anything depends on whether the downstream target is closer to "who
+> lives here" — where A adds nothing — or "what happens here economically." The
+> five ACS proxies are squarely the former.
+>
+> So the evidence points one way and stops short of the decision: **if the
+> consuming team's target is demographic, A should come out. If it is economic,
+> this test was never the right one.** That is the answer only the commissioning
+> side has.
 """)
 
 # ==========================================================================
@@ -1014,6 +1042,16 @@ Reading **all** sections scores higher than the shipped economy-only rule
 in historical framing, which makes it a defunct-industry detector wearing a
 current-economy label. That is a precision judgement, not a scoring one, and it is
 the one place in this project where a higher number was deliberately declined.
+
+**A correction worth recording, made 2026-08-17.** The MiniLM arms above were
+first run with a chunk cap that truncated input at ~9,000 characters, which bound
+on **1,871 of 3,144 counties (59.5%)** and discarded 43% of the uniform arm's own
+text. On that truncated input the encoder appeared to lose to the typed block.
+Raised to ~57,600 characters, where it binds on 47 counties, the uniform arm rises
+from +0.00226 to **+0.00322** and its row-normalised twin to **+0.00351** — level
+with the typed block rather than behind it. The conclusion that the *input* should
+not branch on tier is unaffected and is cleaner uncapped. Full detail in
+`source-a-findings.md` §20.
 
 ## A3 — Drop-one method
 
