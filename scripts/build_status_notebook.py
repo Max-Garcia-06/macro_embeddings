@@ -16,6 +16,12 @@ remedy inside the editor is the "Notebook: Collapse All Cell Inputs" command,
 re-run every time the file is reopened. `--for-html` removes the cells outright
 instead, so there is nothing to forget.
 
+Figures are matplotlib, not plotly. Plotly's mimetype output needs a JupyterLab
+extension to render and degrades to blank space when that extension is absent,
+which is what happens in a `uv run --with jupyterlab` environment. Matplotlib
+emits a PNG that every notebook client renders and that embeds directly in the
+HTML export, so no network and no extension are involved.
+
 Design: docs/superpowers/specs/2026-08-13-exec-status-notebook-design.md
 
 This notebook **supersedes and absorbs** analysis-output/weekly-brief-2026-08-06.ipynb,
@@ -54,27 +60,7 @@ parser.add_argument(
          "writing the committed notebook. Use this to present without any code "
          "cells at all; the notebook route keeps them, merely folded.",
 )
-parser.add_argument(
-    "--offline", action="store_true",
-    help="With --for-html, embed plotly.js in the page (~5MB) instead of "
-         "loading it from a CDN (~350KB). Use when the room's network cannot "
-         "be relied on.",
-)
 args = parser.parse_args()
-
-# Which plotly renderer the notebook's setup cell installs.
-#
-# `plotly_mimetype` alone emits a MIME bundle that JupyterLab, VS Code and
-# Cursor render natively but nbconvert's HTML template does not — an HTML export
-# built from it comes out with the prose intact and every figure missing. The
-# `notebook*` renderers additionally write real <script> output, which is what
-# survives the export.
-if not args.for_html:
-    RENDERER = "plotly_mimetype"
-elif args.offline:
-    RENDERER = "plotly_mimetype+notebook"
-else:
-    RENDERER = "plotly_mimetype+notebook_connected"
 
 nb = nbf.v4.new_notebook()
 cells: list = []
@@ -96,7 +82,7 @@ def code(text: str) -> None:
     The metadata is kept because it costs nothing and helps in JupyterLab, but the
     presenting path is `--for-html`, which drops the cells entirely.
     """
-    cell = nbf.v4.new_code_cell(text.strip("\n").replace("__RENDERER__", RENDERER))
+    cell = nbf.v4.new_code_cell(text.strip("\n"))
     cell.metadata["jupyter"] = {"source_hidden": True}
     cell.metadata["collapsed"] = True
     cells.append(cell)
@@ -117,14 +103,19 @@ each other. These two weeks ask what each one is worth.
 """)
 
 code('''
+%matplotlib inline
+%config InlineBackend.figure_format = "retina"
+
 import json
 import subprocess
+import textwrap
 from datetime import date
 from pathlib import Path
 
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
-import plotly.io as pio
+from matplotlib.ticker import FuncFormatter, PercentFormatter
 
 # Walk up to the repo root rather than assuming a directory name: this notebook
 # is executed from analysis-output/ when it is the deliverable and from build/
@@ -173,50 +164,73 @@ SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"]
 BLUE, AQUA, CRITICAL = SERIES[0], SERIES[2], "#d03b3b"
 SURFACE, INK, INK2 = "#fcfcfb", "#0b0b0b", "#52514e"
 MUTED, GRID = "#d5d4d0", "#ecebe6"
-FONT = "-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif"
+plt.rcParams.update({
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"],
+    "font.size": 11,
+    "figure.facecolor": SURFACE,
+    "axes.facecolor": SURFACE,
+    "savefig.facecolor": SURFACE,
+    "figure.dpi": 110,
+})
 
-pio.renderers.default = "__RENDERER__"
 
-
-def style(fig, title, subtitle="", height=440, legend=True):
+def style(ax, title, subtitle="", grid_axis="y", legend=False):
     """House chart style, sized for a projector rather than a laptop.
 
-    Differences from the brief's screen-oriented version: 16px base type against
-    13px, 21px titles against 17px, heavier tick labels. Everything else —
-    hairline grid, recessive chrome, legend below the plot — is the same.
+    Matplotlib rather than plotly: plotly's mimetype output needs a JupyterLab
+    extension to render, and silently produces blank space when that extension
+    is missing. Matplotlib emits a PNG that every notebook client and the HTML
+    export display without any additional machinery.
+
+    Chrome is recessive — no spines, a hairline grid on one axis only, tick
+    labels a step down from the body — so the bars carry the figure.
     """
-    heading = f"<b>{title}</b>"
+    ax.set_axisbelow(True)
+    ax.grid(axis=grid_axis, color=GRID, linewidth=1)
+    ax.grid(axis="x" if grid_axis == "y" else "y", visible=False)
+    for side in ("top", "right", "left", "bottom"):
+        ax.spines[side].set_visible(False)
+    ax.tick_params(length=0, colors=INK2, labelsize=10.5)
+
+    # Subtitles run long; wrapping by hand keeps them off the plot area, which
+    # matplotlib will not do on its own. Both title and subtitle are positioned
+    # in points offset from the axes edge rather than in axes fractions -- mixing
+    # the two units makes them overlap, and by how much depends on figure height.
+    sub = textwrap.fill(subtitle, 104) if subtitle else ""
+    n_lines = sub.count("\\n") + 1 if subtitle else 0
+    line_h = 14.5
+    ax.set_title(title, loc="left", fontsize=15, fontweight="bold", color=INK,
+                 pad=(8 + n_lines * line_h + 8) if subtitle else 12)
     if subtitle:
-        heading += f"<br><span style='font-size:14px;color:{INK2}'>{subtitle}</span>"
-    fig.update_layout(
-        template="none",
-        paper_bgcolor=SURFACE,
-        plot_bgcolor=SURFACE,
-        font=dict(family=FONT, size=16, color=INK),
-        # y=0.93 rather than flush to the top edge: at 21px the ascenders clip
-        # against the canvas when the title is anchored any higher.
-        title=dict(text=heading, x=0, xanchor="left", y=0.93, yanchor="top",
-                   font=dict(size=21, color=INK)),
-        margin=dict(l=12, r=44, t=124 if subtitle else 90, b=104 if legend else 64),
-        height=height,
-        showlegend=legend,
-        legend=dict(orientation="h", yanchor="top", y=-0.2, x=0,
-                    font=dict(size=14, color=INK2), bgcolor="rgba(0,0,0,0)"),
-        hoverlabel=dict(bgcolor="white", bordercolor=GRID,
-                        font=dict(family=FONT, size=14)),
-        bargap=0.34,
-        bargroupgap=0.06,
-        uniformtext=dict(mode="hide", minsize=11),
-    )
-    # automargin so category labels on a horizontal bar chart are never clipped
-    # by a fixed left margin -- the plot area shrinks to fit the labels instead.
-    axis = dict(showgrid=True, gridcolor=GRID, gridwidth=1, zeroline=False,
-                showline=False, ticks="", automargin=True,
-                tickfont=dict(size=14, color=INK2),
-                title_font=dict(size=14.5, color=INK2))
-    fig.update_xaxes(**axis)
-    fig.update_yaxes(**axis)
-    return fig
+        ax.annotate(sub, xy=(0, 1), xycoords="axes fraction",
+                    xytext=(0, 8), textcoords="offset points",
+                    va="bottom", ha="left", fontsize=10, color=INK2,
+                    linespacing=1.45)
+    if legend:
+        ax.legend(loc="upper left", bbox_to_anchor=(0, -0.13), ncol=2,
+                  frameon=False, fontsize=10.5, labelcolor=INK2,
+                  handlelength=1.4, columnspacing=1.8)
+    return ax
+
+
+def label_bars(ax, xs, ys, fmt="{:+.4f}", size=10.5, pad=0.012, horizontal=False):
+    """Write each bar's value just past its end, outside the bar.
+
+    `pad` is a fraction of the axis span, so labels sit the same visual distance
+    from the bar regardless of the units on the axis.
+    """
+    lo, hi = (ax.get_xlim() if horizontal else ax.get_ylim())
+    off = (hi - lo) * pad
+    for x, y in zip(xs, ys):
+        if horizontal:
+            ax.text(y + (off if y >= 0 else -off), x, fmt.format(y),
+                    va="center", ha="left" if y >= 0 else "right",
+                    fontsize=size, color=INK)
+        else:
+            ax.text(x, y + (off if y >= 0 else -off), fmt.format(y),
+                    ha="center", va="bottom" if y >= 0 else "top",
+                    fontsize=size, color=INK)
 
 
 # ---- provenance ----------------------------------------------------------
@@ -311,25 +325,25 @@ labels = [TARGET_LABEL[t] for t in TARGET_ORDER]
 raw = [by_t[t]["lift_over_size"] for t in TARGET_ORDER]
 rep = [by_t[t]["lift_over_size_ablated"] for t in TARGET_ORDER]
 
-fig = go.Figure()
-fig.add_trace(go.Bar(x=labels, y=raw, name="raw lift", marker_color=MUTED,
-                     text=[f"+{v:.3f}" for v in raw], textposition="outside",
-                     textfont=dict(size=13), cliponaxis=False,
-                     hovertemplate="%{x}<br>raw %{y:+.3f}<extra></extra>"))
-fig.add_trace(go.Bar(x=labels, y=rep, name="reported, restatements removed",
-                     marker_color=BLUE,
-                     text=[f"+{v:.3f}" for v in rep], textposition="outside",
-                     textfont=dict(size=13), cliponaxis=False,
-                     hovertemplate="%{x}<br>reported %{y:+.3f}<extra></extra>"))
-style(fig,
+x = np.arange(len(labels))
+w = 0.38
+fig, ax = plt.subplots(figsize=(11.5, 4.4))
+ax.bar(x - w / 2, raw, w, color=MUTED, label="raw lift")
+ax.bar(x + w / 2, rep, w, color=BLUE, label="reported, restatements removed")
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.set_ylim(0, max(raw) * 1.2)
+label_bars(ax, x - w / 2, raw, "+{:.3f}", size=10)
+label_bars(ax, x + w / 2, rep, "+{:.3f}", size=10)
+ax.set_ylabel("R² added over county size", fontsize=10.5, color=INK2)
+style(ax,
       f"E_macro over a county-size baseline: {ext['mean_lift_over_size']:+.3f} raw, "
       f"{ext['mean_lift_over_size_ablated']:+.3f} reported",
       f"Positive on {ext['targets_with_positive_lift']} of {ext['n_targets']} targets, "
       "out-of-fold on states never trained on. Where the two bars differ, a column "
       "was restating the target.",
-      height=490)
-fig.update_yaxes(title="R² added over county size", range=[0, max(raw) * 1.22])
-fig.show()
+      legend=True)
+plt.show()
 ''')
 
 md("""
@@ -357,33 +371,35 @@ band = float(worth["floor"].max())
 hi = float(worth["contribution"].max())
 lo = min(-band, float(worth["contribution"].min()))
 
-fig = go.Figure()
-fig.add_trace(go.Bar(
-    x=worth["contribution"], y=worth["label"], orientation="h",
-    marker_color=[CRITICAL if v <= 0 else BLUE for v in worth["contribution"]],
-    hovertemplate="%{y}<br>contribution %{x:+.4f}<extra></extra>",
-    showlegend=False,
-))
-# Values sit in a fixed right-hand column rather than as outside bar labels.
-# Outside labels track the bar end, which puts Source A's near-zero value on top
-# of its own category label and pushes Source E's off the canvas.
-value_x = hi * 1.06
-for lab, v in zip(worth["label"], worth["contribution"]):
-    fig.add_annotation(x=value_x, y=lab, text=f"<b>{v:+.4f}</b>", showarrow=False,
-                       xanchor="left", font=dict(size=15, color=INK))
+y = np.arange(len(worth))
+fig, ax = plt.subplots(figsize=(11.5, 4.9))
+ax.barh(y, worth["contribution"], height=0.62,
+        color=[CRITICAL if v <= 0 else BLUE for v in worth["contribution"]])
+ax.set_yticks(y)
+ax.set_yticklabels(worth["label"])
+ax.set_xlim(lo * 1.3, hi * 1.34)
+
 # The noise floor is a property of the measurement, not a series — a shaded band
 # rather than a legend entry, so it reads as the bar to clear.
-fig.add_vrect(x0=-band, x1=band, fillcolor=MUTED, opacity=0.45, line_width=0,
-              annotation_text="noise floor", annotation_position="top",
-              annotation_font=dict(size=13, color=INK2))
-style(fig,
+ax.axvspan(-band, band, color=MUTED, alpha=0.5, linewidth=0, zorder=0)
+ax.text(band, len(worth) - 0.4, " noise floor", fontsize=10, color=INK2,
+        va="center", ha="left")
+
+# Values sit in a fixed right-hand column rather than just past each bar end.
+# Tracking the bar end puts Source A's near-zero value on top of its own category
+# label and pushes Source E's off the canvas.
+for i, v in enumerate(worth["contribution"]):
+    ax.text(hi * 1.1, i, f"{v:+.4f}", va="center", ha="left",
+            fontsize=11.5, fontweight="bold", color=INK)
+
+ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
+ax.set_xlabel("marginal R²", fontsize=10.5, color=INK2)
+style(ax,
       "What each pillar adds that the other five do not",
       "Mean R² lost when the block is withheld · 5 public ACS targets · "
       "out-of-fold on held-out states · restatements ablated",
-      height=500, legend=False)
-fig.update_xaxes(title="marginal R²", tickformat="+.3f",
-                 range=[lo * 1.25, hi * 1.28])
-fig.show()
+      grid_axis="x")
+plt.show()
 ''')
 
 code('''
@@ -441,29 +457,30 @@ fb = blk["by_block"]["F"]
 # Headline external figure, not the `_no_ametro` robustness variant — see the
 # comment on the section 2 figure.
 f_ext = ext["drop_one"]["size_emacro_drop_F"]["mean_contribution_ablated"]
+# NOTE: newlines in these labels are escaped because this cell's source is a
+# non-raw triple-quoted string in the builder — an unescaped \\n would be
+# consumed at build time and split the string literal.
 bars = [
-    ("Internal, raw<br><span style='font-size:12px'>29 in-matrix targets</span>",
-     fb["mean_lift"], MUTED),
-    ("Internal, restatements ablated<br><span style='font-size:12px'>the honest internal number</span>",
+    ("Internal, raw\\n29 in-matrix targets", fb["mean_lift"], MUTED),
+    ("Internal, restatements ablated\\nthe honest internal number",
      fb["mean_lift_ablated"], AQUA),
-    ("External<br><span style='font-size:12px'>5 public ACS targets</span>",
-     f_ext, BLUE),
+    ("External\\n5 public ACS targets", f_ext, BLUE),
 ]
-fig = go.Figure(go.Bar(
-    x=[b[0] for b in bars], y=[b[1] for b in bars],
-    marker_color=[b[2] for b in bars],
-    text=[f"{b[1]:+.4f}" for b in bars], textposition="outside",
-    textfont=dict(size=16), cliponaxis=False,
-    hovertemplate="%{x}<br>%{y:+.4f}<extra></extra>", showlegend=False,
-))
-style(fig,
+x = np.arange(len(bars))
+vals = [b[1] for b in bars]
+fig, ax = plt.subplots(figsize=(11, 4.3))
+ax.bar(x, vals, 0.52, color=[b[2] for b in bars])
+ax.set_xticks(x)
+ax.set_xticklabels([b[0] for b in bars])
+ax.set_ylim(0, max(vals) * 1.18)
+label_bars(ax, x, vals, size=12)
+ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
+ax.set_ylabel("mean R² contribution", fontsize=10.5, color=INK2)
+style(ax,
       "Source F: the internal number is mostly USDA restating BLS",
       "Roughly seven eighths of F's apparent internal contribution disappears once "
-      "columns that restate Source B are removed. The external number does not move.",
-      height=450, legend=False)
-fig.update_yaxes(title="mean R² contribution", tickformat="+.3f",
-                 range=[0, max(b[1] for b in bars) * 1.2])
-fig.show()
+      "columns that restate Source B are removed. The external number does not move.")
+plt.show()
 ''')
 
 md("""
@@ -487,30 +504,28 @@ labels = [TARGET_LABEL[t] for t in TARGET_ORDER]
 vals = [a_stats["by_target"][t] for t in TARGET_ORDER]
 band = [float(a_pl.loc[t, "placebo_p95"]) if t in a_pl.index else 0.0 for t in TARGET_ORDER]
 
-fig = go.Figure()
+x = np.arange(len(labels))
+fig, ax = plt.subplots(figsize=(11.5, 4.5))
 # One colour, not red-for-negative: sign is already carried by position against
-# the zero line, and a two-colour split would make the legend swatch lie about
-# the series while dramatising numbers whose whole point is that they are small.
-fig.add_trace(go.Bar(
-    x=labels, y=vals, marker_color=BLUE,
-    text=[f"{v:+.4f}" for v in vals], textposition="outside",
-    textfont=dict(size=14), cliponaxis=False,
-    hovertemplate="%{x}<br>%{y:+.4f}<extra></extra>", name="Source A contribution",
-))
-fig.add_trace(go.Scatter(
-    x=labels, y=band, mode="markers", name="same block shuffled (95th percentile)",
-    marker=dict(symbol="line-ew", size=26, line=dict(color=INK2, width=2.5)),
-    hovertemplate="%{x}<br>placebo p95 %{y:+.4f}<extra></extra>",
-))
-style(fig,
+# the zero line, and a two-colour split would dramatise numbers whose whole point
+# is that they are small.
+ax.bar(x, vals, 0.52, color=BLUE, label="Source A contribution")
+ax.hlines(band, x - 0.26, x + 0.26, color=INK2, linewidth=2.5,
+          label="same block shuffled (95th percentile)")
+ax.axhline(0, color=INK2, linewidth=0.8, zorder=1)
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+span = max(vals + band) - min(vals + band)
+ax.set_ylim(min(vals + band) - span * 0.22, max(vals + band) + span * 0.22)
+label_bars(ax, x, vals, size=11)
+ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.4f}"))
+ax.set_ylabel("marginal R²", fontsize=10.5, color=INK2)
+style(ax,
       "Source A, target by target: small in both directions",
       "A broken block looks wildly negative. This is the signature of one that is "
       "genuinely redundant with the rest of the matrix.",
-      height=470)
-span = max(vals + band) - min(vals + band)
-fig.update_yaxes(title="marginal R²", tickformat="+.4f",
-                 range=[min(vals + band) - span * 0.25, max(vals + band) + span * 0.25])
-fig.show()
+      legend=True)
+plt.show()
 ''')
 
 md("""
@@ -564,22 +579,22 @@ code('''
 arms = [("County grain, all rows", gst["mean_lift_county_full"], BLUE),
         ("County grain, subsampled to market row count", gst["mean_lift_county_subsample"], MUTED),
         (f"Aggregated to {gst['n_markets']} markets", gst["mean_lift_market_aggregate"], AQUA)]
-fig = go.Figure(go.Bar(
-    x=[a[0] for a in arms], y=[a[1] for a in arms],
-    marker_color=[a[2] for a in arms],
-    text=[f"{a[1]:+.3f}" for a in arms], textposition="outside",
-    textfont=dict(size=16), cliponaxis=False,
-    hovertemplate="%{x}<br>%{y:+.3f}<extra></extra>", showlegend=False,
-))
-style(fig,
+x = np.arange(len(arms))
+vals = [a[1] for a in arms]
+fig, ax = plt.subplots(figsize=(11, 4.2))
+ax.bar(x, vals, 0.52, color=[a[2] for a in arms])
+ax.set_xticks(x)
+ax.set_xticklabels([textwrap.fill(a[0], 26) for a in arms])
+ax.set_ylim(0, max(vals) * 1.18)
+label_bars(ax, x, vals, "{:+.3f}", size=12)
+ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.2f}"))
+ax.set_ylabel("mean lift over size baseline", fontsize=10.5, color=INK2)
+style(ax,
       "Coarsening the join: two effects that roughly cancel",
       f"Losing rows costs {gst['row_count_effect']:+.3f}; aggregating itself gains "
       f"{gst['aggregation_effect']:+.3f}. County grain is this project's "
-      "recommendation, not an established win.",
-      height=440, legend=False)
-fig.update_yaxes(title="mean lift over size baseline", tickformat="+.2f",
-                 range=[0, max(a[1] for a in arms) * 1.2])
-fig.show()
+      "recommendation, not an established win.")
+plt.show()
 ''')
 
 md("""
@@ -596,23 +611,20 @@ d = (decile.groupby("population_decile")
      .agg(noise_share=("noise_share", "mean"),
           median_population=("median_population", "median"))
      .reset_index())
-fig = go.Figure(go.Bar(
-    x=d["population_decile"], y=d["noise_share"],
-    marker_color=[CRITICAL if v > 0.15 else BLUE for v in d["noise_share"]],
-    text=[f"{v:.0%}" for v in d["noise_share"]], textposition="outside",
-    textfont=dict(size=14), cliponaxis=False,
-    hovertemplate="decile %{x}<br>%{y:.1%} of variance is sampling noise<extra></extra>",
-    showlegend=False,
-))
-style(fig,
+fig, ax = plt.subplots(figsize=(11, 4.2))
+ax.bar(d["population_decile"], d["noise_share"], 0.62,
+       color=[CRITICAL if v > 0.15 else BLUE for v in d["noise_share"]])
+ax.set_xticks(d["population_decile"])
+ax.set_ylim(0, float(d["noise_share"].max()) * 1.2)
+label_bars(ax, d["population_decile"], d["noise_share"], "{:.0%}", size=11)
+ax.yaxis.set_major_formatter(PercentFormatter(xmax=1, decimals=0))
+ax.set_xlabel("population decile", fontsize=10.5, color=INK2)
+ax.set_ylabel("share of variance that is noise", fontsize=10.5, color=INK2)
+style(ax,
       "How much of each outcome is unexplainable by anyone",
       "Share of outcome variance that is ACS sampling error, by county population "
-      "decile (1 = smallest). Averaged over the five targets.",
-      height=430, legend=False)
-fig.update_xaxes(title="population decile", dtick=1)
-fig.update_yaxes(title="share of variance that is noise", tickformat=".0%",
-                 range=[0, float(d["noise_share"].max()) * 1.25])
-fig.show()
+      "decile (1 = smallest). Averaged over the five targets.")
+plt.show()
 ''')
 
 md("""
@@ -655,20 +667,21 @@ arms = [
     ("384-d, tier inverted", embed["representations"]["tier_conditional_inverse"]["mean_lift"], AQUA),
 ]
 arms = sorted(arms, key=lambda a: a[1])
-fig = go.Figure(go.Bar(
-    x=[a[1] for a in arms], y=[a[0] for a in arms], orientation="h",
-    marker_color=[a[2] for a in arms],
-    text=[f"{a[1]:+.5f}" for a in arms], textposition="outside",
-    textfont=dict(size=14), cliponaxis=False,
-    hovertemplate="%{y}<br>%{x:+.5f}<extra></extra>", showlegend=False,
-))
-style(fig,
+y = np.arange(len(arms))
+vals = [a[1] for a in arms]
+fig, ax = plt.subplots(figsize=(11.5, 4.3))
+ax.barh(y, vals, height=0.62, color=[a[2] for a in arms])
+ax.set_yticks(y)
+ax.set_yticklabels([a[0] for a in arms])
+ax.set_xlim(0, max(vals) * 1.2)
+label_bars(ax, y, vals, "{:+.5f}", size=11, horizontal=True)
+ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.4f}"))
+ax.set_xlabel("mean lift", fontsize=10.5, color=INK2)
+style(ax,
       "Three Source A experiments, none of which changed what ships",
       "Mean lift over the crowded baseline. Blue is the shipped design.",
-      height=440, legend=False)
-fig.update_xaxes(title="mean lift", tickformat="+.4f",
-                 range=[0, max(a[1] for a in arms) * 1.22])
-fig.show()
+      grid_axis="x")
+plt.show()
 ''')
 
 md("""
@@ -956,15 +969,15 @@ if not args.for_html:
     print(f"  uv run --with nbconvert --with ipykernel jupyter nbconvert "
           f"--to notebook --execute --inplace {OUT.relative_to(REPO)}")
 else:
-    # The intermediate notebook is a build artifact, not the deliverable: it
-    # carries a different plotly renderer and must never overwrite the committed
-    # copy. build/ and outputs/*.html are both already gitignored.
+    # The intermediate notebook is a build artifact, not the deliverable, and
+    # must never overwrite the committed copy. build/ and outputs/*.html are
+    # both already gitignored.
     staging = REPO / "build" / f"{STEM}.ipynb"
     html = REPO / "outputs" / f"{STEM}.html"
     staging.parent.mkdir(parents=True, exist_ok=True)
     html.parent.mkdir(parents=True, exist_ok=True)
     nbf.write(nb, staging)
-    print(f"staged {staging} ({len(cells)} cells, renderer {RENDERER})")
+    print(f"staged {staging} ({len(cells)} cells)")
 
     nbconvert("--to", "notebook", "--execute", "--inplace", str(staging))
     # --no-input drops the code cells outright, rather than folding them the way
@@ -974,6 +987,4 @@ else:
               str(staging))
     size = html.stat().st_size / 1e6
     print(f"\nwrote {html} ({size:.1f} MB, no code cells)")
-    if not args.offline:
-        print("plotly.js loads from a CDN — the room needs network. "
-              "Rebuild with --offline to embed it.")
+    print("Figures are embedded PNGs — the page needs no network.")

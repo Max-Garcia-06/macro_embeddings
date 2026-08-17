@@ -4,6 +4,27 @@
 `scripts/build_status_notebook.py`, plus doc-sync edits to `docs/pillar_status.md`
 and `docs/PROJECT_GOAL.md`.
 
+## Revision 3 — 13 August, matplotlib replaces plotly
+
+**All seven figures are matplotlib.** Plotly's `plotly_mimetype` output needs a
+JupyterLab extension to render and **degrades to blank space when that extension
+is absent** — which is what happens in the throwaway `uv run --with jupyterlab`
+environment, and what Max hit. It fails silently: the prose and tables render
+and the figures are simply not there.
+
+Matplotlib emits a PNG that every notebook client displays and that embeds
+directly in the HTML export. No extension, no CDN, no renderer negotiation.
+
+Consequences:
+
+- `--offline` is **removed**. It existed only to embed plotly.js; matplotlib
+  images are always embedded, so the flag no longer meant anything.
+- The committed notebook grows from ~95KB to ~1.1MB, and the HTML from 0.3MB to
+  1.3MB, because retina PNGs are carried inline. That is the price of figures
+  that cannot silently vanish, and it is worth paying.
+- The house style carries over unchanged — same palette, same recessive chrome,
+  same noise-floor band, same right-hand value column on the pillar chart.
+
 ## Revision 2 — 13 August, the presenting format
 
 **The HTML export is the presentation artifact; the notebook is the source of
