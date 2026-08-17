@@ -412,9 +412,67 @@ plt.show()
 
 md("""
 Letting coefficients vary by tier costs **9%** of the lift. Fitting four
-independent models goes **negative — worse than dropping Source A entirely** —
-because each one trains on roughly a quarter of the rows and overfits, with no
-shared penalty to restrain it.
+independent models goes **negative — worse than dropping Source A entirely.**
+
+**But the aggregate hides something, and it is the more interesting result.**
+Branching did not fail everywhere. It failed on balance.
+""")
+
+code('''
+by_tier = pd.read_csv(OUTPUTS / "source_a_representation_by_tier.csv")
+pair = (by_tier[by_tier["variant"].isin(["extracted_sections", "sections_x_tier"])]
+        .groupby(["variant", "tier"])["lift"].mean().unstack())
+tiers = [t for t in A_TIERS if t in pair.columns]
+flat = [pair.loc["extracted_sections", t] for t in tiers]
+crossed = [pair.loc["sections_x_tier", t] for t in tiers]
+n_by_tier = [asec["by_tier"][t]["n_counties"] for t in tiers]
+
+x = np.arange(len(tiers))
+w = 0.38
+fig, ax = plt.subplots(figsize=(11.5, 4.6))
+ax.bar(x - w / 2, flat, w, color=BLUE, label="one flat model")
+ax.bar(x + w / 2, crossed, w, color=CRITICAL, label="coefficients free to vary by tier")
+ax.set_xticks(x)
+ax.set_xticklabels([f"{t}\\n{n:,} counties" for t, n in zip(tiers, n_by_tier)])
+ax.set_ylim(0, max(flat + crossed) * 1.2)
+label_bars(ax, x - w / 2, flat, "{:+.5f}", size=9.5)
+label_bars(ax, x + w / 2, crossed, "{:+.5f}", size=9.5)
+ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
+ax.set_ylabel("mean R² lift within the tier", fontsize=10.5, color=INK2)
+style(ax,
+      "Branching helped the tier it was aimed at, and hurt a bigger one",
+      "Lift measured inside each tier. Branching wins in stub — the sparsest tier, "
+      "and the one the idea was for — and loses in mid, which holds 2.7× as many "
+      "counties. The stub estimate rests on 21 targets rather than 28.",
+      legend=True)
+plt.show()
+''')
+
+md("""
+**So the instinct was right and the arithmetic was not.** Branching was aimed at
+the counties whose articles say least, and in that tier it worked — **+0.00522
+against the flat model's +0.00097**, more than five times better. It is level in
+thin and rich. It loses in mid, and mid holds 2.7× as many counties as stub, so
+the weighted result goes the other way.
+
+**The mechanism is ordinary bias–variance, and it is worth being concrete about.**
+Crossing 29 features with 4 tiers puts **120 columns** against targets whose
+smallest sample is n ≈ 1,026. The ridge penalty large enough to control that width
+also **over-shrinks the coefficients that were doing the work in the flat model** —
+so the crossed arm pays for its extra expressiveness everywhere in order to help
+one tier. Fitting four separate models removes even the shared penalty's
+protection, which is why that arm goes properly negative rather than merely
+slightly worse.
+
+**And there is a reason the flat model was never as blunt as it looked.** Source A
+encodes absence as `False`/`0` rather than null, so **sparsity already encodes the
+tier**. A stub county is one whose flags are mostly zero; the model can see that
+without being told which tier it is in. Branching spends statistical power to
+re-state something the feature set already carries.
+
+The negative result is kept reproducible rather than left as folklore:
+`sections_x_tier` is retained as a scored variant in
+`analyze_source_a_representation.py`, so anyone can re-run it.
 
 ---
 
@@ -548,49 +606,16 @@ renegotiated afterwards — full text in appendix A2.
 md("""
 ### First, the discount applied to the result
 
-The raw number is **+0.212**. The number reported is **+0.190**. The gap is
-deliberate, and it is worth showing before the result it discounts — it is the kind
-of thing that normally gets caught in review rather than found by the author.
-
-**Two pillar columns don't so much predict their target as restate it:**
-
-- **`wage_per_return_thousands`** (IRS) is average wage income per tax return —
-  very close to a definition of median household income. Removing it drops that
-  outcome's gain from +0.247 to **+0.154**. One column was carrying **38%** of the
-  apparent result.
-- **`retirement_destination`** (USDA) flags counties with heavy in-migration of
-  people aged 60+, which restates age structure. Smaller effect: +0.256 → +0.239.
-
-Both are dropped from their own target's run and kept everywhere else. **The
-headline is the discounted number.**
+The raw number is **+0.212**; the number reported is **+0.190**. Two pillar columns
+don't so much predict their target as restate it. `wage_per_return_thousands` (IRS)
+is average wage income per tax return, very close to a definition of median
+household income — removing it drops that outcome's gain from +0.247 to **+0.154**,
+so one column was carrying **38%** of the apparent result. `retirement_destination`
+(USDA) restates age structure, at a smaller +0.256 → +0.239. Both are dropped from
+their own target's run and kept everywhere else. **The headline is the discounted
+number.**
 """)
 
-code('''
-by_t = ext["by_target"]
-labels = [TARGET_LABEL[t] for t in TARGET_ORDER]
-raw = [by_t[t]["lift_over_size"] for t in TARGET_ORDER]
-rep = [by_t[t]["lift_over_size_ablated"] for t in TARGET_ORDER]
-
-x = np.arange(len(labels))
-w = 0.38
-fig, ax = plt.subplots(figsize=(11.5, 4.4))
-ax.bar(x - w / 2, raw, w, color=MUTED, label="raw lift")
-ax.bar(x + w / 2, rep, w, color=BLUE, label="reported, restatements removed")
-ax.set_xticks(x)
-ax.set_xticklabels(labels)
-ax.set_ylim(0, max(raw) * 1.2)
-label_bars(ax, x - w / 2, raw, "+{:.3f}", size=10)
-label_bars(ax, x + w / 2, rep, "+{:.3f}", size=10)
-ax.set_ylabel("R² added over county size", fontsize=10.5, color=INK2)
-style(ax,
-      f"The headline is the discounted number: {ext['mean_lift_over_size_ablated']:+.3f}, "
-      f"not {ext['mean_lift_over_size']:+.3f}",
-      f"Positive on {ext['targets_with_positive_lift']} of {ext['n_targets']} targets, "
-      "out-of-fold on states never trained on. Where the two bars differ, a column "
-      "was restating the target.",
-      legend=True)
-plt.show()
-''')
 
 md("""
 **And within that result, what each pillar is worth.** Read the figure as: how much
@@ -820,19 +845,11 @@ plt.show()
 ''')
 
 md("""
-**3. Three more, in a line each.** There is **no downstream label** and cannot be
-one under this scope. Everything here is **cross-sectional and single-period** —
-temporal transfer, which is the one thing a fixed effect genuinely fails at, is
-untested. And the **sibling tiers do not line up**: `E_local` is at H3 res-8,
-`E_census` does not exist, and nobody owns the reconciliation.
-
-**Plumbing, which does not change the story but does change what ships.** Source
-D's ten raw freight tonnages and Source E's dollar totals moved into the size
-control at no measured cost, with commodity shares replacing D's. Source B now
-ships raw employment levels and Source D its partner-tons distribution, so both can
-be re-summed at any grain rather than approximated — which is what makes the grain
-test above trustworthy. All six pillars carry a frozen schema and an `as_of_date`
-(appendix A6).
+**3. Three more, in a line each.** No **downstream label**, and none possible under
+this scope. Everything here is **cross-sectional** — temporal transfer, the one
+thing a fixed effect genuinely fails at, is untested. And the **sibling tiers do
+not line up**: `E_local` is at H3 res-8, `E_census` does not exist, and nobody owns
+the reconciliation.
 
 ### Where this leaves the project
 """)
