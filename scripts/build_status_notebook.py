@@ -311,28 +311,42 @@ characters), **thin** (100–283), **mid** (284–461), **rich** (≥462).
 
 code('''
 tiers = [t for t in A_TIERS if t in asec["by_tier"]]
-intro = [asec["by_tier"][t]["share_intro_industry"] for t in tiers]
-secs = [asec["by_tier"][t]["share_section_industry"] for t in tiers]
+lead = [asec["by_tier"][t]["share_intro_industry"] for t in tiers]
+# `share_section_industry` OVERLAPS the lead measure — a county can name an
+# industry in both places — so it is NOT an "after" value, and charting the two
+# side by side implies a before/after that does not exist. `share_industry_added`
+# is the genuine increment (section_has & ~intro_has), so lead + added is the
+# union: the share of counties covered once economy sections are read as well.
+added = [asec["by_tier"][t]["share_industry_added"] for t in tiers]
+total = [l + a for l, a in zip(lead, added)]
 n_by_tier = [asec["by_tier"][t]["n_counties"] for t in tiers]
-labels = [f"{t}\\n{n:,} counties" for t, n in zip(tiers, n_by_tier)]
 
 x = np.arange(len(tiers))
-w = 0.38
-fig, ax = plt.subplots(figsize=(11, 4.3))
-ax.bar(x - w / 2, intro, w, color=BLUE, label="lead section only (what the embedding read)")
-ax.bar(x + w / 2, secs, w, color=AQUA, label="reading economy sections too")
+fig, ax = plt.subplots(figsize=(11, 4.6))
+ax.bar(x, lead, 0.55, color=BLUE, label="named in the lead section (all the embedding saw)")
+ax.bar(x, added, 0.55, bottom=lead, color=AQUA,
+       label="added by reading economy sections")
 ax.set_xticks(x)
-ax.set_xticklabels(labels)
-ax.set_ylim(0, max(intro + secs) * 1.22)
-label_bars(ax, x - w / 2, intro, "{:.1%}", size=10)
-label_bars(ax, x + w / 2, secs, "{:.1%}", size=10)
+ax.set_xticklabels([f"{t}\\n{n:,} counties" for t, n in zip(tiers, n_by_tier)])
+ax.set_ylim(0, max(total) * 1.28)
+
+# Total above each bar, and the multiple it represents -- the multiple is the
+# point of the figure, so it is stated rather than left to be eyeballed.
+for xi, l, t in zip(x, lead, total):
+    ax.text(xi, t + max(total) * 0.03, f"{t:.1%}", ha="center", va="bottom",
+            fontsize=11.5, fontweight="bold", color=INK)
+    # One decimal: every multiple here is under 10, and rounding 1.54 to "2×"
+    # overstates the rich tier's gain in the direction the section argues.
+    ax.text(xi, t + max(total) * 0.11, f"{t / l:.1f}× the lead alone", ha="center",
+            va="bottom", fontsize=10, color=INK2)
+
 ax.yaxis.set_major_formatter(PercentFormatter(xmax=1, decimals=0))
-ax.set_ylabel("counties with named industry content", fontsize=10.5, color=INK2)
+ax.set_ylabel("counties naming an industry", fontsize=10.5, color=INK2)
 style(ax,
-      f"Named industry content is {intro[-1] / intro[1]:.0f}× more common in rich "
-      "articles than thin ones",
-      "Blue is what a lead-section embedding had to work with. Fewer than one county "
-      "in ten carried any industry content at all.",
+      "Reading past the lead is what rescues the sparse tiers",
+      "Share of counties whose article names an industry. The lead section — the "
+      "only text the embedding read — leaves the two thinnest tiers, half of all "
+      "counties, almost entirely blank.",
       legend=True)
 plt.show()
 ''')
@@ -347,11 +361,13 @@ an intuition, and the embedding was cut on it.
 worth extracting — which is what the 29 typed columns that replaced the embedding
 are built around.
 
-**And it showed the branching premise was wrong.** The green bars are the fix that
-actually worked: reading economy-titled sections as well as the lead. It helps the
-thin tiers most — stub coverage goes from 0.7% to 5.4%, thin from 1.1% to 8.8% —
-so the sparse tiers are not empty pages, they are pages whose economic content sits
-below the lead. Reading *more* for everyone beat reading *differently* by tier.
+**And it showed the branching premise was wrong.** The green segments are the fix
+that actually worked: reading economy-titled sections as well as the lead. It helps
+the sparse tiers most — stub coverage goes from 0.7% to **6.1%**, thin from 1.1% to
+**9.7%**, against rich's 25.3% to 39.0%. So the thin tiers are not empty pages;
+they are pages whose economic content sits below the lead. **Reading *more* for
+everyone beat reading *differently* by tier** — which is the first hint of the
+answer section 4 gives.
 
 **Then branching lost on its own terms, and the loss scaled with how much branching
 there was.**
@@ -567,8 +583,8 @@ label_bars(ax, x - w / 2, raw, "+{:.3f}", size=10)
 label_bars(ax, x + w / 2, rep, "+{:.3f}", size=10)
 ax.set_ylabel("R² added over county size", fontsize=10.5, color=INK2)
 style(ax,
-      f"E_macro over a county-size baseline: {ext['mean_lift_over_size']:+.3f} raw, "
-      f"{ext['mean_lift_over_size_ablated']:+.3f} reported",
+      f"The headline is the discounted number: {ext['mean_lift_over_size_ablated']:+.3f}, "
+      f"not {ext['mean_lift_over_size']:+.3f}",
       f"Positive on {ext['targets_with_positive_lift']} of {ext['n_targets']} targets, "
       "out-of-fold on states never trained on. Where the two bars differ, a column "
       "was restating the target.",
@@ -625,7 +641,7 @@ for i, v in enumerate(worth["contribution"]):
 ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
 ax.set_xlabel("marginal R²", fontsize=10.5, color=INK2)
 style(ax,
-      "What each pillar adds that the other five do not",
+      "Most of the matrix's value sits in two pillars, and one adds nothing",
       "Mean R² lost when the block is withheld · 5 public ACS targets · "
       "out-of-fold on held-out states · restatements ablated",
       grid_axis="x")
@@ -688,7 +704,7 @@ label_bars(ax, x, vals, size=11)
 ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.4f}"))
 ax.set_ylabel("marginal R²", fontsize=10.5, color=INK2)
 style(ax,
-      "Source A, target by target: small in both directions",
+      "Source A is redundant, not broken",
       "A broken block looks wildly negative. This is the signature of one that is "
       "genuinely redundant with the rest of the matrix.",
       legend=True)
@@ -797,7 +813,7 @@ ax.yaxis.set_major_formatter(PercentFormatter(xmax=1, decimals=0))
 ax.set_xlabel("population decile", fontsize=10.5, color=INK2)
 ax.set_ylabel("share of variance that is noise", fontsize=10.5, color=INK2)
 style(ax,
-      "How much of each outcome is unexplainable by anyone",
+      "On the smallest counties, a third of the outcome is unexplainable by anyone",
       "Share of outcome variance that is ACS sampling error, by county population "
       "decile (1 = smallest). Averaged over the five targets.")
 plt.show()
