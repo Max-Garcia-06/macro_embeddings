@@ -4,6 +4,54 @@
 `scripts/build_status_notebook.py`, plus doc-sync edits to `docs/pillar_status.md`
 and `docs/PROJECT_GOAL.md`.
 
+## Revision 4 — 13 August, the assignment becomes the spine
+
+**This supersedes the structures in revisions 1 and 2.** Max's direction: lead with
+what was actually asked of him — the Source A and Source E tier work — rather than
+with the drop-one result.
+
+**The through-line, rather than a two-part split.** *Should Source A branch on its
+groups?* → no, because partitioning costs more evidence than heterogeneity buys →
+**that same question, asked of all six** → does each pillar earn its slot at all?
+Source A appears twice, as the tier subject and as the pillar contributing
+−0.0000, and under this arc that is a feature: one pillar under progressively
+harder questions.
+
+| § | Content | Min |
+|---|---|---|
+| 1 | The assignment, one sentence of context, and the answer | 2 |
+| 2 | Source A — four content tiers | 7 |
+| 3 | Source E — four volume tiers | 7 |
+| 4 | Why neither branches | 4 |
+| 5 | The same question, asked of all six | 6 |
+| 6 | Limits, and where this leaves the project | 4 |
+
+**The framing risk, and how it is handled.** The assigned work concluded "neither
+pillar should branch," and opening 30 minutes with a negative result could read as
+*nothing came of it*. The notebook states plainly that **the tiers were the
+instrument, not the deliverable**: they killed Source A's embedding, picked the
+feature family that replaced it, corrected a Source E conclusion from round 1 that
+was backwards, and forced a disclosure that now ships with the pillar.
+
+**Connecting Source A's two results — carefully, per Max.** Section 5 says
+explicitly that the tier result and the drop-one result are *independent
+measurements that happen to land on the same pillar*, and that the first did not
+predict the second: the tier work would have returned the same answer if A were
+the strongest pillar in the matrix. The fair claim is narrower — the pillar that
+absorbed the most instrument time is the one that turned out to add least.
+
+**Demoted to the appendix:** Source F's full story (A5, keeps its figure), the
+other Source A arms (A2), the vintages table (A6). Source F gets one line in the
+body. **Promoted from the appendix:** all of the tier work, which now occupies
+sections 2–4.
+
+**One deliberate hardcoded number.** The four-independent-models bar (−0.01595) is
+quoted from `source-a-findings.md` §14.1 — it was measured once against a
+since-retired baseline and never re-run. It is hatched in the figure, called out in
+that figure's subtitle, and flagged in the builder docstring, because every other
+figure in the notebook is computed from artifacts and that claim has to stay
+honest.
+
 ## Revision 3 — 13 August, matplotlib replaces plotly
 
 **All seven figures are matplotlib.** Plotly's `plotly_mimetype` output needs a

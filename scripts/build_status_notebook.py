@@ -24,17 +24,24 @@ HTML export, so no network and no extension are involved.
 
 Design: docs/superpowers/specs/2026-08-13-exec-status-notebook-design.md
 
+**The spine is the assignment.** The commissioning side asked for Sources A and E
+to be split into groups and tested for whether they should be modelled separately.
+Sections 1-4 answer that (no, for both, and here is what the groups exposed
+anyway); section 5 generalises the same question to all six pillars; section 6 is
+limits and status. The through-line is that a pillar has to earn the right to
+branch, and therefore also has to earn its slot at all.
+
 This notebook **supersedes and absorbs** analysis-output/weekly-brief-2026-08-06.ipynb,
-which was written for a conversation that never happened. Everything from that
-brief that still matters lives here: the discount applied to the headline result
-(section 2), the small-county noise ceiling and the Source B x E size
-conditionality (section 4), the plumbing changes (section 5), and the Source A
-and E tier work (appendix A4). The brief and its generator were removed in the
-same commit that added this file; recover them from git history if needed.
+which was written for a conversation that never happened. The brief and its
+generator were removed in the commit that added this file; recover them from git
+history if needed.
 
 Every figure is computed from the committed artifacts in outputs/ and
-analysis-output/, which were regenerated from data/*.parquet on 2026-08-13.
-Nothing here is hardcoded — a number that moves upstream moves in the notebook.
+analysis-output/, which were regenerated from data/*.parquet on 2026-08-13, with
+**one deliberate exception**: the four-independent-models bar in section 2 is
+quoted from source-a-findings.md section 14.1, because it was measured once
+against a since-retired baseline and never re-run. It is hatched in the figure and
+called out in that figure's subtitle so it cannot be mistaken for a fresh number.
 
 Wording in the Source A and Source F sections is constrained by
 analysis-output/cross-source/pillar-marginal-findings.md section 9. See the
@@ -92,14 +99,18 @@ def code(text: str) -> None:
 # Title
 # ==========================================================================
 md("""
-# `E_macro` — what each pillar is actually worth
+# `E_macro` — Source A and Source E: what the groups revealed
 
 **Status report, 13 August 2026**, covering two weeks of work. Roughly 30 minutes;
 sections 1–6 are the talk, the appendix is so the notebook stands on its own
 afterwards.
 
-Every validation before these two weeks asked whether the six pillars agree with
-each other. These two weeks ask what each one is worth.
+The assignment was to split Sources A and E into groups and see whether they
+should be modelled separately. The answer is **no, for both** — and the groups
+were worth having anyway, because of what they exposed on the way to that answer.
+
+The same question then turned out to generalise: if a pillar has to earn the right
+to branch, it also has to earn its slot at all. Section 5 asks that of all six.
 """)
 
 code('''
@@ -132,7 +143,12 @@ blk = json.loads((XSRC / "pillar_block_marginal_stats.json").read_text())
 gst = json.loads((XSRC / "grain_effect_stats.json").read_text())
 scope = json.loads((ANALYSIS / "source-a" / "source_a_section_scope_stats.json").read_text())
 embed = json.loads((ANALYSIS / "source-a" / "source_a_tiered_embedding_stats.json").read_text())
+asec = json.loads((ANALYSIS / "source-a" / "source_a_section_stats.json").read_text())
+atier = json.loads((ANALYSIS / "source-a" / "source_a_tier_stats.json").read_text())
+arep = json.loads((ANALYSIS / "source-a" / "source_a_representation_stats.json").read_text())
 etier = json.loads((ANALYSIS / "source-e" / "source_e_tier_stats.json").read_text())
+
+A_TIERS = ["stub", "thin", "mid", "rich"]
 
 placebo = pd.read_csv(OUTPUTS / "external_target_drop_one_placebo.csv")
 decile = pd.read_csv(OUTPUTS / "external_target_by_decile.csv")
@@ -263,14 +279,230 @@ print(f"Evidence base · {ext['n_targets']} external targets · {ext['fold_strat
 md("""
 ---
 
-## 1. Getting out of the circle
+## 1. The assignment
 
-**Every validation before these two weeks was pillar against pillar** — predict one
-federal source's features from the other five. That measures whether six agencies
-agree with each other; it cannot say whether any of them is *useful*. The bias even
-runs the wrong way, penalising a source precisely for agreeing with the others. And
-a real label is not available: the project is scoped to public data only, which is
-a boundary, not an oversight.
+**The task, as set:** split Source A and Source E into groups and find out whether
+each pillar should be modelled separately by group.
+
+**Why it was a real question.** Both pillars are built from sources whose *quality
+varies enormously across counties*. A Wikipedia article can be three sentences or
+three pages; an IRS county file can cover 900 tax returns or 900,000. If a pillar
+behaves differently enough at the two ends, one global model fitted across all
+3,143 counties is the wrong shape, and the fix is to let the groups have their own
+parameters.
+
+**The answer, for both pillars: no.** Neither should branch. Sections 2 and 3 are
+what the groups exposed; section 4 is why branching loses anyway.
+
+**What the groups were worth regardless.** They killed Source A's embedding, picked
+the feature family that replaced it, corrected a Source E conclusion from round 1
+that was backwards, and forced a disclosure that now ships with the pillar. The
+tiers were never going to be the deliverable — they were the instrument.
+
+---
+
+## 2. Source A — four content tiers
+
+Counties split on the length of their Wikipedia lead section: **stub** (<100
+characters), **thin** (100–283), **mid** (284–461), **rich** (≥462).
+
+**The first thing the split showed is the reason the embedding had to go.**
+""")
+
+code('''
+tiers = [t for t in A_TIERS if t in asec["by_tier"]]
+intro = [asec["by_tier"][t]["share_intro_industry"] for t in tiers]
+secs = [asec["by_tier"][t]["share_section_industry"] for t in tiers]
+n_by_tier = [asec["by_tier"][t]["n_counties"] for t in tiers]
+labels = [f"{t}\\n{n:,} counties" for t, n in zip(tiers, n_by_tier)]
+
+x = np.arange(len(tiers))
+w = 0.38
+fig, ax = plt.subplots(figsize=(11, 4.3))
+ax.bar(x - w / 2, intro, w, color=BLUE, label="lead section only (what the embedding read)")
+ax.bar(x + w / 2, secs, w, color=AQUA, label="reading economy sections too")
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.set_ylim(0, max(intro + secs) * 1.22)
+label_bars(ax, x - w / 2, intro, "{:.1%}", size=10)
+label_bars(ax, x + w / 2, secs, "{:.1%}", size=10)
+ax.yaxis.set_major_formatter(PercentFormatter(xmax=1, decimals=0))
+ax.set_ylabel("counties with named industry content", fontsize=10.5, color=INK2)
+style(ax,
+      f"Named industry content is {intro[-1] / intro[1]:.0f}× more common in rich "
+      "articles than thin ones",
+      "Blue is what a lead-section embedding had to work with. Fewer than one county "
+      "in ten carried any industry content at all.",
+      legend=True)
+plt.show()
+''')
+
+md("""
+**What that killed.** Averaging a 1,024-dimension vector over 3,144 articles, when
+only the rich tier reliably says anything economic, produces a vector dominated by
+counties saying nothing. The tiers made that visible as a distribution rather than
+an intuition, and the embedding was cut on it.
+
+**What it picked.** The same gradient identified *industry* as the feature family
+worth extracting — which is what the 29 typed columns that replaced the embedding
+are built around.
+
+**And it showed the branching premise was wrong.** The green bars are the fix that
+actually worked: reading economy-titled sections as well as the lead. It helps the
+thin tiers most — stub coverage goes from 0.7% to 5.4%, thin from 1.1% to 8.8% —
+so the sparse tiers are not empty pages, they are pages whose economic content sits
+below the lead. Reading *more* for everyone beat reading *differently* by tier.
+
+**Then branching lost on its own terms, and the loss scaled with how much branching
+there was.**
+""")
+
+code('''
+# The third bar is quoted from source-a-findings.md section 14.1, not recomputed:
+# it was measured once against a baseline that has since been retired and was not
+# re-run, because a result that far negative does not turn on a fourth-decimal
+# baseline change. Marked hatched in the figure and stated in the subtitle so it is
+# never mistaken for a fresh number. Every other figure in this notebook is
+# computed from the artifacts.
+PER_TIER_FITS = -0.01595
+
+arms = [
+    ("One model,\\none coefficient per feature",
+     arep["variants"]["extracted_sections"]["mean_lift"], BLUE, None),
+    ("One model, coefficients\\nfree to vary by tier",
+     arep["variants"]["sections_x_tier"]["mean_lift"], MUTED, None),
+    ("Four independent models,\\none per tier",
+     PER_TIER_FITS, CRITICAL, "//"),
+]
+x = np.arange(len(arms))
+vals = [a[1] for a in arms]
+fig, ax = plt.subplots(figsize=(11, 4.4))
+ax.bar(x, vals, 0.5, color=[a[2] for a in arms],
+       hatch=[a[3] for a in arms], edgecolor=SURFACE, linewidth=0)
+ax.axhline(0, color=INK2, linewidth=0.8)
+ax.set_xticks(x)
+ax.set_xticklabels([a[0] for a in arms])
+pad = (max(vals) - min(vals)) * 0.22
+ax.set_ylim(min(vals) - pad, max(vals) + pad)
+label_bars(ax, x, vals, "{:+.5f}", size=12)
+ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
+ax.set_ylabel("mean R² lift over the baseline", fontsize=10.5, color=INK2)
+style(ax,
+      "The more the model branches, the worse it does",
+      "Same 28 targets, same folds, same seed. The hatched bar is quoted from "
+      "source-a-findings.md §14.1 against a since-retired baseline, not recomputed.")
+plt.show()
+''')
+
+md("""
+Letting coefficients vary by tier costs **9%** of the lift. Fitting four
+independent models goes **negative — worse than dropping Source A entirely** —
+because each one trains on roughly a quarter of the rows and overfits, with no
+shared penalty to restrain it.
+
+---
+
+## 3. Source E — four volume tiers
+
+Counties split on `num_returns`: **T1** (<2,200), **T2** (2,200–11,700), **T3**
+(11,700–100,000), **T4** (≥100,000).
+
+Here the split did something more uncomfortable than guide a feature choice. It
+showed that **the pillar and the economy it claims to describe are not the same
+object.**
+""")
+
+code('''
+tiers = list(etier["tiers"].keys())
+short = [t.split()[0] for t in tiers]
+cty = [etier["tiers"][t]["share_of_counties"] for t in tiers]
+inv = [etier["tiers"][t]["share_of_investment_income"] for t in tiers]
+
+x = np.arange(len(tiers))
+w = 0.38
+fig, ax = plt.subplots(figsize=(11, 4.4))
+ax.bar(x - w / 2, cty, w, color=MUTED, label="share of counties")
+ax.bar(x + w / 2, inv, w, color=BLUE, label="share of national investment income")
+ax.set_xticks(x)
+ax.set_xticklabels([f"{s}\\n{etier['tiers'][t]['n_counties']:,} counties"
+                    for s, t in zip(short, tiers)])
+ax.set_ylim(0, max(cty + inv) * 1.2)
+label_bars(ax, x - w / 2, cty, "{:.1%}", size=10)
+label_bars(ax, x + w / 2, inv, "{:.2%}", size=10)
+ax.yaxis.set_major_formatter(PercentFormatter(xmax=1, decimals=0))
+style(ax,
+      "One county in ten holds five-sixths of the capital",
+      f"T1 and T4 are each about a tenth of all counties. T1 carries "
+      f"{inv[0]:.2%} of national investment income; T4 carries {inv[-1]:.1%}.",
+      legend=True)
+plt.show()
+''')
+
+md("""
+**Why that matters beyond the chart.** An unweighted county-level capital feature
+treats a T1 county and a T4 county as equal observations, when one of them holds
+essentially none of the thing being measured. That is not a reason to weight the
+feature — weighting was tested and rejected below — but it is a reason to *say so*,
+which Source E's schema doc now does.
+
+**Two corrections the split forced, both against earlier conclusions of mine:**
+
+- **Round 1 had the stability backwards.** I had said small counties were the
+  volatile ones. On ranks it is the opposite: Spearman stability *improves* with
+  size (0.861 → 0.941) and median year-over-year moves *rise* with size
+  (0.298 → 0.393). Round 1's proposed fix — weighting by `num_returns` — would have
+  upweighted exactly the counties whose values move most between vintages.
+- **The dispersion is not thin-data noise.** Regressing log dispersion on log
+  median returns gives a slope of **+0.026**, where pure sampling error would give
+  −0.5. Small counties' spread is real economic variation, so there is nothing to
+  smooth away.
+
+**And one caveat that now ships with the pillar.** The strongest cross-pillar link
+in the whole project — Source B real-estate location quotient against Source E
+capital-to-wage — is a large-county phenomenon: **+0.476 in T4 against −0.058 in
+T1**. Anyone serving rural inventory needs that said out loud before leaning on it.
+
+---
+
+## 4. Why neither pillar branches
+
+The two pillars fail branching for the same underlying reason, and it is
+measurable rather than rhetorical.
+
+**Partitioning 3,143 counties costs more in pooled evidence than heterogeneity
+costs in bias.** Each per-tier model trains on a fraction of the rows; the variance
+that buys is larger than the bias it removes.
+
+**The construction rule leaks into the representation.** Where the tiers were used
+conditionally, tier membership alone explains **3.7–6.6%** of the vector's variance,
+against **0.9–1.0%** under a uniform rule — four to seven times more, for a variable
+the baseline already controls for. The model was partly learning how the input was
+built rather than anything about the counties.
+
+**So what shipped instead:**
+
+- **Source A ships one uniform schema** — 29 typed columns, same for every county,
+  absence encoded as `False`/`0` rather than null. Sparsity is itself the signal: a
+  county whose article says nothing is a county about which little is written.
+- **Source E ships with an explicit size-conditionality warning**, and prefers the
+  vintage-normalised ratio over the raw one.
+
+The groups changed **what gets shipped and what gets disclosed**. They did not
+become part of the model, and that was the right outcome rather than a null one.
+
+---
+
+## 5. The same question, asked of all six
+
+If a pillar has to earn the right to branch, it has to earn its slot at all. That
+generalisation is what the second week tested.
+
+**Every validation before it was pillar against pillar** — predict one federal
+source's features from the other five. That measures whether six agencies agree
+with each other; it cannot say whether any of them is *useful*. The bias even runs
+the wrong way, penalising a source precisely for agreeing with the others. And a
+real label is not available: the project is scoped to public data only, which is a
+boundary, not an oversight.
 
 **The substitute is five public outcomes no pillar measures** — ACS broadband
 adoption, median household income, median age, median home value, mean commute.
@@ -298,13 +530,11 @@ renegotiated afterwards — full text in appendix A2.
 # 2. The result and the discount
 # ==========================================================================
 md("""
----
-
-## 2. The result, and the discount applied to it
+### First, the discount applied to the result
 
 The raw number is **+0.212**. The number reported is **+0.190**. The gap is
-deliberate, and it is the part worth showing first — it is the kind of thing that
-normally gets caught in review rather than found by the author.
+deliberate, and it is worth showing before the result it discounts — it is the kind
+of thing that normally gets caught in review rather than found by the author.
 
 **Two pillar columns don't so much predict their target as restate it:**
 
@@ -420,75 +650,12 @@ the strongest non-circular evidence this project can produce, and it is still an
 analogy. Appendix A1 takes that objection seriously rather than footnoting it.
 """)
 
-# ==========================================================================
-# 3. Two pillars moved
-# ==========================================================================
 md("""
----
-
-## 3. Two pillars moved
-
-### Source F — kept, on a test it could have failed
-
-F was flagged as the pillar falling short, for a real reason: its one strong
-relationship in the whole 15-pair sweep was against Source D freight tonnage,
-**r = 0.495 raw — the largest raw effect anywhere in that sweep — collapsing to
-r = −0.057 once county size is controlled.** The apparent link was population
-riding along in both variables.
-
-The resolution on file was to keep F and reclassify it as a "structural anchor,"
-justified by what county typology definitionally *is* rather than by measured
-performance. That was a rationalisation, and it was withdrawn.
-
-**What replaced it.** The status doc named the fairer test itself — does F explain
-residual variance once B/C/D/E are already in the model — and that test was run. F
-contributes **+0.0413**, second of the six, positive on 5 of 5 targets and above
-the noise floor on 5 of 5, where the largest contribution any shuffled block
-produced anywhere was +0.0031.
-
-**Both facts travel together.** F still fails the pairwise hub test. It passed the
-residual-variance test that was pre-registered for it. The first instrument was
-wrong for a categorical structural variable, and that was said before the numbers
-existed, not after.
-""")
-
-code('''
-fb = blk["by_block"]["F"]
-# Headline external figure, not the `_no_ametro` robustness variant — see the
-# comment on the section 2 figure.
-f_ext = ext["drop_one"]["size_emacro_drop_F"]["mean_contribution_ablated"]
-# NOTE: newlines in these labels are escaped because this cell's source is a
-# non-raw triple-quoted string in the builder — an unescaped \\n would be
-# consumed at build time and split the string literal.
-bars = [
-    ("Internal, raw\\n29 in-matrix targets", fb["mean_lift"], MUTED),
-    ("Internal, restatements ablated\\nthe honest internal number",
-     fb["mean_lift_ablated"], AQUA),
-    ("External\\n5 public ACS targets", f_ext, BLUE),
-]
-x = np.arange(len(bars))
-vals = [b[1] for b in bars]
-fig, ax = plt.subplots(figsize=(11, 4.3))
-ax.bar(x, vals, 0.52, color=[b[2] for b in bars])
-ax.set_xticks(x)
-ax.set_xticklabels([b[0] for b in bars])
-ax.set_ylim(0, max(vals) * 1.18)
-label_bars(ax, x, vals, size=12)
-ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
-ax.set_ylabel("mean R² contribution", fontsize=10.5, color=INK2)
-style(ax,
-      "Source F: the internal number is mostly USDA restating BLS",
-      "Roughly seven eighths of F's apparent internal contribution disappears once "
-      "columns that restate Source B are removed. The external number does not move.")
-plt.show()
-''')
-
-md("""
-The middle bar is the one to sit with. **Seven eighths of F's apparent internal
-contribution is USDA restating industry composition BLS already measures.** That
-redundancy is real inside the six-pillar system, and it does not bind against
-outcomes outside it — the same ablation moves F's external figure by 0.0003. Which
-is exactly why the external arm is the one the verdict rests on.
+**Source F, in one line:** it was the pillar previously flagged as falling short,
+it took the fairer test its own status doc had proposed, and it passed decisively —
+**+0.0413**, second of the six. Appendix A5 carries the full story, including the
+pairwise test it still fails and the seven eighths of its *internal* number that
+is USDA restating BLS.
 
 ### Source A — the uncomfortable finding
 
@@ -544,6 +711,15 @@ that effect size predicts. A is also the only block negative in **both** arms:
 earns its slot on evidence now points at Source A rather than Source F. That is
 uncomfortable and it is the honest reading.
 
+**A note on the two Source A results in this notebook, because they are easy to
+run together.** Section 2 says A should not branch. This section says A adds
+nothing marginal. **They are independent measurements that happen to land on the
+same pillar, and the first did not predict the second.** The tier work asked
+whether one model or four fits A best, and would have returned exactly the same
+answer if A were the strongest pillar in the matrix. Nothing in it anticipated
+−0.0000. What is fair to say is narrower and still worth saying: the pillar this
+project spent the most instrument time on is the one that turned out to add least.
+
 ### The open question this puts to the room
 
 > **Does Source A ship?** The recommendation is to cut it — *unless* the consuming
@@ -567,12 +743,12 @@ uncomfortable and it is the honest reading.
 md("""
 ---
 
-## 4. Three honest limits
+## 6. Limits, and where this leaves the project
 
-**1. The fixed-effect objection from section 1 is still unanswered.** Holding out
-states shows `E_macro` beats a size baseline on places it has never seen; it does
-not show it beats a DMA dummy on places the consumer sees constantly. What the
-grain question costs in each direction:
+**1. The fixed-effect objection is unanswered.** Holding out states shows `E_macro`
+beats a size baseline on places it has never seen; it does not show it beats a DMA
+dummy on places the consumer sees constantly. What the grain question costs in each
+direction:
 """)
 
 code('''
@@ -628,83 +804,21 @@ plt.show()
 ''')
 
 md("""
-**3. The strongest cross-pillar link in the project is a large-county phenomenon.**
-Source B Real Estate LQ against Source E capital-to-wage runs +0.394 nationally,
-but **+0.476 in the largest tier and −0.058 in the thinnest**. It does not exist for
-the counties with the least data — which anyone serving rural inventory needs stated
-before leaning on it.
-
-**Three more, in a line each.** There is **no downstream label** and cannot be one
-under this scope. Everything here is **cross-sectional and single-period** —
+**3. Three more, in a line each.** There is **no downstream label** and cannot be
+one under this scope. Everything here is **cross-sectional and single-period** —
 temporal transfer, which is the one thing a fixed effect genuinely fails at, is
 untested. And the **sibling tiers do not line up**: `E_local` is at H3 res-8,
 `E_census` does not exist, and nobody owns the reconciliation.
-""")
 
-# ==========================================================================
-# 5. Ruled out and cleaned up
-# ==========================================================================
-md("""
----
+**Plumbing, which does not change the story but does change what ships.** Source
+D's ten raw freight tonnages and Source E's dollar totals moved into the size
+control at no measured cost, with commodity shares replacing D's. Source B now
+ships raw employment levels and Source D its partner-tons distribution, so both can
+be re-summed at any grain rather than approximated — which is what makes the grain
+test above trustworthy. All six pillars carry a frozen schema and an `as_of_date`
+(appendix A6).
 
-## 5. Ruled out, and cleaned up
-
-**Three Source A experiments, none of which changed what ships.** Reading every
-section beats reading only economy-titled ones, but **67% of the hits it adds sit
-in historical framing** — a defunct-industry detector wearing a current-economy
-label. A 384-dimension encoder at 90MB against bge-m3's 2.2GB still loses to the
-typed columns. And letting article length decide how much of a page is read loses
-in both directions.
-""")
-
-code('''
-arms = [
-    ("Typed columns (shipped)", scope["scopes"]["economy"]["mean_lift"], BLUE),
-    ("All sections", scope["scopes"]["all_sections"]["mean_lift"], MUTED),
-    ("All except narrative", scope["scopes"]["no_narrative"]["mean_lift"], MUTED),
-    ("384-d embedding, uniform", embed["representations"]["uniform"]["mean_lift"], AQUA),
-    ("384-d, tier-conditional", embed["representations"]["tier_conditional"]["mean_lift"], AQUA),
-    ("384-d, tier inverted", embed["representations"]["tier_conditional_inverse"]["mean_lift"], AQUA),
-]
-arms = sorted(arms, key=lambda a: a[1])
-y = np.arange(len(arms))
-vals = [a[1] for a in arms]
-fig, ax = plt.subplots(figsize=(11.5, 4.3))
-ax.barh(y, vals, height=0.62, color=[a[2] for a in arms])
-ax.set_yticks(y)
-ax.set_yticklabels([a[0] for a in arms])
-ax.set_xlim(0, max(vals) * 1.2)
-label_bars(ax, y, vals, "{:+.5f}", size=11, horizontal=True)
-ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.4f}"))
-ax.set_xlabel("mean lift", fontsize=10.5, color=INK2)
-style(ax,
-      "Three Source A experiments, none of which changed what ships",
-      "Mean lift over the crowded baseline. Blue is the shipped design.",
-      grid_axis="x")
-plt.show()
-''')
-
-md("""
-**And the plumbing, which does change what ships.**
-
-- **Size in disguise, removed.** Source D's ten raw freight tonnages and Source E's
-  dollar totals moved into the size control at no measured cost; commodity shares
-  replaced D's, and 5 of 10 clear a bar none of the raw columns did.
-- **Re-derivable at any grain.** Source B now ships raw employment levels and
-  Source D its partner-tons distribution, so both can be re-summed rather than
-  approximated — which is what makes the grain test above trustworthy. Re-deriving
-  D's two concentration indices moved the aggregation gain +0.106 → **+0.099**, a
-  correction against this project's own favoured direction.
-- **All six pillars carry a frozen schema and an `as_of_date`** (appendix A5).
-""")
-
-# ==========================================================================
-# 6. Readiness and next
-# ==========================================================================
-md("""
----
-
-## 6. Where this leaves the project
+### Where this leaves the project
 """)
 
 code('''
@@ -792,7 +906,72 @@ downstream target, at the grain the consuming team actually joins on. That needs
 either a label or a collaborator inside that team, and is the single most valuable
 thing that could be added to this project.
 
-## A2 — Method
+## A2 — Tier method detail
+
+**Source A tier edges**, on lead-section character count: stub <100, thin 100–283,
+mid 284–461, rich ≥462 — quartile-ish cuts on the observed distribution, not round
+numbers chosen in advance.
+
+**Source E tier edges**, on `num_returns`: T1 <2,200, T2 2,200–11,700, T3
+11,700–100,000, T4 ≥100,000. Five tax years, TY2018–TY2022.
+
+**What each branching arm actually consumed.** The flat arm fits one coefficient per
+feature across all counties. The crossed arm fits 29 features × 4 tiers = 120
+columns against targets whose smallest sample is n ≈ 1,026. The separate arm fits
+four independent models, each on roughly a quarter of the rows, with no shared
+penalty across them.
+
+**Why the crossed arm loses even though it is strictly more expressive.** Ordinary
+bias–variance: the ridge penalty large enough to control 120 columns also
+over-shrinks the coefficients that matter. Expressiveness the data cannot pay for
+is a cost, not a capability.
+
+**A p-value worth stating rather than burying.** On a paired rank test the crossed
+variant reads p = 0.040 against the flat block's p = 0.115. That does not reverse
+the section: the flat block still carries the higher mean lift (+0.00307 against
++0.00279), which is the quantity the shipping decision uses. It does mean the flat
+block's advantage is a point estimate rather than a demonstrated gap.
+
+**The other Source A arms tested in the same round**, all of which lost to the
+shipped design:
+""")
+
+code('''
+arms = [
+    ("Typed columns (shipped)", scope["scopes"]["economy"]["mean_lift"], BLUE),
+    ("All sections", scope["scopes"]["all_sections"]["mean_lift"], MUTED),
+    ("All except narrative", scope["scopes"]["no_narrative"]["mean_lift"], MUTED),
+    ("384-d embedding, uniform", embed["representations"]["uniform"]["mean_lift"], AQUA),
+    ("384-d, tier-conditional", embed["representations"]["tier_conditional"]["mean_lift"], AQUA),
+    ("384-d, tier inverted", embed["representations"]["tier_conditional_inverse"]["mean_lift"], AQUA),
+]
+arms = sorted(arms, key=lambda a: a[1])
+y = np.arange(len(arms))
+vals = [a[1] for a in arms]
+fig, ax = plt.subplots(figsize=(11.5, 4.3))
+ax.barh(y, vals, height=0.62, color=[a[2] for a in arms])
+ax.set_yticks(y)
+ax.set_yticklabels([a[0] for a in arms])
+ax.set_xlim(0, max(vals) * 1.2)
+label_bars(ax, y, vals, "{:+.5f}", size=11, horizontal=True)
+ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.4f}"))
+ax.set_xlabel("mean lift", fontsize=10.5, color=INK2)
+style(ax,
+      "Every Source A arm tested, against the shipped design",
+      "Mean lift over the crowded baseline. Reading all sections scores higher, but "
+      "67% of the hits it adds sit in historical framing.",
+      grid_axis="x")
+plt.show()
+''')
+
+md("""
+Reading **all** sections scores higher than the shipped economy-only rule
+(+0.00403 against +0.00307) and was still not shipped: 67% of the hits it adds sit
+in historical framing, which makes it a defunct-industry detector wearing a
+current-economy label. That is a precision judgement, not a scoring one, and it is
+the one place in this project where a higher number was deliberately declined.
+
+## A3 — Drop-one method
 
 **The pre-registered rule**, verbatim from the implementation plan, written before
 either script was run and not renegotiated afterwards:
@@ -833,7 +1012,7 @@ verdicts rest on. Where they disagree the external arm wins — being unpredicta
 from the other five pillars is also exactly what an independent information source
 looks like.
 
-## A3 — Limitations, carried over unchanged
+## A4 — Limitations, carried over unchanged
 
 - **The targets are public proxies, not the consumer's label**, which is
   structurally unobtainable. Every conclusion is by analogy.
@@ -848,61 +1027,71 @@ looks like.
 - **This does not answer the fixed-effect objection.** It reallocates credit among
   pillars, given that the matrix as a whole beats a size baseline on held-out states.
 
-## A4 — The tier work on Sources A and E
+## A5 — Source F, in full
 
-Carried forward from the 6 August brief, which this notebook replaces. The
-assignment was to split both pillars into groups and see what the groups changed.
+F is the pillar a previous status doc flagged as falling short, and the reason was
+real. Its one strong relationship in the whole 15-pair sweep was against Source D
+freight tonnage, **r = 0.495 raw — the largest raw effect anywhere in that sweep —
+collapsing to r = −0.057 once county size is controlled.** The apparent link was
+population riding along in both variables.
 
-**Verdict: the groups were worth a great deal as a diagnostic and nothing as an
-architecture.**
+The resolution then on file was to keep F and reclassify it as a "structural
+anchor," justified by what county typology definitionally *is* rather than by
+measured performance. That was a rationalisation, and it was withdrawn.
 
-**Source A — four content tiers** on Wikipedia intro length: stub (<100 chars), thin
-(100–283), mid (284–461), rich (≥462).
+**What replaced it.** The status doc named the fairer test itself — does F explain
+residual variance once B/C/D/E are already in the model — and that test was run. F
+contributes **+0.0413**, second of the six, positive on 5 of 5 targets and above the
+noise floor on 5 of 5, where the largest contribution any shuffled block produced
+anywhere was +0.0031.
 
-As a diagnostic it paid immediately. Named industry content appears in **1.1% of
-thin-tier counties and 25.2% of rich** — a 23× gradient, with fewer than one county
-in ten carrying any at all. That killed the dense embedding: averaging 1,024
-dimensions over 3,144 articles gives a vector dominated by counties saying nothing
-economic. It also picked the feature family worth building — *industry*.
+**Both facts travel together.** F still fails the pairwise hub test. It passed the
+residual-variance test that was pre-registered for it. The first instrument was the
+wrong one for a categorical structural variable, and that was said before the
+numbers existed, not after.
 
-As an architecture it lost three times. Tier-specific slopes cost 9% of the lift,
-and four separate per-tier fits scored **−0.01595** against the flat model's
-+0.00307 — worse than dropping Source A entirely. Uniform section-widening beat the
-tier-conditional rule (+0.00351 vs +0.00307). And through an encoder, in either
-direction, uniform won (+0.00226 against +0.00162 and +0.00073).
+**The caution that belongs beside the headline:**
+""")
 
-One reason underneath all three: **partitioning 3,144 counties costs more in pooled
-evidence than heterogeneity costs in bias.** Measurable in the embedding run — tier
-membership alone explains 0.9–1.0% of vector variance under a uniform rule and
-3.7–6.6% under a conditional one. That is the construction rule leaking into the
-space, 4–7×, for a variable the baseline already controls for.
+code('''
+fb = blk["by_block"]["F"]
+# Headline external figure, not the `_no_ametro` robustness variant — see the
+# comment on the section 5 pillar-worth figure.
+f_ext = ext["drop_one"]["size_emacro_drop_F"]["mean_contribution_ablated"]
+# NOTE: newlines in these labels are escaped because this cell's source is a
+# non-raw triple-quoted string in the builder — an unescaped \\n would be
+# consumed at build time and split the string literal.
+bars = [
+    ("Internal, raw\\n29 in-matrix targets", fb["mean_lift"], MUTED),
+    ("Internal, restatements ablated\\nthe honest internal number",
+     fb["mean_lift_ablated"], AQUA),
+    ("External\\n5 public ACS targets", f_ext, BLUE),
+]
+x = np.arange(len(bars))
+vals = [b[1] for b in bars]
+fig, ax = plt.subplots(figsize=(11, 4.3))
+ax.bar(x, vals, 0.52, color=[b[2] for b in bars])
+ax.set_xticks(x)
+ax.set_xticklabels([b[0] for b in bars])
+ax.set_ylim(0, max(vals) * 1.18)
+label_bars(ax, x, vals, size=12)
+ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
+ax.set_ylabel("mean R² contribution", fontsize=10.5, color=INK2)
+style(ax,
+      "Source F: the internal number is mostly USDA restating BLS",
+      "Roughly seven eighths of F's apparent internal contribution disappears once "
+      "columns that restate Source B are removed. The external number does not move.")
+plt.show()
+''')
 
-The premise was wrong anyway: uniform reading takes stub industry coverage from
-6.1% to **34.0%**, thin from 9.7% to 34.9%. Their pages are not empty.
+md("""
+**Seven eighths of F's apparent internal contribution is USDA restating industry
+composition BLS already measures.** That redundancy is real inside the six-pillar
+system and does not bind against outcomes outside it — the same ablation moves F's
+external figure by 0.0003, which is why the external arm is the one the verdict
+rests on.
 
-**Source E — four volume tiers** on `num_returns`: T1 (<2.2k), T2 (2.2k–11.7k), T3
-(11.7k–100k), T4 (≥100k). Here the groups did more than guide feature choice.
-
-T1 and T4 are each roughly 10% of counties. **T1 holds 0.14% of national investment
-income; T4 holds 82.6%.** So an unweighted county feature and the economy it claims
-to describe are not the same object — national aggregate ratio 0.156 against an
-unweighted county mean of 0.107.
-
-Two earlier conclusions were corrected by the split. **Round 1 had the stability
-backwards**: on ranks, Spearman stability *improves* with size (0.861 → 0.941) and
-median year-over-year moves *rise* with size (0.298 → 0.393) — so round 1's proposed
-fix of weighting by `num_returns` would have upweighted exactly the counties whose
-values move most between vintages. And **the dispersion is not sampling noise**:
-regressing log dispersion on log median returns gives a slope of +0.026, where pure
-sampling error would give −0.5. Small counties' spread is real economic variation.
-
-**Net from the assigned work.** Neither pillar branches on its groups. Source A
-ships one uniform schema. Source E ships with an explicit warning that its best
-cross-pillar result is conditional on county size. The groups did their job by
-changing what gets **shipped** and what gets **disclosed**, not by becoming part of
-the model.
-
-## A5 — Pillar vintages
+## A6 — Pillar vintages
 """)
 
 code('''
@@ -914,7 +1103,7 @@ display(v[["Pillar", "As of", "Reference period", "Update cadence"]].set_index("
 ''')
 
 md("""
-## A6 — For the consuming team, when it comes to that
+## A7 — For the consuming team, when it comes to that
 
 **The warning that matters more than which columns ship.** An impression-level
 training table joined to `E_macro` carries only 3,143 distinct feature values, so
@@ -928,7 +1117,7 @@ suppression flag at all — a model must be able to tell "missing" from "zero."
 **Size columns are held out deliberately** in `SIZE_COLUMNS`, so a pillar can be
 re-derived at a coarser geography; they are not features.
 
-## A7 — Artifact index
+## A8 — Artifact index
 
 Every figure above is computed from a committed artifact. Nothing is hardcoded.
 
