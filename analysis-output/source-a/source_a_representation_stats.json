@@ -201,6 +201,35 @@
         "cluster_mean_p": 0.08888149405363471
       }
     },
+    "sections_per_tier": {
+      "mean_lift": 0.0012385397955518376,
+      "median_lift": 0.0014078809191524488,
+      "mean_r2_alone": 0.0477118206826728,
+      "n_wins_vs_incumbent": 16,
+      "mean_difference": 6.219463346445107e-05,
+      "wilcoxon_statistic": 168.0,
+      "wilcoxon_p": 0.43800119310617447,
+      "effect": {
+        "n": 28,
+        "mean": 6.219463346445107e-05,
+        "median": 0.0009377971568372834,
+        "sd": 0.007555843480023955,
+        "dz": 0.008231328987806652,
+        "power": 0.054536258407957505,
+        "n_for_80": 2000,
+        "n_for_90": 2000
+      },
+      "clustering": {
+        "n_nominal": 28,
+        "n_clusters": 5,
+        "mean_cluster_size": 3.25,
+        "icc": 0.0,
+        "design_effect": 1.0,
+        "n_effective": 28.0,
+        "power_at_effective_n": 0.054536258407957505,
+        "cluster_mean_p": 0.21292724687925002
+      }
+    },
     "pca50": {
       "mean_lift": 0.0016426814201229473,
       "median_lift": 0.0005701138331887234,
@@ -270,6 +299,7 @@
       "extracted_full": 0.0018450137,
       "extracted_sections": 0.00244464,
       "sections_x_tier": 0.0026906093,
+      "sections_per_tier": -6.62595e-05,
       "pca50": 0.0018335344,
       "full": 0.0026930315
     },
@@ -282,6 +312,7 @@
       "extracted_full": 0.001640968,
       "extracted_sections": 0.0018042471,
       "sections_x_tier": 0.0001303444,
+      "sections_per_tier": 0.0016981105,
       "pca50": 0.0006589591,
       "full": 0.0020821119
     },
@@ -294,6 +325,7 @@
       "extracted_full": 0.0014482993,
       "extracted_sections": 0.0015296615,
       "sections_x_tier": 0.0033091562,
+      "sections_per_tier": 0.0036820133,
       "pca50": 0.0003405187,
       "full": 0.0016292317
     },
@@ -306,6 +338,7 @@
       "extracted_full": 0.0045072658,
       "extracted_sections": 0.0052955958,
       "sections_x_tier": 0.0015005344,
+      "sections_per_tier": 0.0016481695,
       "pca50": 0.0004740258,
       "full": 0.0025177034
     },
@@ -318,6 +351,7 @@
       "extracted_full": 0.0215777869,
       "extracted_sections": 0.02181696,
       "sections_x_tier": 0.0124285363,
+      "sections_per_tier": 0.0182157635,
       "pca50": 0.0058519336,
       "full": 0.0111222752
     }
@@ -364,6 +398,12 @@
       "rich": 0.0025317092,
       "stub": 0.000898646,
       "thin": 0.0020030248
+    },
+    "sections_per_tier": {
+      "mid": -0.0002160514,
+      "rich": 0.0051966831,
+      "stub": 0.0071091105,
+      "thin": 0.0021284383
     },
     "sections_x_tier": {
       "mid": 0.0009103913,

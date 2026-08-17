@@ -1275,11 +1275,30 @@ flat 29-column `extracted_sections` block:
 |---|---|---|
 | one model, one global coefficient per feature | 29 | **+0.00307** |
 | one model, coefficients free to vary by tier | 120 | +0.00279 |
-| four independent models, one per tier | 29 × 4 fits | **−0.01595** |
+| four independent models, one per tier | 29 × 4 fits | **+0.00124** |
 
-*The first two rows are the 2026-08-04 Census-population re-score (§18); the
-third was measured once against the retired baseline and not re-run, since a
-result that far negative does not turn on a fourth-decimal baseline change.*
+**Corrected 2026-08-17.** The third row previously read **−0.01595**, carried
+over from a measurement against the retired tax-return baseline and never
+re-run. It is now computed under the current Census-population baseline as the
+`sections_per_tier` variant in `analyze_source_a_representation.py`, and the
+figure moves from −0.01595 to **+0.00124** — still the worst of the three, and
+not negative.
+
+Two things changed at once, and both push the same way:
+
+- **The baseline.** The old figure was scored against the retired size proxy
+  (§18).
+- **What is refitted.** `sections_per_tier` fits the *Source A block* separately
+  within each tier while the size-and-state controls stay shared and fitted on
+  all training rows, exactly as every other variant has them. That isolates the
+  branching decision. Refitting the controls per tier as well would change two
+  things at once and make the lift incomparable to the rest of the table; it
+  would also score far worse, which is the likeliest source of the old figure's
+  magnitude.
+
+The conclusion of this section is unchanged and slightly better supported: the
+loss still scales with branching, and it is now a gradient measured under one
+baseline rather than two rows from one run and a third from another.
 
 One thing the re-score did change, and it belongs on the record: the
 tier-crossed variant's paired test against the incumbent now reads p = 0.040
@@ -1292,8 +1311,28 @@ demonstrated gap.
 
 **Both branching forms lose, and the loss scales with how much branching there
 is.** Tier-specific slopes cost 9% of the lift. Fully separate per-tier models
-go negative — worse than dropping Source A entirely — because each trains on
-roughly a quarter of the rows and overfits, with no shared penalty to restrain it.
+cost **60%**, landing at +0.00124 — barely above the +0.00118 that the single
+`content_length` scalar achieves, so separate fits give back essentially
+everything the typed block and the section refetch bought. Each trains on
+roughly a quarter of the rows and overfits, with no shared penalty to restrain
+it.
+
+**Per tier, the trade is visible rather than inferred** (`mean_lift_by_tier` in
+`source_a_representation_stats.json`):
+
+| tier | counties | flat | crossed | separate |
+|---|---|---|---|---|
+| stub | 294 | +0.00097 | +0.00522 | **+0.00711** |
+| thin | 1,274 | +0.00264 | +0.00254 | +0.00213 |
+| mid | 788 | +0.00195 | +0.00091 | **−0.00022** |
+| rich | 788 | +0.00559 | +0.00540 | +0.00520 |
+
+Branching does what it was designed to do — the stub tier improves monotonically
+with every step away from a shared fit, ending 7× the flat model — and mid moves
+monotonically the other way into negative territory. Mid holds 2.7× as many
+counties as stub, so the pooled mean follows mid. **The instinct behind the
+assignment was right; the arithmetic was not.** The stub column rests on 21
+targets rather than 28 and is the noisiest cell in the table.
 
 The mechanism is ordinary bias-variance. Crossing 29 features with 4 tiers puts
 120 columns against targets whose smallest sample is n ≈ 1,026, and the ridge
@@ -1315,10 +1354,15 @@ the model has more data to learn from when it is not partitioned.
   coefficients or by separate per-tier fits — reduced out-of-fold lift, so the
   shipped configuration uses one uniform schema and one model."
 - **Forbidden wording**: "the tiers do not matter" — they determined the feature
-  set and the refetch decision; only the modeling split failed.
-- **Status**: resolved. `sections_x_tier` is retained as a scored variant in
-  `analyze_source_a_representation.py` so the negative result stays reproducible
-  rather than becoming folklore.
+  set and the refetch decision; only the modeling split failed. "Separate
+  per-tier fits go negative" — that was the retired-baseline figure, corrected
+  above to +0.00124. "Branching never helped" — it helped the stub tier at every
+  step, and helped it most where it branched hardest.
+- **Status**: resolved. Both branching forms are retained as scored variants in
+  `analyze_source_a_representation.py` — `sections_x_tier` and
+  `sections_per_tier` — so the negative result stays reproducible rather than
+  becoming folklore, and so no row of the table above depends on a baseline the
+  project no longer uses.
 
 ## 16. Repairing the Cross-Pillar Sweeps After Source A's Expansion (2026-08-03)
 

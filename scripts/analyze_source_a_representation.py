@@ -70,6 +70,19 @@ whether county size is a control or part of the target:
   so a mean lift across all counties can hide a gain that exists only where there
   was text to read. The breakout reuses the same out-of-fold predictions rather
   than refitting per tier, so it adds no model and no extra penalty selection.
+
+Branching is tested in two forms, weakest first, so the cost of it can be read as
+a gradient rather than a verdict:
+
+- **`sections_x_tier`** keeps one model and one penalty but crosses the block with
+  tier membership, so each (feature, tier) pair gets its own coefficient. The
+  shared fit is weakened, not abandoned: a tier with nothing to say is shrunk by a
+  penalty the other tiers helped choose.
+- **`sections_per_tier`** abandons it. Each tier's block is fitted on that tier's
+  rows alone, selecting its own penalty, borrowing no strength from the others.
+  The controls stay shared so the lift remains comparable to every other variant.
+  This arm replaces a figure previously carried in the findings against a retired
+  baseline; it is now computed under the current one.
 """
 
 from __future__ import annotations
@@ -171,6 +184,11 @@ VARIANTS: tuple[Variant, ...] = (
         "typed features x content tier",
         len(TIER_LABELS) * (1 + len(VARIANT_COLUMNS["extracted_sections"])),
     ),
+    Variant(
+        "sections_per_tier",
+        "typed features, one model fitted per tier",
+        len(VARIANT_COLUMNS["extracted_sections"]),
+    ),
     Variant("pca50", f"bge-m3, {N_COMPONENTS} principal components", N_COMPONENTS),
     Variant("full", "bge-m3, all 1024 dimensions", 1024),
 )
@@ -195,6 +213,17 @@ EXTRACTED_KEYS: tuple[str, ...] = (
 # letting coefficients vary by tier buys anything over a single global fit.
 TIER_INTERACTION_KEY: str = "sections_x_tier"
 TIER_INTERACTION_BASE: str = "extracted_sections"
+
+# The fully-separate arm: the same block, but fitted independently within each
+# tier instead of once across the corpus. `sections_x_tier` weakens the shared
+# fit; this one abandons it. Together they bracket how much branching costs.
+PER_TIER_FITS_KEY: str = "sections_per_tier"
+
+# Training rows a tier must contribute inside a fold before it gets its own fit.
+# Below this the separate model has less data than it has columns, so the honest
+# behaviour is to fall back to the controls rather than to fit noise -- which is
+# itself part of what makes fully separate fits a bad architecture.
+MIN_TIER_FIT_ROWS: int = 60
 
 
 def configure_logging() -> None:
@@ -349,6 +378,64 @@ def _residual_oof_predictions(
     return predictions
 
 
+def _per_tier_oof_predictions(
+    base_design: np.ndarray,
+    block: np.ndarray,
+    y: np.ndarray,
+    folds: KFold,
+    n_components: int | None,
+    row_tiers: np.ndarray,
+) -> np.ndarray:
+    """Out-of-fold predictions when each tier gets its own Source A model.
+
+    This is the fully-separate arm of the branching question. Within each fold
+    the Source A block is fitted independently on each tier's training rows and
+    used only on that tier's held-out rows, so no tier's estimate borrows
+    strength from another and each ridge selects its own penalty.
+
+    **The controls stay shared.** They are fitted once per fold on all training
+    rows, exactly as in `_residual_oof_predictions`. Refitting size and state per
+    tier as well would change two things at once and make the lift incomparable
+    to every other variant; holding them fixed isolates the one decision under
+    test, which is whether the Source A representation should be fitted per
+    tier.
+
+    A tier with fewer than `MIN_TIER_FIT_ROWS` training rows in a fold gets no
+    model and falls back to the controls. That is not a workaround: it is what a
+    separate per-tier architecture actually has to do when a tier is too small
+    to fit, and counting it honestly is part of the comparison.
+
+    Args:
+        base_design: Size-plus-state control array.
+        block: Source A representation for the same rows.
+        y: Target vector.
+        folds: Crossvalidation splitter.
+        n_components: PCA components to retain, or None to skip reduction.
+        row_tiers: Tier label per row.
+
+    Returns:
+        Out-of-fold prediction per row.
+    """
+    predictions = np.empty(len(y))
+    for train_idx, test_idx in folds.split(base_design):
+        controls = _baseline_pipeline().fit(base_design[train_idx], y[train_idx])
+        residuals = y[train_idx] - controls.predict(base_design[train_idx])
+        fold_predictions = controls.predict(base_design[test_idx])
+
+        train_tiers, test_tiers = row_tiers[train_idx], row_tiers[test_idx]
+        for tier in TIER_LABELS:
+            train_mask, test_mask = train_tiers == tier, test_tiers == tier
+            if not test_mask.any() or train_mask.sum() < MIN_TIER_FIT_ROWS:
+                continue
+            model = _residual_pipeline(n_components).fit(
+                block[train_idx][train_mask], residuals[train_mask]
+            )
+            fold_predictions[test_mask] += model.predict(block[test_idx][test_mask])
+
+        predictions[test_idx] = fold_predictions
+    return predictions
+
+
 def _alone_oof_r2(block: np.ndarray, y: np.ndarray, folds: KFold, n_components: int | None) -> float:
     """Out-of-fold R2 of one representation with no size or state controls.
 
@@ -428,6 +515,9 @@ def build_variant_blocks(
         build_tier_interaction_block(blocks[TIER_INTERACTION_BASE][0], row_tiers),
         None,
     )
+    # Same columns as the flat block: what differs is how it is fitted, not what
+    # is in it. `score_target` routes this key to `_per_tier_oof_predictions`.
+    blocks[PER_TIER_FITS_KEY] = blocks[TIER_INTERACTION_BASE]
     return blocks
 
 
@@ -476,7 +566,13 @@ def score_target(
     blocks = build_variant_blocks(matrix, embeddings, rows, row_tiers)
     for variant in VARIANTS:
         block, n_components = blocks[variant.key]
-        predictions = _residual_oof_predictions(base_design, block, y, folds, n_components)
+        predictions = (
+            _per_tier_oof_predictions(
+                base_design, block, y, folds, n_components, row_tiers
+            )
+            if variant.key == PER_TIER_FITS_KEY
+            else _residual_oof_predictions(base_design, block, y, folds, n_components)
+        )
         record[f"lift_{variant.key}"] = float(r2_score(y, predictions)) - r2_baseline
         record[f"r2_alone_{variant.key}"] = _alone_oof_r2(block, y, folds, n_components)
 

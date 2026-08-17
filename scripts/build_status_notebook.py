@@ -37,11 +37,8 @@ generator were removed in the commit that added this file; recover them from git
 history if needed.
 
 Every figure is computed from the committed artifacts in outputs/ and
-analysis-output/, which were regenerated from data/*.parquet on 2026-08-13, with
-**one deliberate exception**: the four-independent-models bar in section 2 is
-quoted from source-a-findings.md section 14.1, because it was measured once
-against a since-retired baseline and never re-run. It is hatched in the figure and
-called out in that figure's subtitle so it cannot be mistaken for a fresh number.
+analysis-output/, which were regenerated from data/*.parquet on 2026-08-13.
+Nothing here is hardcoded -- a number that moves upstream moves in the notebook.
 
 Wording in the Source A and Source F sections is constrained by
 analysis-output/cross-source/pillar-marginal-findings.md section 9. See the
@@ -381,90 +378,93 @@ why a lead-text vector would be information-poor; the measurements above are wha
 actually retired it.
 
 **Then branching lost on its own terms, and the loss scaled with how much branching
-there was.**
+there was.** Three ways to fit the *same* 29 columns, from most shared to least:
+
+- **One model, one coefficient per feature.** `has_port` means one thing
+  everywhere. This is what ships.
+- **One model, coefficients free to vary by tier.** Each county's features are
+  placed in the slot belonging to its tier and zeroed in the others, so the model
+  estimates a separate `has_port` coefficient for stub counties, for thin, for mid
+  and for rich — 29 features × 4 tiers = **120 columns**, plus a tier dummy so the
+  intercept can shift too. One training set and **one shared penalty**: a tier with
+  nothing to say still gets shrunk by a penalty the other tiers helped choose.
+- **Four models, one fitted per tier.** The shared fit is abandoned. Each tier's
+  model sees only its own counties and picks its own penalty, borrowing no
+  strength from the others.
 """)
 
 code('''
-# The third bar is quoted from source-a-findings.md section 14.1, not recomputed:
-# it was measured once against a baseline that has since been retired and was not
-# re-run, because a result that far negative does not turn on a fourth-decimal
-# baseline change. Marked hatched in the figure and stated in the subtitle so it is
-# never mistaken for a fresh number. Every other figure in this notebook is
-# computed from the artifacts.
-PER_TIER_FITS = -0.01595
-
-arms = [
-    ("One model,\\none coefficient per feature",
-     arep["variants"]["extracted_sections"]["mean_lift"], BLUE, None),
-    ("One model, coefficients\\nfree to vary by tier",
-     arep["variants"]["sections_x_tier"]["mean_lift"], MUTED, None),
-    ("Four independent models,\\none per tier",
-     PER_TIER_FITS, CRITICAL, "//"),
+ARMS = [
+    ("One model,\\none coefficient per feature", "extracted_sections", BLUE),
+    ("One model, coefficients\\nfree to vary by tier", "sections_x_tier", MUTED),
+    ("Four models,\\none fitted per tier", "sections_per_tier", CRITICAL),
 ]
-x = np.arange(len(arms))
-vals = [a[1] for a in arms]
+x = np.arange(len(ARMS))
+vals = [arep["variants"][k]["mean_lift"] for _, k, _ in ARMS]
+
 fig, ax = plt.subplots(figsize=(11, 4.4))
-ax.bar(x, vals, 0.5, color=[a[2] for a in arms],
-       hatch=[a[3] for a in arms], edgecolor=SURFACE, linewidth=0)
-ax.axhline(0, color=INK2, linewidth=0.8)
+ax.bar(x, vals, 0.5, color=[c for _, _, c in ARMS])
 ax.set_xticks(x)
-ax.set_xticklabels([a[0] for a in arms])
-pad = (max(vals) - min(vals)) * 0.22
-ax.set_ylim(min(vals) - pad, max(vals) + pad)
+ax.set_xticklabels([a for a, _, _ in ARMS])
+ax.set_ylim(0, max(vals) * 1.2)
 label_bars(ax, x, vals, "{:+.5f}", size=12)
 ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
 ax.set_ylabel("mean R² lift over the baseline", fontsize=10.5, color=INK2)
 style(ax,
-      "The more the model branches, the worse it does",
-      "Same 28 targets, same folds, same seed. The hatched bar is quoted from "
-      "source-a-findings.md §14.1 against a since-retired baseline, not recomputed.")
+      "Every step away from one shared fit costs lift",
+      f"Same 28 targets, same folds, same seed, same 29 columns. Only the way they "
+      f"are fitted changes. Separate fits keep "
+      f"{vals[2] / vals[0]:.0%} of what the flat model achieves.")
 plt.show()
 ''')
 
 md("""
-Letting coefficients vary by tier costs **9%** of the lift. Fitting four
-independent models goes **negative — worse than dropping Source A entirely.**
+Letting coefficients vary by tier costs **9%** of the lift. Fitting four separate
+models costs **60%** — it is still positive, but it gives back most of what the
+section refetch bought, landing barely above the single `content_length` scalar
+Source A used to ship.
 
-**But the aggregate hides something, and it is the more interesting result.**
-Branching did not fail everywhere. It failed on balance.
+**And the aggregate hides something more interesting.** Branching did not fail
+everywhere. It failed on balance.
 """)
 
 code('''
 by_tier = pd.read_csv(OUTPUTS / "source_a_representation_by_tier.csv")
-pair = (by_tier[by_tier["variant"].isin(["extracted_sections", "sections_x_tier"])]
-        .groupby(["variant", "tier"])["lift"].mean().unstack())
-tiers = [t for t in A_TIERS if t in pair.columns]
-flat = [pair.loc["extracted_sections", t] for t in tiers]
-crossed = [pair.loc["sections_x_tier", t] for t in tiers]
+keys = [k for _, k, _ in ARMS]
+per_tier = (by_tier[by_tier["variant"].isin(keys)]
+            .groupby(["variant", "tier"])["lift"].mean().unstack())
+tiers = [t for t in A_TIERS if t in per_tier.columns]
 n_by_tier = [asec["by_tier"][t]["n_counties"] for t in tiers]
 
 x = np.arange(len(tiers))
-w = 0.38
-fig, ax = plt.subplots(figsize=(11.5, 4.6))
-ax.bar(x - w / 2, flat, w, color=BLUE, label="one flat model")
-ax.bar(x + w / 2, crossed, w, color=CRITICAL, label="coefficients free to vary by tier")
+w = 0.26
+fig, ax = plt.subplots(figsize=(11.5, 4.8))
+for i, (label, key, colour) in enumerate(ARMS):
+    vals = [per_tier.loc[key, t] for t in tiers]
+    ax.bar(x + (i - 1) * w, vals, w, color=colour,
+           label=label.replace("\\n", " "))
+    label_bars(ax, x + (i - 1) * w, vals, "{:+.4f}", size=8.5)
+ax.axhline(0, color=INK2, linewidth=0.8)
 ax.set_xticks(x)
 ax.set_xticklabels([f"{t}\\n{n:,} counties" for t, n in zip(tiers, n_by_tier)])
-ax.set_ylim(0, max(flat + crossed) * 1.2)
-label_bars(ax, x - w / 2, flat, "{:+.5f}", size=9.5)
-label_bars(ax, x + w / 2, crossed, "{:+.5f}", size=9.5)
 ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
 ax.set_ylabel("mean R² lift within the tier", fontsize=10.5, color=INK2)
 style(ax,
-      "Branching helped the tier it was aimed at, and hurt a bigger one",
-      "Lift measured inside each tier. Branching wins in stub — the sparsest tier, "
-      "and the one the idea was for — and loses in mid, which holds 2.7× as many "
-      "counties. The stub estimate rests on 21 targets rather than 28.",
+      "Branching helps the tier it was aimed at, and hurts a bigger one",
+      "Lift measured inside each tier. The more the fit splits, the better stub "
+      "does and the worse mid does — and mid holds 2.7× as many counties. The stub "
+      "estimate rests on 21 targets rather than 28.",
       legend=True)
 plt.show()
 ''')
 
 md("""
 **So the instinct was right and the arithmetic was not.** Branching was aimed at
-the counties whose articles say least, and in that tier it worked — **+0.00522
-against the flat model's +0.00097**, more than five times better. It is level in
-thin and rich. It loses in mid, and mid holds 2.7× as many counties as stub, so
-the weighted result goes the other way.
+the counties whose articles say least, and in that tier it worked — and it worked
+*more* the harder it branched: stub goes +0.00097 flat, +0.00522 crossed,
+**+0.00711** fully separate, seven times the flat model. Thin and rich barely move.
+Mid goes the other way at every step, +0.00195 → +0.00091 → **−0.00022**, and mid
+holds 2.7× as many counties as stub. The weighted result follows mid, not stub.
 
 **The mechanism is ordinary bias–variance, and it is worth being concrete about.**
 Crossing 29 features with 4 tiers puts **120 columns** against targets whose
