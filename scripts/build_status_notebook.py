@@ -294,10 +294,11 @@ parameters.
 **The answer, for both pillars: no.** Neither should branch. Sections 2 and 3 are
 what the groups exposed; section 4 is why branching loses anyway.
 
-**What the groups were worth regardless.** They killed Source A's embedding, picked
-the feature family that replaced it, corrected a Source E conclusion from round 1
-that was backwards, and forced a disclosure that now ships with the pillar. The
-tiers were never going to be the deliverable — they were the instrument.
+**What the groups were worth regardless.** They picked the feature family Source A
+now ships, showed where to go looking for it, corrected a Source E conclusion from
+round 1 that was backwards, and forced a disclosure that now travels with the
+pillar. The tiers were never going to be the deliverable — they were the
+instrument.
 
 ---
 
@@ -306,7 +307,16 @@ tiers were never going to be the deliverable — they were the instrument.
 Counties split on the length of their Wikipedia lead section: **stub** (<100
 characters), **thin** (100–283), **mid** (284–461), **rich** (≥462).
 
-**The first thing the split showed is the reason the embedding had to go.**
+**One piece of context first, because it is why Source A looks the way it does.**
+Source A used to ship a 1,024-dimension `bge-m3` embedding of each county's lead
+section. It was cut, on its own evidence rather than on anything below: k-means
+over the vectors peaks at a silhouette of **0.028**, meaning no recoverable cluster
+structure, and head to head against the 29 typed columns that replaced it the two
+are a **statistical tie** — mean difference +0.0003, 11 of 28 targets, p = 0.52.
+A 2.2GB model download and CPU inference over 3,144 articles, for a tie.
+
+**What the tiers then contributed was the answer to "so what do we build
+instead?"** The split showed where economic content actually lives in the corpus.
 """)
 
 code('''
@@ -323,7 +333,7 @@ n_by_tier = [asec["by_tier"][t]["n_counties"] for t in tiers]
 
 x = np.arange(len(tiers))
 fig, ax = plt.subplots(figsize=(11, 4.6))
-ax.bar(x, lead, 0.55, color=BLUE, label="named in the lead section (all the embedding saw)")
+ax.bar(x, lead, 0.55, color=BLUE, label="named in the lead section")
 ax.bar(x, added, 0.55, bottom=lead, color=AQUA,
        label="added by reading economy sections")
 ax.set_xticks(x)
@@ -344,30 +354,31 @@ ax.yaxis.set_major_formatter(PercentFormatter(xmax=1, decimals=0))
 ax.set_ylabel("counties naming an industry", fontsize=10.5, color=INK2)
 style(ax,
       "Reading past the lead is what rescues the sparse tiers",
-      "Share of counties whose article names an industry. The lead section — the "
-      "only text the embedding read — leaves the two thinnest tiers, half of all "
-      "counties, almost entirely blank.",
+      "Share of counties whose article names an industry. Blue is the lead section "
+      "alone; green is what economy sections add. Corpus-wide this took industry "
+      "coverage from 8.2% to 18.8%, and it is why the article bodies were refetched.",
       legend=True)
 plt.show()
 ''')
 
 md("""
-**What that killed.** Averaging a 1,024-dimension vector over 3,144 articles, when
-only the rich tier reliably says anything economic, produces a vector dominated by
-counties saying nothing. The tiers made that visible as a distribution rather than
-an intuition, and the embedding was cut on it.
+**Two decisions came out of this chart, and neither is the embedding one.**
 
-**What it picked.** The same gradient identified *industry* as the feature family
-worth extracting — which is what the 29 typed columns that replaced the embedding
-are built around.
+**It picked the feature family.** The gradient in the blue bars — 0.7% of stub
+articles naming an industry against 25.3% of rich — is what identified *industry*
+as the thing worth extracting at all. The 29 typed columns Source A ships are built
+around that choice.
 
-**And it showed the branching premise was wrong.** The green segments are the fix
-that actually worked: reading economy-titled sections as well as the lead. It helps
-the sparse tiers most — stub coverage goes from 0.7% to **6.1%**, thin from 1.1% to
-**9.7%**, against rich's 25.3% to 39.0%. So the thin tiers are not empty pages;
-they are pages whose economic content sits below the lead. **Reading *more* for
-everyone beat reading *differently* by tier** — which is the first hint of the
-answer section 4 gives.
+**It showed where to find more of it, and that the fix was uniform.** The green
+segments are what reading economy-titled sections adds. They help the sparse tiers
+most — stub goes from 0.7% to **6.1%**, thin from 1.1% to **9.7%**, against rich's
+25.3% to 39.0%. So the thin tiers are not empty pages; they are pages whose
+economic content sits below the lead. **Reading *more* for everyone beat reading
+*differently* by tier** — the first hint of the answer section 4 gives.
+
+The chart is a diagnosis of the corpus, not a verdict on the embedding. It explains
+why a lead-text vector would be information-poor; the measurements above are what
+actually retired it.
 
 **Then branching lost on its own terms, and the loss scaled with how much branching
 there was.**
