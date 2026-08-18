@@ -41,7 +41,34 @@ selects text per county from `variant.tier_scope[tier]`, and `encode_variant`
 mean-pools that county's chunks independently of every other county. Therefore an
 arm defined as *"`uniform` everywhere except tier T reads its lead only"* is a
 **row-wise splice of the `uniform` and `lead_only` arrays that the script already
-computes**, and is bit-identical to what a fresh encode would produce.
+computes**.
+
+**Corrected 2026-08-18, after the check failed.** An earlier draft of this spec
+claimed the splice is *bit-identical* to a fresh encode. It is not, and the
+`--verify-splice` gate caught it: splice and real encode agree to ~1.6e-7, not to
+1e-12. Measured cause, and it is **not** a GPU artifact:
+
+| | same batch composition | different composition |
+|---|---|---|
+| `mps` | 0.000e+00 | 1.104e-07 |
+| `cpu` | 0.000e+00 | 1.043e-07 |
+
+`sentence-transformers` buckets by length and pads per batch, so a differently
+sized `flat` chunk list changes padding and grouping and perturbs the numerics on
+any device. Forcing CPU does not fix it.
+
+What survives, and what the design now claims:
+
+- **The splice is conceptually exact.** Identical composition reproduces
+  bitwise (0.000e+00). Each arm's composition is fixed by its own text rule, so
+  re-running the pipeline still reproduces its own artifacts exactly — the
+  notebook's "no drift" provenance claim is unaffected. The 1e-7 appears only
+  when comparing *different* arms' encodes, which the pipeline never does.
+- **The splice is the more rigorous construction, not merely the cheaper one.**
+  A spliced `drop_T` differs from `uniform` in tier T and nowhere else, because
+  the untouched rows *are* `uniform`'s rows. Encoding each arm for real would
+  perturb the untouched tiers by padding noise, putting ~1e-7 of drift into
+  precisely the tiers the drop-one contrast holds fixed.
 
 | Arm | stub | thin | mid | rich |
 |---|---|---|---|---|
@@ -182,8 +209,14 @@ lift. This sharpens the account of *why* branching lost; it does not reopen what
 
 - `outputs/source_a_tiered_embedding.csv` byte-identical to its committed version
   after the run — the pooled path must be untouched by this change.
-- Spliced `drop_*` vectors verified equal to a fresh encode of the same tier rule for
-  one arm, asserting the splice argument rather than trusting it.
+- **The splice gate, in its corrected two-part form.** Bitwise equality is not the
+  claim, so it is not the test. For one arm, encoded for real and compared against
+  its splice: (a) vectors agree to better than `1e-5`, comfortably above the
+  ~1.6e-7 the padding noise produces and far below anything that could matter; and
+  (b) — the part that actually licenses the design — the resulting **lifts** agree
+  to better than `1e-6`, an order below the `1e-5` precision every lift in this
+  notebook is reported at, so the difference cannot move a printed digit. A gate on
+  the number we publish beats a gate on a bitwise property we never needed.
 - Tier-sliced lifts reconcile against the pooled lift for `uniform` (n-weighted mean
   across tiers, within float tolerance).
 - Notebook regenerated from the generator and the section-2 chart renders.

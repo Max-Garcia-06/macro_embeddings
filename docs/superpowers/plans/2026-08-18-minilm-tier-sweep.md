@@ -4,7 +4,7 @@
 
 **Goal:** Break the MiniLM encoder arms out by content tier and add four drop-one sweep arms, so section 2 can say *where* tier-conditional reading loses rather than only *that* it loses.
 
-**Architecture:** Four new arms are produced by row-wise splicing of the `uniform` and `lead_only` vector arrays the script already computes — a county's vector depends only on its own tier's text rule, so the splice is bit-identical to a fresh encode and costs no forward passes. Per-tier scoring keeps the pooled fit and slices only the out-of-fold predictions, transplanting the pattern already used for the typed-column arms.
+**Architecture:** Four new arms are produced by row-wise splicing of the `uniform` and `lead_only` vector arrays the script already computes — a county's vector depends only on its own tier's text rule, so the splice costs no forward passes, and it holds the untouched tiers exactly fixed rather than perturbing them. Per-tier scoring keeps the pooled fit and slices only the out-of-fold predictions, transplanting the pattern already used for the typed-column arms.
 
 **Tech Stack:** Python 3.12+, `uv`, numpy, pandas, scikit-learn, sentence-transformers, nbformat, matplotlib.
 
@@ -378,9 +378,48 @@ def verify_splice(model, matrix: pd.DataFrame, sections: pd.DataFrame) -> None:
 
     largest = float(np.abs(spliced - encoded).max())
     logger.info("splice vs encode, largest absolute difference: %.3e", largest)
-    assert largest < 1e-12, f"splice is not equivalent to encoding: max diff {largest}"
-    logger.info("splice verified against a real encode")
+    assert largest < VECTOR_TOLERANCE, (
+        f"splice and encode disagree by {largest:.3e}, above {VECTOR_TOLERANCE:.0e}"
+    )
+
+    # Vector agreement is necessary but not sufficient. What licenses the design
+    # is that no number this notebook prints can move: every lift is reported at
+    # 1e-5, so score both arms and require agreement an order below that.
+    scores = score_blocks(
+        matrix, {"spliced": (spliced, None), "encoded": (encoded, None)}, targets
+    )
+    wide = scores.pivot(index="column", columns="representation", values="lift")
+    lift_gap = float((wide["spliced"] - wide["encoded"]).abs().max())
+    logger.info(
+        "largest lift difference across %d targets: %.3e", len(wide), lift_gap
+    )
+    assert lift_gap < LIFT_TOLERANCE, (
+        f"splice changes a published lift by {lift_gap:.3e}, "
+        f"above {LIFT_TOLERANCE:.0e}"
+    )
+    logger.info("splice verified: vectors within tolerance, published lifts unmoved")
 ```
+
+Add the two tolerances beside the other module constants, each carrying the measured
+number that justifies it:
+
+```python
+# Batched encoding is not composition-invariant: `sentence-transformers` buckets by
+# length and pads per batch, so a differently sized chunk list perturbs the numerics.
+# Measured at ~1.1e-7 on both `mps` and `cpu` -- it is padding, not the GPU, and
+# forcing CPU does not remove it. Identical composition reproduces bitwise, which is
+# why the pipeline's own reruns stay exact. Bitwise equality across *arms* was never
+# achievable and is not the claim.
+VECTOR_TOLERANCE: float = 1e-5
+
+# Every lift in the notebook is printed at 1e-5. Requiring agreement an order below
+# that means the splice cannot change a digit anyone reads.
+LIFT_TOLERANCE: float = 1e-6
+```
+
+`verify_splice` now needs the targets list, so give it one more parameter —
+`def verify_splice(model, matrix, sections, targets) -> None:` — and document it in the
+docstring's Args as "Targets to score, for the published-lift comparison."
 
 Rewrite `main()`'s signature and entry point to accept the flag:
 
@@ -392,7 +431,7 @@ Immediately after `model = SentenceTransformer(ENCODER_NAME)` in `main()`, add:
 
 ```python
     if verify_only:
-        verify_splice(model, matrix, sections)
+        verify_splice(model, matrix, sections, targets)
         return
 ```
 
@@ -415,7 +454,22 @@ if __name__ == "__main__":
 uv run scripts/analyze_source_a_tiered_embedding.py --verify-splice
 ```
 
-Expected: a log line `splice vs encode, largest absolute difference:` with a value below `1e-12`, then `splice verified against a real encode`, then exit without writing any artifact.
+Expected, in order:
+
+- `splice vs encode, largest absolute difference:` — around `1.6e-07`. This is the
+  padding noise described beside `VECTOR_TOLERANCE`, not a defect. It must be below
+  `1e-5`.
+- `largest lift difference across 28 targets:` — the number that matters. It must be
+  below `1e-6`, meaning the splice cannot move any lift the notebook prints.
+- `splice verified: vectors within tolerance, published lifts unmoved`
+
+Then it exits without writing any artifact.
+
+**If the vector difference lands far above ~1.6e-07** (say 1e-3), that is not padding
+noise and the splice logic is genuinely wrong — stop and report BLOCKED. **If the lift
+difference exceeds `1e-6`**, stop and report BLOCKED regardless of how small the vector
+difference is: that would mean the noise is reaching the published numbers, and the
+design needs revisiting rather than a wider tolerance.
 
 If this fails, **stop and do not proceed** — the entire cost argument for this task is invalid and the design needs revisiting, not the code.
 
