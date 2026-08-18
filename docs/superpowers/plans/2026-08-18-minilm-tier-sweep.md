@@ -789,7 +789,7 @@ ax.set_xticklabels([f"{t}\\n{n:,} counties" for t, n in zip(tiers, n_by_tier)])
 ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
 ax.set_ylabel("mean R² lift within the tier", fontsize=10.5, color=INK2)
 style(ax,
-      "The same answer from the encoder side: read more everywhere",
+      "Branching helps the tier it was aimed at, and the others pay for it",
       "Each arm holds every tier at full section depth except one, which falls "
       "back to its lead. Row-normalised vectors, so what is measured is the text "
       "read and not the vector length that reading more produces.",
