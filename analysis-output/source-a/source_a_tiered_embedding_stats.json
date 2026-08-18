@@ -83,6 +83,42 @@
       "mean_chars": 5523.685432569974,
       "counties_hitting_cap": 44.0,
       "chars_dropped_by_cap": 1305260.0
+    },
+    "drop_stub": {
+      "tier_variance_share": 0.04814414795926976,
+      "mean_norm_by_tier": {
+        "stub": 0.999999973360082,
+        "thin": 0.6900520788558624,
+        "mid": 0.6771817175862928,
+        "rich": 0.6275424360527335
+      }
+    },
+    "drop_thin": {
+      "tier_variance_share": 0.06805045344603654,
+      "mean_norm_by_tier": {
+        "stub": 0.7082383628361146,
+        "thin": 0.9998552836147365,
+        "mid": 0.6771817175862928,
+        "rich": 0.6275424360527335
+      }
+    },
+    "drop_mid": {
+      "tier_variance_share": 0.06977458938736289,
+      "mean_norm_by_tier": {
+        "stub": 0.7082383628361146,
+        "thin": 0.6900520788558624,
+        "mid": 0.9998042933697573,
+        "rich": 0.6275424360527335
+      }
+    },
+    "drop_rich": {
+      "tier_variance_share": 0.05836757131552568,
+      "mean_norm_by_tier": {
+        "stub": 0.7082383628361146,
+        "thin": 0.6900520788558624,
+        "mid": 0.6771817175862928,
+        "rich": 0.9599061379028994
+      }
     }
   },
   "representations": {
@@ -145,6 +181,46 @@
       "mean_lift": 0.0012026756682213893,
       "median_lift": 7.20837089750459e-05,
       "n_targets_beating_typed": 7
+    },
+    "drop_stub": {
+      "mean_lift": 0.002557291255148935,
+      "median_lift": 0.0008945338887390575,
+      "n_targets_beating_typed": 12
+    },
+    "drop_stub_l2": {
+      "mean_lift": 0.0034274326346904393,
+      "median_lift": 0.0009777706098246797,
+      "n_targets_beating_typed": 13
+    },
+    "drop_thin": {
+      "mean_lift": 0.001179636836492613,
+      "median_lift": 0.00017017127752416705,
+      "n_targets_beating_typed": 8
+    },
+    "drop_thin_l2": {
+      "mean_lift": 0.001626335519845895,
+      "median_lift": 0.00024199077111380918,
+      "n_targets_beating_typed": 11
+    },
+    "drop_mid": {
+      "mean_lift": 0.0010859338742360677,
+      "median_lift": 0.000355326836611769,
+      "n_targets_beating_typed": 9
+    },
+    "drop_mid_l2": {
+      "mean_lift": 0.001753009891594873,
+      "median_lift": 0.0005336262766736377,
+      "n_targets_beating_typed": 9
+    },
+    "drop_rich": {
+      "mean_lift": 0.003565306557289324,
+      "median_lift": 0.0012440379642076893,
+      "n_targets_beating_typed": 15
+    },
+    "drop_rich_l2": {
+      "mean_lift": 0.0036547873030745304,
+      "median_lift": 0.0010373987506123172,
+      "n_targets_beating_typed": 14
     },
     "typed_sections": {
       "mean_lift": 0.0030716815258553126,

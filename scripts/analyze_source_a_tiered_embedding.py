@@ -46,6 +46,7 @@ Read-only with respect to the shipped parquets.
 
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 from dataclasses import dataclass
@@ -67,7 +68,7 @@ from analyze_source_a_section_scope import (
     NARRATIVE_TITLE_PATTERN,
     select_sections,
 )
-from analyze_source_a_tiers import assign_tiers
+from analyze_source_a_tiers import TIER_LABELS, assign_tiers
 from extract_source_a_features import VARIANT_COLUMNS
 from extract_source_a_section_features import (
     ECONOMY_TITLE_PATTERN,
@@ -112,6 +113,18 @@ MAX_CHUNKS_PER_COUNTY: int = 64
 # question and 64 is where a projection starts being meaningfully cheaper to
 # serve than the typed block it competes with.
 PCA_COMPONENTS: int = 64
+
+# Batched encoding is not composition-invariant: `sentence-transformers` buckets by
+# length and pads per batch, so a differently sized chunk list perturbs the numerics.
+# Measured at ~1.1e-7 on both `mps` and `cpu` -- it is padding, not the GPU, and
+# forcing CPU does not remove it. Identical composition reproduces bitwise, which is
+# why the pipeline's own reruns stay exact. Bitwise equality across *arms* was never
+# achievable and is not the claim.
+VECTOR_TOLERANCE: float = 1e-5
+
+# Every lift in the notebook is printed at 1e-5. Requiring agreement an order below
+# that means the splice cannot change a digit anyone reads.
+LIFT_TOLERANCE: float = 1e-6
 
 logger = logging.getLogger(__name__)
 
@@ -245,6 +258,43 @@ def chunk_text(text: str) -> list[str]:
     return chunks[:MAX_CHUNKS_PER_COUNTY]
 
 
+def l2_normalize(vectors: np.ndarray) -> np.ndarray:
+    """Scale every row to unit length, leaving direction untouched.
+
+    Args:
+        vectors: Pooled county vectors.
+
+    Returns:
+        Row-normalized copy.
+    """
+    return vectors / np.clip(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12, None)
+
+
+def vector_tier_diagnostics(
+    vectors: np.ndarray, tiers: pd.Series
+) -> tuple[float, dict[str, float]]:
+    """Measure how much of a vector set's variance is explained by tier alone.
+
+    Args:
+        vectors: Pooled county vectors.
+        tiers: Content tier per county, aligned to `vectors`.
+
+    Returns:
+        Tuple of (between-tier variance share, mean vector norm per tier).
+    """
+    centred = vectors - vectors.mean(axis=0, keepdims=True)
+    total_ss = float((centred**2).sum())
+    between_ss = 0.0
+    tier_array = tiers.to_numpy()
+    for tier in TIER_LABELS:
+        mask = tier_array == tier
+        between_ss += float(mask.sum()) * float((centred[mask].mean(axis=0) ** 2).sum())
+    norms = np.linalg.norm(vectors, axis=1)
+    return between_ss / total_ss, {
+        tier: float(norms[tier_array == tier].mean()) for tier in TIER_LABELS
+    }
+
+
 def encode_variant(
     model, texts: pd.Series, tiers: pd.Series
 ) -> tuple[np.ndarray, dict[str, float]]:
@@ -282,14 +332,7 @@ def encode_variant(
     capped = sum(1 for text, chunks in zip(texts, chunked)
                  if len(text) > CHUNK_CHARS * MAX_CHUNKS_PER_COUNTY)
     dropped = sum(max(0, len(text) - CHUNK_CHARS * MAX_CHUNKS_PER_COUNTY) for text in texts)
-    centred = vectors - vectors.mean(axis=0, keepdims=True)
-    total_ss = float((centred**2).sum())
-    between_ss = 0.0
-    for tier in ("stub", "thin", "mid", "rich"):
-        mask = tiers.to_numpy() == tier
-        between_ss += float(mask.sum()) * float((centred[mask].mean(axis=0) ** 2).sum())
-
-    norms = np.linalg.norm(vectors, axis=1)
+    tier_variance_share, mean_norm_by_tier = vector_tier_diagnostics(vectors, tiers)
     chunk_counts = np.array([len(chunks) for chunks in chunked], dtype="float64")
     diagnostics = {
         "n_chunks": float(len(flat)),
@@ -299,14 +342,11 @@ def encode_variant(
         # construction rule itself, and tier is a size proxy the baseline already
         # controls for -- so any variance spent on it is variance not spent on
         # anything the model can use.
-        "tier_variance_share": between_ss / total_ss,
-        "mean_norm_by_tier": {
-            tier: float(norms[tiers.to_numpy() == tier].mean())
-            for tier in ("stub", "thin", "mid", "rich")
-        },
+        "tier_variance_share": tier_variance_share,
+        "mean_norm_by_tier": mean_norm_by_tier,
         "mean_chunks_by_tier": {
             tier: float(chunk_counts[tiers.to_numpy() == tier].mean())
-            for tier in ("stub", "thin", "mid", "rich")
+            for tier in TIER_LABELS
         },
         "mean_chars": float(texts.str.len().mean()),
         "counties_hitting_cap": float(capped),
@@ -359,7 +399,71 @@ def score_blocks(
     return pd.DataFrame.from_records(records)
 
 
-def main() -> None:
+def verify_splice(model, matrix: pd.DataFrame, sections: pd.DataFrame, targets) -> None:
+    """Assert a spliced arm equals a genuinely encoded one.
+
+    The sweep arms are built by copying rows between two existing vector sets
+    rather than by encoding new text. That is only valid because a county's
+    vector depends on no other county. This encodes `drop_rich` for real and
+    compares, so the claim is tested rather than asserted.
+
+    Args:
+        model: Loaded SentenceTransformer.
+        matrix: Feature matrix carrying `tier`, `embedding_text`, `county_name`.
+        sections: Long-format section frame.
+        targets: Targets to score, for the published-lift comparison.
+
+    Raises:
+        AssertionError: If the spliced and encoded arms differ.
+    """
+    uniform = TextVariant(
+        "uniform", "", {tier: ALL_TITLES for tier in TIER_LABELS}
+    )
+    lead_only = TextVariant("lead_only", "", {tier: None for tier in TIER_LABELS})
+    drop_rich = TextVariant(
+        "drop_rich",
+        "",
+        {"stub": ALL_TITLES, "thin": ALL_TITLES, "mid": ALL_TITLES, "rich": None},
+    )
+    uniform_vectors, _ = encode_variant(
+        model, build_variant_texts(matrix, sections, uniform), matrix["tier"]
+    )
+    lead_vectors, _ = encode_variant(
+        model, build_variant_texts(matrix, sections, lead_only), matrix["tier"]
+    )
+    encoded, _ = encode_variant(
+        model, build_variant_texts(matrix, sections, drop_rich), matrix["tier"]
+    )
+
+    tier_array = matrix["tier"].to_numpy()
+    spliced = uniform_vectors.copy()
+    spliced[tier_array == "rich"] = lead_vectors[tier_array == "rich"]
+
+    largest = float(np.abs(spliced - encoded).max())
+    logger.info("splice vs encode, largest absolute difference: %.3e", largest)
+    assert largest < VECTOR_TOLERANCE, (
+        f"splice and encode disagree by {largest:.3e}, above {VECTOR_TOLERANCE:.0e}"
+    )
+
+    # Vector agreement is necessary but not sufficient. What licenses the design
+    # is that no number this notebook prints can move: every lift is reported at
+    # 1e-5, so score both arms and require agreement an order below that.
+    scores = score_blocks(
+        matrix, {"spliced": (spliced, None), "encoded": (encoded, None)}, targets
+    )
+    wide = scores.pivot(index="column", columns="representation", values="lift")
+    lift_gap = float((wide["spliced"] - wide["encoded"]).abs().max())
+    logger.info(
+        "largest lift difference across %d targets: %.3e", len(wide), lift_gap
+    )
+    assert lift_gap < LIFT_TOLERANCE, (
+        f"splice changes a published lift by {lift_gap:.3e}, "
+        f"above {LIFT_TOLERANCE:.0e}"
+    )
+    logger.info("splice verified: vectors within tolerance, published lifts unmoved")
+
+
+def main(verify_only: bool = False) -> None:
     """Encode every text variant, score it, and write results."""
     configure_logging()
     from sentence_transformers import SentenceTransformer
@@ -376,6 +480,10 @@ def main() -> None:
     logger.info("loading %s", ENCODER_NAME)
     model = SentenceTransformer(ENCODER_NAME)
 
+    if verify_only:
+        verify_splice(model, matrix, sections, targets)
+        return
+
     blocks: dict[str, tuple[np.ndarray, int | None]] = {}
     diagnostics: dict[str, dict[str, float]] = {}
     for variant in TEXT_VARIANTS:
@@ -389,12 +497,37 @@ def main() -> None:
         # every column as a tier-correlated component. Scoring the direction
         # alone isolates that channel: if a variant recovers here, its loss was
         # the magnitude gradient rather than the text it read.
-        blocks[f"{variant.key}_l2"] = (
-            vectors / np.clip(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12, None),
-            None,
-        )
+        blocks[f"{variant.key}_l2"] = (l2_normalize(vectors), None)
         diagnostics[variant.key] = stats
         logger.info("%s: %s", variant.key, stats)
+
+    # Drop-one sweep. A county's vector depends only on its own tier's text rule
+    # -- `build_variant_texts` selects per county and `encode_variant` mean-pools
+    # each county independently -- so "uniform everywhere except tier T reads its
+    # lead" is a row-wise splice of two arrays already in hand, and is identical
+    # to what a fresh encode would produce. `--verify-splice` asserts that rather
+    # than asking the reader to take it on faith.
+    #
+    # The splice is scored raw AND row-normalized because it manufactures a norm
+    # discontinuity at the tier boundary: `lead_only` rows carry norm ~1.0 (one
+    # chunk, nothing to cancel) against `uniform`'s 0.63-0.71. A model can read
+    # the tier straight off magnitude without reading any text, so the raw arm is
+    # confounded by construction and the `_l2` twin is the one to trust. The gap
+    # between them measures the size of that artifact.
+    uniform_vectors = blocks["uniform"][0]
+    lead_vectors = blocks["lead_only"][0]
+    tier_array = matrix["tier"].to_numpy()
+    for tier in TIER_LABELS:
+        spliced = uniform_vectors.copy()
+        spliced[tier_array == tier] = lead_vectors[tier_array == tier]
+        blocks[f"drop_{tier}"] = (spliced, None)
+        blocks[f"drop_{tier}_l2"] = (l2_normalize(spliced), None)
+        share, norms = vector_tier_diagnostics(spliced, matrix["tier"])
+        diagnostics[f"drop_{tier}"] = {
+            "tier_variance_share": share,
+            "mean_norm_by_tier": norms,
+        }
+        logger.info("spliced drop_%s: tier_variance_share %.4f", tier, share)
 
     typed = matrix[list(VARIANT_COLUMNS["extracted_full"]) + section_feature_columns()]
     blocks["typed_sections"] = (typed.to_numpy(dtype="float64"), None)
@@ -438,4 +571,10 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--verify-splice",
+        action="store_true",
+        help="Encode one sweep arm for real and assert it equals the splice, then exit.",
+    )
+    main(verify_only=parser.parse_args().verify_splice)
