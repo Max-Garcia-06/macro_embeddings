@@ -683,29 +683,20 @@ against **0.9–1.2%** under a uniform rule — three to seven times more, for a
 variable the baseline already controls for. The model was partly learning how the
 input was built rather than anything about the counties.
 
-**And the same answer comes back from an independent test.** Section 2 branched the
-*model* on tier. The encoder experiment branched the *input* — deciding how much of
-each article to read based on its tier — on different machinery entirely. Reading
-the same text for everyone wins there too: **+0.00322 uniform against +0.00180
-tier-conditional and +0.00068 for the inverted rule.** Two tests, two layers, one
-conclusion.
+**The same answer comes back from an independent test.** Section 2 branched the
+*model* on tier; the encoder experiment branched the *input*, deciding how much of
+each article to read from its tier. Reading the same text for everyone wins there
+too — **+0.00322 uniform against +0.00180 tier-conditional** — and the drop-one
+sweep catches the argument above happening in miniature: withholding stub's article
+*helps* stub, **+0.00367** inside its own tier, and still loses pooled, because the
+gain is charged to mid and rich through the one fit all four tiers share. Two
+tests, two layers, one conclusion.
 
-**And the drop-one sweep says *why*, which is the same reason this section opens
-with.** Withholding one tier's article at a time shows the cost is not spread
-evenly: stub is predicted **better** without its body text (+0.00367 within its own
-tier), while thin (−0.00190) and mid (−0.00323) lose real ground. Stub's gain does
-not survive pooling — `drop_stub` reads **+0.00343** against uniform's **+0.00351**
-— because it is charged to mid and rich through the one fit all four tiers share.
-That is the pooled-evidence argument above, measured directly rather than asserted:
-a rule tuned to help one tier is charged to the others.
-
-**One arm does edge uniform, and the honest thing is to say so.** Withholding the
-*rich* tier's body text scores **+0.00365** against uniform's **+0.00351** — the
-only drop arm that beats reading everything, and by **+0.00014**. That is a narrow
-margin at the precision this notebook reports, and it changes nothing about what
-ships, since the typed block ships on cost and interpretability rather than on any
-encoder's lift. It does narrow the claim: reading the same text for everyone is the
-best *simple* rule here, not a dominant one.
+**One caveat, since it cuts against that.** Withholding the *rich* tier's text is
+the single arm that beats reading everything, **+0.00365** against **+0.00351**.
+The margin decides nothing and changes nothing about what ships, but it makes
+"read the same text for everyone" the best simple rule here rather than a dominant
+one.
 
 **So what shipped instead:**
 
