@@ -495,7 +495,12 @@ def verify_splice(model, matrix: pd.DataFrame, sections: pd.DataFrame, targets) 
 
 
 def main(verify_only: bool = False) -> None:
-    """Encode every text variant, score it, and write results."""
+    """Encode every text variant, score it, and write results.
+
+    Args:
+        verify_only: If True, run the splice verification and return
+            without writing artifacts.
+    """
     configure_logging()
     from sentence_transformers import SentenceTransformer
 

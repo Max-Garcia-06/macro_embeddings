@@ -660,9 +660,9 @@ uv run scripts/analyze_source_a_tiered_embedding.py
 
 Expected: completes, writes `outputs/source_a_tiered_embedding_by_tier.csv`.
 
-- [ ] **Step 5: Reconcile per-tier against pooled, using SSE**
+- [ ] **Step 5: Reconcile per-tier row counts against pooled, and inspect the lift grid**
 
-This is the check that the slicing is correct. R² does not decompose across subsets, but error sum of squares does exactly, so recompute both sides from the CSVs' own definitions:
+This is the check that the slicing is correct. It verifies that per-tier row counts sum to at most the pooled `n` for each (target, representation) pair, then prints the per-tier lift grid for inspection:
 
 ```bash
 uv run python -c "
@@ -697,6 +697,8 @@ print(t[t.representation.str.startswith('drop_') & t.representation.str.endswith
 ```
 
 Expected: no assertion fires; the final table prints a 4x4 grid of mean lift by (`drop_*_l2`, tier).
+
+**Note: this does not check the SSE identity.** R² genuinely does not decompose across subsets — each slice measures its total sum of squares against its own mean — and the error sum of squares that *does* decompose is not recoverable from the emitted CSVs, which store only `r2_baseline`, `lift`, and `n`, not `SSE` or `SST`. What this step checks is row-count consistency between the two artifacts, plus a visual read of the lift grid.
 
 **Read the diagonal.** `drop_stub_l2` measured in the stub tier is what stub loses when stub stops reading its article. The off-diagonal cells are not noise and are not expected to equal `uniform` — the fit is pooled, so changing stub's rows moves the fitted coefficients and therefore every tier's predictions. Off-diagonal movement is cross-tier interference through the shared fit, which is the encoder-side analogue of the shared-penalty argument section 2 already makes for the typed columns.
 
