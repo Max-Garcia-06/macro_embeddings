@@ -498,7 +498,109 @@ that arm goes properly negative rather than merely slightly worse.
 The negative result is kept reproducible rather than left as folklore:
 `sections_x_tier` is retained as a scored variant in
 `analyze_source_a_representation.py`, so anyone can re-run it.
+""")
 
+code('''
+emb_tier = pd.read_csv(OUTPUTS / "source_a_tiered_embedding_by_tier.csv")
+SWEEP = [
+    ("uniform_l2", "every tier reads all", SERIES[0]),
+    ("drop_stub_l2", "stub reads lead only", SERIES[1]),
+    ("drop_thin_l2", "thin reads lead only", SERIES[2]),
+    ("drop_mid_l2", "mid reads lead only", SERIES[3]),
+    ("drop_rich_l2", "rich reads lead only", SERIES[4]),
+]
+piv = (emb_tier[emb_tier["representation"].isin([k for k, _, _ in SWEEP])]
+       .groupby(["representation", "tier"])["lift"].mean().unstack())
+tiers = [t for t in A_TIERS if t in piv.columns]
+n_by_tier = [asec["by_tier"][t]["n_counties"] for t in tiers]
+
+x = np.arange(len(tiers))
+w = 0.16
+fig, ax = plt.subplots(figsize=(11.5, 5.0))
+for i, (key, label, colour) in enumerate(SWEEP):
+    vals = [piv.loc[key, t] for t in tiers]
+    ax.bar(x + (i - 2) * w, vals, w, color=colour, label=label)
+ax.axhline(0, color=INK2, linewidth=0.8)
+ax.set_xticks(x)
+ax.set_xticklabels([f"{t}\\n{n:,} counties" for t, n in zip(tiers, n_by_tier)])
+ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
+ax.set_ylabel("mean R² lift within the tier", fontsize=10.5, color=INK2)
+style(ax,
+      "The same answer from the encoder side: read more everywhere",
+      "Each arm holds every tier at full section depth except one, which falls "
+      "back to its lead. Row-normalised vectors, so what is measured is the text "
+      "read and not the vector length that reading more produces.",
+      legend=True)
+plt.show()
+''')
+
+md("""
+**The encoder side of the same question, and the sign is not what the plan
+expected.** Section 2 has so far asked whether the 29 typed columns should branch
+on tier. This chart asks it of the input text itself: does it help to let each
+tier's *article* stay uniform except one tier, which reads only its lead? Mean L2
+lift within each tier, drop-one against `uniform`:
+
+|            | stub     | thin     | mid      | rich     |
+|------------|----------|----------|----------|----------|
+| `uniform`  | +0.00021 | +0.00196 | +0.00288 | +0.00708 |
+| drop stub  | +0.00388 | +0.00211 | +0.00235 | +0.00671 |
+| drop thin  | −0.00247 | +0.00006 | +0.00191 | +0.00468 |
+| drop mid   | −0.00098 | +0.00163 | −0.00035 | +0.00378 |
+| drop rich  | +0.00030 | +0.00270 | +0.00210 | +0.00680 |
+
+**Stub is predicted *better* when it stops reading its own article.** Withholding
+stub's body text and falling back to its lead raises stub's own lift from
++0.00021 to +0.00388 — a diagonal gain of **+0.00367**. Stub's body text is not
+neutral, it is actively counterproductive, which lines up with the corpus
+diagnosis two charts back: a stub lead names an industry in 0.7% of counties, so
+there is next to nothing in a stub article for the encoder to lose by not reading
+past it.
+
+**thin and mid are the tiers actually carrying signal.** Dropping thin's text
+costs its own tier **−0.00190** (+0.00196 → +0.00006) and dropping mid's costs
+**−0.00323** (+0.00288 → −0.00035) — both go from clearly positive to flat or
+negative. rich barely moves, **−0.00028** (+0.00708 → +0.00680): the tier with the
+most text to read is close to redundant over its own lead.
+
+**And `uniform` still wins pooled, for the same structural reason section 2
+already gave the typed columns.** Stub's own-tier gain from dropping its text is
+real, but `drop_stub` also costs mid (+0.00288 → +0.00235) and rich (+0.00708 →
++0.00671) through the one fit those four tiers share, and pooled it still loses to
+`uniform`: **+0.00343** against **+0.00351**. That is cross-tier interference
+through the shared model — a rule tuned to help one tier is paid for by the
+others, exactly the mechanism behind the typed-column result above. The
+off-diagonal cost is not always smaller than the diagonal gain, either:
+`drop_thin` gives its own tier +0.00006 but costs the stub tier **−0.00247**, a
+larger move in the opposite direction.
+
+**The chart plots the row-normalised arm, and the gap to the raw arm is the
+reason.** `tier_variance_share` — how much of the embedding's variance tracks
+which tier a county is in, rather than anything else — sits at 0.0121 for
+`uniform` and rises to 0.0481–0.0698 for the drop arms. Splicing a lead-only row
+into an otherwise uniform arm manufactures a norm discontinuity at the tier
+boundary: `lead_only` rows carry a norm of roughly 1.0 against `uniform`'s
+0.63–0.71, so an unnormalised drop arm partly encodes *which tier a county is in*
+through vector length rather than through content. Quoting one arm's raw-vs-L2
+gap makes the size of that artifact concrete: `drop_stub` reads +0.00256 raw
+against +0.00343 row-normalised, a 0.00087 gap.
+
+**One line on how the drop arms are built, because it matters for what the
+comparison is holding fixed.** Each `drop_*` arm is built by splicing that tier's
+`lead_only` rows into the `uniform` arm's vectors, not by re-encoding the whole
+corpus with a different reading rule. That is the cleaner contrast, not a
+shortcut: the three untouched tiers in each arm are exactly `uniform`'s own
+vectors, whereas re-encoding them would perturb each by roughly 1e-7 of padding
+noise — drift injected into precisely the tiers the comparison is supposed to
+hold fixed.
+
+**What this does not change.** `uniform` already beat every branching rule tested
+on the typed columns, and it beats this one too. The typed block still ships on
+cost and interpretability rather than on measured lift — this sweep sharpens *why*
+branching loses on the encoder side, it does not reopen what ships.
+""")
+
+md("""
 ---
 
 ## 3. Source E — four volume tiers
@@ -1019,6 +1121,7 @@ arms = [
     ("Typed columns (shipped)", scope["scopes"]["economy"]["mean_lift"], BLUE),
     ("All sections", scope["scopes"]["all_sections"]["mean_lift"], MUTED),
     ("All except narrative", scope["scopes"]["no_narrative"]["mean_lift"], MUTED),
+    ("384-d embedding, lead only", embed["representations"]["lead_only"]["mean_lift"], AQUA),
     ("384-d embedding, uniform", embed["representations"]["uniform"]["mean_lift"], AQUA),
     ("384-d, tier-conditional", embed["representations"]["tier_conditional"]["mean_lift"], AQUA),
     ("384-d, tier inverted", embed["representations"]["tier_conditional_inverse"]["mean_lift"], AQUA),
@@ -1048,6 +1151,8 @@ Reading **all** sections scores higher than the shipped economy-only rule
 in historical framing, which makes it a defunct-industry detector wearing a
 current-economy label. That is a precision judgement, not a scoring one, and it is
 the one place in this project where a higher number was deliberately declined.
+**The per-tier breakdown of the embedding arms is in section 2**, including the
+drop-one sweep that locates which tier the tier-conditional rule actually costs.
 
 **A correction worth recording, made 2026-08-17.** The MiniLM arms above were
 first run with a chunk cap that truncated input at ~9,000 characters, which bound
