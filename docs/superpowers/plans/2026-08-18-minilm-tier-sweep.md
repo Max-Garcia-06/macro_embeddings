@@ -802,14 +802,33 @@ Note `\\n` inside the triple-quoted generator string — the generator emits sou
 
 - [ ] **Step 3: Add prose beneath the chart**
 
-Insert a `md("""...""")` block after the chart. Write it from the Step 1 numbers. It must cover, in this order:
+Insert a `md("""...""")` block after the chart, written from the Step 1 numbers.
 
-1. **What the diagonal says** — for each tier, what that tier loses when it stops reading its article. Quote the four diagonal numbers.
-2. **What the off-diagonal says** — the fit is pooled, so dropping one tier's text moves every tier's predictions. Name this as cross-tier interference through the shared fit, and connect it explicitly to the shared-penalty paragraph already above it: the typed columns and the encoder fail branching for the same structural reason.
-3. **The raw/L2 gap** — quote it, and say plainly that the raw arm can read tier off vector magnitude (`lead_only` norm ≈ 1.0 against `uniform` 0.63–0.71), which is why the chart plots the normalised twin. Cite `tier_variance_share` from Step 1.
-4. **What it does not change** — `uniform` already beat every branching rule and the typed block still ships on cost and interpretability rather than measured lift. This sharpens *why* branching lost; it does not reopen what ships.
+**The measured result, which is not the one this plan originally anticipated.** An earlier draft of this step assumed every diagonal would be negative — each tier losing something when it stops reading its article. Task 3 measured the opposite for stub. Mean L2 lift within each tier:
 
-Do not write a sentence the Step 1 output does not support. If the diagonal comes back flat — no tier loses much — say that, and say it means the tier-conditional loss is diffuse rather than located. A null result here is a real result and the notebook's whole voice is built on reporting those straight.
+```
+             stub     thin      mid     rich
+uniform    0.00021  0.00196  0.00288  0.00708
+drop_stub  0.00388  0.00211  0.00235  0.00671
+drop_thin -0.00247  0.00006  0.00191  0.00468
+drop_mid  -0.00098  0.00163 -0.00035  0.00378
+drop_rich  0.00030  0.00270  0.00210  0.00680
+```
+
+Diagonals: stub **+0.00367**, thin −0.00190, mid −0.00323, rich −0.00028.
+
+Re-derive these from the artifact in Step 1 rather than copying them from here, and write what you find. If they disagree with this table, the artifact wins and you should say so.
+
+The prose must cover, in this order:
+
+1. **The stub result, stated plainly and first, because it is the surprise.** Stub counties are predicted *better* when stub stops reading its article body. Its body text is noise for stub — consistent with section 2's own corpus diagnosis that stub leads name an industry 0.7% of the time. Do not soften this into "stub benefits less."
+2. **Which tiers actually carry signal.** thin (−0.00190) and mid (−0.00323) lose real ground when their text is withheld. rich barely moves (−0.00028) — the tier with the most text is close to redundant over its own lead.
+3. **Why `uniform` still wins anyway, which is the whole point.** Dropping stub's text helps stub by +0.00367 but costs mid (0.00288→0.00235) and rich (0.00708→0.00671), and pooled it still loses to `uniform` (+0.00343 against +0.00351). Name this as cross-tier interference through the shared fit, and connect it explicitly to the shared-penalty paragraph above: the typed columns and the encoder lose branching for the same structural reason — a rule tuned for one tier is paid for by the others. Note that the off-diagonal damage is sometimes larger than the diagonal effect (`drop_thin` costs the stub tier −0.00247).
+4. **The raw/L2 gap.** `tier_variance_share` rises from 0.0121 for `uniform` to 0.048–0.070 for the drop arms, because splicing lead rows into a uniform arm manufactures a norm discontinuity at the tier boundary (`lead_only` norm ≈ 1.0 against `uniform`'s 0.63–0.71). That is why the chart plots the normalised twin; quote the raw-vs-L2 gap for at least one arm.
+5. **One line disclosing the construction.** State that the drop arms are built by splicing rather than by re-encoding, and why that is the *cleaner* contrast rather than a shortcut: the untouched tiers are exactly `uniform`'s vectors, where re-encoding each arm would perturb them by ~1e-7 of padding noise — putting drift into precisely the tiers the comparison holds fixed. One or two sentences, not a paragraph.
+6. **What it does not change.** `uniform` already beat every branching rule and the typed block still ships on cost and interpretability rather than measured lift. This sharpens *why* branching lost; it does not reopen what ships.
+
+Do not write a sentence the Step 1 output does not support.
 
 - [ ] **Step 4: Add `lead_only` to the appendix chart and point it upward**
 
@@ -844,7 +863,11 @@ Then open `analysis-output/E_macro_pillar_worth_2026-08-13.ipynb` and inspect th
 uv run scripts/build_status_notebook.py && git diff --stat analysis-output/E_macro_pillar_worth_2026-08-13.ipynb
 ```
 
-Expected: running it twice in a row produces no *content* diff on the second run — only run-stamp and execution metadata churn. That is the check that nothing is left hand-edited.
+Expected: running it twice in a row produces no *prose or code* diff on the second run.
+
+**Three kinds of churn are normal and are NOT failures:** the run-stamp line (it prints today's date and the current commit), `execution_count` / `execution` metadata, and **cell `id`s — `nbformat` assigns a fresh `uuid4().hex[:8]` to every cell on every run**, so ids change wholesale each time. Task 1 confirmed this is pre-existing behaviour, visible between earlier commits of this repo.
+
+Because of the id churn, do not verify with any check of the form `id == '<literal>'`; it cannot be reproducible. Anchor on cell *content* instead — locate a cell by a distinctive phrase in its source.
 
 - [ ] **Step 7: Commit**
 
