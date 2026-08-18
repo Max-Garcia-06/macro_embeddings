@@ -564,10 +564,11 @@ costs its own tier **−0.00190** (+0.00196 → +0.00006) and dropping mid's cos
 negative. rich barely moves, **−0.00028** (+0.00708 → +0.00680): the tier with the
 most text to read is close to redundant over its own lead.
 
-**And `uniform` still wins pooled, for the same structural reason section 2
-already gave the typed columns.** Stub's own-tier gain from dropping its text is
-real, but `drop_stub` also costs mid (+0.00288 → +0.00235) and rich (+0.00708 →
-+0.00671) through the one fit those four tiers share, and pooled it still loses to
+**And stub's gain does not survive pooling, for the same structural reason
+section 2 already gave the typed columns.** The own-tier gain from dropping stub's
+text is real, but `drop_stub` also costs mid (+0.00288 → +0.00235) and rich
+(+0.00708 → +0.00671) through the one fit those four tiers share, and pooled it
+loses to
 `uniform`: **+0.00343** against **+0.00351**. That is cross-tier interference
 through the shared model — a rule tuned to help one tier is paid for by the
 others, exactly the mechanism behind the typed-column result above. The
@@ -595,10 +596,11 @@ vectors, whereas re-encoding them would perturb each by roughly 1e-7 of padding
 noise — drift injected into precisely the tiers the comparison is supposed to
 hold fixed.
 
-**What this does not change.** `uniform` already beat every branching rule tested
-on the typed columns, and it beats this one too. The typed block still ships on
-cost and interpretability rather than on measured lift — this sweep sharpens *why*
-branching loses on the encoder side, it does not reopen what ships.
+**What this does not change.** `uniform` beat every branching rule tested on the
+typed columns, and it beats three of the four drop arms here — `drop_rich` edges it
+by +0.00014, noted in section 4 and too narrow to carry a decision. The typed block
+still ships on cost and interpretability rather than on measured lift — this sweep
+sharpens *why* branching loses on the encoder side, it does not reopen what ships.
 """)
 
 md("""
@@ -675,11 +677,11 @@ measurable rather than rhetorical.
 costs in bias.** Each per-tier model trains on a fraction of the rows; the variance
 that buys is larger than the bias it removes.
 
-**The construction rule leaks into the representation.** Where the tiers were used
-conditionally, tier membership alone explains **3.7–6.6%** of the vector's variance,
-against **0.9–1.0%** under a uniform rule — four to seven times more, for a variable
-the baseline already controls for. The model was partly learning how the input was
-built rather than anything about the counties.
+**The construction rule leaks into the representation.** Across every arm that
+reads by tier, tier membership alone explains **3.7–7.0%** of the vector's variance,
+against **0.9–1.2%** under a uniform rule — three to seven times more, for a
+variable the baseline already controls for. The model was partly learning how the
+input was built rather than anything about the counties.
 
 **And the same answer comes back from an independent test.** Section 2 branched the
 *model* on tier. The encoder experiment branched the *input* — deciding how much of
@@ -687,6 +689,23 @@ each article to read based on its tier — on different machinery entirely. Read
 the same text for everyone wins there too: **+0.00322 uniform against +0.00180
 tier-conditional and +0.00068 for the inverted rule.** Two tests, two layers, one
 conclusion.
+
+**And the drop-one sweep says *why*, which is the same reason this section opens
+with.** Withholding one tier's article at a time shows the cost is not spread
+evenly: stub is predicted **better** without its body text (+0.00367 within its own
+tier), while thin (−0.00190) and mid (−0.00323) lose real ground. Stub's gain does
+not survive pooling — `drop_stub` reads **+0.00343** against uniform's **+0.00351**
+— because it is charged to mid and rich through the one fit all four tiers share.
+That is the pooled-evidence argument above, measured directly rather than asserted:
+a rule tuned to help one tier is charged to the others.
+
+**One arm does edge uniform, and the honest thing is to say so.** Withholding the
+*rich* tier's body text scores **+0.00365** against uniform's **+0.00351** — the
+only drop arm that beats reading everything, and by **+0.00014**. That is a narrow
+margin at the precision this notebook reports, and it changes nothing about what
+ships, since the typed block ships on cost and interpretability rather than on any
+encoder's lift. It does narrow the claim: reading the same text for everyone is the
+best *simple* rule here, not a dominant one.
 
 **So what shipped instead:**
 
@@ -1323,6 +1342,7 @@ Every figure above is computed from a committed artifact. Nothing is hardcoded.
 | 3 · Source A | `external_target_drop_one_placebo.csv` | `scripts/analyze_external_target.py` |
 | 4 · grain | `grain_effect_stats.json` | `scripts/analyze_grain_effect.py` |
 | 4 · sampling noise | `outputs/external_target_by_decile.csv` | `scripts/analyze_external_target.py` |
+| 2 · encoder tier sweep | `outputs/source_a_tiered_embedding_by_tier.csv` | `scripts/analyze_source_a_tiered_embedding.py` |
 | 5 · ruled out | `source_a_section_scope_stats.json`, `source_a_tiered_embedding_stats.json` | `scripts/analyze_source_a_section_scope.py`, `scripts/analyze_source_a_tiered_embedding.py` |
 | A4 · Source E tiers | `source_e_tier_stats.json` | `scripts/analyze_source_e_tiers.py` |
 | A5 · vintages | `outputs/pillar_vintages.csv` | `scripts/pillar_vintage.py` |
