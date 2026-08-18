@@ -386,19 +386,33 @@ why a lead-text vector would be information-poor; the measurements above are wha
 actually retired it.
 
 **Then branching lost on its own terms, and the loss scaled with how much branching
-there was.** Three ways to fit the *same* 29 columns, from most shared to least:
+there was.** Three ways to fit the *same* 29 columns, from most shared to least.
+The difference between them is entirely in how many separate copies of a
+coefficient the model is allowed to estimate, and how much data each copy sees:
 
-- **One model, one coefficient per feature.** `has_port` means one thing
-  everywhere. This is what ships.
-- **One model, coefficients free to vary by tier.** Each county's features are
-  placed in the slot belonging to its tier and zeroed in the others, so the model
-  estimates a separate `has_port` coefficient for stub counties, for thin, for mid
-  and for rich — 29 features × 4 tiers = **120 columns**, plus a tier dummy so the
-  intercept can shift too. One training set and **one shared penalty**: a tier with
-  nothing to say still gets shrunk by a penalty the other tiers helped choose.
-- **Four models, one fitted per tier.** The shared fit is abandoned. Each tier's
-  model sees only its own counties and picks its own penalty, borrowing no
-  strength from the others.
+- **One model, one coefficient per feature — 29 coefficients, fit once, on all
+  3,143 counties.** `has_port` gets a single weight, and it applies whether the
+  county is stub or rich. A stub county and a rich county are just two rows in
+  the same regression. This is what ships.
+- **One model, coefficients free to vary by tier — 120 coefficients (29 features
+  × 4 tiers), fit once, still on all 3,143 counties.** Each county's 29 features
+  are copied into the column slot for its own tier and zeroed out in the other
+  three tiers' slots, plus a tier dummy so the intercept can shift too. So
+  `has_port` is now four separate coefficients — `has_port_stub`, `has_port_thin`,
+  `has_port_mid`, `has_port_rich` — each seeing only the rows from its own tier,
+  because the other three copies are zero on that row. But it is still **one
+  training run and one shared ridge penalty**: the penalty strength is chosen
+  once, across all 3,143 rows, so a tier with nothing to say still gets shrunk by
+  a penalty the other three tiers helped pick.
+- **Four models, one fitted per tier — 29 coefficients × 4, but four separate
+  training runs, each on only its own tier's counties.** The shared fit is
+  abandoned entirely: stub's model never sees a thin, mid, or rich row, and each
+  tier picks its own ridge penalty from its own data alone. Nothing is borrowed
+  across tiers — not the coefficients, not the penalty, not the sample.
+
+The three arms are ordered by how much sharing survives: full sharing (one
+coefficient set, one sample, one penalty) → shared sample and penalty but split
+coefficients → nothing shared at all.
 """)
 
 code('''
@@ -467,27 +481,19 @@ plt.show()
 ''')
 
 md("""
-**So the instinct was right and the arithmetic was not.** Branching was aimed at
-the counties whose articles say least, and in that tier it worked — and it worked
-*more* the harder it branched: stub goes +0.00097 flat, +0.00522 crossed,
-**+0.00711** fully separate, seven times the flat model. Thin and rich barely move.
-Mid goes the other way at every step, +0.00195 → +0.00091 → **−0.00022**, and mid
-holds 2.7× as many counties as stub. The weighted result follows mid, not stub.
+**So the instinct was right and the arithmetic was not.** Branching helps the
+tier it was aimed at — the sparser articles are exactly where more flexible
+fitting pays off. But mid moves the opposite way at every step, and mid holds
+2.7× as many counties as stub. The weighted result follows the bigger tier, not
+the one branching was built for.
 
-**The mechanism is ordinary bias–variance, and it is worth being concrete about.**
-Crossing 29 features with 4 tiers puts **120 columns** against targets whose
-smallest sample is n ≈ 1,026. The ridge penalty large enough to control that width
-also **over-shrinks the coefficients that were doing the work in the flat model** —
-so the crossed arm pays for its extra expressiveness everywhere in order to help
-one tier. Fitting four separate models removes even the shared penalty's
-protection, which is why that arm goes properly negative rather than merely
-slightly worse.
-
-**And there is a reason the flat model was never as blunt as it looked.** Source A
-encodes absence as `False`/`0` rather than null, so **sparsity already encodes the
-tier**. A stub county is one whose flags are mostly zero; the model can see that
-without being told which tier it is in. Branching spends statistical power to
-re-state something the feature set already carries.
+**The mechanism is ordinary bias–variance.** Crossing 29 features with 4 tiers
+puts **120 columns** against targets whose smallest sample is n ≈ 1,026. The
+ridge penalty large enough to control that width also **over-shrinks the
+coefficients that were doing the work in the flat model** — so the crossed arm
+pays for its extra expressiveness everywhere in order to help one tier. Fitting
+four separate models removes even the shared penalty's protection, which is why
+that arm goes properly negative rather than merely slightly worse.
 
 The negative result is kept reproducible rather than left as folklore:
 `sections_x_tier` is retained as a scored variant in
