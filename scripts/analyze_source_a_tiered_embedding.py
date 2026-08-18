@@ -60,6 +60,7 @@ from sklearn.model_selection import KFold
 
 from analyze_pillar_matrix_signal import N_FOLDS, RANDOM_SEED, build_baseline_design
 from analyze_source_a_representation import (
+    MIN_TIER_OBSERVATIONS,
     _baseline_oof_predictions,
     _residual_oof_predictions,
     build_non_a_targets,
@@ -85,6 +86,7 @@ ANALYSIS_DIR: Path = REPO_ROOT / "analysis-output" / "source-a"
 
 EMBEDDINGS_PARQUET_PATH: Path = DATA_DIR / "source_a_embeddings.parquet"
 OUTPUT_CSV_PATH: Path = OUTPUTS_DIR / "source_a_tiered_embedding.csv"
+OUTPUT_TIER_CSV_PATH: Path = OUTPUTS_DIR / "source_a_tiered_embedding_by_tier.csv"
 OUTPUT_STATS_PATH: Path = ANALYSIS_DIR / "source_a_tiered_embedding_stats.json"
 
 # 384 dimensions against bge-m3's 1024, and 90MB against 2.2GB. Chosen as a
@@ -357,8 +359,17 @@ def encode_variant(
 
 def score_blocks(
     matrix: pd.DataFrame, blocks: dict[str, tuple[np.ndarray, int | None]], targets: list
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Score every representation against every target on a shared baseline.
+
+    The fit stays pooled and only the out-of-fold predictions are sliced by tier.
+    Fitting per tier as well would change two things at once and make the lift
+    incomparable to the pooled arms.
+
+    Each per-tier row carries its own `r2_baseline` because R2 does not decompose
+    across subsets: every slice computes its total sum of squares against its own
+    mean, so a tier's raw R2 is not comparable to another tier's. The *lift* is,
+    since it differences two R2 over identical rows and the denominator cancels.
 
     Args:
         matrix: Feature matrix from `build_matrix`.
@@ -366,10 +377,12 @@ def score_blocks(
         targets: Targets to predict.
 
     Returns:
-        One row per (target, representation).
+        Tuple of (one row per (target, representation), one row per
+        (target, representation, tier) clearing `MIN_TIER_OBSERVATIONS`).
     """
     baseline = build_baseline_design(matrix)
     records: list[dict[str, float | str | int]] = []
+    tier_records: list[dict[str, float | str | int]] = []
 
     for target in targets:
         rows = matrix[target.column].notna().to_numpy()
@@ -378,6 +391,7 @@ def score_blocks(
         folds = KFold(n_splits=N_FOLDS, shuffle=True, random_state=RANDOM_SEED)
         baseline_predictions = _baseline_oof_predictions(base_design, y, folds)
         r2_baseline = float(r2_score(y, baseline_predictions))
+        row_tiers = matrix.loc[rows, "tier"].to_numpy()
 
         for key, (block, n_components) in blocks.items():
             predictions = _residual_oof_predictions(
@@ -394,9 +408,26 @@ def score_blocks(
                     "lift": float(r2_score(y, predictions)) - r2_baseline,
                 }
             )
+            for tier in TIER_LABELS:
+                mask = row_tiers == tier
+                if mask.sum() < MIN_TIER_OBSERVATIONS:
+                    continue
+                tier_baseline = float(r2_score(y[mask], baseline_predictions[mask]))
+                tier_records.append(
+                    {
+                        "pillar": target.pillar,
+                        "column": target.column,
+                        "label": target.label,
+                        "representation": key,
+                        "tier": tier,
+                        "n": int(mask.sum()),
+                        "r2_baseline": tier_baseline,
+                        "lift": float(r2_score(y[mask], predictions[mask])) - tier_baseline,
+                    }
+                )
         logger.info("scored %s", target.column)
 
-    return pd.DataFrame.from_records(records)
+    return pd.DataFrame.from_records(records), pd.DataFrame.from_records(tier_records)
 
 
 def verify_splice(model, matrix: pd.DataFrame, sections: pd.DataFrame, targets) -> None:
@@ -448,7 +479,7 @@ def verify_splice(model, matrix: pd.DataFrame, sections: pd.DataFrame, targets) 
     # Vector agreement is necessary but not sufficient. What licenses the design
     # is that no number this notebook prints can move: every lift is reported at
     # 1e-5, so score both arms and require agreement an order below that.
-    scores = score_blocks(
+    scores, _ = score_blocks(
         matrix, {"spliced": (spliced, None), "encoded": (encoded, None)}, targets
     )
     wide = scores.pivot(index="column", columns="representation", values="lift")
@@ -532,11 +563,12 @@ def main(verify_only: bool = False) -> None:
     typed = matrix[list(VARIANT_COLUMNS["extracted_full"]) + section_feature_columns()]
     blocks["typed_sections"] = (typed.to_numpy(dtype="float64"), None)
 
-    scores = score_blocks(matrix, blocks, targets)
+    scores, tier_scores = score_blocks(matrix, blocks, targets)
 
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
     scores.to_csv(OUTPUT_CSV_PATH, index=False)
+    tier_scores.to_csv(OUTPUT_TIER_CSV_PATH, index=False)
 
     by_rep = scores.groupby("representation")["lift"]
     reference = scores[scores.representation.eq("typed_sections")].set_index("column")["lift"]
@@ -563,6 +595,12 @@ def main(verify_only: bool = False) -> None:
             }
             for key in blocks
         },
+        "mean_lift_by_tier": json.loads(
+            tier_scores.groupby(["representation", "tier"])["lift"]
+            .mean()
+            .unstack()
+            .to_json(orient="index")
+        ),
     }
     OUTPUT_STATS_PATH.write_text(json.dumps(payload, indent=2) + "\n")
 
