@@ -27,7 +27,7 @@
 
 The spec's Verification section says per-tier lifts should "reconcile against the pooled lift for `uniform` (n-weighted mean across tiers)". **That is mathematically false and must not be implemented.** R² is `1 - SSE/SST`, and each tier subset computes `SST` against *its own* mean, so per-tier R² values do not average to the pooled R² under any weighting.
 
-What *does* decompose exactly is the error sum of squares: `sum over tiers of SSE_tier == SSE_pooled`. Task 3 uses that identity as the reconciliation check.
+What *does* decompose exactly is the error sum of squares: `sum over tiers of SSE_tier == SSE_pooled`. That identity is **not** checked in Task 3, and cannot be from the artifacts it writes: the emitted CSVs carry only `r2_baseline`, `lift` and `n`, with no `SST` or `SSE` column to recompute it from. Task 3's Step 5 verifies per-tier row counts against the pooled count and surfaces the lift grid for inspection instead, and says so.
 
 The same fact is why each per-tier row must carry its own `r2_baseline`: a tier's **lift** is a difference of two R² computed on the same rows against the same `SST`, so the `SST` cancels and the lift is meaningful. A tier's raw R² is not comparable to another tier's. The existing typed-column code at `scripts/analyze_source_a_representation.py:578-593` already does this correctly; copy its shape.
 
