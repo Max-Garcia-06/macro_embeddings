@@ -612,8 +612,10 @@ Counties split on `num_returns`: **T1** (<2,200), **T2** (2,200–11,700), **T3*
 (11,700–100,000), **T4** (≥100,000).
 
 Here the split did something more uncomfortable than guide a feature choice. It
-showed that **the pillar and the economy it claims to describe are not the same
-object.**
+showed that **Source E reports a capital figure for every one of 3,143 counties,
+while the capital itself sits in a small fraction of them.** For most of the
+country the pillar is doing exact arithmetic on a rounding error: the feature is
+defined everywhere, and the thing it measures effectively is not.
 """)
 
 code('''
