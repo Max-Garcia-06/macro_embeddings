@@ -643,28 +643,31 @@ plt.show()
 ''')
 
 md("""
-**Why that matters beyond the chart.** An unweighted county-level capital feature
-treats a T1 county and a T4 county as equal observations, when one of them holds
-essentially none of the thing being measured. That is not a reason to weight the
-feature — weighting was tested and rejected below — but it is a reason to *say so*,
-which Source E's schema doc now does.
+**Why that matters beyond the chart.** The model counts a tiny county and a huge
+one as one observation each, when one of them holds almost none of the capital the
+feature is measuring. That is not a reason to reweight it — weighting was tested
+and rejected below — but it is a reason to *say so*, which Source E's schema doc
+now does.
 
 **Two corrections the split forced, both against earlier conclusions of mine:**
 
 - **Round 1 had the stability backwards.** I had said small counties were the
-  volatile ones. On ranks it is the opposite: Spearman stability *improves* with
-  size (0.861 → 0.941) and median year-over-year moves *rise* with size
-  (0.298 → 0.393). Round 1's proposed fix — weighting by `num_returns` — would have
-  upweighted exactly the counties whose values move most between vintages.
-- **The dispersion is not thin-data noise.** Regressing log dispersion on log
-  median returns gives a slope of **+0.026**, where pure sampling error would give
-  −0.5. Small counties' spread is real economic variation, so there is nothing to
-  smooth away.
+  volatile ones. It is the other way round. Big counties hold their place in the
+  ordering year to year, where small ones shuffle around (0.861 → 0.941) — even
+  though the big counties' actual values move *more* (0.298 → 0.393). Round 1's
+  proposed fix, weighting by `num_returns`, would have upweighted exactly the
+  counties whose numbers move most between vintages.
+- **The spread among small counties is real, not measurement noise.** If it were
+  just noise from averaging few tax returns, that spread would shrink sharply as
+  counties get bigger. It does not — it barely changes with size (**+0.026**,
+  where noise alone would give −0.5). Small counties genuinely differ from one
+  another, so there is nothing to smooth away.
 
-**And one caveat that now ships with the pillar.** The strongest cross-pillar link
-in the whole project — Source B real-estate location quotient against Source E
-capital-to-wage — is a large-county phenomenon: **+0.476 in T4 against −0.058 in
-T1**. Anyone serving rural inventory needs that said out loud before leaning on it.
+**And one caveat that now ships with the pillar.** The strongest link between any
+two pillars in this project — how concentrated a county's real-estate employment
+is, against how much capital it holds per dollar of wages — turns out to exist
+only in large counties: **+0.476 in T4 against −0.058 in T1**. Anyone serving
+rural inventory needs that said out loud before leaning on it.
 
 ---
 
