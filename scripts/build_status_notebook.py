@@ -320,8 +320,8 @@ and it is worth saying that plainly rather than implying the columns scored
 better. What they buy is no model download, no inference, and a column you can
 read the name of.
 
-**What the tiers then contributed was the answer to "so what do we build
-instead?"** The split showed where economic content actually lives in the corpus.
+**What the tiers then contributed was the answer to what should be built
+instead.** The split showed where economic content actually lives in the corpus.
 """)
 
 code('''
@@ -649,14 +649,14 @@ feature is measuring. That is not a reason to reweight it — weighting was test
 and rejected below — but it is a reason to *say so*, which Source E's schema doc
 now does.
 
-**Two corrections the split forced, both against earlier conclusions of mine:**
+**Two corrections the split forced, both reversing earlier conclusions:**
 
-- **Round 1 had the stability backwards.** I had said small counties were the
-  volatile ones. It is the other way round. Big counties hold their place in the
-  ordering year to year, where small ones shuffle around (0.861 → 0.941) — even
-  though the big counties' actual values move *more* (0.298 → 0.393). Round 1's
-  proposed fix, weighting by `num_returns`, would have upweighted exactly the
-  counties whose numbers move most between vintages.
+- **Round 1 had the stability backwards.** It recorded small counties as the
+  volatile ones. The reverse holds: big counties keep their place in the ordering
+  year to year, where small ones shuffle around (0.861 → 0.941) — even though the
+  big counties' actual values move *more* (0.298 → 0.393). Round 1's proposed fix,
+  weighting by `num_returns`, would have upweighted exactly the counties whose
+  numbers move most between vintages.
 - **The spread among small counties is real, not measurement noise.** If it were
   just noise from averaging few tax returns, that spread would shrink sharply as
   counties get bigger. It does not — it barely changes with size (**+0.026**,
