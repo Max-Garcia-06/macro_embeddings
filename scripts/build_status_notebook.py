@@ -651,14 +651,17 @@ feature is measuring. That is not a reason to reweight it — weighting was test
 and rejected below — but it is a reason to *say so*, which Source E's schema doc
 now does.
 
-**Two corrections the split forced, both reversing earlier conclusions:**
+**Two corrections the split forced, both against earlier conclusions:**
 
-- **Round 1 had the stability backwards.** It recorded small counties as the
-  volatile ones. The reverse holds: big counties keep their place in the ordering
-  year to year, where small ones shuffle around (0.861 → 0.941) — even though the
-  big counties' actual values move *more* (0.298 → 0.393). Round 1's proposed fix,
-  weighting by `num_returns`, would have upweighted exactly the counties whose
-  numbers move most between vintages.
+- **Round 1 had the stability backwards.** It called small counties the volatile
+  ones without saying volatile by what, and the three available measures disagree.
+  Year to year, a *typical* small county's ratio moves less than a large one's
+  (median change of 0.298 against 0.393), and small counties hold their place in
+  the national ordering worse (0.861 against 0.941, comparing one year's ranking
+  to the next). Round 1 was right only about the tail: 17% of the smallest
+  counties swing by more than half in a single year, against 10% of the largest.
+  Its proposed fix was backwards either way — weighting by `num_returns`
+  upweights the counties whose values move most in the typical case.
 - **The spread among small counties is real, not measurement noise.** If it were
   just noise from averaging few tax returns, that spread would shrink sharply as
   counties get bigger. It does not — it barely changes with size (**+0.026**,
