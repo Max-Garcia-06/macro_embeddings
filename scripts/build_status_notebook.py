@@ -285,7 +285,7 @@ each pillar should be modelled separately by group.
 varies enormously across counties*. A Wikipedia article can be three sentences or
 three pages; an IRS county file can cover 900 tax returns or 900,000. If a pillar
 behaves differently enough at the two ends, one global model fitted across all
-3,143 counties is the wrong shape, and the fix is to let the groups have their own
+3,144 counties is the wrong shape, and the fix is to let the groups have their own
 parameters.
 
 **The answer, for both pillars: no.** Neither should branch. Sections 2 and 3 are
@@ -391,18 +391,18 @@ The difference between them is entirely in how many separate copies of a
 coefficient the model is allowed to estimate, and how much data each copy sees:
 
 - **One model, one coefficient per feature — 29 coefficients, fit once, on all
-  3,143 counties.** `has_port` gets a single weight, and it applies whether the
+  3,144 counties.** `has_port` gets a single weight, and it applies whether the
   county is stub or rich. A stub county and a rich county are just two rows in
   the same regression. This is what ships.
 - **One model, coefficients free to vary by tier — 120 coefficients (29 features
-  × 4 tiers), fit once, still on all 3,143 counties.** Each county's 29 features
+  × 4 tiers), fit once, still on all 3,144 counties.** Each county's 29 features
   are copied into the column slot for its own tier and zeroed out in the other
   three tiers' slots, plus a tier dummy so the intercept can shift too. So
   `has_port` is now four separate coefficients — `has_port_stub`, `has_port_thin`,
   `has_port_mid`, `has_port_rich` — each seeing only the rows from its own tier,
   because the other three copies are zero on that row. But it is still **one
   training run and one shared ridge penalty**: the penalty strength is chosen
-  once, across all 3,143 rows, so a tier with nothing to say still gets shrunk by
+  once, across all 3,144 rows, so a tier with nothing to say still gets shrunk by
   a penalty the other three tiers helped pick.
 - **Four models, one fitted per tier — 29 coefficients × 4, but four separate
   training runs, each on only its own tier's counties.** The shared fit is
@@ -612,7 +612,7 @@ Counties split on `num_returns`: **T1** (<2,200), **T2** (2,200–11,700), **T3*
 (11,700–100,000), **T4** (≥100,000).
 
 Here the split did something more uncomfortable than guide a feature choice. It
-showed that **Source E reports a capital figure for every one of 3,143 counties,
+showed that **Source E reports a capital figure for 3,143 of the 3,144 counties,
 while the capital itself sits in a small fraction of them.** For most of the
 country the pillar is doing exact arithmetic on a rounding error: the feature is
 defined everywhere, and the thing it measures effectively is not.
@@ -681,7 +681,7 @@ rural inventory needs that said out loud before leaning on it.
 The two pillars fail branching for the same underlying reason, and it is
 measurable rather than rhetorical.
 
-**Partitioning 3,143 counties costs more in pooled evidence than heterogeneity
+**Partitioning 3,144 counties costs more in pooled evidence than heterogeneity
 costs in bias.** Each per-tier model trains on a fraction of the rows; the variance
 that buys is larger than the bias it removes.
 
@@ -1318,7 +1318,7 @@ md("""
 ## A7 — For the consuming team, when it comes to that
 
 **The warning that matters more than which columns ship.** An impression-level
-training table joined to `E_macro` carries only 3,143 distinct feature values, so
+training table joined to `E_macro` carries only 3,144 distinct feature values, so
 the effective sample size is the county count — not the row count. Random k-fold
 will make this feature layer look good in evaluation and do nothing in production.
 **Cluster standard errors by `fips_code`; use grouped, spatially blocked folds.**
