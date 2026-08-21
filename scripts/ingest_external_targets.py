@@ -67,6 +67,7 @@ from __future__ import annotations
 import io
 import logging
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
@@ -176,20 +177,20 @@ EXTERNAL_TARGETS: tuple[ExternalTarget, ...] = (
 logger = logging.getLogger(__name__)
 
 
-def _download_table(table: str, columns: list[str]) -> pd.DataFrame:
+def _fetch_table_uncached(table: str) -> pd.DataFrame:
     """Fetch one ACS summary-file table and reduce it to county rows.
+
+    Retains every column, so one download serves every target drawn from this
+    table. Callers select the lines they need.
 
     Args:
         table: Lowercase table identifier as it appears in the file name.
-        columns: Estimate and margin columns to retain, alongside `GEO_ID`.
 
     Returns:
-        DataFrame indexed by `fips_code` carrying the requested columns.
+        DataFrame indexed by `fips_code` carrying all numeric table columns.
 
     Raises:
         requests.HTTPError: If the Census download fails.
-        ValueError: If an expected column is absent, which means the table's
-            line numbering changed and the mapping needs revisiting.
     """
     response = requests.get(ACS_BASE_URL.format(table=table), timeout=REQUEST_TIMEOUT_SECONDS)
     response.raise_for_status()
@@ -197,13 +198,27 @@ def _download_table(table: str, columns: list[str]) -> pd.DataFrame:
     raw = pd.read_csv(
         io.BytesIO(response.content),
         sep="|",
-        usecols=["GEO_ID", *columns],
         dtype={"GEO_ID": str},
         na_values=["", ".", "-", "null"],
+        low_memory=False,
     )
     counties = raw[raw["GEO_ID"].str.startswith(COUNTY_GEO_PREFIX)].copy()
     counties["fips_code"] = counties["GEO_ID"].str.removeprefix(COUNTY_GEO_PREFIX)
-    return counties.set_index("fips_code")[columns].apply(pd.to_numeric, errors="coerce")
+    counties = counties.set_index("fips_code").drop(columns=["GEO_ID"])
+    return counties.apply(pd.to_numeric, errors="coerce")
+
+
+@lru_cache(maxsize=None)
+def _download_table(table: str) -> pd.DataFrame:
+    """Memoized `_fetch_table_uncached`, so one table downloads once per run.
+
+    Args:
+        table: Lowercase table identifier.
+
+    Returns:
+        The cached county-row frame for that table.
+    """
+    return _fetch_table_uncached(table)
 
 
 def _moe_column(estimate_column: str) -> str:
@@ -236,7 +251,13 @@ def _derive(target: ExternalTarget) -> pd.DataFrame:
     """
     logger.info("Downloading %s for %s...", target.table.upper(), target.column)
     numerator_columns = [target.numerator, _moe_column(target.numerator)]
-    frame = _download_table(target.table, numerator_columns)
+    frame = _download_table(target.table)
+    missing = [c for c in numerator_columns if c not in frame.columns]
+    if missing:
+        raise ValueError(
+            f"{target.column}: {target.table.upper()} is missing {missing}; "
+            "the table's line numbering changed and the mapping needs revisiting"
+        )
 
     numerator = frame[target.numerator]
     numerator_se = frame[_moe_column(target.numerator)] / MOE_Z_SCORE
@@ -251,11 +272,22 @@ def _derive(target: ExternalTarget) -> pd.DataFrame:
         if denominator_table != target.table:
             logger.info("  and %s for its denominator...", denominator_table.upper())
             denominator_columns = [target.denominator, _moe_column(target.denominator)]
-            denominator_frame = _download_table(denominator_table, denominator_columns)
+            denominator_frame = _download_table(denominator_table)
+            denominator_missing = [c for c in denominator_columns if c not in denominator_frame.columns]
+            if denominator_missing:
+                raise ValueError(
+                    f"{target.column}: {denominator_table.upper()} is missing {denominator_missing}; "
+                    "the table's line numbering changed and the mapping needs revisiting"
+                )
         else:
-            denominator_frame = _download_table(
-                target.table, [target.denominator, _moe_column(target.denominator)]
-            )
+            denominator_columns = [target.denominator, _moe_column(target.denominator)]
+            denominator_frame = _download_table(target.table)
+            denominator_missing = [c for c in denominator_columns if c not in denominator_frame.columns]
+            if denominator_missing:
+                raise ValueError(
+                    f"{target.column}: {target.table.upper()} is missing {denominator_missing}; "
+                    "the table's line numbering changed and the mapping needs revisiting"
+                )
 
         denominator = denominator_frame[target.denominator].reindex(frame.index)
         denominator_se = (
