@@ -114,8 +114,41 @@ be read with that gap in mind until a screen is written for them.
 
 ## Selected scope
 
-_To be filled in by Step C, after this document's pre-registration commit lands.
-Empty until then._
+Selected after the pre-registration commit (`95fded8`) landed, by running the
+selection command from Step C of the task brief against
+`outputs/source_a_tiered_embedding.csv`, restricted to the `prose_only`,
+`prose_plus_history`, `economy_all_tiers`, and `prose_by_tier` arm families (the Part 3
+scopes) and grouped by `representation`. The highest mean lift wins, per the rule.
+
+**Selected: `prose_plus_history_ccr`**, mean lift 0.004530.
+
+```
+                              mean    median  count
+representation
+prose_plus_history_ccr    0.004530  0.002048     28
+prose_plus_history_l2     0.004346  0.002147     28
+prose_only_ccr             0.003786  0.001880     28
+prose_plus_history          0.003758  0.002117     28
+prose_only_l2               0.003688  0.001695     28
+prose_plus_history_pca64  0.003388  0.001664     28
+prose_only                  0.003141  0.001069     28
+prose_only_pca64           0.002922  0.001074     28
+prose_by_tier_ccr           0.002636  0.000759     28
+prose_by_tier_l2            0.002585  0.000817     28
+economy_all_tiers_l2       0.001967  0.000211     28
+economy_all_tiers_ccr      0.001934  0.000262     28
+prose_by_tier               0.001924  0.000221     28
+economy_all_tiers           0.001655  0.000220     28
+prose_by_tier_pca64        0.001428  0.000148     28
+economy_all_tiers_pca64    0.001036  0.000035     28
+```
+
+This selection ran on the in-repo 28-target basket (`outputs/source_a_tiered_embedding.csv`,
+`count == 28` for every arm above). That basket shares no targets with the external
+decision basket referenced in Rule 1 above — the 40+ ACS targets from Part 1 of the
+design spec. Selection therefore cannot contaminate the decision: the arm chosen here
+is fixed as "the embedding arm" in Rule 2 before it is ever scored against the
+decision basket.
 
 ## Results
 
