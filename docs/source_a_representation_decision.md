@@ -152,4 +152,67 @@ decision basket.
 
 ## Results
 
-_To be filled in after the marginal harness runs (a later task). Empty until then._
+Produced by `scripts/analyze_source_a_representation_marginal.py`, `VARIANT_KEY
+= "prose_plus_history"`, scored against `EXTERNAL_TARGETS` (42 targets),
+`GroupKFold(state_fips)`, seed 42. Full details, per-target tables and the
+reversal of §21's conclusion are in
+`analysis-output/source-a/source-a-findings.md` §22; this section reports the
+numbers the pre-registered rule above requires.
+
+### Primary metric (Rule 1) and tie threshold (Rule 4)
+
+Two arms, both fixed before scoring: `typed_transformed` (Part 4, 37 columns)
+against `minilm_prose_plus_history_ccr_pca29` (the selected scope above,
+common-component-removed, PCA-reduced to 29 dimensions inside each fold).
+
+| basket | n | mean(typed_transformed − selected) | 95% bootstrap CI (seed 42, 10,000 resamples) | zero in CI? |
+|---|---|---|---|---|
+| full external basket | 42 | −0.015967 | [−0.025754, −0.008051] | no |
+| `restated_in_text`-clean subset | 34 | −0.018429 | [−0.030048, −0.008758] | no |
+
+**Verdict: not a tie.** Both confidence intervals sit entirely below zero,
+which under Rule 4 means the selected embedding arm wins the primary
+comparison outright on both baskets. The cost/interpretability fallback that
+Rule 4 specifies for a tie does not trigger here — this decision is settled by
+the primary metric.
+
+### Secondary (Rule 3): paired Wilcoxon and full arm table
+
+| basket | n | mean diff (selected − typed_transformed) | dz | power | wins | Wilcoxon p |
+|---|---|---|---|---|---|---|
+| full | 42 | +0.01597 | 0.535 | 0.96 | 34/42 | 0.00001 |
+| leakage-clean | 34 | +0.01843 | 0.565 | 0.94 | 27/34 | 0.00008 |
+
+Full arm table, mean marginal contribution, both baskets:
+
+| representation | width | full (n=42) mean | median | leakage-clean (n=34) mean | median |
+|---|---|---|---|---|---|
+| `minilm_prose_plus_history_ccr_pca29` (selected) | 29 | +0.016749 | +0.011232 | +0.019448 | +0.011654 |
+| `minilm_uniform_pca29` (unselected reference) | 29 | +0.009374 | +0.004769 | +0.011572 | +0.006258 |
+| `minilm_uniform_pca64` (unselected reference) | 64 | +0.003883 | −0.000727 | +0.005844 | +0.003939 |
+| `typed` | 29 | +0.002125 | +0.000387 | +0.002718 | +0.000387 |
+| `typed_transformed` (primary comparator) | 37 | +0.000782 | +0.000721 | +0.001018 | +0.000721 |
+| `minilm_uniform_l2` (unselected reference) | 384 | −0.009228 | −0.016667 | −0.002798 | −0.011547 |
+| `minilm_uniform` (unselected reference) | 384 | −0.020971 | −0.019213 | −0.015364 | −0.016426 |
+
+### Reporting split (Rule 5)
+
+Every headline above is reported on both the full 42-target basket and the
+34-target subset excluding the 8 targets flagged `restated_in_text` (>500
+counties). The 15 explicitly unscreened targets are included in both baskets
+and are not treated as verified clean.
+
+### What this reverses
+
+`analysis-output/source-a/source-a-findings.md` §21 concluded that Source A's
+near-zero marginal contribution ("−0.0000") is "a fact about the pillar, not
+about its encoding," based on the raw (uncontrolled-width, non-CCR)
+`minilm_uniform` / `minilm_uniform_l2` arms scoring far worse than typed on 5
+targets. Those same two raw arms still score worse than typed here (see table
+above) — §21's result reproduces for the arm it tested. But the arm this
+design was built to test — the pre-registered scope selection's winner,
+common-component-removed and width-matched — reverses that conclusion outright
+and at a basket size large enough to power the test (0.94–0.96, versus the
+underpowered 28-target ties elsewhere in this experiment line). Representation
+choice does change Source A's measured marginal contribution, decisively, in
+this run.

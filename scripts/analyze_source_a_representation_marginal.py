@@ -29,13 +29,24 @@ targets, out-of-fold on held-out states, with the same restatement ablation:
   equal-capacity comparison; this arm equalizes it without consulting any
   target's score to choose the transform.
 - `minilm_uniform` -- MiniLM over lead plus every non-narrative section,
-  identically for every county, mean-pooled.
-- `minilm_uniform_l2` -- the same vectors, row-normalized. This was the best arm
-  in the representation sweep.
+  identically for every county, mean-pooled. Scored here as the **unselected
+  reference**: it is the width-matched twin of the leakage-carrying arm from
+  the Part 3 sweep, kept in the comparison precisely because it lost scope
+  selection -- it is informative as a contrast, not eligible to represent A.
+- `minilm_uniform_l2` -- the same vectors, row-normalized.
 - `minilm_uniform_pca29` / `minilm_uniform_pca64` -- the same vectors, reduced
   by PCA fitted inside each fold to 29 and 64 dimensions respectively, so the
   width-driven part of the embedding's measured penalty against the 29-column
   typed block is controlled for.
+- `minilm_prose_plus_history_ccr_pca29` -- **the selected embedding arm**,
+  fixed by the Task 9 scope selection (`docs/source_a_representation_decision.md`):
+  `prose_plus_history` text (lead + substantive prose + history/notable
+  people, no census tables/lists/highways), common-component-removed
+  (`remove_common_component` -- corpus mean subtracted, then row-normalized),
+  then PCA-reduced to 29 dimensions inside each fold to match the typed arm's
+  width. Selection ran on the in-repo 28-target basket, disjoint from this
+  script's external decision basket, so the arm was fixed before it was ever
+  scored here.
 
 **A note on what a negative contribution means here.** Contribution is
 R2(full) - R2(reduced), so a block that carries nothing useful lands near zero
@@ -74,6 +85,8 @@ from analyze_source_a_tiered_embedding import (
     TEXT_VARIANTS,
     build_variant_texts,
     encode_variant,
+    l2_normalize,
+    remove_common_component,
 )
 from analyze_source_a_tiers import assign_tiers
 from pillar_matrix import SIZE_FEATURES
@@ -85,23 +98,36 @@ ANALYSIS_DIR: Path = REPO_ROOT / "analysis-output" / "source-a"
 OUTPUT_CSV_PATH: Path = OUTPUTS_DIR / "source_a_representation_marginal.csv"
 OUTPUT_STATS_PATH: Path = ANALYSIS_DIR / "source_a_representation_marginal_stats.json"
 
-# The text variant to encode. `uniform` reads the lead plus every non-narrative
-# section identically for every county -- the arm that beat both tier-conditional
-# rules once the chunk cap stopped truncating it.
-VARIANT_KEY: str = "uniform"
+# The text variant underlying the SELECTED scope. `prose_plus_history` is the
+# scope Task 9 selected (mean lift 0.004530 on the 28-target selection basket,
+# vs typed_sections' 0.003072) -- see docs/source_a_representation_decision.md.
+# The selected *representation* is this variant's vectors with the `_ccr`
+# (common-component-removed) transform applied, which is what
+# `build_source_a_embedding` scores under `minilm_{VARIANT_KEY}_ccr_pca29`.
+# `uniform` is still encoded separately, unconditionally, as the unselected
+# reference arm (see EMBEDDING_ARMS below).
+VARIANT_KEY: str = "prose_plus_history"
 
 logger = logging.getLogger(__name__)
 
 # Embedding arms entering the marginal comparison, and the width each is reduced
-# to. `None` means the native 384 dimensions. The 29-dimension arm exists so the
+# to. `None` means the native 384 dimensions. The 29-dimension arms exist so the
 # comparison against the typed block is width-matched: findings §21.2 states that
 # an unknown share of the embedding's penalty is width rather than content, and
 # names this arm as the missing control.
+#
+# `minilm_uniform*` are the UNSELECTED reference -- the width-matched twin of
+# the leakage-carrying arm from the Part 3 sweep. They stay in the comparison
+# as a contrast and are not eligible to be the embedding representative.
+#
+# `minilm_prose_plus_history_ccr_pca29` is the SELECTED embedding arm fixed by
+# Task 9's pre-registered scope selection.
 EMBEDDING_ARMS: dict[str, int | None] = {
     "minilm_uniform": None,
     "minilm_uniform_l2": None,
     "minilm_uniform_pca29": 29,
     "minilm_uniform_pca64": 64,
+    "minilm_prose_plus_history_ccr_pca29": 29,
 }
 
 
@@ -134,15 +160,24 @@ def configure_logging() -> None:
 def build_source_a_embedding(fips_order: pd.Series) -> dict[str, np.ndarray]:
     """Encode Source A's text and return vectors aligned to `fips_order`.
 
+    Encodes two text variants: `uniform`, unconditionally, for the unselected
+    reference arms; and `VARIANT_KEY` (the Task 9 selected scope's underlying
+    text), for the selected arm. The selected arm is common-component-removed
+    (`remove_common_component`) before being handed back, because the
+    selection in `docs/source_a_representation_decision.md` picked the `_ccr`
+    representation, not the raw pooled vectors -- scoring the raw vectors
+    under the selected arm's name would silently substitute a different,
+    unselected representation.
+
     Args:
         fips_order: The `fips_code` sequence the panel is in.
 
     Returns:
         Mapping of representation key to a vector array whose rows align to
         `fips_order`. Counties with no text get a zero vector, which is what the
-        encoder harness already does for them. The `_pca29`/`_pca64` keys carry
-        the same unreduced 384-dimension vectors as `minilm_uniform` -- the
-        reduction itself happens per fold in `out_of_fold_predictions_with_reduction`,
+        encoder harness already does for them. Keys with a PCA width in
+        `EMBEDDING_ARMS` carry the unreduced vectors here -- the reduction
+        itself happens per fold in `out_of_fold_predictions_with_reduction`,
         never here, so it never sees held-out rows.
     """
     from sentence_transformers import SentenceTransformer
@@ -155,17 +190,12 @@ def build_source_a_embedding(fips_order: pd.Series) -> dict[str, np.ndarray]:
     matrix = matrix.merge(text, on="fips_code", how="left")
     sections = pd.read_parquet(SECTIONS_PARQUET_PATH)
 
-    variant = next(v for v in TEXT_VARIANTS if v.key == VARIANT_KEY)
     logger.info("loading %s", ENCODER_NAME)
     model = SentenceTransformer(ENCODER_NAME)
-    texts = build_variant_texts(matrix, sections, variant)
-    vectors, diagnostics = encode_variant(model, texts, matrix["tier"])
-    logger.info("%s: %s", variant.key, diagnostics)
 
-    normed = vectors / np.clip(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12, None)
-    # Reindex onto the panel's row order. `build_matrix` and the panel are both
-    # keyed on fips_code but the panel is an inner join against the targets, so
-    # it is a subset in its own order rather than the matrix's.
+    # Reindex helper onto the panel's row order. `build_matrix` and the panel
+    # are both keyed on fips_code but the panel is an inner join against the
+    # targets, so it is a subset in its own order rather than the matrix's.
     by_fips = pd.DataFrame({"fips_code": matrix["fips_code"]})
     position = by_fips.reset_index().set_index("fips_code")["index"]
     rows = fips_order.map(position).to_numpy()
@@ -173,12 +203,35 @@ def build_source_a_embedding(fips_order: pd.Series) -> dict[str, np.ndarray]:
     if missing:
         raise ValueError(f"{missing} panel counties absent from the encoded matrix")
     rows = rows.astype(int)
-    base = vectors[rows]
+
+    # Unselected reference: `uniform` text, unchanged from the Part 3 sweep.
+    uniform_variant = next(v for v in TEXT_VARIANTS if v.key == "uniform")
+    uniform_texts = build_variant_texts(matrix, sections, uniform_variant)
+    uniform_vectors, uniform_diagnostics = encode_variant(
+        model, uniform_texts, matrix["tier"]
+    )
+    logger.info("uniform: %s", uniform_diagnostics)
+    uniform_normed = l2_normalize(uniform_vectors)
+
+    # Selected scope: `VARIANT_KEY` text, common-component-removed. This must
+    # match what Task 9 scored as `prose_plus_history_ccr` -- centring is
+    # computed over the same full corpus (`matrix`, not the panel subset)
+    # before the panel's rows are pulled out, exactly as the selection sweep
+    # did in `analyze_source_a_tiered_embedding.main`.
+    selected_variant = next(v for v in TEXT_VARIANTS if v.key == VARIANT_KEY)
+    selected_texts = build_variant_texts(matrix, sections, selected_variant)
+    selected_vectors, selected_diagnostics = encode_variant(
+        model, selected_texts, matrix["tier"]
+    )
+    logger.info("%s: %s", VARIANT_KEY, selected_diagnostics)
+    selected_ccr = remove_common_component(selected_vectors)
+
     return {
-        "minilm_uniform": base,
-        "minilm_uniform_l2": normed[rows],
-        "minilm_uniform_pca29": base,
-        "minilm_uniform_pca64": base,
+        "minilm_uniform": uniform_vectors[rows],
+        "minilm_uniform_l2": uniform_normed[rows],
+        "minilm_uniform_pca29": uniform_vectors[rows],
+        "minilm_uniform_pca64": uniform_vectors[rows],
+        f"minilm_{VARIANT_KEY}_ccr_pca29": selected_ccr[rows],
     }
 
 

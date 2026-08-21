@@ -1933,3 +1933,118 @@ governs A's slot.
 - **Status**: resolved for the representation question. Whether Source A ships at
   all remains open and depends on the downstream target, which is unobtainable
   from inside this repo's scope.
+
+## 22. The Pre-Registered Decision, Run: the Selected Embedding Beats the Typed Block (2026-08-21)
+
+**What was asked.** `docs/source_a_representation_decision.md` pre-registered a
+decision rule (committed at `bd341fd`, before any of the new arms were scored):
+score exactly two arms — the Part 4 `typed_transformed` block and the Part 3
+scope that wins selection on the in-repo 28-target basket, PCA-reduced to 29
+dimensions to match `typed_transformed`'s width — on the expanded external
+decision basket, out-of-fold on held-out states. A paired bootstrap 95% CI that
+includes zero is a tie, reported in exactly those words, falling back to cost
+and interpretability. Scope selection (`docs/source_a_representation_decision.md`,
+"Selected scope") picked **`prose_plus_history_ccr`** — `prose_plus_history`
+text, common-component-removed — at mean lift 0.004530 on the 28-target
+selection basket, disjoint from this section's 42-target decision basket. This
+section runs that comparison for the first time.
+
+**What was measured.** `analyze_source_a_representation_marginal.py`, arm
+`minilm_prose_plus_history_ccr_pca29`: the selected scope's text, encoded,
+common-component-removed, then PCA-reduced to 29 dimensions *inside each fold*
+(never on the full corpus, so the reduction never sees a held-out state).
+Scored against `typed_transformed` on the same 42-target external decision
+basket §21 used a 5-target slice of, drop-one against a model holding county
+size and pillars B–F, `GroupKFold(state_fips)`, seed 42. `minilm_uniform` /
+`minilm_uniform_l2` / `minilm_uniform_pca29` / `minilm_uniform_pca64` are also
+scored, as the **unselected** width-matched reference — the same raw arms §21
+used, kept in the table as a contrast, not eligible to represent A. Per Rule 5,
+every headline below is reported over the full 42-target basket and the
+34-target subset excluding the 8 targets flagged `restated_in_text` (>500
+counties). The 15 explicitly unscreened targets (never checked for
+restatement — see `docs/source_a_representation_decision.md`) are included in
+both baskets; they are not asserted clean.
+
+**Mean marginal contribution by arm:**
+
+| representation | width | full basket (n=42) mean | median | leakage-clean (n=34) mean | median |
+|---|---|---|---|---|---|
+| `minilm_prose_plus_history_ccr_pca29` (**selected**) | 29 | **+0.016749** | +0.011232 | **+0.019448** | +0.011654 |
+| `minilm_uniform_pca29` (unselected reference) | 29 | +0.009374 | +0.004769 | +0.011572 | +0.006258 |
+| `minilm_uniform_pca64` (unselected reference) | 64 | +0.003883 | −0.000727 | +0.005844 | +0.003939 |
+| `typed` (secondary, continuity with §21) | 29 | +0.002125 | +0.000387 | +0.002718 | +0.000387 |
+| `typed_transformed` (**primary comparator**) | 37 | +0.000782 | +0.000721 | +0.001018 | +0.000721 |
+| `minilm_uniform_l2` (unselected reference) | 384 | −0.009228 | −0.016667 | −0.002798 | −0.011547 |
+| `minilm_uniform` (unselected reference) | 384 | −0.020971 | −0.019213 | −0.015364 | −0.016426 |
+
+**The pre-registered rule (Rule 4): paired difference, `typed_transformed` −
+selected arm, numpy bootstrap seed 42, 10,000 resamples.**
+
+| basket | n | mean(typed_transformed − selected) | 95% bootstrap CI |
+|---|---|---|---|
+| full | 42 | −0.015967 | [−0.025754, −0.008051] |
+| leakage-clean | 34 | −0.018429 | [−0.030048, −0.008758] |
+
+Both intervals sit entirely below zero. **This is not a tie.** Under the
+pre-registered rule, `minilm_prose_plus_history_ccr_pca29` wins outright, on
+both baskets.
+
+**Secondary (Rule 3): paired Wilcoxon, selected arm vs `typed_transformed`,
+with observed power (`paired_power.paired_effect`).**
+
+| basket | n | mean diff | dz | power | wins | wilcoxon p |
+|---|---|---|---|---|---|---|
+| full | 42 | +0.01597 | 0.535 | 0.96 | 34/42 | 0.00001 |
+| leakage-clean | 34 | +0.01843 | 0.565 | 0.94 | 27/34 | 0.00008 |
+
+Unlike §14.2a's and §20.2's underpowered 28-target ties, this test is well
+powered (0.94–0.96) and still significant — the earlier caveat about small
+baskets does not apply here.
+
+**This reverses, and sharpens, §21's headline.** §21 scored the *raw* 384-dim
+`minilm_uniform` / `minilm_uniform_l2` arms — no common-component removal, no
+width match — against 5 targets, and found the embedding made Source A's
+contribution dramatically worse (−0.044 against typed's −0.00005). Those same
+two raw arms score poorly here too (−0.021 and −0.009 on the full 42-target
+basket) — §21's direction reproduces for the arm it actually tested. What
+changes the conclusion is a *different* arm: the scope Task 9 later selected
+by a rule fixed before any decision-basket scoring, common-component-removed
+and reduced to the typed block's own width. That arm does not merely close
+the gap — it inverts it, decisively and at basket sizes large enough to power
+the test. **Representation is not incidental to Source A's near-zero
+contribution: the same text, encoded and reduced differently, moves the
+pillar's marginal contribution from single-digit-basis-points to the largest
+mean lift of any arm scored, including the typed block that ships today.**
+§21's "fact about the pillar, not about its encoding" is not correct as a
+general claim — it was true of the specific raw arms tested there, not of
+representation choice in general.
+
+**What this does not settle.** A well-powered win on this basket is not
+proof the selected arm would ship as-is: `typed_transformed` is 37 columns of
+transparent, auditable counts; the selected arm is 29 opaque PCA components of
+a sentence embedding, and nothing here measures the operational cost of
+running an encoder in production or the interpretability loss of dropping
+typed columns. Because the CI excludes zero, Rule 4's cost/interpretability
+fallback does not formally apply — but a team could still weigh those factors
+against a numeric win this large. That is a downstream decision, not a
+continuation of this measurement.
+
+- **Allowed wording**: "the pre-registered rule finds the selected embedding
+  arm (`prose_plus_history_ccr`, PCA-29) beats `typed_transformed` on both the
+  full 42-target basket (mean +0.0160, CI [0.008, 0.026] excluding zero) and
+  the 34-target leakage-clean subset (mean +0.0184, CI [0.009, 0.030]) — this
+  is not a tie, and it reverses §21's conclusion that Source A's near-zero
+  contribution is purely a fact about the pillar rather than its encoding."
+- **Forbidden wording**: any figure from this section quoted without stating
+  which basket (42 or 34) it came from — the two baskets differ and Rule 5
+  requires both be reported together. Any claim that the 15 explicitly
+  unscreened targets (§ "Text-leakage screen" in
+  `docs/source_a_representation_decision.md`) are verified clean because they
+  are not in the flagged group — they were never screened, in either basket.
+  "The embedding wins" without naming which arm — `minilm_uniform` and
+  `minilm_uniform_l2`, the unselected raw arms, still lose here; only the
+  selected, common-component-removed, width-matched arm wins. "This proves
+  §21 was wrong" — §21's own arms reproduce their own result in this run; what
+  changed is which arm was tested, not §21's arithmetic.
+- **Status**: resolved. This is the pre-registered decision the
+  `source-a-representation-decision` design spec exists to produce.
