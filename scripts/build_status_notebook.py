@@ -306,8 +306,18 @@ characters), **thin** (100–283), **mid** (284–461), **rich** (≥462).
 
 **One piece of context first, because it is why Source A looks the way it does.**
 Source A used to ship a 1,024-dimension `bge-m3` embedding of each county's lead
-section. It was cut and replaced by 29 typed columns — named industries,
-universities, ports, protected land — extracted with a fixed lexicon.
+section. It was cut and replaced by 29 typed columns, extracted with a fixed
+lexicon:
+
+| | the 29 columns |
+|---|---|
+| **Industry, from the lead** (7) | `has_` + `manufacturing` · `mining` · `oil_gas` · `agriculture` · `tourism` · `timber` · `logistics` |
+| **The same seven, re-read from economy sections** (7) | the same names with a `sec_` prefix |
+| **Place and infrastructure** (7) | `has_` + `university` · `military_base` · `protected_land` · `tribal_land` · `river` · `interstate` · `port` |
+| **Counts and scalars** (8) | `content_length` · `n_industry_mentions` · `sec_n_industry_mentions` · `n_distinct_proper_nouns` · `founding_year` · `has_metro_attachment` · `has_namesake` · `has_economy_section` |
+
+The seven industry flags appearing twice — once from the lead, once from the
+economy sections — is the whole subject of the next chart.
 
 **Two encoders have now been tested against those columns, and both are ties.**
 bge-m3 at 1,024 dimensions and 2.2GB: 11 of 28 targets, p = 0.52. `all-MiniLM-L6-v2`
