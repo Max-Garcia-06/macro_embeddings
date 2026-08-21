@@ -82,6 +82,56 @@ def test_prose_scope_drops_at_least_a_third_of_characters(sections_frame) -> Non
     assert share > 0.33, f"prose exclusion only drops {share:.1%} of characters"
 
 
+def test_prose_plus_history_scope_readmits_history_titles() -> None:
+    """`census_sections()` is not what the selected arm reads -- history is.
+
+    `prose_plus_history_sections()` must keep titles like "history" and
+    "notable people" that `census_sections()` never included and that
+    `PROSE_EXCLUDE_PATTERN` (the `prose_only` exclusion) would have dropped.
+    """
+    assert not _matches(leak.PROSE_PLUS_HISTORY_EXCLUDE_PATTERN, "history")
+    assert not _matches(leak.PROSE_PLUS_HISTORY_EXCLUDE_PATTERN, "notable people")
+    # Still excludes the census/list/highway families census_sections() and
+    # PROSE_EXCLUDE_PATTERN both drop.
+    assert _matches(leak.PROSE_PLUS_HISTORY_EXCLUDE_PATTERN, "census")
+    assert _matches(leak.PROSE_PLUS_HISTORY_EXCLUDE_PATTERN, "communities")
+    assert _matches(leak.PROSE_PLUS_HISTORY_EXCLUDE_PATTERN, "major highways")
+
+
+def test_restated_targets_prose_plus_history_covers_only_screened_targets(
+    sections_frame,
+) -> None:
+    """The in-scope channel measurement is only defined where a phrase exists.
+
+    Unlike `restated_targets`, which maps every EXTERNAL_TARGETS column to a
+    count or `None`, this covers only `RESTATEMENT_PHRASES` -- there is no
+    phrase to search for an unscreened target regardless of section scope.
+    """
+    found = leak.restated_targets_prose_plus_history(sections_frame)
+    assert set(found) == set(leak.RESTATEMENT_PHRASES)
+    assert all(isinstance(v, int) for v in found.values())
+
+
+def test_prose_plus_history_channel_is_disjoint_from_census_channel(
+    sections_frame,
+) -> None:
+    """The selected arm's scope excludes exactly the sections the census screen covers.
+
+    `restated_targets` (census-only) and `restated_targets_prose_plus_history`
+    (everything else) partition the same section frame -- the two functions
+    must never both be reading a shared set of sections, or the "in-scope
+    channel" measurement would not actually control for what the selected arm
+    reads.
+    """
+    titles = sections_frame["section_title"].str.strip().str.lower()
+    census_mask = titles.str.match(leak.CENSUS_TITLE_PATTERN, na=False)
+    prose_plus_history_mask = ~titles.str.match(
+        leak.PROSE_PLUS_HISTORY_EXCLUDE_PATTERN, na=False
+    )
+    overlap = (census_mask & prose_plus_history_mask).sum()
+    assert overlap == 0, "census sections must never be read by prose_plus_history's scope"
+
+
 import analyze_source_a_tiered_embedding as tiered
 
 

@@ -168,6 +168,75 @@ def census_sections(sections: pd.DataFrame) -> pd.DataFrame:
     return sections[titles.str.match(CENSUS_TITLE_PATTERN, na=False)]
 
 
+# What the `prose_plus_history` scope (analyze_source_a_tiered_embedding.py
+# TEXT_VARIANTS) excludes: census tables, name lists and highway lists, but
+# NOT narrative -- that scope deliberately re-admits history and notable
+# people, which `census_sections()` above never touches either way. This is
+# the pattern to use when measuring the leakage channel the *selected*
+# embedding arm actually reads, as opposed to `census_sections()`, which
+# measures a channel that arm's scope excludes entirely.
+PROSE_PLUS_HISTORY_EXCLUDE_PATTERN: str = (
+    r"^(?:"
+    + r"|".join(
+        p.removeprefix("^(?:").removesuffix(")$")
+        for p in (CENSUS_TITLE_PATTERN, LIST_TITLE_PATTERN, HIGHWAY_TITLE_PATTERN)
+    )
+    + r")$"
+)
+
+
+def prose_plus_history_sections(sections: pd.DataFrame) -> pd.DataFrame:
+    """Subset `sections` to what the `prose_plus_history` scope reads.
+
+    `census_sections()` finds the sections that state a target's value
+    verbatim, but the selected embedding arm's `prose_plus_history` scope
+    excludes exactly those sections (plus lists and highways) -- it never
+    reads them. Any restatement it is exposed to happens in the sections this
+    function returns: everything else, including history and notable-people
+    prose that `census_sections()` was never meant to cover.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        Rows whose title does NOT match `PROSE_PLUS_HISTORY_EXCLUDE_PATTERN`.
+    """
+    titles = sections["section_title"].str.strip().str.lower()
+    excluded = titles.str.match(PROSE_PLUS_HISTORY_EXCLUDE_PATTERN, na=False)
+    return sections[~excluded]
+
+
+def restated_targets_prose_plus_history(sections: pd.DataFrame) -> dict[str, int]:
+    """Count counties whose `prose_plus_history`-scope sections restate a target.
+
+    `restated_targets` below searches only `census_sections()`, which is not
+    the channel the selected embedding arm (`prose_plus_history_ccr`) reads --
+    that scope excludes census sections entirely. Scoring the census-only
+    screen as if it controlled the selected arm's leakage risk would be
+    measuring the wrong channel. This function measures the right one: the
+    ~31,000 non-census/list/highway sections `prose_plus_history` actually
+    consumes.
+
+    Only targets with a phrase in `RESTATEMENT_PHRASES` are covered here.
+    `UNSCREENED_TARGETS` has no phrase to search for in any section scope, so
+    those targets are omitted from the result rather than mapped to a
+    misleading 0 or `None`.
+
+    Args:
+        sections: Long-format section frame.
+
+    Returns:
+        Screened target column to county count restating it in-scope.
+    """
+    scope = prose_plus_history_sections(sections)
+    counts: dict[str, int] = {}
+    for column, phrases in RESTATEMENT_PHRASES.items():
+        pattern = "|".join(phrases)
+        hit = scope["section_text"].str.contains(pattern, case=False, na=False, regex=True)
+        counts[column] = int(scope[hit]["fips_code"].nunique())
+    return counts
+
+
 def restated_targets(sections: pd.DataFrame) -> dict[str, int | None]:
     """Count counties whose census sections restate each target.
 

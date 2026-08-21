@@ -1952,7 +1952,12 @@ section runs that comparison for the first time.
 **What was measured.** `analyze_source_a_representation_marginal.py`, arm
 `minilm_prose_plus_history_ccr_pca29`: the selected scope's text, encoded,
 common-component-removed, then PCA-reduced to 29 dimensions *inside each fold*
-(never on the full corpus, so the reduction never sees a held-out state).
+(never on the full corpus, so the PCA reduction never sees a held-out state).
+The common-component removal step immediately before it is **not** fold-fitted
+the same way: its corpus mean is computed over the full encoded matrix,
+including the states any given fold holds out, before the panel subset or the
+folds exist. It uses no target information, but it is still transductive in a
+way the PCA step is not — see §22.3.
 Scored against `typed_transformed` on the same 42-target external decision
 basket §21 used a 5-target slice of, drop-one against a model holding county
 size and pillars B–F, `GroupKFold(state_fips)`, seed 42. `minilm_uniform` /
@@ -1977,8 +1982,29 @@ both baskets; they are not asserted clean.
 | `minilm_uniform_l2` (unselected reference) | 384 | −0.009228 | −0.016667 | −0.002798 | −0.011547 |
 | `minilm_uniform` (unselected reference) | 384 | −0.020971 | −0.019213 | −0.015364 | −0.016426 |
 
+**The pre-registered capacity pass backfired, and that is worth stating
+plainly.** `typed_transformed` (+0.000782) scores *worse* than the raw `typed`
+block it was built to equalize capacity with (+0.002125) — on both baskets.
+Part 4's log1p and tier-interaction transforms exist to give the 29-column
+typed block a fairer shot against 384-dimension embeddings, chosen without
+consulting any target's score. That capacity pass measurably hurt the typed
+arm's own marginal contribution rather than helping it — the table above
+shows it, but it was never previously called out in prose. The pre-registered
+Rule 2 fixes `typed_transformed`, not `typed`, as the primary comparator, so
+this does not change which two arms the decision rule compares. It also does
+not change the verdict: the selected arm's contribution is roughly triple even
+raw `typed`'s (`+0.016749` vs `+0.002125`, full basket), so "the selected
+embedding wins" is robust to which typed variant it is measured against, even
+though the pre-registered comparator itself underperformed its own
+predecessor.
+
 **The pre-registered rule (Rule 4): paired difference, `typed_transformed` −
-selected arm, numpy bootstrap seed 42, 10,000 resamples.**
+selected arm, numpy bootstrap seed 42, 10,000 resamples.** *(Pre-exclusion
+figures, kept for audit — §22.1 below excludes the degenerate
+`no_fuel_used_share` target and recomputes these as the reported headline;
+§22.2–22.5 add the lat/long control, the scope/CCR decomposition, the
+table-collapsed sensitivity, and the corrected leakage-channel measurement.
+Read this section to the end before citing any single number from it.)*
 
 | basket | n | mean(typed_transformed − selected) | 95% bootstrap CI |
 |---|---|---|---|
@@ -2012,12 +2038,20 @@ by a rule fixed before any decision-basket scoring, common-component-removed
 and reduced to the typed block's own width. That arm does not merely close
 the gap — it inverts it, decisively and at basket sizes large enough to power
 the test. **Representation is not incidental to Source A's near-zero
-contribution: the same text, encoded and reduced differently, moves the
-pillar's marginal contribution from single-digit-basis-points to the largest
-mean lift of any arm scored, including the typed block that ships today.**
-§21's "fact about the pillar, not about its encoding" is not correct as a
-general claim — it was true of the specific raw arms tested there, not of
-representation choice in general.
+contribution: it moves the pillar's marginal contribution from
+single-digit-basis-points to the largest mean lift of any arm scored,
+including the typed block that ships today.** But it is not *the same text*,
+differently encoded — `prose_plus_history` drops the census/list/highway
+sections `uniform` reads and re-admits history and notable-people narrative
+that `uniform` excludes (§22 "What was measured"; TEXT_VARIANTS in
+`analyze_source_a_tiered_embedding.py`), so the winning arm changed which text
+it reads, not only how it encodes and reduces the same text. §22.3 below
+separates the two factors — text scope and the common-component-removal
+transform — that moved together between `minilm_uniform_pca29` and the
+selected arm, and reports what each contributes on its own. §21's "fact about
+the pillar, not about its encoding" is not correct as a general claim — it was
+true of the specific raw arms tested there, not of representation choice in
+general.
 
 **What this does not settle.** A well-powered win on this basket is not
 proof the selected arm would ship as-is: `typed_transformed` is 37 columns of
@@ -2029,22 +2063,341 @@ fallback does not formally apply — but a team could still weigh those factors
 against a numeric win this large. That is a downstream decision, not a
 continuation of this measurement.
 
-- **Allowed wording**: "the pre-registered rule finds the selected embedding
-  arm (`prose_plus_history_ccr`, PCA-29) beats `typed_transformed` on both the
-  full 42-target basket (mean +0.0160, CI [0.008, 0.026] excluding zero) and
-  the 34-target leakage-clean subset (mean +0.0184, CI [0.009, 0.030]) — this
-  is not a tie, and it reverses §21's conclusion that Source A's near-zero
-  contribution is purely a fact about the pillar rather than its encoding."
+### 22.1 One target is degenerate, not merely noisy — excluded from every headline
+
+The 42-target basket's headline means above include `no_fuel_used_share`,
+whose reported contribution (+0.0312 for the selected arm) looked like the
+largest single-target gain in the basket. It is not a gain. Within the
+3,144-county panel this target has mean 0.0067, sd 0.0232, max 0.644, skew
+23.0, kurtosis 573 — a near-degenerate, almost-always-zero rate. Its reduced
+R2 (size + pillars B–F, no Source A) is **−1.0031**, and every arm's full R2
+is also negative: −1.0381 for `typed_transformed`, −0.9720 for the selected
+embedding arm. Both models score worse than predicting the panel mean, on
+both sides of the drop-one comparison. A "contribution" computed as the
+difference of two negative, worse-than-mean R2 values is the gap between two
+useless models, not evidence either one is doing something the other isn't —
+reporting it as a gain overstates the selected arm's basket-wide mean.
+
+An earlier read attributed this target's broken R2 to unmasked ACS negative
+sentinels and Puerto Rico contamination. Both are checked and ruled out here.
+The proportion path in `ingest_external_targets.py` (`safe_numerator`,
+`safe_numerator_se`, `safe_denominator`, ~lines 727–730) already masks
+negative sentinels on both sides of the ratio before dividing — there is no
+unmasked-sentinel defect to fix. And Puerto Rico is not in this panel at all:
+0 of 3,144 rows carry `state_fips == 72`, so a PR-driven max above 0.9 cannot
+be the explanation for a panel whose observed max is 0.644. The target is
+genuinely too skewed and near-zero-mass for this model class, independent of
+either candidate explanation.
+
+`fuel_oil_heating_share` sits in the same neighborhood but is a materially
+different case, and is **kept**, not excluded: its reduced R2 is a mildly
+negative −0.0124, but its full R2 under the selected arm is +0.0886 —
+genuinely predictive, moving the target from worse-than-mean to a real gain
+rather than trading one useless model for another. Its negative baseline is
+disclosed here rather than left implicit in the table.
+
+`no_fuel_used_share` stays ingested and scored — it is still in `EXTERNAL_TARGETS`,
+still in `outputs/source_a_representation_marginal.csv`, and still visible in
+every arm's per-target table — but it is excluded from every headline mean in
+this section and in `docs/source_a_representation_decision.md`, via
+`EXCLUDED_TARGETS` in `analyze_source_a_representation_marginal.py`, which
+carries this reasoning inline and is checked by
+`test_marginal_arms.py::test_excluded_targets_are_documented`. As a general
+guard against the same failure mode recurring silently: any target whose
+reduced R2 is negative is now flagged in the harness's log output and named in
+`negative_baseline_targets` in the stats JSON, rather than being averaged into
+a headline figure unremarked. Within the 42-target basket exactly two targets
+trip that guard — `no_fuel_used_share` (excluded, above) and
+`fuel_oil_heating_share` (kept, disclosed).
+
+**Rule 4, recomputed on the 41-target decision basket.** Same paired
+difference, same bootstrap (seed 42, 10,000 resamples), `typed_transformed` −
+selected arm, with `no_fuel_used_share` removed:
+
+| basket | n | mean(typed_transformed − selected) | 95% bootstrap CI | zero in CI? |
+|---|---|---|---|---|
+| decision basket | 41 | −0.014744 | [−0.024490, −0.007119] | no |
+| decision basket, leakage-clean | 33 | −0.016985 | [−0.028923, −0.007546] | no |
+
+Both intervals still sit entirely below zero — excluding the one degenerate
+target moves the mean gap from −0.015967 to −0.014744 (full) and from
+−0.018429 to −0.016985 (leakage-clean), a small narrowing since
+`no_fuel_used_share` favored the selected arm, but the verdict is unchanged:
+not a tie, on either basket. Wilcoxon: 33/41 wins, p=0.000021 (decision
+basket); 26/33 wins, p=0.000158 (decision basket, leakage-clean) — both
+comparable in power to the pre-exclusion secondary test. These are the
+headline numbers this document and `docs/source_a_representation_decision.md`
+now quote; the pre-exclusion 42/34-target figures earlier in this section are
+kept for audit, not as the reported result.
+
+### 22.2 A latitude/longitude control: does the win survive geography?
+
+`GroupKFold(state_fips)` prevents a county's own row from leaking into its
+fold's training data, but it does not prevent an encoder from reading regional
+vocabulary. A held-out New England county's Wikipedia article shares dialect,
+place names and climate description with training-fold New England counties,
+so a text encoder can localize a county's region — and therefore predict
+region-correlated ACS outcomes — without ever seeing that county's own state
+label. The selected arm's largest per-target gains are exactly the outcomes
+regional climate and settlement pattern would predict: `electric_heating_share`
++0.125, `fuel_oil_heating_share` +0.101, `gas_heating_share` +0.061,
+`foreign_born_share` +0.041, `median_year_built` +0.038, `drove_alone_share`
++0.032, `mean_commute_minutes` +0.027. That pattern is consistent with a
+geography channel doing real work inside the "text" gain.
+
+Two controls were added to `score_representation`, both new arms scored
+identically to every other representation, sharing one design:
+`data/county_centroids.parquet`'s `lat`/`lon`, joined onto the panel by
+`fips_code` (all 3,144 panel counties present, no missing centroids, so no
+null-fill was needed). `latlong_only` adds those two columns to the standard
+reduced model (size + pillars B–F) and is scored as an arm in its own right —
+the standalone value of two floating-point numbers. Its own design is also
+reused as a second reduced baseline, `r2_reduced_geo` — "size + others +
+lat/lon" — against which every other arm's `contribution_geo` is computed, so
+the whole table can be read net of geography as well as net of nothing more
+than county size and the other five pillars.
+
+**Result: most of the selected arm's own contribution is a geography proxy.**
+Decision basket (n=41), mean contribution against the plain reduced model vs.
+against the lat/long-augmented reduced model:
+
+| representation | vs. plain reduced (mean) | vs. lat/long-augmented reduced (mean) | n positive (plain) | n positive (geo) |
+|---|---|---|---|---|
+| `latlong_only` (2 cols, lat/lon alone) | +0.015790 | +0.000000 (by construction) | 25/41 | 0/41 |
+| `minilm_prose_plus_history_ccr_pca29` (selected) | **+0.016397** | **+0.000607** | 37/41 | 21/41 |
+| `minilm_uniform_ccr_pca29` | +0.013474 | −0.002316 | 36/41 | 20/41 |
+| `minilm_uniform_pca29` | +0.010985 | −0.004806 | 30/41 | 19/41 |
+| `typed` | +0.003139 | −0.012651 | 23/41 | 17/41 |
+| `typed_transformed` (primary comparator) | +0.001654 | −0.014137 | 22/41 | 17/41 |
+
+Two floating-point columns — nothing but a county's coordinates — reach
++0.015790, **96% of the selected arm's own +0.016397**, using two columns
+against the selected arm's twenty-nine. Once lat/lon is already in the model,
+the selected arm's marginal value collapses to +0.000607 — essentially zero,
+and its win rate over the geo-aware baseline drops from 37/41 targets to
+21/41, barely better than a coin flip. This is not a small effect: on the
+plain reduced model the selected arm looks like it is contributing real
+economic content; net of geography, nearly all of that apparent contribution
+is explained by where the county is, not what its article says about it.
+
+Per-target, the pattern the pre-registered heating/commute targets predicted
+is exactly what shows up. Several of the selected arm's largest headline gains
+invert sign once geography is controlled:
+
+| target | contribution (plain) | contribution_geo (net of lat/lon) |
+|---|---|---|
+| `electric_heating_share` | +0.1253 | **−0.0150** |
+| `fuel_oil_heating_share` | +0.1010 | **−0.0341** |
+| `drove_alone_share` | +0.0317 | **−0.0574** |
+| `mean_commute_minutes` | +0.0270 | **−0.0111** |
+| `gas_heating_share` | +0.0612 | +0.0814 |
+| `foreign_born_share` | +0.0406 | +0.0440 |
+| `median_year_built` | +0.0382 | +0.0456 |
+
+Four of the seven collapse to negative; three (`gas_heating_share`,
+`foreign_born_share`, `median_year_built`) hold up or strengthen, so this is
+not a uniform wipeout of every climate-flavored target — the encoder is
+carrying some content beyond raw location on at least those three.
+
+**What this does and does not change about the pre-registered decision.**
+Rule 4's paired comparison — `typed_transformed` vs. the selected arm — is
+*mathematically unaffected* by adding the lat/long baseline: `contribution_geo`
+subtracts the same `r2_reduced_geo` value from both arms for a given target,
+and that shared term cancels exactly in a paired difference
+(`contribution_geo(A) − contribution_geo(B) = contribution(A) − contribution(B)`
+for every target, verified directly — the bootstrap CI, mean difference, win
+count and Wilcoxon p-value on `contribution_geo` are bit-identical to the ones
+on `contribution` in §22.1). So the primary verdict — the selected arm beats
+`typed_transformed` by a margin whose 95% CI excludes zero — cannot be
+undone by this control, by construction of what a paired test measures. What
+the lat/long control changes is the *story* behind that margin:
+`typed_transformed`'s own value net of geography is not merely small but
+substantially negative (−0.014137) — the currently-shipped capacity-equalized
+typed block is worse than adding nothing once geography is already in the
+model — while the selected arm's is close to zero but still the least bad of
+every arm tested. The selected arm's win over `typed_transformed` survives in
+full; its win over "not using Source A at all" mostly does not. Both are true,
+and reporting only the first would overstate the result.
+
+### 22.3 Separating text scope from common-component removal
+
+`minilm_uniform_pca29` and the selected `minilm_prose_plus_history_ccr_pca29`
+differ in two ways at once: `prose_plus_history` is a different text scope
+than `uniform` (§22 "What was measured" and §22 above), and only the selected
+arm has the common-component-removal (CCR) transform applied —
+`remove_common_component` is called on the `VARIANT_KEY` vectors in
+`build_source_a_embedding`, never on `uniform`'s. The +0.016749 vs +0.009374
+gap between those two arms (full basket) therefore confounds scope and CCR,
+even though the earlier prose in this section attributed the whole gap to
+scope selection.
+
+A third arm, `minilm_uniform_ccr_pca29` — `uniform` scope, CCR applied, same
+29-dimension width — separates the two factors: `minilm_uniform_ccr_pca29` −
+`minilm_uniform_pca29` isolates what CCR alone contributes, holding scope at
+`uniform`; `minilm_prose_plus_history_ccr_pca29` − `minilm_uniform_ccr_pca29`
+isolates what the scope change contributes, holding CCR fixed.
+
+Decision basket (n=41) mean contributions:
+
+| representation | scope | CCR | mean contribution |
+|---|---|---|---|
+| `minilm_uniform_pca29` | `uniform` | no | +0.010985 |
+| `minilm_uniform_ccr_pca29` | `uniform` | yes | +0.013474 |
+| `minilm_prose_plus_history_ccr_pca29` (selected) | `prose_plus_history` | yes | +0.016397 |
+
+CCR alone (`uniform_ccr` − `uniform`): **+0.002490**. Scope alone (selected −
+`uniform_ccr`, CCR held fixed): **+0.002923**. The two factors are roughly
+even contributors to the total +0.005413 gap between `minilm_uniform_pca29`
+and the selected arm — CCR accounts for about 46% of it, scope for about 54%.
+Neither factor dominates the other, which means the earlier claim that "scope
+selection" alone explains the gap between the unselected and selected
+width-matched arms was not correct — the CCR transform, applied to Task 9's
+selected scope but never to the `uniform` reference, does comparable work.
+
+One more asymmetry is worth stating plainly: CCR's corpus mean is computed
+over the **full** encoded matrix — all 3,144 counties, including whichever
+states a given fold holds out — before the panel subset or the fold split
+exist (`build_source_a_embedding`, both `uniform_ccr` and `selected_ccr`).
+That is transductive, unlike the PCA reduction applied afterward, which
+`fit_reduction` refits on training rows only, inside each fold. CCR's mean
+uses no target information and is fixed before any fold sees it, so it is not
+target leakage in the usual sense — but it is not the same no-held-out-data
+guarantee the PCA step carries, and the two should not be described with the
+same language. `minilm_uniform_pca29` (no CCR at all) still carries the
+reversal from §21's raw arms without this transductive step, which bounds how
+much of the win CCR's corpus-mean convention could be responsible for.
+
+### 22.4 Basket clustering: the reported power is overstated, the direction is not
+
+Five of the 42 targets — `electric_heating_share`, `gas_heating_share`,
+`bottled_gas_heating_share`, `fuel_oil_heating_share`, `no_fuel_used_share` —
+are the heating-fuel shares of a single ACS table, B25040. Twenty of the 42
+targets sit in ACS tables that contribute more than one target to the basket
+(commute mode from B08301 contributes 5; nativity from B07001 and the
+own-children family-type shares from B09002 each contribute 3; the rest of
+that 20 are two-target tables). Cross-table correlations run high within the
+panel: `median_contract_rent`~`median_gross_rent` r=0.984,
+`median_family_income`~`median_household_income` r=0.951,
+`median_monthly_housing_cost`~`median_contract_rent` r=0.943, and 38 of the
+861 target pairs exceed |r|=0.7 (all computed directly against the panel,
+pairwise-complete). The paired Wilcoxon and bootstrap in this section treat
+n=42 as 42 independent draws; that overstates the sample's true independence.
+
+**Table-collapsed sensitivity, computed after §22.1's exclusion.** Each
+target's `contribution` (selected arm and `typed_transformed`) is averaged
+within its ACS table first, collapsing the 41-target decision basket to one
+row per table:
+
+| collapse | n | mean(selected − typed_transformed) | wins | Wilcoxon p | 95% bootstrap CI |
+|---|---|---|---|---|---|
+| target-level (§22.1 headline) | 41 | +0.014744 | 33/41 | 0.000021 | [0.007119, 0.024490] |
+| table-collapsed | 28 | +0.010970 | 23/28 | 0.000194 | [0.005332, 0.018411] |
+
+Collapsing to one row per table drops the effective sample from 41 to 28 and
+the mean advantage from +0.0147 to +0.0110 — both because the largest gains
+concentrate in one heavily-weighted table (B25040, heating fuel, 4 remaining
+members after §22.1's exclusion) that a table-level collapse can no longer
+count four times. The 95% CI still excludes zero and the win rate (23/28,
+82%) is close to the target-level rate (33/41, 80%): **the direction survives
+the clustering adjustment; the previously reported power (0.94–0.96 in the
+Wilcoxon secondary test) does not** — it was computed treating 41–42 targets
+as independent draws when the effective sample, once table membership is
+accounted for, is closer to 28. Both figures — target-level and
+table-collapsed — should be read together rather than only the more
+favorable one.
+
+### 22.5 What the leakage screen actually controls — and what it does not
+
+`source_a_text_leakage.restated_targets` searches only inside
+`census_sections()` — sections titled "census", "demographics", "income and
+poverty" and similar (`CENSUS_TITLE_PATTERN`). The "leakage-clean 34" subset
+used throughout this section is built by dropping the 8 targets restated in
+more than 500 counties' census sections. But the selected arm's scope,
+`prose_plus_history`, **excludes** exactly the sections that screen searches —
+census, list, and highway sections are dropped before the text is encoded (see
+`PROSE_PLUS_HISTORY_EXCLUDE_PATTERN` and `TEXT_VARIANTS` in
+`analyze_source_a_tiered_embedding.py`). The census-only screen therefore
+controls a channel the selected arm never reads. Describing the 34-target
+subset as "the leakage control for the selected arm" is not accurate; it
+controls the channel the *unscreened raw arms* (`minilm_uniform` and
+relatives, which do read census sections) could leak through, not the channel
+`prose_plus_history_ccr` is exposed to.
+
+The channel `prose_plus_history` actually reads is measured directly:
+`source_a_text_leakage.restated_targets_prose_plus_history` runs the same
+restatement-phrase screen (`RESTATEMENT_PHRASES`) against the ~30,966
+non-census/list/highway sections that scope consumes — everything else in the
+corpus, including the history and notable-people prose `prose_plus_history`
+re-admits. Verified directly against `data/source_a_sections.parquet`: five
+targets exceed 100 counties restating them in this channel —
+`public_transit_share` 219, `median_household_income` 194, `poverty_rate` 144,
+`bachelors_share` 126, `per_capita_income` 124 — and every other screened
+target sits at 82 counties or fewer, tapering to single digits for most of the
+basket.
+
+If the selected arm's win were substantially a restatement-leakage artifact,
+the targets most exposed in this channel should be among its best-performing
+targets. They are not: `bachelors_share` (contribution −0.0060) is the worst
+screened target in the entire 42-target basket, and `poverty_rate` (−0.0009)
+is the fourth-worst — both among the arm's four worst results, despite sitting
+at 126 and 144 in-scope restatements respectively, well above the median
+target's exposure. `median_household_income` (+0.0036) and
+`public_transit_share` (+0.0200) score positively but unremarkably relative to
+the rest of the basket. This is the opposite of a leakage signature — a
+channel actually driving the win would show its most-exposed targets scoring
+best, not worst. It does not prove the channel is inert (a small handful of
+genuinely well-predicted targets could still be riding restatement rather than
+signal), but it is evidence against restatement being what carries the
+headline result, not evidence for it.
+
+- **Allowed wording**: "the pre-registered rule, recomputed on the 41-target
+  decision basket after excluding the degenerate `no_fuel_used_share` target
+  (§22.1), finds the selected embedding arm (`prose_plus_history_ccr`, PCA-29)
+  beats `typed_transformed` on both the decision basket (mean +0.0147, CI
+  [0.007, 0.024] excluding zero) and the 33-target leakage-clean subset (mean
+  +0.0170, CI [0.008, 0.029]) — this is not a tie, and it reverses §21's
+  conclusion that Source A's near-zero contribution is purely a fact about the
+  pillar rather than its encoding." "This win over `typed_transformed` is
+  unaffected by adding a latitude/longitude control, because a paired
+  comparison cancels any baseline shared by both arms (§22.2) — but the
+  selected arm's own marginal value against a model that does NOT already
+  know the county's location collapses from +0.0164 to +0.0006 once lat/lon
+  is added (§22.2), and two raw coordinate columns alone reach +0.0158, 96% of
+  the selected arm's un-adjusted headline number." "CCR and text scope
+  contribute roughly evenly to the gap between the unselected and selected
+  width-matched arms (§22.3, ~46%/54%)." "The direction of the result survives
+  a table-collapsed sensitivity check (n=28, mean +0.0110, 23/28 wins,
+  Wilcoxon p=0.0002), though the reported power (0.94–0.96) is overstated
+  because the 41–42-target basket is not 41–42 independent draws (§22.4)."
+  "The census-only leakage screen does not cover the channel the selected
+  arm's `prose_plus_history` scope actually reads; measured directly, that
+  channel's most-exposed targets (`bachelors_share`, `poverty_rate`) are among
+  the arm's worst performers, not its best (§22.5)."
 - **Forbidden wording**: any figure from this section quoted without stating
-  which basket (42 or 34) it came from — the two baskets differ and Rule 5
-  requires both be reported together. Any claim that the 15 explicitly
-  unscreened targets (§ "Text-leakage screen" in
-  `docs/source_a_representation_decision.md`) are verified clean because they
-  are not in the flagged group — they were never screened, in either basket.
-  "The embedding wins" without naming which arm — `minilm_uniform` and
-  `minilm_uniform_l2`, the unselected raw arms, still lose here; only the
-  selected, common-component-removed, width-matched arm wins. "This proves
-  §21 was wrong" — §21's own arms reproduce their own result in this run; what
-  changed is which arm was tested, not §21's arithmetic.
-- **Status**: resolved. This is the pre-registered decision the
-  `source-a-representation-decision` design spec exists to produce.
+  which basket it came from (decision basket / leakage-clean / table-collapsed
+  are three different denominators now, not two) — Rule 5 requires the split
+  be reported together. Any claim that the 15 explicitly unscreened targets
+  (§ "Text-leakage screen" in `docs/source_a_representation_decision.md`) are
+  verified clean because they are not in the flagged group — they were never
+  screened, in any basket. "The embedding wins" without naming which arm —
+  `minilm_uniform` and `minilm_uniform_l2`, the unselected raw arms, still
+  lose here; only the selected, common-component-removed, width-matched arm
+  wins. "This proves §21 was wrong" — §21's own arms reproduce their own
+  result in this run; what changed is which arm was tested, not §21's
+  arithmetic. Any claim that the selected arm's advantage "survives" the
+  lat/long control in the sense of still representing real marginal content
+  value over a geography-aware model — it does not, on the plain-vs-geo
+  comparison (§22.2); what survives is only its *margin over
+  `typed_transformed`*, and that is a mathematical necessity of a paired test,
+  not new evidence of content signal. Citing the 34-target "leakage-clean"
+  subset (or the pre-exclusion 42-target basket) as this document's headline
+  without noting it predates §22.1's exclusion and §22.4's table-collapsed
+  sensitivity.
+- **Status**: resolved, with the geography caveat load-bearing. This is the
+  pre-registered decision the `source-a-representation-decision` design spec
+  exists to produce; the selected arm still wins the pre-registered Rule 4
+  comparison against `typed_transformed` on every basket tested, but §22.2
+  shows that win is a comparison between two arms whose absolute value over a
+  geography-naive baseline is mostly (selected arm) or entirely and then some
+  (`typed_transformed`) explained by county location rather than pillar
+  content. Both facts are part of the resolution, not just the first one.
