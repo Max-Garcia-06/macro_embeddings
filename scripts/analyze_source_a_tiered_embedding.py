@@ -329,6 +329,28 @@ def l2_normalize(vectors: np.ndarray) -> np.ndarray:
     return vectors / np.clip(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12, None)
 
 
+def remove_common_component(vectors: np.ndarray) -> np.ndarray:
+    """Subtract the corpus mean vector, then row-normalize.
+
+    Every county article opens with the same template sentence, so mean-pooled
+    vectors share a large component that carries no between-county information
+    while consuming representational budget. `StandardScaler` in the scoring
+    pipeline centres each dimension across counties, which is not the same
+    operation: this removes a shared *direction* before normalization, so the
+    row norms that survive describe deviation from the corpus rather than
+    absolute position.
+
+    Args:
+        vectors: One row per county.
+
+    Returns:
+        Centred, row-normalized vectors of the same shape. Zero rows stay zero
+        rather than becoming NaN.
+    """
+    centred = vectors - vectors.mean(axis=0, keepdims=True)
+    return l2_normalize(centred)
+
+
 def vector_tier_diagnostics(
     vectors: np.ndarray, tiers: pd.Series
 ) -> tuple[float, dict[str, float]]:
@@ -591,6 +613,7 @@ def main(verify_only: bool = False) -> None:
         # alone isolates that channel: if a variant recovers here, its loss was
         # the magnitude gradient rather than the text it read.
         blocks[f"{variant.key}_l2"] = (l2_normalize(vectors), None)
+        blocks[f"{variant.key}_ccr"] = (remove_common_component(vectors), None)
         diagnostics[variant.key] = stats
         logger.info("%s: %s", variant.key, stats)
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import re
 
+import numpy as np
 import pytest
 
 import source_a_text_leakage as leak
@@ -82,3 +83,22 @@ def test_prose_by_tier_reads_lead_for_thin_tiers() -> None:
     assert variant.tier_scope["thin"] is None
     assert variant.tier_scope["mid"] is not None
     assert variant.tier_scope["rich"] is not None
+
+
+def test_common_component_removal_centres_the_corpus() -> None:
+    rng = np.random.default_rng(42)
+    shared = np.ones(8) * 5.0
+    vectors = shared + rng.normal(scale=0.1, size=(100, 8))
+
+    result = tiered.remove_common_component(vectors)
+
+    assert result.shape == vectors.shape
+    assert np.abs(result.mean(axis=0)).max() < 0.2, "shared component should be gone"
+    assert np.allclose(np.linalg.norm(result, axis=1), 1.0, atol=1e-6)
+
+
+def test_common_component_removal_handles_a_zero_row() -> None:
+    """Counties with no text get a zero vector; it must not produce NaN."""
+    vectors = np.vstack([np.ones((5, 4)), np.zeros((1, 4))])
+    result = tiered.remove_common_component(vectors)
+    assert np.isfinite(result).all()
