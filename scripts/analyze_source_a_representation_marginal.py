@@ -18,14 +18,24 @@ the pillar, or about its representation?** The reduced model is identical in
 every arm -- size plus the other five pillars -- so the only thing that varies is
 what Source A contributes with.
 
-Three representations of Source A, scored against the same five public ACS
+Representations of Source A, scored against the same five public ACS
 targets, out-of-fold on held-out states, with the same restatement ablation:
 
 - `typed` -- the 29 shipped columns. Reproduces the published -0.0000.
+- `typed_transformed` -- the 29 shipped columns plus the pre-registered
+  capacity pass (`source_a_typed_transform.py`): log1p on count columns and a
+  `sec_n_industry_mentions` x tier interaction. Both arms are scored under
+  ridge, so 29 raw columns against 384 dense dimensions was not an
+  equal-capacity comparison; this arm equalizes it without consulting any
+  target's score to choose the transform.
 - `minilm_uniform` -- MiniLM over lead plus every non-narrative section,
   identically for every county, mean-pooled.
 - `minilm_uniform_l2` -- the same vectors, row-normalized. This was the best arm
   in the representation sweep.
+- `minilm_uniform_pca29` / `minilm_uniform_pca64` -- the same vectors, reduced
+  by PCA fitted inside each fold to 29 and 64 dimensions respectively, so the
+  width-driven part of the embedding's measured penalty against the 29-column
+  typed block is controlled for.
 
 **A note on what a negative contribution means here.** Contribution is
 R2(full) - R2(reduced), so a block that carries nothing useful lands near zero
@@ -67,6 +77,7 @@ from analyze_source_a_tiered_embedding import (
 )
 from analyze_source_a_tiers import assign_tiers
 from pillar_matrix import SIZE_FEATURES
+from source_a_typed_transform import transform_typed
 
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 OUTPUTS_DIR: Path = REPO_ROOT / "outputs"
@@ -202,6 +213,43 @@ def out_of_fold_predictions_with_reduction(
     return predictions
 
 
+def _ensure_tier_column(panel: pd.DataFrame) -> pd.DataFrame:
+    """Attach Source A's content-length tier to the panel if it lacks one.
+
+    `load_panel` (`analyze_external_target.py`) builds the panel from
+    `pillar_matrix.build_matrix`, which does not carry `tier` -- it is not a
+    shipped feature, only a housekeeping cut on `content_length`.
+    `transform_typed`'s industry-mentions interaction needs it.
+
+    The panel is an inner join against the external targets, so it is a
+    *subset* of the matrix, in the matrix's own row order rather than the
+    panel's -- alignment must go through `fips_code`, never positional index.
+
+    Args:
+        panel: Joined panel from `load_panel`.
+
+    Returns:
+        `panel`, with a `tier` column added if it was missing.
+
+    Raises:
+        ValueError: If any panel county is absent from the tier assignment.
+    """
+    if "tier" in panel.columns:
+        return panel
+
+    from pillar_matrix import build_matrix
+
+    matrix, _ = build_matrix()
+    tiers = pd.DataFrame(
+        {"fips_code": matrix["fips_code"], "tier": assign_tiers(matrix["content_length"])}
+    )
+    merged = panel.merge(tiers, on="fips_code", how="left")
+    missing = int(merged["tier"].isna().sum())
+    if missing:
+        raise ValueError(f"{missing} panel counties absent from the tier assignment")
+    return merged
+
+
 def score_representation(
     panel: pd.DataFrame,
     pillar_columns: list[str],
@@ -223,6 +271,7 @@ def score_representation(
     Returns:
         One row per (target, representation).
     """
+    panel = _ensure_tier_column(panel)
     other_columns = [column for column in pillar_columns if column not in a_columns]
     rows: list[dict[str, object]] = []
 
@@ -240,8 +289,10 @@ def score_representation(
         )
 
         typed = [column for column in a_columns if column not in ablate]
+        transformed, _ = transform_typed(usable, typed, usable["tier"])
         designs = {
             "typed": np.hstack([size_and_others, usable[typed].astype(float).to_numpy()]),
+            "typed_transformed": np.hstack([size_and_others, transformed]),
         }
         # Arms whose EMBEDDING_ARMS width is not None are reduced inside each
         # fold rather than assembled into a fixed design up front -- fitting
