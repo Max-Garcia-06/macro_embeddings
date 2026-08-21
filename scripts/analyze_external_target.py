@@ -159,12 +159,45 @@ logger = logging.getLogger(__name__)
 # column measures either construct. Source F's `housing_stress` is a cost-burden
 # share rather than a value, which is related but not definitional, so it stays
 # in the design.
+#
+# Targets not listed here at all -- every "clean" verdict in
+# `ingest_external_targets.TARGET_CIRCULARITY` -- fall through to the
+# empty-tuple default on `.get()` below, same as the three explicit empty
+# entries above.
+#
+# The Task 3 basket expansion added seven more ablations, all against Source E
+# and Source F columns already in use here:
+#
+#   - `per_capita_income` and `median_family_income` restate
+#     `wage_per_return_thousands`, on the same grounds as
+#     `median_household_income`.
+#   - `median_monthly_housing_cost` restates `housing_stress`. Unlike
+#     `median_home_value` above, this target is a cost rather than a value,
+#     which `housing_stress` measures directly.
+#   - `poverty_rate` restates `persistent_poverty`, Source F's decade-scale
+#     poverty flag.
+#   - `bachelors_share` and `graduate_share` both restate `low_postsecondary_ed`,
+#     Source F's below-threshold postsecondary-attainment flag.
+#   - `labor_force_participation` restates `low_employment`, Source F's flag
+#     for counties below the labour-force-participation threshold.
+#   - `household_ss_income_share` (share of households receiving Social
+#     Security income) restates `retirement_destination` on the same reasoning
+#     already applied to `median_age`: it is at least as strong an age-
+#     structure proxy as median age itself.
 TARGET_RESTATEMENTS: dict[str, tuple[str, ...]] = {
     "median_household_income": ("wage_per_return_thousands",),
     "median_age": ("retirement_destination",),
     "broadband_rate": (),
     "median_home_value": (),
     "mean_commute_minutes": (),
+    "per_capita_income": ("wage_per_return_thousands",),
+    "median_family_income": ("wage_per_return_thousands",),
+    "median_monthly_housing_cost": ("housing_stress",),
+    "poverty_rate": ("persistent_poverty",),
+    "bachelors_share": ("low_postsecondary_ed",),
+    "graduate_share": ("low_postsecondary_ed",),
+    "labor_force_participation": ("low_employment",),
+    "household_ss_income_share": ("retirement_destination",),
 }
 
 
