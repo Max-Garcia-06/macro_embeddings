@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 
 import source_a_text_leakage as leak
+from ingest_external_targets import EXTERNAL_TARGETS
 
 
 def _matches(pattern: str, title: str) -> bool:
@@ -47,6 +48,29 @@ def test_restatement_screen_finds_median_age(sections_frame) -> None:
     """median_age is stated verbatim in census sections; the screen must see it."""
     found = leak.restated_targets(sections_frame)
     assert found.get("median_age", 0) > 1000
+
+
+def test_every_external_target_is_accounted_for_by_the_screen() -> None:
+    """No target may fall through the crack between screened and unscreened.
+
+    `restated_targets` maps every EXTERNAL_TARGETS column to either a county
+    count (screened, phrase configured) or `None` (unscreened, no plausible
+    phrase). A column missing from both `RESTATEMENT_PHRASES` and
+    `UNSCREENED_TARGETS` would silently read as "screened, found nothing" to
+    a caller doing `.get(column, 0)` -- this asserts that can't happen.
+    """
+    accounted = set(leak.RESTATEMENT_PHRASES) | leak.UNSCREENED_TARGETS
+    for target in EXTERNAL_TARGETS:
+        assert target.column in accounted, f"{target.column} is neither screened nor unscreened"
+
+
+def test_unscreened_targets_map_to_none_not_zero(sections_frame) -> None:
+    """The screened/unscreened distinction must survive into the return value."""
+    found = leak.restated_targets(sections_frame)
+    for column in leak.UNSCREENED_TARGETS:
+        assert found[column] is None
+    for column in leak.RESTATEMENT_PHRASES:
+        assert isinstance(found[column], int)
 
 
 def test_prose_scope_drops_at_least_a_third_of_characters(sections_frame) -> None:

@@ -344,8 +344,10 @@ def remove_common_component(vectors: np.ndarray) -> np.ndarray:
         vectors: One row per county.
 
     Returns:
-        Centred, row-normalized vectors of the same shape. Zero rows stay zero
-        rather than becoming NaN.
+        Centred, row-normalized vectors of the same shape. A zero input row
+        does not stay zero -- centring shifts it to `-mean`, which is a
+        nonzero direction whenever the corpus mean is nonzero -- but it stays
+        finite: `l2_normalize`'s norm floor keeps that row from becoming NaN.
     """
     centred = vectors - vectors.mean(axis=0, keepdims=True)
     return l2_normalize(centred)
