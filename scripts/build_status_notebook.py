@@ -292,8 +292,8 @@ parameters.
 what the groups exposed; section 4 is why branching loses anyway.
 
 **What the groups were worth regardless.** They picked the feature family Source A
-now ships, showed where to go looking for it, corrected a Source E conclusion from
-round 1 that was backwards, and forced a disclosure that now travels with the
+now ships, showed where to go looking for it, corrected an earlier Source E
+conclusion that was backwards, and forced a disclosure that now travels with the
 pillar. The tiers were never going to be the deliverable — they were the
 instrument.
 
@@ -651,17 +651,20 @@ feature is measuring. That is not a reason to reweight it — weighting was test
 and rejected below — but it is a reason to *say so*, which Source E's schema doc
 now does.
 
-**Two corrections the split forced, both against earlier conclusions:**
+**Two corrections the split forced**, both against conclusions from the earlier
+Source E review:
 
-- **Round 1 had the stability backwards.** It called small counties the volatile
-  ones without saying volatile by what, and the three available measures disagree.
-  Year to year, a *typical* small county's ratio moves less than a large one's
-  (median change of 0.298 against 0.393), and small counties hold their place in
-  the national ordering worse (0.861 against 0.941, comparing one year's ranking
-  to the next). Round 1 was right only about the tail: 17% of the smallest
+- **The stability finding was backwards.** The earlier review concluded that
+  small counties' ratios were the unstable ones, and proposed weighting the
+  feature by `num_returns` to damp them. Neither half holds. A typical small
+  county's ratio moves *less* year to year than a large one's (median change of
+  0.298 against 0.393), and small counties hold their place in the national
+  ordering worse, not better (0.861 against 0.941, comparing one year's ranking
+  to the next). The tail is the one thing it got right: 17% of the smallest
   counties swing by more than half in a single year, against 10% of the largest.
-  Its proposed fix was backwards either way — weighting by `num_returns`
-  upweights the counties whose values move most in the typical case.
+  And weighting by `num_returns` gives *more* weight to counties with more
+  returns — the large ones, which are exactly the counties whose ratios move most
+  in the typical case.
 - **The spread among small counties is real, not measurement noise.** If it were
   just noise from averaging few tax returns, that spread would shrink sharply as
   counties get bigger. It does not — it barely changes with size (**+0.026**,
