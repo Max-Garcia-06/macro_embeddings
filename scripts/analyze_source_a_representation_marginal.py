@@ -44,14 +44,19 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.decomposition import PCA
 from sklearn.metrics import r2_score
+from sklearn.model_selection import GroupKFold
 
 from analyze_external_target import (
     EXTERNAL_TARGETS,
+    N_FOLDS,
     TARGET_RESTATEMENTS,
+    _pipeline,
     load_panel,
     out_of_fold_predictions,
 )
+from analyze_pillar_matrix_signal import RANDOM_SEED
 from analyze_source_a_tiered_embedding import (
     ENCODER_NAME,
     EMBEDDINGS_PARQUET_PATH,
@@ -76,6 +81,36 @@ VARIANT_KEY: str = "uniform"
 
 logger = logging.getLogger(__name__)
 
+# Embedding arms entering the marginal comparison, and the width each is reduced
+# to. `None` means the native 384 dimensions. The 29-dimension arm exists so the
+# comparison against the typed block is width-matched: findings §21.2 states that
+# an unknown share of the embedding's penalty is width rather than content, and
+# names this arm as the missing control.
+EMBEDDING_ARMS: dict[str, int | None] = {
+    "minilm_uniform": None,
+    "minilm_uniform_l2": None,
+    "minilm_uniform_pca29": 29,
+    "minilm_uniform_pca64": 64,
+}
+
+
+def fit_reduction(train_vectors: np.ndarray, n_components: int) -> PCA:
+    """Fit a PCA reduction on training rows only.
+
+    Fitting on the full matrix would let the reduction see the held-out states
+    the fold is scored on, which inflates the arm it is meant to control.
+
+    Args:
+        train_vectors: Rows in the fold's training split.
+        n_components: Target width.
+
+    Returns:
+        The fitted reducer, ready to transform both splits.
+    """
+    reducer = PCA(n_components=n_components, random_state=RANDOM_SEED)
+    reducer.fit(train_vectors)
+    return reducer
+
 
 def configure_logging() -> None:
     """Send INFO-level progress to stdout."""
@@ -94,7 +129,10 @@ def build_source_a_embedding(fips_order: pd.Series) -> dict[str, np.ndarray]:
     Returns:
         Mapping of representation key to a vector array whose rows align to
         `fips_order`. Counties with no text get a zero vector, which is what the
-        encoder harness already does for them.
+        encoder harness already does for them. The `_pca29`/`_pca64` keys carry
+        the same unreduced 384-dimension vectors as `minilm_uniform` -- the
+        reduction itself happens per fold in `out_of_fold_predictions_with_reduction`,
+        never here, so it never sees held-out rows.
     """
     from sentence_transformers import SentenceTransformer
 
@@ -124,7 +162,44 @@ def build_source_a_embedding(fips_order: pd.Series) -> dict[str, np.ndarray]:
     if missing:
         raise ValueError(f"{missing} panel counties absent from the encoded matrix")
     rows = rows.astype(int)
-    return {"minilm_uniform": vectors[rows], "minilm_uniform_l2": normed[rows]}
+    base = vectors[rows]
+    return {
+        "minilm_uniform": base,
+        "minilm_uniform_l2": normed[rows],
+        "minilm_uniform_pca29": base,
+        "minilm_uniform_pca64": base,
+    }
+
+
+def out_of_fold_predictions_with_reduction(
+    size_and_others: np.ndarray,
+    vectors: np.ndarray,
+    y: np.ndarray,
+    groups: np.ndarray,
+    n_components: int,
+) -> np.ndarray:
+    """Out-of-fold predictions with the embedding reduced inside each fold.
+
+    Args:
+        size_and_others: The reduced-model design, unreduced.
+        vectors: Full-width embedding rows aligned to `size_and_others`.
+        y: Target values.
+        groups: State FIPS per row.
+        n_components: Width to reduce the embedding to.
+
+    Returns:
+        Out-of-fold predictions, one per row.
+    """
+    predictions = np.zeros_like(y, dtype=float)
+    splitter = GroupKFold(n_splits=N_FOLDS)
+    for train_idx, test_idx in splitter.split(size_and_others, y, groups):
+        reducer = fit_reduction(vectors[train_idx], n_components)
+        design_train = np.hstack([size_and_others[train_idx], reducer.transform(vectors[train_idx])])
+        design_test = np.hstack([size_and_others[test_idx], reducer.transform(vectors[test_idx])])
+        model = _pipeline()
+        model.fit(design_train, y[train_idx])
+        predictions[test_idx] = model.predict(design_test)
+    return predictions
 
 
 def score_representation(
@@ -168,18 +243,37 @@ def score_representation(
         designs = {
             "typed": np.hstack([size_and_others, usable[typed].astype(float).to_numpy()]),
         }
+        # Arms whose EMBEDDING_ARMS width is not None are reduced inside each
+        # fold rather than assembled into a fixed design up front -- fitting
+        # PCA on the full matrix would let it see the held-out states each fold
+        # is scored on.
+        reduced_predictions: dict[str, tuple[np.ndarray, int]] = {}
         for key, vectors in embeddings.items():
-            designs[key] = np.hstack([size_and_others, vectors[mask]])
+            width = EMBEDDING_ARMS.get(key)
+            block = vectors[mask]
+            if width is None:
+                designs[key] = np.hstack([size_and_others, block])
+            else:
+                predicted = out_of_fold_predictions_with_reduction(
+                    size_and_others, block, y, groups, width
+                )
+                reduced_predictions[key] = (predicted, width)
 
-        for key, design in designs.items():
-            full_r2 = float(r2_score(y, out_of_fold_predictions(design, y, groups)))
+        representations: dict[str, tuple[np.ndarray, int]] = {
+            key: (out_of_fold_predictions(design, y, groups), design.shape[1] - size_and_others.shape[1])
+            for key, design in designs.items()
+        }
+        representations.update(reduced_predictions)
+
+        for key, (predicted, n_columns) in representations.items():
+            full_r2 = float(r2_score(y, predicted))
             rows.append(
                 {
                     "target": target.column,
                     "label": target.label,
                     "representation": key,
                     "n": int(mask.sum()),
-                    "n_columns": int(design.shape[1] - size_and_others.shape[1]),
+                    "n_columns": int(n_columns),
                     "r2_reduced": reduced_r2,
                     "r2_full": full_r2,
                     "contribution": full_r2 - reduced_r2,
