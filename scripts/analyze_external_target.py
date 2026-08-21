@@ -176,7 +176,7 @@ logger = logging.getLogger(__name__)
 #     which `housing_stress` measures directly.
 #   - `poverty_rate` restates `persistent_poverty`, Source F's decade-scale
 #     poverty flag.
-#   - `bachelors_share` and `graduate_share` both restate `low_postsecondary_ed`,
+#   - `bachelors_share` and `masters_share` both restate `low_postsecondary_ed`,
 #     Source F's below-threshold postsecondary-attainment flag.
 #   - `labor_force_participation` restates `low_employment`, Source F's flag
 #     for counties below the labour-force-participation threshold.
@@ -184,6 +184,12 @@ logger = logging.getLogger(__name__)
 #     Security income) restates `retirement_destination` on the same reasoning
 #     already applied to `median_age`: it is at least as strong an age-
 #     structure proxy as median age itself.
+#   - `household_earnings_share` (share of households with wage or salary
+#     income) restates `low_employment`, Source F's county-level binary
+#     threshold flag on the employment rate of 25-54 year olds --
+#     `household_earnings_share` is the same construct measured continuously
+#     at household level, closer to `labor_force_participation` above than to
+#     the commute-mode targets that were correctly kept clean.
 TARGET_RESTATEMENTS: dict[str, tuple[str, ...]] = {
     "median_household_income": ("wage_per_return_thousands",),
     "median_age": ("retirement_destination",),
@@ -195,9 +201,10 @@ TARGET_RESTATEMENTS: dict[str, tuple[str, ...]] = {
     "median_monthly_housing_cost": ("housing_stress",),
     "poverty_rate": ("persistent_poverty",),
     "bachelors_share": ("low_postsecondary_ed",),
-    "graduate_share": ("low_postsecondary_ed",),
+    "masters_share": ("low_postsecondary_ed",),
     "labor_force_participation": ("low_employment",),
     "household_ss_income_share": ("retirement_destination",),
+    "household_earnings_share": ("low_employment",),
 }
 
 

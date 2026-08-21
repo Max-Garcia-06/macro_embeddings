@@ -17,6 +17,7 @@ AUTAUGA_EXPECTED = {
     "owner_occupied_share": 16872 / 22523,
     "poverty_rate": 6275 / 58731,
     "bachelors_share": 6518 / 40767,
+    "masters_share": 4006 / 40767,
     "labor_force_participation": 28020 / 47508,
     # Step 5 additions, observed while probing the candidate table families.
     # B25004's universe is vacant units only; the denominator comes from
@@ -123,6 +124,46 @@ def test_derive_masks_negative_numerator_sentinel(monkeypatch) -> None:
 
     suppressed = result.loc["01003", "fake_rate"]
     assert pd.isna(suppressed), f"expected NaN for a suppressed numerator, got {suppressed}"
+    assert pd.isna(result.loc["01003", "fake_rate_se"])
+
+
+def test_derive_masks_negative_denominator_sentinel(monkeypatch) -> None:
+    """A suppressed denominator (and its MOE) must not survive as a rate or SE.
+
+    Mirrors `test_derive_masks_negative_numerator_sentinel` above, but for the
+    denominator side: `safe_denominator = denominator.where(denominator > 0)`
+    and `safe_denominator_se = denominator_se.where(denominator >= 0)` are
+    separate masking lines from the numerator's, and only the numerator case
+    was covered by an existing regression test.
+    """
+    fake = pd.DataFrame(
+        {
+            "B00001_E001": [100.0, 80.0],
+            "B00001_M001": [10.0, 8.0],
+            "B00002_E001": [50.0, -666666666.0],
+            "B00002_M001": [5.0, -666666666.0],
+        },
+        index=pd.Index(["01001", "01003"], name="fips_code"),
+    )
+    monkeypatch.setattr(iet, "_download_table", lambda table: fake)
+
+    target = iet.ExternalTarget(
+        column="fake_rate",
+        table="b00001",
+        numerator="B00001_E001",
+        denominator="B00002_E001",
+        denominator_table=None,
+        kind="proportion",
+        label="fake rate for the denominator-se sentinel-masking test",
+    )
+    result = iet._derive(target).set_index("fips_code")
+
+    assert result.loc["01001", "fake_rate"] == pytest.approx(2.0)
+    assert result.loc["01001", "fake_rate_se"] >= 0
+    assert not pd.isna(result.loc["01001", "fake_rate_se"])
+
+    suppressed = result.loc["01003", "fake_rate"]
+    assert pd.isna(suppressed), f"expected NaN for a suppressed denominator, got {suppressed}"
     assert pd.isna(result.loc["01003", "fake_rate_se"])
 
 

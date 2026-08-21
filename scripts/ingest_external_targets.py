@@ -162,16 +162,22 @@ TARGET_CIRCULARITY: dict[str, str] = {
     "family_household_share": "clean",
     "single_unit_share": "clean",
     "bachelors_share": "ablated",           # Source F low_postsecondary_ed
-    "graduate_share": "ablated",            # Source F low_postsecondary_ed
+    "masters_share": "ablated",             # Source F low_postsecondary_ed
     "labor_force_participation": "ablated", # Source F low_employment
     # Step 5 additions, probed against b25004/b25040/b08301/b05002/b07001/
-    # b19052/b19055/b25081/b28003/b09002. None of these constructs -- vacancy,
-    # heating fuel, commute mode, nativity, residential mobility, household
-    # earnings/SS receipt, mortgage status, computer ownership, child family
-    # structure -- is measured by any of the six pillars, with one exception:
-    # household Social Security receipt is close enough to Source F's
-    # retirement_destination migration flag to ablate on the same reasoning
-    # already applied to median_age.
+    # b19052/b19055/b25081/b28003/b09002. Most of these constructs -- vacancy,
+    # heating fuel, commute mode, nativity, residential mobility, mortgage
+    # status, computer ownership, child family structure -- are not measured
+    # by any of the six pillars, with two exceptions:
+    #   - household Social Security receipt is close enough to Source F's
+    #     retirement_destination migration flag to ablate on the same
+    #     reasoning already applied to median_age.
+    #   - household_earnings_share ("share of households with wage or salary
+    #     income") is a household-level, continuous restatement of Source F's
+    #     low_employment, a county-level binary threshold flag on the
+    #     employment rate of 25-54 year olds. It is closer in construct to
+    #     labor_force_participation, already ablated above, than to the
+    #     commute-mode targets it was first (incorrectly) grouped with.
     "housing_vacancy_rate": "clean",
     "electric_heating_share": "clean",
     "gas_heating_share": "clean",
@@ -191,7 +197,7 @@ TARGET_CIRCULARITY: dict[str, str] = {
     "children_married_couple_share": "clean",
     "children_female_householder_share": "clean",
     "children_male_householder_share": "clean",
-    "household_earnings_share": "clean",
+    "household_earnings_share": "ablated",   # Source F low_employment
     "household_ss_income_share": "ablated",  # Source F retirement_destination
     "mortgaged_share": "clean",
     "computer_ownership_share": "clean",
@@ -362,13 +368,13 @@ EXTERNAL_TARGETS: tuple[ExternalTarget, ...] = (
         label="bachelor's degree share, age 25+",
     ),
     ExternalTarget(
-        column="graduate_share",
+        column="masters_share",
         table="b15003",
         numerator="B15003_E023",
         denominator="B15003_E001",
         denominator_table=None,
         kind="proportion",
-        label="graduate degree share, age 25+",
+        label="master's degree share, age 25+",
     ),
     ExternalTarget(
         column="labor_force_participation",
