@@ -126,11 +126,13 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 TYPED_MARGINAL_MEAN = -4.573467945852005e-05
 
 # From outputs/source_a_tiered_embedding.csv, mean pooled lift across 28 targets.
+# Full precision deliberately: at 6 decimal places the rounding error is within
+# 1.2x of the tolerance below, which makes the assertion flaky rather than tight.
 POOLED_LIFT_EXPECTED = {
-    "typed_sections": 0.003072,
-    "uniform": 0.003218,
-    "uniform_l2": 0.003514,
-    "lead_only": 0.001686,
+    "typed_sections": 0.003071681526,
+    "uniform": 0.003217592569,
+    "uniform_l2": 0.003513738119,
+    "lead_only": 0.001685562922,
 }
 
 
@@ -149,7 +151,7 @@ def test_pooled_lift_unchanged(
         tiered_embedding_results["representation"] == representation
     ]
     assert len(subset) == 28, f"{representation} should score 28 targets"
-    assert subset["lift"].mean() == pytest.approx(expected, abs=5e-7)
+    assert subset["lift"].mean() == pytest.approx(expected, abs=1e-9)
 ```
 
 - [ ] **Step 4: Run the tests and verify they pass**
