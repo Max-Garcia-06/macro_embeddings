@@ -55,3 +55,30 @@ def test_prose_scope_drops_at_least_a_third_of_characters(sections_frame) -> Non
         sections_frame["section_text"].str.len().sum()
     )
     assert share > 0.33, f"prose exclusion only drops {share:.1%} of characters"
+
+
+import analyze_source_a_tiered_embedding as tiered
+
+
+def test_new_variants_are_registered() -> None:
+    keys = {variant.key for variant in tiered.TEXT_VARIANTS}
+    assert {"prose_only", "prose_plus_history", "economy_all_tiers", "prose_by_tier"} <= keys
+
+
+def test_variant_exclusion_defaults_to_narrative() -> None:
+    """Existing variants must keep the behaviour they were measured under."""
+    uniform = next(v for v in tiered.TEXT_VARIANTS if v.key == "uniform")
+    assert uniform.exclude is None
+
+
+def test_prose_plus_history_readmits_narrative() -> None:
+    variant = next(v for v in tiered.TEXT_VARIANTS if v.key == "prose_plus_history")
+    assert "history" not in variant.exclude
+
+
+def test_prose_by_tier_reads_lead_for_thin_tiers() -> None:
+    variant = next(v for v in tiered.TEXT_VARIANTS if v.key == "prose_by_tier")
+    assert variant.tier_scope["stub"] is None
+    assert variant.tier_scope["thin"] is None
+    assert variant.tier_scope["mid"] is not None
+    assert variant.tier_scope["rich"] is not None
