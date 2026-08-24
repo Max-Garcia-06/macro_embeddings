@@ -1,0 +1,21 @@
+{
+  "n_sections": 64588,
+  "n_counties": 3144,
+  "total_characters": 54773876.0,
+  "labels": {
+    "census": "census tables rendered as prose",
+    "lists": "lists of place names, adjacent counties, highways",
+    "narrative": "history and notable people",
+    "economy": "economy-titled sections",
+    "other": "geography, government, education, other"
+  },
+  "share_of_characters": {
+    "census": 0.3643628944572044,
+    "lists": 0.0981407998221634,
+    "narrative": 0.13561505123354792,
+    "economy": 0.014651108495590124,
+    "other": 0.3872301459914942
+  },
+  "n_counties_with_economy_section": 660,
+  "share_counties_without_economy_section": 0.7900763358778626
+}
