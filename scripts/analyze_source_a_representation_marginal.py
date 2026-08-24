@@ -18,14 +18,35 @@ the pillar, or about its representation?** The reduced model is identical in
 every arm -- size plus the other five pillars -- so the only thing that varies is
 what Source A contributes with.
 
-Three representations of Source A, scored against the same five public ACS
+Representations of Source A, scored against the same five public ACS
 targets, out-of-fold on held-out states, with the same restatement ablation:
 
 - `typed` -- the 29 shipped columns. Reproduces the published -0.0000.
+- `typed_transformed` -- the 29 shipped columns plus the pre-registered
+  capacity pass (`source_a_typed_transform.py`): log1p on count columns and a
+  `sec_n_industry_mentions` x tier interaction. Both arms are scored under
+  ridge, so 29 raw columns against 384 dense dimensions was not an
+  equal-capacity comparison; this arm equalizes it without consulting any
+  target's score to choose the transform.
 - `minilm_uniform` -- MiniLM over lead plus every non-narrative section,
-  identically for every county, mean-pooled.
-- `minilm_uniform_l2` -- the same vectors, row-normalized. This was the best arm
-  in the representation sweep.
+  identically for every county, mean-pooled. Scored here as the **unselected
+  reference**: it is the width-matched twin of the leakage-carrying arm from
+  the Part 3 sweep, kept in the comparison precisely because it lost scope
+  selection -- it is informative as a contrast, not eligible to represent A.
+- `minilm_uniform_l2` -- the same vectors, row-normalized.
+- `minilm_uniform_pca29` / `minilm_uniform_pca64` -- the same vectors, reduced
+  by PCA fitted inside each fold to 29 and 64 dimensions respectively, so the
+  width-driven part of the embedding's measured penalty against the 29-column
+  typed block is controlled for.
+- `minilm_prose_plus_history_ccr_pca29` -- **the selected embedding arm**,
+  fixed by the Task 9 scope selection (`docs/source_a_representation_decision.md`):
+  `prose_plus_history` text (lead + substantive prose + history/notable
+  people, no census tables/lists/highways), common-component-removed
+  (`remove_common_component` -- corpus mean subtracted, then row-normalized),
+  then PCA-reduced to 29 dimensions inside each fold to match the typed arm's
+  width. Selection ran on the in-repo 28-target basket, disjoint from this
+  script's external decision basket, so the arm was fixed before it was ever
+  scored here.
 
 **A note on what a negative contribution means here.** Contribution is
 R2(full) - R2(reduced), so a block that carries nothing useful lands near zero
@@ -44,14 +65,19 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.decomposition import PCA
 from sklearn.metrics import r2_score
+from sklearn.model_selection import GroupKFold
 
 from analyze_external_target import (
     EXTERNAL_TARGETS,
+    N_FOLDS,
     TARGET_RESTATEMENTS,
+    _pipeline,
     load_panel,
     out_of_fold_predictions,
 )
+from analyze_pillar_matrix_signal import RANDOM_SEED
 from analyze_source_a_tiered_embedding import (
     ENCODER_NAME,
     EMBEDDINGS_PARQUET_PATH,
@@ -59,22 +85,108 @@ from analyze_source_a_tiered_embedding import (
     TEXT_VARIANTS,
     build_variant_texts,
     encode_variant,
+    l2_normalize,
+    remove_common_component,
 )
 from analyze_source_a_tiers import assign_tiers
 from pillar_matrix import SIZE_FEATURES
+from source_a_typed_transform import transform_typed
 
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 OUTPUTS_DIR: Path = REPO_ROOT / "outputs"
 ANALYSIS_DIR: Path = REPO_ROOT / "analysis-output" / "source-a"
 OUTPUT_CSV_PATH: Path = OUTPUTS_DIR / "source_a_representation_marginal.csv"
 OUTPUT_STATS_PATH: Path = ANALYSIS_DIR / "source_a_representation_marginal_stats.json"
+CENTROIDS_PATH: Path = REPO_ROOT / "data" / "county_centroids.parquet"
 
-# The text variant to encode. `uniform` reads the lead plus every non-narrative
-# section identically for every county -- the arm that beat both tier-conditional
-# rules once the chunk cap stopped truncating it.
-VARIANT_KEY: str = "uniform"
+# Targets scored and shipped in every output (CSV, stats JSON), but excluded
+# from every headline mean this script reports, with the reason documented
+# inline rather than silently dropped. A target only belongs here if BOTH its
+# reduced and full R2 are negative -- i.e. every model scored against it is
+# worse than predicting the mean, so its "contribution" is the gap between two
+# useless models, not a gain. `test_marginal_arms.py::test_excluded_targets_are_documented`
+# enforces that this dict stays non-empty and every reason is a real string.
+#
+# `no_fuel_used_share`: within the 3,144-county panel this target has mean
+# 0.0067, sd 0.0232, max 0.644, skew 23.0, kurtosis 573 -- a near-degenerate,
+# almost-always-zero rate. Its reduced R2 is -1.0031 and the selected arm's
+# full R2 is -0.9720 (typed_transformed's full R2 is -1.0381): both worse than
+# the mean. The county-level max (0.644) is nowhere near the ~0.9+ values that
+# would suggest Puerto Rico sentinel contamination, and PR is not in this
+# panel (0 of 3,144 rows carry state_fips 72) -- the earlier "PR + unmasked
+# sentinels" explanation for this target's broken R2 does not hold up; see
+# analysis-output/source-a/source-a-findings.md #22.
+EXCLUDED_TARGETS: dict[str, str] = {
+    "no_fuel_used_share": (
+        "degenerate target: reduced R2 -1.0031, full R2 -0.9720 to -1.0381 "
+        "depending on arm -- every model scored is worse than predicting the "
+        "mean, so the reported positive contribution is the gap between two "
+        "useless models, not a gain. Panel mean 0.0067, sd 0.0232, max 0.644, "
+        "skew 23.0, kurtosis 573; PR is not in the panel (0/3144 rows), so this "
+        "is not sentinel/PR contamination -- the target is genuinely too "
+        "degenerate for this model class. Kept ingested and scored (see the "
+        "per-target table) but excluded from every headline mean."
+    ),
+}
+
+# The text variant underlying the SELECTED scope. `prose_plus_history` is the
+# scope Task 9 selected (mean lift 0.004530 on the 28-target selection basket,
+# vs typed_sections' 0.003072) -- see docs/source_a_representation_decision.md.
+# The selected *representation* is this variant's vectors with the `_ccr`
+# (common-component-removed) transform applied, which is what
+# `build_source_a_embedding` scores under `minilm_{VARIANT_KEY}_ccr_pca29`.
+# `uniform` is still encoded separately, unconditionally, as the unselected
+# reference arm (see EMBEDDING_ARMS below).
+VARIANT_KEY: str = "prose_plus_history"
 
 logger = logging.getLogger(__name__)
+
+# Embedding arms entering the marginal comparison, and the width each is reduced
+# to. `None` means the native 384 dimensions. The 29-dimension arms exist so the
+# comparison against the typed block is width-matched: findings §21.2 states that
+# an unknown share of the embedding's penalty is width rather than content, and
+# names this arm as the missing control.
+#
+# `minilm_uniform*` are the UNSELECTED reference -- the width-matched twin of
+# the leakage-carrying arm from the Part 3 sweep. They stay in the comparison
+# as a contrast and are not eligible to be the embedding representative.
+#
+# `minilm_prose_plus_history_ccr_pca29` is the SELECTED embedding arm fixed by
+# Task 9's pre-registered scope selection.
+#
+# `minilm_uniform_ccr_pca29` separates the two things `minilm_prose_plus_history_ccr_pca29`
+# changes at once relative to `minilm_uniform_pca29`: text SCOPE
+# (`prose_plus_history` vs `uniform`) and the CCR transform. This arm holds
+# scope at `uniform` and adds only CCR, so
+# `minilm_uniform_ccr_pca29 - minilm_uniform_pca29` isolates CCR's effect and
+# `minilm_prose_plus_history_ccr_pca29 - minilm_uniform_ccr_pca29` isolates
+# scope's effect, holding CCR fixed. See findings #22.3.
+EMBEDDING_ARMS: dict[str, int | None] = {
+    "minilm_uniform": None,
+    "minilm_uniform_l2": None,
+    "minilm_uniform_pca29": 29,
+    "minilm_uniform_pca64": 64,
+    "minilm_uniform_ccr_pca29": 29,
+    "minilm_prose_plus_history_ccr_pca29": 29,
+}
+
+
+def fit_reduction(train_vectors: np.ndarray, n_components: int) -> PCA:
+    """Fit a PCA reduction on training rows only.
+
+    Fitting on the full matrix would let the reduction see the held-out states
+    the fold is scored on, which inflates the arm it is meant to control.
+
+    Args:
+        train_vectors: Rows in the fold's training split.
+        n_components: Target width.
+
+    Returns:
+        The fitted reducer, ready to transform both splits.
+    """
+    reducer = PCA(n_components=n_components, random_state=RANDOM_SEED)
+    reducer.fit(train_vectors)
+    return reducer
 
 
 def configure_logging() -> None:
@@ -88,13 +200,25 @@ def configure_logging() -> None:
 def build_source_a_embedding(fips_order: pd.Series) -> dict[str, np.ndarray]:
     """Encode Source A's text and return vectors aligned to `fips_order`.
 
+    Encodes two text variants: `uniform`, unconditionally, for the unselected
+    reference arms; and `VARIANT_KEY` (the Task 9 selected scope's underlying
+    text), for the selected arm. The selected arm is common-component-removed
+    (`remove_common_component`) before being handed back, because the
+    selection in `docs/source_a_representation_decision.md` picked the `_ccr`
+    representation, not the raw pooled vectors -- scoring the raw vectors
+    under the selected arm's name would silently substitute a different,
+    unselected representation.
+
     Args:
         fips_order: The `fips_code` sequence the panel is in.
 
     Returns:
         Mapping of representation key to a vector array whose rows align to
         `fips_order`. Counties with no text get a zero vector, which is what the
-        encoder harness already does for them.
+        encoder harness already does for them. Keys with a PCA width in
+        `EMBEDDING_ARMS` carry the unreduced vectors here -- the reduction
+        itself happens per fold in `out_of_fold_predictions_with_reduction`,
+        never here, so it never sees held-out rows.
     """
     from sentence_transformers import SentenceTransformer
 
@@ -106,17 +230,12 @@ def build_source_a_embedding(fips_order: pd.Series) -> dict[str, np.ndarray]:
     matrix = matrix.merge(text, on="fips_code", how="left")
     sections = pd.read_parquet(SECTIONS_PARQUET_PATH)
 
-    variant = next(v for v in TEXT_VARIANTS if v.key == VARIANT_KEY)
     logger.info("loading %s", ENCODER_NAME)
     model = SentenceTransformer(ENCODER_NAME)
-    texts = build_variant_texts(matrix, sections, variant)
-    vectors, diagnostics = encode_variant(model, texts, matrix["tier"])
-    logger.info("%s: %s", variant.key, diagnostics)
 
-    normed = vectors / np.clip(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12, None)
-    # Reindex onto the panel's row order. `build_matrix` and the panel are both
-    # keyed on fips_code but the panel is an inner join against the targets, so
-    # it is a subset in its own order rather than the matrix's.
+    # Reindex helper onto the panel's row order. `build_matrix` and the panel
+    # are both keyed on fips_code but the panel is an inner join against the
+    # targets, so it is a subset in its own order rather than the matrix's.
     by_fips = pd.DataFrame({"fips_code": matrix["fips_code"]})
     position = by_fips.reset_index().set_index("fips_code")["index"]
     rows = fips_order.map(position).to_numpy()
@@ -124,7 +243,151 @@ def build_source_a_embedding(fips_order: pd.Series) -> dict[str, np.ndarray]:
     if missing:
         raise ValueError(f"{missing} panel counties absent from the encoded matrix")
     rows = rows.astype(int)
-    return {"minilm_uniform": vectors[rows], "minilm_uniform_l2": normed[rows]}
+
+    # Unselected reference: `uniform` text, unchanged from the Part 3 sweep.
+    uniform_variant = next(v for v in TEXT_VARIANTS if v.key == "uniform")
+    uniform_texts = build_variant_texts(matrix, sections, uniform_variant)
+    uniform_vectors, uniform_diagnostics = encode_variant(
+        model, uniform_texts, matrix["tier"]
+    )
+    logger.info("uniform: %s", uniform_diagnostics)
+    uniform_normed = l2_normalize(uniform_vectors)
+
+    # `uniform`, common-component-removed. Same transform as the selected arm
+    # below, applied to `uniform`'s scope instead of `VARIANT_KEY`'s -- this is
+    # what makes the scope-vs-CCR decomposition possible (see EMBEDDING_ARMS).
+    # Centring is computed over the full corpus (`uniform_vectors`, all 3,144
+    # counties), the same transductive convention the selected arm uses below:
+    # the corpus mean sees every county's vector, including states that are
+    # held out for any given fold, because the mean is not fitted with target
+    # information and is fixed before the panel subset or the folds exist.
+    uniform_ccr = remove_common_component(uniform_vectors)
+
+    # Selected scope: `VARIANT_KEY` text, common-component-removed. This must
+    # match what Task 9 scored as `prose_plus_history_ccr` -- centring is
+    # computed over the same full corpus (`matrix`, not the panel subset)
+    # before the panel's rows are pulled out, exactly as the selection sweep
+    # did in `analyze_source_a_tiered_embedding.main`. As with `uniform_ccr`
+    # above, this mean is transductive (sees held-out states) unlike the PCA
+    # reduction applied afterward, which is refit inside each fold on training
+    # rows only -- see `fit_reduction`.
+    selected_variant = next(v for v in TEXT_VARIANTS if v.key == VARIANT_KEY)
+    selected_texts = build_variant_texts(matrix, sections, selected_variant)
+    selected_vectors, selected_diagnostics = encode_variant(
+        model, selected_texts, matrix["tier"]
+    )
+    logger.info("%s: %s", VARIANT_KEY, selected_diagnostics)
+    selected_ccr = remove_common_component(selected_vectors)
+
+    return {
+        "minilm_uniform": uniform_vectors[rows],
+        "minilm_uniform_l2": uniform_normed[rows],
+        "minilm_uniform_pca29": uniform_vectors[rows],
+        "minilm_uniform_pca64": uniform_vectors[rows],
+        "minilm_uniform_ccr_pca29": uniform_ccr[rows],
+        f"minilm_{VARIANT_KEY}_ccr_pca29": selected_ccr[rows],
+    }
+
+
+def out_of_fold_predictions_with_reduction(
+    size_and_others: np.ndarray,
+    vectors: np.ndarray,
+    y: np.ndarray,
+    groups: np.ndarray,
+    n_components: int,
+) -> np.ndarray:
+    """Out-of-fold predictions with the embedding reduced inside each fold.
+
+    Args:
+        size_and_others: The reduced-model design, unreduced.
+        vectors: Full-width embedding rows aligned to `size_and_others`.
+        y: Target values.
+        groups: State FIPS per row.
+        n_components: Width to reduce the embedding to.
+
+    Returns:
+        Out-of-fold predictions, one per row.
+    """
+    predictions = np.zeros_like(y, dtype=float)
+    splitter = GroupKFold(n_splits=N_FOLDS)
+    for train_idx, test_idx in splitter.split(size_and_others, y, groups):
+        reducer = fit_reduction(vectors[train_idx], n_components)
+        design_train = np.hstack([size_and_others[train_idx], reducer.transform(vectors[train_idx])])
+        design_test = np.hstack([size_and_others[test_idx], reducer.transform(vectors[test_idx])])
+        model = _pipeline()
+        model.fit(design_train, y[train_idx])
+        predictions[test_idx] = model.predict(design_test)
+    return predictions
+
+
+def _ensure_tier_column(panel: pd.DataFrame) -> pd.DataFrame:
+    """Attach Source A's content-length tier to the panel if it lacks one.
+
+    `load_panel` (`analyze_external_target.py`) builds the panel from
+    `pillar_matrix.build_matrix`, which does not carry `tier` -- it is not a
+    shipped feature, only a housekeeping cut on `content_length`.
+    `transform_typed`'s industry-mentions interaction needs it.
+
+    The panel is an inner join against the external targets, so it is a
+    *subset* of the matrix, in the matrix's own row order rather than the
+    panel's -- alignment must go through `fips_code`, never positional index.
+
+    Args:
+        panel: Joined panel from `load_panel`.
+
+    Returns:
+        `panel`, with a `tier` column added if it was missing.
+
+    Raises:
+        ValueError: If any panel county is absent from the tier assignment.
+    """
+    if "tier" in panel.columns:
+        return panel
+
+    from pillar_matrix import build_matrix
+
+    matrix, _ = build_matrix()
+    tiers = pd.DataFrame(
+        {"fips_code": matrix["fips_code"], "tier": assign_tiers(matrix["content_length"])}
+    )
+    merged = panel.merge(tiers, on="fips_code", how="left")
+    missing = int(merged["tier"].isna().sum())
+    if missing:
+        raise ValueError(f"{missing} panel counties absent from the tier assignment")
+    return merged
+
+
+def _ensure_latlong_columns(panel: pd.DataFrame) -> pd.DataFrame:
+    """Attach county centroid `lat`/`lon` to the panel if it lacks them.
+
+    The selected arm's largest per-target gains cluster on climate/region
+    variables (electric/gas/fuel-oil heating, foreign-born share, drove-alone
+    share) -- exactly what two floating-point coordinates would also predict.
+    `GroupKFold(state_fips)` does not control for this: a held-out New England
+    county's article shares regional vocabulary with training New England
+    counties, so the encoder can place it geographically without ever seeing
+    its state. This control lets every arm's contribution be re-reported net
+    of geography (`contribution_geo` in `score_representation`), rather than
+    net of nothing more than county size and the other five pillars.
+
+    Args:
+        panel: Joined panel from `load_panel`.
+
+    Returns:
+        `panel`, with `lat`/`lon` columns added if missing.
+
+    Raises:
+        ValueError: If any panel county is absent from the centroid table.
+    """
+    if {"lat", "lon"}.issubset(panel.columns):
+        return panel
+
+    centroids = pd.read_parquet(CENTROIDS_PATH)[["fips_code", "lat", "lon"]]
+    merged = panel.merge(centroids, on="fips_code", how="left")
+    missing = int(merged["lat"].isna().sum())
+    if missing:
+        raise ValueError(f"{missing} panel counties absent from the centroid table")
+    return merged
 
 
 def score_representation(
@@ -146,8 +409,14 @@ def score_representation(
         embeddings: Representation key to vectors aligned to `panel`.
 
     Returns:
-        One row per (target, representation).
+        One row per (target, representation). Every row also carries
+        `r2_reduced_geo` (the `size_and_others` model with `lat`/`lon` added)
+        and `contribution_geo` (`r2_full - r2_reduced_geo`), so every arm's
+        contribution can be read net of geography as well as net of nothing
+        more than size and the other five pillars.
     """
+    panel = _ensure_tier_column(panel)
+    panel = _ensure_latlong_columns(panel)
     other_columns = [column for column in pillar_columns if column not in a_columns]
     rows: list[dict[str, object]] = []
 
@@ -164,34 +433,83 @@ def score_representation(
             r2_score(y, out_of_fold_predictions(size_and_others, y, groups))
         )
 
+        # `size + others + lat/lon`: the geography-augmented reduced baseline
+        # (fix (a)), and its own contribution against `size_and_others` alone
+        # doubles as the `latlong_only` arm (fix (b)) -- both are the same
+        # design, scored once.
+        latlong = usable[["lat", "lon"]].astype(float).to_numpy()
+        size_and_others_geo = np.hstack([size_and_others, latlong])
+
         typed = [column for column in a_columns if column not in ablate]
+        transformed, _ = transform_typed(usable, typed, usable["tier"])
         designs = {
             "typed": np.hstack([size_and_others, usable[typed].astype(float).to_numpy()]),
+            "typed_transformed": np.hstack([size_and_others, transformed]),
+            "latlong_only": size_and_others_geo,
         }
+        # Arms whose EMBEDDING_ARMS width is not None are reduced inside each
+        # fold rather than assembled into a fixed design up front -- fitting
+        # PCA on the full matrix would let it see the held-out states each fold
+        # is scored on.
+        reduced_predictions: dict[str, tuple[np.ndarray, int]] = {}
         for key, vectors in embeddings.items():
-            designs[key] = np.hstack([size_and_others, vectors[mask]])
+            width = EMBEDDING_ARMS.get(key)
+            block = vectors[mask]
+            if width is None:
+                designs[key] = np.hstack([size_and_others, block])
+            else:
+                predicted = out_of_fold_predictions_with_reduction(
+                    size_and_others, block, y, groups, width
+                )
+                reduced_predictions[key] = (predicted, width)
 
-        for key, design in designs.items():
-            full_r2 = float(r2_score(y, out_of_fold_predictions(design, y, groups)))
+        representations: dict[str, tuple[np.ndarray, int]] = {
+            key: (out_of_fold_predictions(design, y, groups), design.shape[1] - size_and_others.shape[1])
+            for key, design in designs.items()
+        }
+        representations.update(reduced_predictions)
+
+        # `latlong_only`'s design IS `size_and_others_geo`, so its own full R2
+        # is exactly the geography-augmented reduced baseline every other
+        # arm's `contribution_geo` is measured against below.
+        reduced_r2_geo = float(r2_score(y, representations["latlong_only"][0]))
+        if reduced_r2 < 0:
+            logger.warning(
+                "%-24s reduced R2 %.4f is negative -- every contribution for "
+                "this target is the gap between two worse-than-mean models, "
+                "not a real gain. Flag it in the writeup.",
+                target.column,
+                reduced_r2,
+            )
+
+        for key, (predicted, n_columns) in representations.items():
+            full_r2 = float(r2_score(y, predicted))
             rows.append(
                 {
                     "target": target.column,
                     "label": target.label,
                     "representation": key,
                     "n": int(mask.sum()),
-                    "n_columns": int(design.shape[1] - size_and_others.shape[1]),
+                    "n_columns": int(n_columns),
                     "r2_reduced": reduced_r2,
+                    "r2_reduced_geo": reduced_r2_geo,
                     "r2_full": full_r2,
                     "contribution": full_r2 - reduced_r2,
+                    "contribution_geo": full_r2 - reduced_r2_geo,
+                    "reduced_r2_negative": bool(reduced_r2 < 0),
+                    "excluded": target.column in EXCLUDED_TARGETS,
                 }
             )
             logger.info(
-                "%-24s %-18s contribution %+.5f (full %.4f, reduced %.4f)",
+                "%-24s %-18s contribution %+.5f (full %.4f, reduced %.4f, "
+                "reduced+geo %.4f, contribution_geo %+.5f)",
                 target.column,
                 key,
                 full_r2 - reduced_r2,
                 full_r2,
                 reduced_r2,
+                reduced_r2_geo,
+                full_r2 - reduced_r2_geo,
             )
 
     return pd.DataFrame(rows)
@@ -200,22 +518,53 @@ def score_representation(
 def summarize(scores: pd.DataFrame) -> dict[str, object]:
     """Collapse per-target contributions to one figure per representation.
 
+    Reports two baskets per representation: `mean_contribution` /
+    `median_contribution` over every scored target (kept for audit and
+    backward compatibility -- nothing here is silently dropped), and
+    `decision_basket_mean_contribution` / `..._median_contribution` over the
+    targets NOT in `EXCLUDED_TARGETS` -- the figures headline prose should
+    quote. `negative_baseline_targets` names every target (regardless of
+    representation) whose reduced-model R2 is below zero, per the general
+    guard: such a target's "contribution" is the gap between two
+    worse-than-mean models and must be flagged rather than averaged in
+    silently.
+
     Args:
         scores: Output of `score_representation`.
 
     Returns:
         JSON-serializable summary.
     """
+    excluded_columns = set(EXCLUDED_TARGETS)
+    negative_baseline = (
+        scores[scores["reduced_r2_negative"]]
+        .drop_duplicates(subset="target")[["target", "r2_reduced"]]
+        .set_index("target")["r2_reduced"]
+        .to_dict()
+    )
+
     by_representation: dict[str, object] = {}
     for key, group in scores.groupby("representation"):
+        basket = group[~group["target"].isin(excluded_columns)]
         by_representation[str(key)] = {
             "mean_contribution": float(group["contribution"].mean()),
             "median_contribution": float(group["contribution"].median()),
             "n_positive": int((group["contribution"] > 0).sum()),
             "n_targets": int(len(group)),
             "n_columns": int(group["n_columns"].iloc[0]),
+            "decision_basket_mean_contribution": float(basket["contribution"].mean()),
+            "decision_basket_median_contribution": float(basket["contribution"].median()),
+            "decision_basket_n_positive": int((basket["contribution"] > 0).sum()),
+            "decision_basket_n_targets": int(len(basket)),
+            "mean_contribution_geo": float(group["contribution_geo"].mean()),
+            "median_contribution_geo": float(group["contribution_geo"].median()),
+            "decision_basket_mean_contribution_geo": float(basket["contribution_geo"].mean()),
+            "decision_basket_median_contribution_geo": float(basket["contribution_geo"].median()),
             "by_target": {
                 str(row.target): float(row.contribution) for row in group.itertuples()
+            },
+            "by_target_geo": {
+                str(row.target): float(row.contribution_geo) for row in group.itertuples()
             },
         }
     return {
@@ -226,6 +575,10 @@ def summarize(scores: pd.DataFrame) -> dict[str, object]:
         "encoder": ENCODER_NAME,
         "text_variant": VARIANT_KEY,
         "n_targets": int(scores["target"].nunique()),
+        "excluded_targets": dict(EXCLUDED_TARGETS),
+        "negative_baseline_targets": {
+            str(target): float(r2) for target, r2 in negative_baseline.items()
+        },
         "by_representation": by_representation,
     }
 
@@ -246,14 +599,23 @@ def main() -> None:
     stats = summarize(scores)
     OUTPUT_STATS_PATH.write_text(json.dumps(stats, indent=2) + "\n")
 
+    if stats["negative_baseline_targets"]:
+        logger.warning(
+            "targets with negative reduced R2 (flag in writeup, do not average "
+            "in silently): %s",
+            stats["negative_baseline_targets"],
+        )
+
     logger.info("--- Source A marginal contribution by representation ---")
     for key, summary in stats["by_representation"].items():
         logger.info(
-            "%-18s (%4d cols) mean %+.5f | median %+.5f | positive on %d/%d",
+            "%-24s (%4d cols) full-basket mean %+.5f | decision-basket mean %+.5f "
+            "| geo-adjusted decision-basket mean %+.5f | positive on %d/%d",
             key,
             summary["n_columns"],
             summary["mean_contribution"],
-            summary["median_contribution"],
+            summary["decision_basket_mean_contribution"],
+            summary["decision_basket_mean_contribution_geo"],
             summary["n_positive"],
             summary["n_targets"],
         )

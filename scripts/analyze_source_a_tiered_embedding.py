@@ -78,6 +78,12 @@ from extract_source_a_section_features import (
 )
 from ingest_source_a import normalize_article_text, strip_self_reference
 from pillar_matrix import build_matrix
+from source_a_text_leakage import (
+    CENSUS_TITLE_PATTERN,
+    HIGHWAY_TITLE_PATTERN,
+    LIST_TITLE_PATTERN,
+    PROSE_EXCLUDE_PATTERN,
+)
 
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 DATA_DIR: Path = REPO_ROOT / "data"
@@ -139,11 +145,15 @@ class TextVariant:
         key: Short identifier used in result columns and stats.
         label: Human-readable description for reports.
         tier_scope: Tier to section-selection regex, or None for lead only.
+        exclude: Full-match regex of titles to drop after `tier_scope` selects.
+            None keeps the historical behaviour of excluding narrative titles,
+            which is what every previously measured arm was scored under.
     """
 
     key: str
     label: str
     tier_scope: dict[str, str | None]
+    exclude: str | None = None
 
 
 ALL_TITLES: str = r".*"
@@ -184,6 +194,52 @@ TEXT_VARIANTS: tuple[TextVariant, ...] = (
             "mid": ECONOMY_TITLE_PATTERN,
             "rich": ALL_TITLES,
         },
+    ),
+    # Drops census tables, place lists and highway lists on top of the narrative
+    # exclusion every arm already carries. This is the leakage-controlled arm:
+    # census sections state the external targets verbatim.
+    TextVariant(
+        "prose_only",
+        "lead + substantive prose, no census tables or name lists",
+        {tier: ALL_TITLES for tier in ("stub", "thin", "mid", "rich")},
+        exclude=PROSE_EXCLUDE_PATTERN,
+    ),
+    # `prose_only` plus history and notable people. The typed block excluded
+    # narrative deliberately -- a lexicon hit inside History is usually a defunct
+    # industry -- but that reasoning may not transfer to an encoder that reads the
+    # surrounding sentence. History is 13.6% of all section characters. This is
+    # not a pure narrowing of `uniform`: it re-admits narrative that `uniform`
+    # excludes, while still dropping census/lists/highways that `uniform` reads.
+    TextVariant(
+        "prose_plus_history",
+        "prose_only plus history and notable people",
+        {tier: ALL_TITLES for tier in ("stub", "thin", "mid", "rich")},
+        exclude=(
+            r"^(?:"
+            + r"|".join(
+                p.removeprefix("^(?:").removesuffix(")$")
+                for p in (CENSUS_TITLE_PATTERN, LIST_TITLE_PATTERN, HIGHWAY_TITLE_PATTERN)
+            )
+            + r")$"
+        ),
+    ),
+    # The clean signal-only endpoint. Economy-titled sections are 1.5% of the
+    # text and exist for only 660 of 3,144 counties, so 79% of counties fall back
+    # to their lead. Expected weak; measured rather than assumed.
+    TextVariant(
+        "economy_all_tiers",
+        "economy-titled sections everywhere, lead fallback",
+        {tier: ECONOMY_TITLE_PATTERN for tier in ("stub", "thin", "mid", "rich")},
+    ),
+    # Branches on content availability rather than on depth, which is what
+    # separates it from `tier_conditional` and `tier_conditional_inverse`. Both of
+    # those branched on depth and both lost. A stub county's body is almost
+    # entirely census table and place list, so there is no prose there to read.
+    TextVariant(
+        "prose_by_tier",
+        "rich and mid read substantive prose; stub and thin read their lead",
+        {"stub": None, "thin": None, "mid": ALL_TITLES, "rich": ALL_TITLES},
+        exclude=PROSE_EXCLUDE_PATTERN,
     ),
 )
 
@@ -228,10 +284,11 @@ def build_variant_texts(
         Series of input text, aligned to `frame`'s index.
     """
     texts = frame["embedding_text"].fillna("")
+    exclude = variant.exclude if variant.exclude is not None else NARRATIVE_TITLE_PATTERN
     for tier, pattern in variant.tier_scope.items():
         if pattern is None:
             continue
-        selected = select_sections(sections, pattern, NARRATIVE_TITLE_PATTERN)
+        selected = select_sections(sections, pattern, exclude)
         joined = selected.groupby("fips_code")["section_text"].agg(" ".join)
         tier_rows = frame["tier"].to_numpy() == tier
         extra = frame.loc[tier_rows, "fips_code"].map(joined).fillna("")
@@ -270,6 +327,30 @@ def l2_normalize(vectors: np.ndarray) -> np.ndarray:
         Row-normalized copy.
     """
     return vectors / np.clip(np.linalg.norm(vectors, axis=1, keepdims=True), 1e-12, None)
+
+
+def remove_common_component(vectors: np.ndarray) -> np.ndarray:
+    """Subtract the corpus mean vector, then row-normalize.
+
+    Every county article opens with the same template sentence, so mean-pooled
+    vectors share a large component that carries no between-county information
+    while consuming representational budget. `StandardScaler` in the scoring
+    pipeline centres each dimension across counties, which is not the same
+    operation: this removes a shared *direction* before normalization, so the
+    row norms that survive describe deviation from the corpus rather than
+    absolute position.
+
+    Args:
+        vectors: One row per county.
+
+    Returns:
+        Centred, row-normalized vectors of the same shape. A zero input row
+        does not stay zero -- centring shifts it to `-mean`, which is a
+        nonzero direction whenever the corpus mean is nonzero -- but it stays
+        finite: `l2_normalize`'s norm floor keeps that row from becoming NaN.
+    """
+    centred = vectors - vectors.mean(axis=0, keepdims=True)
+    return l2_normalize(centred)
 
 
 def vector_tier_diagnostics(
@@ -534,6 +615,7 @@ def main(verify_only: bool = False) -> None:
         # alone isolates that channel: if a variant recovers here, its loss was
         # the magnitude gradient rather than the text it read.
         blocks[f"{variant.key}_l2"] = (l2_normalize(vectors), None)
+        blocks[f"{variant.key}_ccr"] = (remove_common_component(vectors), None)
         diagnostics[variant.key] = stats
         logger.info("%s: %s", variant.key, stats)
 
