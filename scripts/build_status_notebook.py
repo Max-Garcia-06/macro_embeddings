@@ -36,9 +36,14 @@ which was written for a conversation that never happened. The brief and its
 generator were removed in the commit that added this file; recover them from git
 history if needed.
 
-Every figure is computed from the committed artifacts in outputs/ and
-analysis-output/, which were regenerated from data/*.parquet on 2026-08-13.
-Nothing here is hardcoded -- a number that moves upstream moves in the notebook.
+Every figure and every table is computed from the committed artifacts in
+outputs/ and analysis-output/, which were regenerated from data/*.parquet on
+2026-08-13. Numbers quoted inline in prose are transcribed from those same
+artifacts by hand and are the one thing here that does not move on its own.
+
+**Prose refers to sections by name, never by number.** The section order has
+changed twice and every numbered cross-reference in the file was stale by the
+second change. Names survive a reorder; numbers do not.
 
 Wording in the Source A and Source F sections is constrained by
 analysis-output/cross-source/pillar-marginal-findings.md section 9. See the
@@ -99,7 +104,7 @@ md("""
 # `E_macro` — Source A and Source E: what the groups revealed
 
 **Status report, 13 August 2026**, covering two weeks of work. Roughly 30 minutes;
-sections 1–6 are the talk, the appendix is so the notebook stands on its own
+sections 1–7 are the talk, the appendix is so the notebook stands on its own
 afterwards.
 
 The assignment was to split Sources A and E into groups and see whether they
@@ -107,7 +112,8 @@ should be modelled separately. The answer is **no, for both** — and the groups
 were worth having anyway, because of what they exposed on the way to that answer.
 
 The same question then turned out to generalise: if a pillar has to earn the right
-to branch, it also has to earn its slot at all. Section 5 asks that of all six.
+to branch, it also has to earn its slot at all. The pillar-worth section asks
+that of all six.
 """)
 
 code('''
@@ -143,6 +149,10 @@ embed = json.loads((ANALYSIS / "source-a" / "source_a_tiered_embedding_stats.jso
 asec = json.loads((ANALYSIS / "source-a" / "source_a_section_stats.json").read_text())
 atier = json.loads((ANALYSIS / "source-a" / "source_a_tier_stats.json").read_text())
 arep = json.loads((ANALYSIS / "source-a" / "source_a_representation_stats.json").read_text())
+mrep = json.loads(
+    (ANALYSIS / "source-a" / "source_a_representation_marginal_stats.json").read_text())
+acomp = json.loads(
+    (ANALYSIS / "source-a" / "source_a_section_composition_stats.json").read_text())
 etier = json.loads((ANALYSIS / "source-e" / "source_e_tier_stats.json").read_text())
 
 A_TIERS = ["stub", "thin", "mid", "rich"]
@@ -261,7 +271,7 @@ dirty = subprocess.run(
 ).stdout.strip()
 
 print(f"Run stamp · {date.today():%d %B %Y} · commit {sha}")
-print("Every figure below is computed from outputs/ and analysis-output/,")
+print("Every figure and table below is computed from outputs/ and analysis-output/,")
 print("regenerated from data/*.parquet by the six analysis scripts on 13 Aug 2026.")
 print("Regenerated artifacts vs. committed: "
       f"{'IDENTICAL — no drift' if not dirty else 'DIFFER — see git diff'}")
@@ -271,7 +281,7 @@ print(f"Evidence base · {ext['n_targets']} external targets · {ext['fold_strat
 ''')
 
 # ==========================================================================
-# 1. Getting out of the circle
+# 1. The assignment, and the evidence baskets
 # ==========================================================================
 md("""
 ---
@@ -288,14 +298,50 @@ behaves differently enough at the two ends, one global model fitted across all
 3,144 counties is the wrong shape, and the fix is to let the groups have their own
 parameters.
 
-**The answer, for both pillars: no.** Neither should branch. Sections 2 and 3 are
-what the groups exposed; section 4 is why branching loses anyway.
+**The answer, for both pillars: no.** Neither should branch. The two tier sections
+below are what the groups exposed; the branching verdict after them is why
+branching loses anyway.
 
 **What the groups were worth regardless.** They picked the feature family Source A
 now ships, showed where to go looking for it, corrected an earlier Source E
 conclusion that was backwards, and forced a disclosure that now travels with the
 pillar. The tiers were never going to be the deliverable — they were the
 instrument.
+
+### The evidence baskets
+
+Four different sets of targets appear in this notebook, and **a lift measured on
+one is not comparable with a lift measured on another** — different targets,
+different baselines, different models. The basket is named wherever a number is
+quoted, and nothing below is ever read across rows of this table.
+""")
+
+code("""
+baskets = pd.DataFrame([
+    ("In-repo cross-pillar", arep["n_targets"],
+     "columns of the other five pillars, predicted from Source A",
+     "every Source A tier and text-scope number: both tier sections, "
+     "the branching verdict, appendix A2"),
+    ("Internal, in-matrix", blk["n_targets"],
+     "columns inside the six-pillar matrix, each predicted from the rest",
+     "pillar coherence, and Source F's internal number in appendix A5"),
+    ("External ACS, headline", ext["n_targets"],
+     "public ACS outcomes no pillar is built from",
+     "the +0.190 headline and every number in the pillar-worth section"),
+    ("External ACS, decision", mrep["n_targets"] - len(mrep["excluded_targets"]),
+     f"a wider ACS pull: {mrep['n_targets']} candidates less "
+     f"{len(mrep['excluded_targets'])} excluded as degenerate",
+     "the Source A representation decision and the geography control"),
+], columns=["Basket", "Targets", "What the targets are", "What rests on it"])
+display(baskets.set_index("Basket"))
+""")
+
+md("""
+**One of them is not always complete.** Within-tier scores on the in-repo basket
+use 21 of its 28 targets for the stub tier: seven BLS location quotients
+(`lq_emp_11`, `21`, `22`, `55`, `61`, `62`, `99`) are suppressed in enough small
+counties that stub falls under the 150-row floor the scorer requires before it
+will report a within-tier lift. Every chart that inherits this says so.
 
 ---
 
@@ -330,11 +376,11 @@ measured lift. What the columns buy is no model download, no inference, and a
 column you can read the name of.
 
 **Both ties have since been shown to be an artifact of how the encoder was
-configured, and section 6 replaces this account.** Both arms above read the whole
+configured, and the representation section replaces this account.** Both arms above read the whole
 article, and ~46% of an average county article is census tables and lists of place
 names against 1.5% economy-titled prose. Both were also scored at full width — 384
 and 1,024 dimensions against the typed block's 29. Fix the reading scope and match
-the width and the encoder stops tying and starts winning. Section 6 runs that
+the width and the encoder stops tying and starts winning. That section runs the
 comparison properly on a non-circular basket, and then finds a reason the win is
 narrower than it looks.
 
@@ -397,7 +443,7 @@ segments are what reading economy-titled sections adds. They help the sparse tie
 most — stub goes from 0.7% to **6.1%**, thin from 1.1% to **9.7%**, against rich's
 25.3% to 39.0%. So the thin tiers are not empty pages; they are pages whose
 economic content sits below the lead. **Reading *more* for everyone beat reading
-*differently* by tier** — the first hint of the answer section 4 gives.
+*differently* by tier** — the first hint of the answer the branching verdict gives.
 
 The chart is a diagnosis of the corpus, not a verdict on the embedding. It explains
 why a lead-text vector would be information-poor; the measurements above are what
@@ -551,22 +597,22 @@ style(ax,
       "estimate rests on 21 targets rather than 28.",
       legend=True)
 plt.show()
+
+# The same numbers the prose below reads off. Printed from the pivot the chart
+# is drawn from rather than transcribed into the markdown beside it, so the two
+# cannot drift apart.
+display(piv.loc[[k for k, _, _ in SWEEP], tiers]
+        .rename(index={k: lbl for k, lbl, _ in SWEEP})
+        .rename_axis(index="arm", columns="tier")
+        .map(lambda v: f"{v:+.5f}"))
 ''')
 
 md("""
 **The encoder side of the same question, and the sign is not what the plan
-expected.** Section 2 has so far asked whether the 29 typed columns should branch
+expected.** This section has so far asked whether the 29 typed columns should branch
 on tier. This chart asks it of the input text itself: does it help to let each
 tier's *article* stay uniform except one tier, which reads only its lead? Mean L2
-lift within each tier, drop-one against `uniform`:
-
-|            | stub     | thin     | mid      | rich     |
-|------------|----------|----------|----------|----------|
-| `uniform`  | +0.00021 | +0.00196 | +0.00288 | +0.00708 |
-| drop stub  | +0.00388 | +0.00211 | +0.00235 | +0.00671 |
-| drop thin  | −0.00247 | +0.00006 | +0.00191 | +0.00468 |
-| drop mid   | −0.00098 | +0.00163 | −0.00035 | +0.00378 |
-| drop rich  | +0.00030 | +0.00270 | +0.00210 | +0.00680 |
+lift within each tier, drop-one against `uniform`, is the table under the chart.
 
 **Stub is predicted *better* when it stops reading its own article.** Withholding
 stub's body text and falling back to its lead raises stub's own lift from
@@ -583,7 +629,7 @@ negative. rich barely moves, **−0.00028** (+0.00708 → +0.00680): the tier wi
 most text to read is close to redundant over its own lead.
 
 **And stub's gain does not survive pooling, for the same structural reason
-section 2 already gave the typed columns.** The own-tier gain from dropping stub's
+already given for the typed columns.** The own-tier gain from dropping stub's
 text is real, but `drop_stub` also costs mid (+0.00288 → +0.00235) and rich
 (+0.00708 → +0.00671) through the one fit those four tiers share, and pooled it
 loses to
@@ -616,14 +662,15 @@ hold fixed.
 
 **What this does not change, and the one thing it did.** `uniform` beat every
 branching rule tested on the typed columns, and it beats three of the four drop
-arms here — `drop_rich` edges it by +0.00014, noted in section 4 and too narrow to
+arms here — `drop_rich` edges it by +0.00014, noted in the branching verdict and
+too narrow to
 carry a decision. Branching on tier loses on the encoder side too, and that
-conclusion has since survived a third, independent test (section 4).
+conclusion has since survived a third, independent test (the branching verdict).
 
 What this sweep *did* reopen is the reading scope. Every arm above varies **how
 much** of the article each tier reads while holding the section filter fixed.
 Varying **which sections** are read turns out to matter considerably more, and
-that is section 6.
+that is the representation section.
 """)
 
 md("""
@@ -675,24 +722,28 @@ and rejected below — but it is a reason to *say so*, which Source E's schema d
 now does.
 
 **Two corrections the split forced**, both against conclusions from the earlier
-Source E review:
+Source E review. The ratio every number below describes is
+`capital_to_wage_ratio`: a county's net capital gains plus qualified dividends,
+over its wages and salaries.
 
 - **The stability finding was backwards.** The earlier review concluded that
   small counties' ratios were the unstable ones, and proposed weighting the
   feature by `num_returns` to damp them. Neither half holds. A typical small
-  county's ratio moves *less* year to year than a large one's (median change of
-  0.298 against 0.393), and small counties hold their place in the national
-  ordering worse, not better (0.861 against 0.941, comparing one year's ranking
-  to the next). The tail is the one thing it got right: 17% of the smallest
-  counties swing by more than half in a single year, against 10% of the largest.
-  And weighting by `num_returns` gives *more* weight to counties with more
-  returns — the large ones, which are exactly the counties whose ratios move most
-  in the typical case.
+  county's ratio moves *less* from one tax year to the next — median
+  |Δratio| ÷ prior-year ratio, TY2021→TY2022, of **0.298 in T1 against 0.393 in
+  T4** — and small counties hold their place in the national ordering worse, not
+  better: the Spearman correlation between a tier's TY2021 and TY2022 ratios is
+  **0.861 in T1 against 0.941 in T4**. The tail is the one thing it got right:
+  **17.4%** of T1 counties move by more than half their own prior-year ratio in
+  one year, against **9.5%** of T4. And weighting by `num_returns` gives *more*
+  weight to counties with more returns — the large ones, which are exactly the
+  counties whose ratios move most in the typical case.
 - **The spread among small counties is real, not measurement noise.** If it were
   just noise from averaging few tax returns, that spread would shrink sharply as
-  counties get bigger. It does not — it barely changes with size (**+0.026**,
-  where noise alone would give −0.5). Small counties genuinely differ from one
-  another, so there is nothing to smooth away.
+  counties get bigger. It does not: regressing log dispersion of the ratio on log
+  median returns across population deciles gives a slope of **+0.026** (r² =
+  0.014), where pure sampling error would give **−0.5**. Small counties genuinely
+  differ from one another, so there is nothing to smooth away.
 
 **And one caveat that now ships with the pillar.** The strongest link between any
 two pillars in this project — how concentrated a county's real-estate employment
@@ -717,7 +768,8 @@ against **0.9–1.2%** under a uniform rule — three to seven times more, for a
 variable the baseline already controls for. The model was partly learning how the
 input was built rather than anything about the counties.
 
-**The same answer comes back from an independent test.** Section 2 branched the
+**The same answer comes back from an independent test.** The Source A tier
+section branched the
 *model* on tier; the encoder experiment branched the *input*, deciding how much of
 each article to read from its tier. Reading the same text for everyone wins there
 too — **+0.00322 uniform against +0.00180 tier-conditional** — and the drop-one
@@ -741,7 +793,7 @@ originally on file supported.
 edges reading everything, **+0.00365** against **+0.00351**. The margin decides
 nothing. It also no longer describes the best arm on the board: changing *which
 sections* are read beats every arm in this section by a wider margin than any of
-them separate from each other (section 6).
+them separate from each other (the representation section).
 
 **So what shipped instead:**
 
@@ -778,7 +830,7 @@ effect essentially for free — which makes any static geo-keyed feature look
 redundant. A fixed effect has exactly one weakness: **no parameter for a place it
 has never seen.** So the test holds out **whole states** and compares against a
 model that knows only county size. That seam is the whole design, and it is what
-section 4 returns to.
+the limits section returns to.
 
 **The same seam then goes one level down.** Withhold a single pillar's block from a
 model that already holds county size *and the other five*, and measure the R² it
@@ -787,11 +839,11 @@ restatements are ablated, so no pillar is paid for repeating a neighbour; and th
 noise floor is measured by shuffling each block rather than assumed.
 
 The pass/fail rule was written down before the numbers arrived and was not
-renegotiated afterwards — full text in appendix A2.
+renegotiated afterwards — full text in appendix A3, *Drop-one method*.
 """)
 
 # ==========================================================================
-# 2. The result and the discount
+# 5. Pillar worth: the result and the discount
 # ==========================================================================
 md("""
 ### First, the discount applied to the result
@@ -943,8 +995,8 @@ earns its slot on evidence now points at Source A rather than Source F. That is
 uncomfortable and it is the honest reading.
 
 **A note on the two Source A results in this notebook, because they are easy to
-run together.** Section 2 says A should not branch. This section says A adds
-nothing marginal. **They are independent measurements that happen to land on the
+run together.** The Source A tier section says A should not branch. This section
+says A adds nothing marginal. **They are independent measurements that happen to land on the
 same pillar, and the first did not predict the second.** The tier work asked
 whether one model or four fits A best, and would have returned exactly the same
 answer if A were the strongest pillar in the matrix. Nothing in it anticipated
@@ -960,27 +1012,27 @@ article. When first tested, that defence failed hard: swapping in the
 **That −0.044 turns out to be mostly a width artifact.** The embedding carried 384
 columns against the typed block's 29, and the comparison never controlled for it.
 Reduce the *identical vectors* to 29 dimensions and the same arm scores
-**+0.011** instead of −0.021. Section 6 runs the controlled version on 41
-non-circular external targets, and A's contribution under a properly configured
+**+0.011** instead of −0.021. The representation section runs the controlled
+version on 41 non-circular external targets, and A's contribution under a properly configured
 encoding is positive, not near-zero.
 
 **It does not rescue Source A, for a reason nobody had tested.** Nearly all of
 that recovered signal is geography — two latitude/longitude columns capture 96% of
-it. Section 6 has the numbers. Read this section's −0.0000 as a fact about *the
-typed columns*, not about the pillar; and read section 6 before concluding the
-encoder fixes it.
+it. The representation section has the numbers. Read this section's −0.0000 as a
+fact about *the typed columns*, not about the pillar; and read that section before
+concluding the encoder fixes it.
 
 ### The open question this puts to the room
 
 > **Does Source A ship?** The recommendation is to cut it from the shipped
-> matrix. Three arguments defend keeping it, and after section 6 the score is one
-> failed, one revived-then-neutralised, one still untested.
+> matrix. Three arguments defend keeping it, and after the representation section
+> the score is one failed, one revived-then-neutralised, one still untested.
 >
 > *A is nearly free* is an argument about cost, not worth — it justifies leaving
 > the code in the repo, not calling A a pillar. *A better representation would
 > rescue it* looked dead and is now half-alive: a properly scoped, width-matched
 > encoding does lift A's contribution well clear of zero, but almost all of the
-> lift is geography that two coordinate columns supply more cheaply (section 6).
+> lift is geography that two coordinate columns supply more cheaply (below).
 > *Redundancy is insurance for a county missing another pillar* is plausible and
 > remains untested; no coverage-failure scenario in this repo has been scored with
 > and without A.
@@ -998,31 +1050,37 @@ encoder fixes it.
 """)
 
 # ==========================================================================
-# 3b. The representation question, run properly
+# 6. The representation question, run properly
 # ==========================================================================
 md("""
 ---
 
 ## 6. How Source A should be represented — settled, then complicated
 
-Section 2 left this at a tie and shipped the typed columns on cost. Section 5 said
-a richer encoding made A *worse*. Both accounts were produced by comparisons that
-had two uncontrolled confounds in them. This section removes both, and the answer
-changes twice.
+The Source A tier section left this at a tie and shipped the typed columns on
+cost. The pillar-worth section said a richer encoding made A *worse*. Both
+accounts were produced by comparisons that had two uncontrolled confounds in
+them. This section removes both, and the answer changes twice.
 
-**Confound one: the encoder was reading mostly boilerplate.** Measured over the
-64,588 sections of the corpus, by share of characters:
+**Confound one: the encoder was reading mostly boilerplate.** Every body section
+in the corpus, by share of characters:
+""")
 
-| what the encoder reads | share |
-|---|---|
-| census tables rendered as prose | **36.4%** |
-| lists of place names, adjacent counties, highways | 9.8% |
-| history and notable people | 13.6% |
-| geography, government, education, other | 38.7% |
-| **economy-titled sections** | **1.5%** |
+code("""
+# Economy last, because it is the row the section is about.
+order = ["census", "lists", "narrative", "other", "economy"]
+comp = pd.DataFrame({
+    "what the encoder reads": [acomp["labels"][k] for k in order],
+    "share of characters": [f"{acomp['share_of_characters'][k]:.1%}" for k in order],
+})
+print(f"{acomp['n_sections']:,} body sections across "
+      f"{acomp['n_counties']:,} counties")
+display(comp.set_index("what the encoder reads"))
+""")
 
-Mean-pooling averages the 1.5% into the rest. Economy-titled sections also exist
-for only 660 of 3,144 counties, which is why "just read the economy sections" is
+md("""
+Mean-pooling averages the economy sections into the rest. They also exist for
+only 660 of 3,144 counties, which is why "just read the economy sections" is
 not the fix — it scores **+0.0017**, statistically indistinguishable from reading
 nothing but the lead (**+0.0017**), because 79% of counties fall back to their
 lead anyway.
@@ -1031,7 +1089,8 @@ lead anyway.
 1,024 columns against the typed block's 29, so part of every measured penalty was
 width rather than content. Reducing the *identical* vectors to 29 dimensions —
 fitted inside each fold, never on the full corpus — moves the same arm from
-**−0.021 to +0.011**. That single control accounts for most of section 5's −0.044.
+**−0.021 to +0.011**. That single control accounts for most of the pillar-worth
+section's −0.044.
 
 **A third thing, which is not a confound but a leak.** County census sections state
 the ACS targets verbatim — *"The median age was 38.9 years"* — and 2,589 counties
@@ -1059,7 +1118,6 @@ latitude and longitude.
 """)
 
 code('''
-mrep = json.loads((ANALYSIS / "source-a" / "source_a_representation_marginal_stats.json").read_text())
 R = mrep["by_representation"]
 ARMS = [("latlong_only", "lat/lon only (2 cols)"),
         ("minilm_prose_plus_history_ccr_pca29", "selected encoder (29 dims)"),
@@ -1128,7 +1186,7 @@ advance.
 """)
 
 # ==========================================================================
-# 4. Three honest limits
+# 7. Three honest limits
 # ==========================================================================
 md("""
 ---
@@ -1250,8 +1308,8 @@ Written to be read without a narrator.
 
 ## A1 — Do public proxies mean anything?
 
-The strongest objection available against section 2, and it deserves a straight
-answer rather than a footnote.
+The strongest objection available against the pillar-worth section, and it
+deserves a straight answer rather than a footnote.
 
 **The objection.** `E_macro` is scored against ACS broadband adoption, median
 household income, median age, median home value and mean commute. The consuming
@@ -1280,7 +1338,7 @@ targets by an order of magnitude, A does not.
 **What they do not license.** Any claim about **magnitude** against an ad-tech
 target; +0.190 on ACS outcomes forecasts nothing. Any claim that the **ordering
 transfers** — Source A could rank higher against an economically-flavoured target,
-which is precisely the section 3 argument for not cutting it unilaterally. And any
+which is precisely the argument in that section for not cutting it unilaterally. And any
 answer to the **fixed-effect objection**, which is a different question.
 
 **What would settle it.** One pass of the same drop-one design against a real
@@ -1359,7 +1417,8 @@ Reading **all** sections scores higher than the shipped economy-only rule
 in historical framing, which makes it a defunct-industry detector wearing a
 current-economy label. That is a precision judgement, not a scoring one, and it is
 the one place in this project where a higher number was deliberately declined.
-**The per-tier breakdown of the embedding arms is in section 2**, including the
+**The per-tier breakdown of the embedding arms is in the Source A tier
+section**, including the
 drop-one sweep that locates which tier the tier-conditional rule actually costs.
 
 **A correction worth recording, made 2026-08-17.** The MiniLM arms above were
@@ -1405,7 +1464,8 @@ by construction, which is the intended behaviour.
 
 **Noise floor.** Each block is shuffled and re-scored — 49 reps in the internal arm,
 20 per pillar × target in the external arm. The largest contribution any shuffled
-block produced anywhere is +0.0031, and that is the bar drawn in section 2.
+block produced anywhere is +0.0031, and that is the bar drawn on the pillar-worth
+figure.
 
 **Two arms.** The internal arm scores against 29 in-matrix targets and measures
 coherence. The external arm scores against the five ACS targets and is the one the
@@ -1457,7 +1517,7 @@ numbers existed, not after.
 code('''
 fb = blk["by_block"]["F"]
 # Headline external figure, not the `_no_ametro` robustness variant — see the
-# comment on the section 5 pillar-worth figure.
+# comment on the pillar-worth figure.
 f_ext = ext["drop_one"]["size_emacro_drop_F"]["mean_contribution_ablated"]
 # NOTE: newlines in these labels are escaped because this cell's source is a
 # non-raw triple-quoted string in the builder — an unescaped \\n would be
@@ -1520,23 +1580,32 @@ re-derived at a coarser geography; they are not features.
 
 ## A8 — Artifact index
 
-Every figure above is computed from a committed artifact. Nothing is hardcoded.
+**Every figure and every table above is computed from a committed artifact.**
+Numbers quoted inline in prose are transcribed from those same artifacts by hand,
+and are the one thing in this notebook that does not move when the artifact moves.
 
-| Section | Reads | Produced by |
+Rows are keyed by section *name*. The section order has changed twice, and
+numbered references went stale both times.
+
+| Where | Reads | Produced by |
 |---|---|---|
-| 2 · the discount | `external_target_stats.json` (`by_target`) | `scripts/analyze_external_target.py` |
-| 2 · pillar worth | `external_target_stats.json` (`drop_one`, `drop_one_noise_floor`) | `scripts/analyze_external_target.py` |
-| 3 · Source F | `pillar_block_marginal_stats.json` (`by_block`) | `scripts/analyze_pillar_block_marginal.py` |
-| 3 · Source A | `external_target_drop_one_placebo.csv` | `scripts/analyze_external_target.py` |
-| 4 · grain | `grain_effect_stats.json` | `scripts/analyze_grain_effect.py` |
-| 4 · sampling noise | `outputs/external_target_by_decile.csv` | `scripts/analyze_external_target.py` |
-| 2 · encoder tier sweep | `outputs/source_a_tiered_embedding_by_tier.csv` | `scripts/analyze_source_a_tiered_embedding.py` |
-| 5 · ruled out | `source_a_section_scope_stats.json`, `source_a_tiered_embedding_stats.json` | `scripts/analyze_source_a_section_scope.py`, `scripts/analyze_source_a_tiered_embedding.py` |
-| 6 · representation decision | `source_a_representation_marginal_stats.json`, `outputs/source_a_representation_marginal.csv` | `scripts/analyze_source_a_representation_marginal.py` |
-| 6 · leakage screen | `scripts/source_a_text_leakage.py` (no artifact; screen is computed inline) | `scripts/source_a_text_leakage.py` |
-| 6 · pre-registered rule | `docs/source_a_representation_decision.md` | committed before scoring |
-| A4 · Source E tiers | `source_e_tier_stats.json` | `scripts/analyze_source_e_tiers.py` |
-| A5 · vintages | `outputs/pillar_vintages.csv` | `scripts/pillar_vintage.py` |
+| The assignment · evidence baskets | the `n_targets` field of the four stats artifacts below | — |
+| Source A tiers · section yield | `source_a_section_stats.json` | `scripts/extract_source_a_section_features.py` |
+| Source A tiers · branching arms | `source_a_representation_stats.json`, `outputs/source_a_representation_by_tier.csv` | `scripts/analyze_source_a_representation.py` |
+| Source A tiers · encoder sweep | `outputs/source_a_tiered_embedding_by_tier.csv` | `scripts/analyze_source_a_tiered_embedding.py` |
+| Source E tiers | `source_e_tier_stats.json` | `scripts/analyze_source_e_tiers.py` |
+| Pillar worth · the discount | `external_target_stats.json` (`by_target`) | `scripts/analyze_external_target.py` |
+| Pillar worth · the figure | `external_target_stats.json` (`drop_one`, `drop_one_noise_floor`) | `scripts/analyze_external_target.py` |
+| Pillar worth · Source A | `external_target_drop_one_placebo.csv` | `scripts/analyze_external_target.py` |
+| Representation · corpus composition | `source_a_section_composition_stats.json` | `scripts/analyze_source_a_section_composition.py` |
+| Representation · the decision | `source_a_representation_marginal_stats.json`, `outputs/source_a_representation_marginal.csv` | `scripts/analyze_source_a_representation_marginal.py` |
+| Representation · leakage screen | `scripts/source_a_text_leakage.py` (no artifact; screen is computed inline) | `scripts/source_a_text_leakage.py` |
+| Representation · pre-registered rule | `docs/source_a_representation_decision.md` | committed before scoring |
+| Limits · grain | `grain_effect_stats.json` | `scripts/analyze_grain_effect.py` |
+| Limits · sampling noise | `outputs/external_target_by_decile.csv` | `scripts/analyze_external_target.py` |
+| A2 · arms ruled out | `source_a_section_scope_stats.json`, `source_a_tiered_embedding_stats.json` | `scripts/analyze_source_a_section_scope.py`, `scripts/analyze_source_a_tiered_embedding.py` |
+| A5 · Source F | `pillar_block_marginal_stats.json` (`by_block`) | `scripts/analyze_pillar_block_marginal.py` |
+| A6 · vintages | `outputs/pillar_vintages.csv` | `scripts/pillar_vintage.py` |
 
 Long-form evidence:
 `analysis-output/cross-source/pillar-marginal-findings.md`,
