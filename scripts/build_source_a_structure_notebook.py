@@ -169,11 +169,25 @@ plt.show()
 md("""
 ## Part two — the size-proxy audit
 
-This runs before the scoring, on purpose. Most of these columns are ways of
-measuring how much has been written about a county, and how much has been
-written about a county is mostly how big it is. The columns that correlate
-*weakly* with all three size measures are the ones with anything left to
-contribute once the baseline has taken its share.
+This runs before the scoring, on purpose: a structural column that is only a
+size measurement in disguise has nothing left to contribute once a baseline
+already holding three size measures has taken its share.
+
+The audit finds size dependence concentrated in a small minority of the
+block, not spread across it:
+
+- Six of the sixty-four columns — the volume and breadth proxies
+  `n_distinct_titles`, `n_body_sections`, `max_section_id`,
+  `share_chars_census`, `total_body_chars`, and `share_in_largest_section` —
+  clear |r| = 0.4 against at least one size measure. `n_body_sections` is the
+  one that was cut from the shipped matrix on exactly this ground.
+- The other fifty-eight sit well below that line; the twelve weakest are
+  negligible, not merely weak, at |r| = 0.018–0.087 against every size
+  measure.
+
+That skew is a finding in itself, and it is the reason the scoring section
+below has anything to measure: a block that were mostly a size proxy would
+have nothing left once the baseline took its share.
 
 Three size measures, not one: `n_body_sections` was cut on its correlation with
 log tax returns specifically, and a table showing only population would have
