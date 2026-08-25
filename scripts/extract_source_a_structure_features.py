@@ -313,7 +313,11 @@ def bucket_share_features(sections: pd.DataFrame) -> pd.DataFrame:
 
     Returns:
         DataFrame indexed by `fips_code` with one `share_chars_<bucket>` column
-        per bucket, each county's row summing to 1.
+        per bucket, each county's row summing to 1 unconditionally. A county
+        whose sections are all zero-length has nothing to divide up; it is
+        routed entirely to `share_chars_other` rather than left at all-zero,
+        since an article with no characters is, by the bucket vocabulary's own
+        logic, unclassifiable rather than a hole in the invariant.
     """
     chars = sections["section_text"].fillna("").str.len().astype("float64")
     frame = sections[["fips_code"]].assign(_chars=chars, _bucket=assign_buckets(sections))
@@ -323,8 +327,11 @@ def bucket_share_features(sections: pd.DataFrame) -> pd.DataFrame:
         .reindex(columns=list(BUCKET_KEYS))
         .fillna(0.0)
     )
-    totals = per_bucket.sum(axis=1).replace(0.0, np.nan)
-    shares = per_bucket.div(totals, axis=0).fillna(0.0)
+    totals = per_bucket.sum(axis=1)
+    zero_total = totals == 0.0
+    shares = per_bucket.div(totals.replace(0.0, np.nan), axis=0).fillna(0.0)
+    shares.loc[zero_total, :] = 0.0
+    shares.loc[zero_total, "other"] = 1.0
     shares.columns = [f"{BUCKET_SHARE_PREFIX}{key}" for key in shares.columns]
     shares.index.name = "fips_code"
     return shares

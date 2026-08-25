@@ -234,3 +234,13 @@ def test_other_is_not_the_largest_bucket_in_the_real_corpus(sections_frame: pd.D
     corpus_share = structure.bucket_share_features(sections_frame).mean()
 
     assert corpus_share["share_chars_other"] < corpus_share.drop("share_chars_other").max()
+
+
+def test_a_county_with_no_characters_still_sums_to_one() -> None:
+    """The invariant is unconditional, not a property of the current corpus."""
+    sections = make_sections([("01001", 1, "Geography", ""), ("01001", 2, "Economy", "")])
+
+    shares = structure.bucket_share_features(sections)
+
+    assert shares.loc["01001"].sum() == pytest.approx(1.0)
+    assert shares.loc["01001", "share_chars_other"] == pytest.approx(1.0)
