@@ -370,12 +370,7 @@ def build_structure_features(sections: pd.DataFrame) -> tuple[pd.DataFrame, list
     ]
     features = pd.concat(parts, axis=1).astype("float64")
     features.index.name = "fips_code"
-    result = features.reset_index()
-    # pandas 3's default string dtype is "str", not "object" -- cast explicitly
-    # so the one text column reads as a plain object column, matching every
-    # other identifier column in this codebase's parquet outputs.
-    result["fips_code"] = result["fips_code"].astype("object")
-    return result, vocabulary
+    return features.reset_index(), vocabulary
 
 
 def summarize(features: pd.DataFrame, vocabulary: list[str]) -> dict[str, object]:

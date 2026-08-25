@@ -279,7 +279,9 @@ def test_no_section_text_survives_into_the_block(sections_frame: pd.DataFrame) -
     features, _ = structure.build_structure_features(sections_frame)
 
     assert "section_text" not in features.columns
-    non_numeric = set(features.dtypes[features.dtypes == "object"].index)
+    non_numeric = {
+        column for column in features.columns if not pd.api.types.is_numeric_dtype(features[column])
+    }
     assert non_numeric == {"fips_code"}, f"unexpected text column(s): {non_numeric}"
 
 
