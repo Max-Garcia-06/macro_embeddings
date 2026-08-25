@@ -303,3 +303,51 @@ def test_summary_records_the_vocabulary_it_chose(sections_frame: pd.DataFrame) -
     assert stats["title_flag_vocabulary"] == vocabulary
     assert stats["title_flag_min_share"] == structure.TITLE_FLAG_MIN_SHARE
     assert stats["stub_char_threshold"] == structure.STUB_CHAR_THRESHOLD
+
+
+def test_three_scored_arms_are_declared() -> None:
+    """The fourth arm is the baseline, which is the comparison rather than a block."""
+    import analyze_source_a_structure as scoring
+
+    assert [arm.key for arm in scoring.ARMS] == [
+        "structure",
+        "typed",
+        "typed_plus_structure",
+    ]
+
+
+def test_typed_block_is_the_shipped_29_columns() -> None:
+    import analyze_source_a_structure as scoring
+
+    assert len(scoring.typed_columns()) == 29
+
+
+def test_structure_attaches_to_every_matrix_row() -> None:
+    import analyze_source_a_structure as scoring
+    from pillar_matrix import build_matrix
+
+    matrix, _ = build_matrix()
+    attached, columns = scoring.attach_structure(matrix)
+
+    assert len(attached) == len(matrix)
+    assert attached[columns].notna().all().all()
+    assert "n_body_sections" in columns
+
+
+def test_structure_columns_do_not_collide_with_matrix_columns() -> None:
+    """A collision would silently rename a column to `_x`/`_y` and score the wrong block."""
+    import analyze_source_a_structure as scoring
+    from pillar_matrix import build_matrix
+
+    matrix, _ = build_matrix()
+    _, columns = scoring.attach_structure(matrix)
+
+    assert not set(columns) & set(matrix.columns)
+
+
+def test_arms_share_folds_and_rows() -> None:
+    """Paired comparison is the headline statistic; unpaired folds would void it."""
+    import analyze_source_a_structure as scoring
+
+    assert scoring.N_FOLDS == 5
+    assert scoring.RANDOM_SEED == 42
