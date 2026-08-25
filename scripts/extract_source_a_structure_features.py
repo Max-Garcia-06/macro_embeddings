@@ -26,8 +26,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from extract_source_a_section_features import SECTIONS_PARQUET_PATH
+from analyze_source_a_section_scope import NARRATIVE_TITLE_PATTERN
+from extract_source_a_section_features import ECONOMY_TITLE_PATTERN, SECTIONS_PARQUET_PATH
 from pillar_matrix import DATA_DIR
+from source_a_text_leakage import (
+    CENSUS_TITLE_PATTERN,
+    HIGHWAY_TITLE_PATTERN,
+    LIST_TITLE_PATTERN,
+)
 
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 ANALYSIS_DIR: Path = REPO_ROOT / "analysis-output" / "source-a"
@@ -229,3 +235,96 @@ def title_flag_features(sections: pd.DataFrame, vocabulary: list[str]) -> pd.Dat
         holders = frame.loc[frame["_title"] == title, "fips_code"].unique()
         flags[f"{TITLE_FLAG_PREFIX}{slugify(title)}"] = index.isin(holders).astype("float64")
     return flags
+
+
+# Physical-setting sections. `national protected area` is deliberately absent:
+# `LIST_TITLE_PATTERN` already claims it and runs first, so listing it here
+# would be a dead alternative that reads as if it did something.
+GEOGRAPHY_TITLE_PATTERN: str = (
+    r"^(?:geography|geography and climate|climate|geology|topography|"
+    r"terrain|environment|physical geography)$"
+)
+
+# Civic sections. Education sits here rather than in its own bucket: it is a
+# county-government function in these articles, and splitting it would produce
+# a bucket too thin to carry a share.
+GOVERNMENT_TITLE_PATTERN: str = (
+    r"^(?:government|politics|government and politics|law and government|"
+    r"politics and government|education|law enforcement|elections|voting)$"
+)
+
+# Ordered: the first pattern to claim a title wins, and the order is
+# load-bearing rather than alphabetical. Inherited from
+# `analyze_source_a_section_composition.CATEGORIES`, with two deliberate
+# differences:
+#
+# - Highways get their own bucket instead of folding into `lists`. The
+#   composition script merges them because it is asking how much of the corpus
+#   is content-free for an encoder; this round is asking which *structures* are
+#   present, and a highway section is a different structure from a list of towns.
+# - `geography` and `government` are split out of the `other` residual. They are
+#   its two largest occupants, and leaving them in would put most of the corpus
+#   in a bucket named "other".
+STRUCTURE_CATEGORIES: tuple[tuple[str, str], ...] = (
+    ("census", CENSUS_TITLE_PATTERN),
+    ("lists", LIST_TITLE_PATTERN),
+    ("highways", HIGHWAY_TITLE_PATTERN),
+    ("narrative", NARRATIVE_TITLE_PATTERN),
+    ("economy", ECONOMY_TITLE_PATTERN),
+    ("geography", GEOGRAPHY_TITLE_PATTERN),
+    ("government", GOVERNMENT_TITLE_PATTERN),
+)
+
+BUCKET_KEYS: tuple[str, ...] = tuple(key for key, _ in STRUCTURE_CATEGORIES) + ("other",)
+
+# Prefix for the character-share columns.
+BUCKET_SHARE_PREFIX: str = "share_chars_"
+
+
+def assign_buckets(sections: pd.DataFrame) -> pd.Series:
+    """Label every section with the first thematic bucket that claims it.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        Bucket key per row, aligned to `sections.index`. Anything no pattern
+        claims is `"other"`.
+    """
+    titles = normalize_titles(sections)
+    buckets = pd.Series("other", index=sections.index)
+    claimed = pd.Series(False, index=sections.index)
+    for key, pattern in STRUCTURE_CATEGORIES:
+        matched = titles.str.match(pattern, na=False) & ~claimed
+        buckets[matched] = key
+        claimed |= matched
+    return buckets
+
+
+def bucket_share_features(sections: pd.DataFrame) -> pd.DataFrame:
+    """Split each county's body characters across the thematic buckets.
+
+    Shares rather than counts, so the block describes the article's composition
+    rather than its length -- length is already carried, and carried better, by
+    `total_body_chars`.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        DataFrame indexed by `fips_code` with one `share_chars_<bucket>` column
+        per bucket, each county's row summing to 1.
+    """
+    chars = sections["section_text"].fillna("").str.len().astype("float64")
+    frame = sections[["fips_code"]].assign(_chars=chars, _bucket=assign_buckets(sections))
+
+    per_bucket = (
+        frame.pivot_table(index="fips_code", columns="_bucket", values="_chars", aggfunc="sum")
+        .reindex(columns=list(BUCKET_KEYS))
+        .fillna(0.0)
+    )
+    totals = per_bucket.sum(axis=1).replace(0.0, np.nan)
+    shares = per_bucket.div(totals, axis=0).fillna(0.0)
+    shares.columns = [f"{BUCKET_SHARE_PREFIX}{key}" for key in shares.columns]
+    shares.index.name = "fips_code"
+    return shares

@@ -161,3 +161,76 @@ def test_flags_are_binary_per_county() -> None:
     assert flags.loc["01001", "has_section_economy"] == 0.0
     assert flags.loc["01002", "has_section_geography"] == 0.0
     assert set(flags["has_section_geography"].unique()) <= {0.0, 1.0}
+
+
+def test_bucket_shares_sum_to_one_for_every_county(sections_frame: pd.DataFrame) -> None:
+    shares = structure.bucket_share_features(sections_frame)
+
+    assert len(shares) == sections_frame["fips_code"].nunique()
+    assert np.allclose(shares.sum(axis=1).to_numpy(), 1.0)
+
+
+def test_census_wins_the_population_ranking_collision() -> None:
+    """'population ranking' matches both the census and list patterns."""
+    sections = make_sections([("01001", 1, "Population ranking", "x" * 100)])
+
+    shares = structure.bucket_share_features(sections)
+
+    assert shares.loc["01001", "share_chars_census"] == pytest.approx(1.0)
+    assert shares.loc["01001", "share_chars_lists"] == pytest.approx(0.0)
+
+
+def test_transportation_is_a_highway_not_an_economy_section() -> None:
+    sections = make_sections([("01001", 1, "Transportation", "x" * 100)])
+
+    shares = structure.bucket_share_features(sections)
+
+    assert shares.loc["01001", "share_chars_highways"] == pytest.approx(1.0)
+    assert shares.loc["01001", "share_chars_economy"] == pytest.approx(0.0)
+
+
+def test_highways_are_their_own_bucket_not_folded_into_lists() -> None:
+    sections = make_sections(
+        [("01001", 1, "Major highways", "x" * 100), ("01001", 2, "Communities", "y" * 100)]
+    )
+
+    shares = structure.bucket_share_features(sections)
+
+    assert shares.loc["01001", "share_chars_highways"] == pytest.approx(0.5)
+    assert shares.loc["01001", "share_chars_lists"] == pytest.approx(0.5)
+
+
+def test_shares_are_weighted_by_characters_not_section_count() -> None:
+    sections = make_sections(
+        [("01001", 1, "Demographics", "x" * 900), ("01001", 2, "Economy", "y" * 100)]
+    )
+
+    shares = structure.bucket_share_features(sections)
+
+    assert shares.loc["01001", "share_chars_census"] == pytest.approx(0.9)
+    assert shares.loc["01001", "share_chars_economy"] == pytest.approx(0.1)
+
+
+def test_unmatched_titles_fall_to_other() -> None:
+    sections = make_sections([("01001", 1, "Volcanology", "x" * 100)])
+
+    assert structure.bucket_share_features(sections).loc["01001", "share_chars_other"] == pytest.approx(1.0)
+
+
+def test_geography_and_government_are_split_out_of_other() -> None:
+    sections = make_sections(
+        [("01001", 1, "Geography", "x" * 100), ("01001", 2, "Government", "y" * 100)]
+    )
+
+    shares = structure.bucket_share_features(sections)
+
+    assert shares.loc["01001", "share_chars_geography"] == pytest.approx(0.5)
+    assert shares.loc["01001", "share_chars_government"] == pytest.approx(0.5)
+    assert shares.loc["01001", "share_chars_other"] == pytest.approx(0.0)
+
+
+def test_other_is_not_the_largest_bucket_in_the_real_corpus(sections_frame: pd.DataFrame) -> None:
+    """Splitting geography and government out of `other` is the point of doing it."""
+    corpus_share = structure.bucket_share_features(sections_frame).mean()
+
+    assert corpus_share["share_chars_other"] < corpus_share.drop("share_chars_other").max()
