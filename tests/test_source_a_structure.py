@@ -1,6 +1,8 @@
 """Structural features derived from Wikipedia section titles and lengths."""
 from __future__ import annotations
 
+import pathlib
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -244,3 +246,58 @@ def test_a_county_with_no_characters_still_sums_to_one() -> None:
 
     assert shares.loc["01001"].sum() == pytest.approx(1.0)
     assert shares.loc["01001", "share_chars_other"] == pytest.approx(1.0)
+
+
+def test_every_county_appears_exactly_once(sections_frame: pd.DataFrame) -> None:
+    features, _ = structure.build_structure_features(sections_frame)
+
+    assert len(features) == sections_frame["fips_code"].nunique()
+    assert features["fips_code"].is_unique
+    assert set(features["fips_code"]) == set(sections_frame["fips_code"])
+
+
+def test_feature_columns_are_numeric_and_finite(sections_frame: pd.DataFrame) -> None:
+    features, _ = structure.build_structure_features(sections_frame)
+    block = features[structure.structure_feature_columns(features)]
+
+    assert (block.dtypes == "float64").all()
+    assert np.isfinite(block.to_numpy()).all(), "imputation must not be papering over NaNs here"
+
+
+def test_the_block_carries_counts_lengths_flags_and_shares(sections_frame: pd.DataFrame) -> None:
+    features, vocabulary = structure.build_structure_features(sections_frame)
+    columns = set(features.columns)
+
+    assert {"n_body_sections", "n_id_gaps", "total_body_chars", "section_length_gini"} <= columns
+    assert f"{structure.TITLE_FLAG_PREFIX}demographics" in columns
+    assert all(f"{structure.BUCKET_SHARE_PREFIX}{key}" in columns for key in structure.BUCKET_KEYS)
+    assert len(vocabulary) > 10
+
+
+def test_no_section_text_survives_into_the_block(sections_frame: pd.DataFrame) -> None:
+    """The premise of the round: shape only, never content."""
+    features, _ = structure.build_structure_features(sections_frame)
+
+    assert "section_text" not in features.columns
+    non_numeric = set(features.dtypes[features.dtypes == "object"].index)
+    assert non_numeric == {"fips_code"}, f"unexpected text column(s): {non_numeric}"
+
+
+def test_structure_parquet_cannot_reach_the_pillar_matrix() -> None:
+    """A structural block that leaked into the matrix would predict itself."""
+    import pillar_matrix
+
+    source = pathlib.Path(pillar_matrix.__file__).read_text()
+
+    assert "source_a_structure_features" not in source
+
+
+def test_summary_records_the_vocabulary_it_chose(sections_frame: pd.DataFrame) -> None:
+    features, vocabulary = structure.build_structure_features(sections_frame)
+
+    stats = structure.summarize(features, vocabulary)
+
+    assert stats["n_counties"] == len(features)
+    assert stats["title_flag_vocabulary"] == vocabulary
+    assert stats["title_flag_min_share"] == structure.TITLE_FLAG_MIN_SHARE
+    assert stats["stub_char_threshold"] == structure.STUB_CHAR_THRESHOLD

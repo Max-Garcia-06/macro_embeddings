@@ -335,3 +335,111 @@ def bucket_share_features(sections: pd.DataFrame) -> pd.DataFrame:
     shares.columns = [f"{BUCKET_SHARE_PREFIX}{key}" for key in shares.columns]
     shares.index.name = "fips_code"
     return shares
+
+
+def structure_feature_columns(features: pd.DataFrame) -> list[str]:
+    """List the scored columns of an assembled structural block.
+
+    Args:
+        features: Output of `build_structure_features`.
+
+    Returns:
+        Every column except the `fips_code` key.
+    """
+    return [column for column in features.columns if column != "fips_code"]
+
+
+def build_structure_features(sections: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
+    """Assemble the full structural block for every county.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        Tuple of (features, vocabulary). `features` has `fips_code` as a column
+        and every feature as float64; `vocabulary` is the title set the flags
+        were built from, which the caller records so a shifting corpus is
+        auditable.
+    """
+    vocabulary = flag_vocabulary(sections)
+    parts = [
+        count_features(sections),
+        length_features(sections),
+        title_flag_features(sections, vocabulary),
+        bucket_share_features(sections),
+    ]
+    features = pd.concat(parts, axis=1).astype("float64")
+    features.index.name = "fips_code"
+    result = features.reset_index()
+    # pandas 3's default string dtype is "str", not "object" -- cast explicitly
+    # so the one text column reads as a plain object column, matching every
+    # other identifier column in this codebase's parquet outputs.
+    result["fips_code"] = result["fips_code"].astype("object")
+    return result, vocabulary
+
+
+def summarize(features: pd.DataFrame, vocabulary: list[str]) -> dict[str, object]:
+    """Describe the block for the notebook and for later auditing.
+
+    Args:
+        features: Output of `build_structure_features`.
+        vocabulary: Title set the flags were built from.
+
+    Returns:
+        Counts, the chosen vocabulary and thresholds, and per-column summary
+        statistics keyed by column name.
+    """
+    columns = structure_feature_columns(features)
+    block = features[columns]
+    return {
+        "n_counties": int(len(features)),
+        "n_features": len(columns),
+        "title_flag_vocabulary": vocabulary,
+        "title_flag_min_share": TITLE_FLAG_MIN_SHARE,
+        "stub_char_threshold": STUB_CHAR_THRESHOLD,
+        "bucket_keys": list(BUCKET_KEYS),
+        "mean_bucket_share": {
+            f"{BUCKET_SHARE_PREFIX}{key}": float(block[f"{BUCKET_SHARE_PREFIX}{key}"].mean())
+            for key in BUCKET_KEYS
+        },
+        "column_summary": {
+            column: {
+                "mean": float(block[column].mean()),
+                "sd": float(block[column].std()),
+                "min": float(block[column].min()),
+                "max": float(block[column].max()),
+            }
+            for column in columns
+        },
+    }
+
+
+def main() -> None:
+    """Build the structural block from the section parquet and write it out."""
+    configure_logging()
+
+    try:
+        sections = pd.read_parquet(SECTIONS_PARQUET_PATH)
+    except FileNotFoundError:
+        logger.error("Need %s -- run ingest_source_a.py first.", SECTIONS_PARQUET_PATH)
+        raise
+
+    features, vocabulary = build_structure_features(sections)
+    stats = summarize(features, vocabulary)
+
+    ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
+    features.to_parquet(STRUCTURE_FEATURES_PATH, index=False)
+    STRUCTURE_FEATURE_STATS_PATH.write_text(json.dumps(stats, indent=2))
+
+    logger.info(
+        "wrote %d structural features for %d counties to %s",
+        stats["n_features"],
+        stats["n_counties"],
+        STRUCTURE_FEATURES_PATH,
+    )
+    logger.info("title flags: %d titles above %.0f%% of counties", len(vocabulary), TITLE_FLAG_MIN_SHARE * 100)
+    logger.info("wrote %s", STRUCTURE_FEATURE_STATS_PATH)
+
+
+if __name__ == "__main__":
+    main()
