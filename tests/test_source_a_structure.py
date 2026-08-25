@@ -92,3 +92,72 @@ def test_gini_rises_when_one_section_dominates() -> None:
 
     assert lopsided > even
     assert lopsided < 1.0
+
+
+def test_vocabulary_keeps_titles_above_the_share_floor() -> None:
+    """Four counties: 'geography' is in three, 'quirk' in one. The floor is 5%."""
+    rows = [(f"0100{i}", 1, "Geography", "x") for i in range(1, 4)]
+    rows.append(("01004", 1, "Quirk", "x"))
+    rows.append(("01004", 2, "Geography", "x"))
+
+    vocabulary = structure.flag_vocabulary(make_sections(rows))
+
+    assert "geography" in vocabulary
+    assert "quirk" in vocabulary  # 1 of 4 counties = 25%, above the floor
+
+
+def test_vocabulary_drops_a_title_below_the_share_floor() -> None:
+    rows = [(f"{i:05d}", 1, "Geography", "x") for i in range(1, 41)]
+    rows.append(("00007", 2, "One Off", "x"))  # 1 of 40 counties = 2.5%
+
+    vocabulary = structure.flag_vocabulary(make_sections(rows))
+
+    assert "geography" in vocabulary
+    assert "one off" not in vocabulary
+
+
+def test_vocabulary_is_derived_not_hardcoded() -> None:
+    """A corpus with a different title distribution produces different flags."""
+    rows = [(f"0100{i}", 1, "Volcanology", "x") for i in range(1, 5)]
+
+    assert structure.flag_vocabulary(make_sections(rows)) == ["volcanology"]
+
+
+def test_vocabulary_is_ordered_by_county_count() -> None:
+    rows = [(f"0100{i}", 1, "Geography", "x") for i in range(1, 5)]
+    rows += [(f"0100{i}", 2, "Economy", "x") for i in range(1, 3)]
+
+    assert structure.flag_vocabulary(make_sections(rows)) == ["geography", "economy"]
+
+
+def test_untitled_sections_do_not_enter_the_vocabulary() -> None:
+    rows = [(f"0100{i}", 1, "   ", "x") for i in range(1, 5)]
+
+    assert structure.flag_vocabulary(make_sections(rows)) == []
+
+
+def test_slugify_produces_a_valid_column_name() -> None:
+    assert structure.slugify("2020 census") == "2020_census"
+    assert structure.slugify("law and government") == "law_and_government"
+    assert structure.slugify("census-designated places") == "census_designated_places"
+
+
+def test_slugify_survives_a_title_with_no_usable_characters() -> None:
+    """2,009 sections are untitled; slugification must not produce an empty column name."""
+    assert structure.slugify("") == "untitled"
+    assert structure.slugify("---") == "untitled"
+
+
+def test_flags_are_binary_per_county() -> None:
+    rows = [
+        ("01001", 1, "Geography", "x"),
+        ("01001", 2, "Geography", "x"),  # twice in one county is still one flag
+        ("01002", 1, "Economy", "x"),
+    ]
+
+    flags = structure.title_flag_features(make_sections(rows), ["geography", "economy"])
+
+    assert flags.loc["01001", "has_section_geography"] == 1.0
+    assert flags.loc["01001", "has_section_economy"] == 0.0
+    assert flags.loc["01002", "has_section_geography"] == 0.0
+    assert set(flags["has_section_geography"].unique()) <= {0.0, 1.0}

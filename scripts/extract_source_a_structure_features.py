@@ -157,3 +157,75 @@ def length_features(sections: pd.DataFrame) -> pd.DataFrame:
     lengths["share_stub_sections"] = lengths["n_stub_sections"] / grouped.size()
     lengths.index.name = "fips_code"
     return lengths
+
+
+# A title earns a flag when it appears in more than this share of counties.
+# 5% of 3,144 counties is a ~157-county floor, which keeps the head of the
+# distribution -- `demographics` at 3,142 counties down through the mid-tail --
+# and drops the one-off titles that are really county names in disguise.
+TITLE_FLAG_MIN_SHARE: float = 0.05
+
+# Prefix marking a column as "this section title was present", so a consumer can
+# tell these apart from the shipped lexicon flags (`has_university`,
+# `has_economy_section`) that describe what the text says.
+TITLE_FLAG_PREFIX: str = "has_section_"
+
+
+def slugify(title: str) -> str:
+    """Convert a section title into a valid, stable column suffix.
+
+    Args:
+        title: Normalized section title.
+
+    Returns:
+        Lowercase alphanumeric-and-underscore slug, or `"untitled"` when the
+        title has no usable characters.
+    """
+    slug = re.sub(r"[^a-z0-9]+", "_", title.lower()).strip("_")
+    return slug or "untitled"
+
+
+def flag_vocabulary(sections: pd.DataFrame) -> list[str]:
+    """Choose which section titles are common enough to flag.
+
+    Computed from the corpus rather than hardcoded, so the vocabulary moves when
+    the corpus does. The chosen set is written to the stats file, which is what
+    makes a shifting vocabulary auditable instead of silent.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        Normalized titles held by more than `TITLE_FLAG_MIN_SHARE` of counties,
+        most common first. Untitled sections are excluded -- their count is
+        already carried by `n_untitled_sections`.
+    """
+    titles = normalize_titles(sections)
+    n_counties = int(sections["fips_code"].nunique())
+    titled = sections.assign(_title=titles).loc[titles != ""]
+    per_title = titled.groupby("_title")["fips_code"].nunique()
+    kept = per_title[per_title / n_counties > TITLE_FLAG_MIN_SHARE]
+    return list(kept.sort_values(ascending=False).index)
+
+
+def title_flag_features(sections: pd.DataFrame, vocabulary: list[str]) -> pd.DataFrame:
+    """Flag which of the common section titles each county's article carries.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+        vocabulary: Normalized titles to flag, from `flag_vocabulary`.
+
+    Returns:
+        DataFrame indexed by `fips_code`, one float64 0.0/1.0 column per title.
+        A title appearing twice in one article is still one flag: this asks
+        which structures are present, not how many times.
+    """
+    titles = normalize_titles(sections)
+    frame = sections[["fips_code"]].assign(_title=titles)
+    index = pd.Index(sorted(sections["fips_code"].unique()), name="fips_code")
+
+    flags = pd.DataFrame(index=index)
+    for title in vocabulary:
+        holders = frame.loc[frame["_title"] == title, "fips_code"].unique()
+        flags[f"{TITLE_FLAG_PREFIX}{slugify(title)}"] = index.isin(holders).astype("float64")
+    return flags
