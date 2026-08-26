@@ -75,7 +75,11 @@ round made the stronger one. Part three carries a null-control arm built from
 nothing but curves on the baseline's own columns, which is what makes the
 difference measurable rather than arguable.
 
-Everything below is computed from committed artifacts. Nothing is typed in.
+Every figure below is computed from committed artifacts. Nothing is typed in —
+including the flexible-size-control results, which used to be quoted from the
+branch review and are now a second baseline the sweep emits. The one number
+quoted from outside the artifacts is the `r = 0.550` above, which is prior-round
+history rather than a result of this one.
 """)
 
 code("""
@@ -382,10 +386,14 @@ print(f"{scoring_stats['n_targets']} targets | "
 print(f"\\nNULL CONTROL '{null_key}' carries zero information the baseline lacks, and scores "
       f"{null_arm['mean_lift']:+.5f} on {null_arm['n_wins']}/{scoring_stats['n_targets']} targets "
       f"(p={null_arm['wilcoxon_p']:.2g}).")
-print(f"The structural arm's {structure_arm['mean_lift']:+.5f} is "
-      f"{scoring_stats['structure_lift_in_null_arm_units']:.2f}x that — "
-      f"{1 / scoring_stats['structure_lift_in_null_arm_units']:.1f} times SMALLER than an "
-      f"information-free reshaping of the controls.")
+ratio = scoring_stats["structure_lift_in_null_arm_units"]
+if ratio:
+    print(f"The structural arm's {structure_arm['mean_lift']:+.5f} is {ratio:.2f}x that — "
+          f"{1 / ratio:.1f} times SMALLER than an information-free reshaping of the controls.")
+else:
+    print(f"The structural arm scores {structure_arm['mean_lift']:+.5f}; the null arm scores "
+          f"{null_arm['mean_lift']:+.5f}, too close to zero to express one as a multiple of "
+          f"the other.")
 print("So a positive lift here means 'beyond a LINEAR-in-logs size model'. It does not mean "
       "'beyond county size'.")
 """)
@@ -457,59 +465,157 @@ print(f"\\nOn {len(beaten)} of {len(scores)} targets the information-free null b
 md("""
 ### What survives, and what does not
 
-The structural arm's +0.0027 is real in the sense that it is not noise — the
-Wilcoxon test on 21/28 wins is not a fluke, and the branch review measured 64
-columns of pure Gaussian noise through these same protocol helpers at +0.00008,
-12/28, p=0.938. It is *not* real in the sense the round originally claimed.
-Three things follow, and they should be read together. Every number in points 2
-and 3 comes from the branch review rather than from the cells above, and is
-recorded with its provenance in
-`analysis-output/source-a/source-a-findings.md` §23:
+The structural arm's lift is not noise — its Wilcoxon test, printed with the
+arms table above, is not a fluke. It is *not* real in the sense the round
+originally claimed. Three things follow, and they have to be read together.
 
 1. **Lift here is measured against a linear-in-logs size model, not against
    county size.** The null-control arm above settles that: an information-free
    reshaping of the baseline's own three columns scores several times the
-   structural block. Curvature in the relationship between an article's shape and
-   a county's size clears this bar without carrying any content.
-2. **Under a flexible size control the structural lift drops to roughly a
-   quarter of its headline.** Re-scored with the same quadratic, cubic and
-   interaction terms folded into the baseline — residualized against the linear
-   size columns and whitened, so they add no information and leave mean baseline
-   R² essentially unchanged at 0.2612 → 0.2607 — `structure` falls from +0.00269
-   to +0.00073 (20/28, p=0.0281) and `typed` from +0.00307 to +0.00161 (18/28,
-   p=0.0110). **The fusion comparison does not survive at all**:
-   `typed_plus_structure` over `typed` goes from +0.00184 (p=0.0118) to +0.00095
-   at p=0.1315.
-3. **What survives is narrow and concentrated, and is still a finding.** The
-   collapse lands hardest on exactly the targets that carried the headline:
-   Retail Trade LQ +0.01031 → +0.00089 (−91%), Agriculture +0.00467 → +0.00008,
-   Information +0.00366 → +0.00005, Wholesale +0.00325 → −0.00040. Accommodation
-   & Food Services LQ is the exception, retaining +0.01455 of its +0.02546. A
-   county's article shape carrying real signal about its accommodation-and-food
-   location quotient, net of a flexible size model, is a publishable result. "The
-   shape of an article knows things county size does not" is not.
+   structural block. Curvature in the relationship between an article's shape
+   and a county's size clears this bar while carrying no content at all.
+2. **So the honest test is a size control that knows the *shape* of the size
+   relationship, not just its level.** The sweep now runs one: the same nine
+   nonlinear terms, residualized against the three linear size columns and
+   SVD-whitened, appended to the baseline design rather than scored as an arm.
+   It is a second *baseline*, not a fifth arm — an arm competes with the
+   controls, an augmentation joins them, and only the second can answer "how
+   much of this lift was functional form?" Being information-free, it barely
+   moves mean baseline R². Every arm is scored against both.
+3. **The null arm is what proves the augmentation works.** `size_nonlinear`
+   scores several times the structural block against the linear baseline and
+   essentially zero against the flexible one — the cell below prints both. The
+   flexible baseline absorbs the null arm exactly, which is what it must do if
+   that lift was curvature and nothing else.
 
-Dropping the six flagged size-proxy columns and rescoring the remaining 58 still
-gives +0.00254 (21/28, p=0.0014), so the result is not carried by the obvious
-size proxies. It is carried by the curved ones — which is precisely why the
-linear audit in Part two could not have caught it, and why that audit now
-carries `size_r2`.
+Two further controls — 64 columns of Gaussian noise in the arm slot, and a
+rescore of the block with the six flagged size-proxy columns dropped — were run
+during the branch review and have no artifact in this repository. They are
+recorded with their numbers and their provenance in
+`analysis-output/source-a/source-a-findings.md` §23.3 and §23.4, and are
+deliberately not quoted here: every figure on this page comes from a committed
+artifact, and these two would be the exceptions.
+""")
+
+code("""
+flex, flex_ok = scoring_stats["arms_flexible"], scoring_stats["arms_flexible_undegraded"]
+retention = scoring_stats["flexible_retention"]
+
+print(f"FLEXIBLE BASELINE: {scoring_stats['n_flexible_directions']} whitened curvature directions, "
+      f"carrying no information. Mean baseline R² {scoring_stats['mean_r2_baseline']:.4f} → "
+      f"{scoring_stats['mean_r2_baseline_flexible']:.4f} — it buys the controls almost nothing, "
+      f"which is the point.\\n")
+
+comparison = pd.DataFrame({
+    "as shipped (linear baseline)": {
+        k: f"{v['mean_paired_difference']:+.5f}, {v['n_wins']}/{v['n_targets']}, p={v['wilcoxon_p']:.4f}"
+        for k, v in scoring_stats["arms"].items()},
+    "+ flexible size": {
+        k: f"{v['mean_paired_difference']:+.5f}, {v['n_wins']}/{v['n_targets']}, p={v['wilcoxon_p']:.4f}"
+        for k, v in flex.items()},
+    "retained": {k: ("—" if v is None else f"{v:.0%}") for k, v in retention.items()},
+    "vs": {k: v["compared_against"] for k, v in scoring_stats["arms"].items()},
+})
+display(comparison)
+
+for key in ("structure", "typed"):
+    print(f"{key}: {scoring_stats['arms'][key]['mean_paired_difference']:+.5f} → "
+          f"{flex[key]['mean_paired_difference']:+.5f} "
+          f"({flex[key]['n_wins']}/{flex[key]['n_targets']}, p={flex[key]['wilcoxon_p']:.4f}), "
+          f"retaining {retention[key]:.0%}.")
+
+fusion = flex["typed_plus_structure"]
+verdict = "does NOT survive" if fusion["wilcoxon_p"] > 0.05 else "survives"
+print(f"\\nFUSION — typed_plus_structure over typed — {verdict} the flexible control: "
+      f"{scoring_stats['arms']['typed_plus_structure']['mean_paired_difference']:+.5f} "
+      f"(p={scoring_stats['arms']['typed_plus_structure']['wilcoxon_p']:.4f}) → "
+      f"{fusion['mean_paired_difference']:+.5f} (p={fusion['wilcoxon_p']:.4f}).")
+print("That was the one comparison that could have argued for shipping these columns.")
+
+null_flex = flex[null_key]
+print(f"\\nAND THE NULL ARM VALIDATES THE AUGMENTATION: {null_key} scores "
+      f"{null_arm['mean_lift']:+.5f} against the linear baseline and "
+      f"{null_flex['mean_lift']:+.5f} (p={null_flex['wilcoxon_p']:.4f}) against the flexible one. "
+      f"The augmentation absorbs it exactly.")
+""")
+
+md("""
+#### Why the same nine terms are worth a large lift as an arm and ~nothing as a baseline
+
+These two facts look contradictory and are not. As an *arm* the terms are fitted
+to the baseline's residuals by a ridge whose penalty is chosen by nested
+crossvalidation, which extracts the little signal they carry efficiently. As a
+*baseline augmentation* they enter an unpenalized OLS fit alongside three size
+columns they are nearly collinear with, where the same nine directions are
+estimated noisily and mostly overfitted away — which is why mean baseline R²
+barely moves, and why the augmentation degrades some targets outright. Both
+readings are correct, and together they are the strongest evidence in this round
+that the null arm's lift is curvature: only a curvature-shaped control can
+absorb it.
+""")
+
+code("""
+degraded = scoring_stats["flexible_degraded_targets"]
+print(f"The flexible baseline degrades on {scoring_stats['n_targets_flexible_degraded']} of "
+      f"{scoring_stats['n_targets']} targets from that OLS instability: {', '.join(degraded)}.")
+print(f"On those targets a 'lift over the baseline' is measured against a goalpost that moved, "
+      f"so the {scoring_stats['n_targets_flexible_undegraded']} undegraded targets are reported "
+      f"beside the full basket rather than instead of it:\\n")
+
+restricted = pd.DataFrame({
+    "all targets": {k: f"{v['mean_paired_difference']:+.5f}, {v['n_wins']}/{v['n_targets']}, "
+                       f"p={v['wilcoxon_p']:.4f}" for k, v in flex.items()},
+    "undegraded only": {k: f"{v['mean_paired_difference']:+.5f}, {v['n_wins']}/{v['n_targets']}, "
+                           f"p={v['wilcoxon_p']:.4f}" for k, v in flex_ok.items()},
+})
+display(restricted)
+
+worse = [k for k in flex if flex_ok[k]["wilcoxon_p"] > 0.05 >= flex[k]["wilcoxon_p"]]
+if worse:
+    print(f"Restricting to the undegraded targets costs significance for: {', '.join(worse)}. "
+          f"The restricted reading is the more conservative one and is not the headline only "
+          f"because it discards six targets on a criterion the baseline, not the arm, failed.")
+""")
+
+md("""
+#### Where the surviving lift lives
+
+The collapse is not uniform. It lands hardest on the targets that carried the
+headline, and one target holds most of its value — which is the publishable
+result this round actually produces.
+""")
+
+code("""
+survival = scores[["label", "lift_structure", "lift_structure_flexbase"]].copy()
+survival["retained"] = survival["lift_structure_flexbase"] / survival["lift_structure"]
+survival = survival[survival["lift_structure"] > 0.001].sort_values(
+    "lift_structure", ascending=False)
+display(survival.set_index("label").round(5))
+
+best = survival.iloc[0]
+print(f"{best['label']} retains {best['lift_structure_flexbase']:+.5f} of "
+      f"{best['lift_structure']:+.5f} ({best['retained']:.0%}) — far more than any other target, "
+      f"and more than the whole-basket retention of {retention['structure']:.0%}.")
+print(f"A county's article shape carrying real signal about its accommodation-and-food location "
+      f"quotient, net of a flexible size model, is a publishable result.")
+print(f'"The shape of an article knows things county size does not" is not.')
 """)
 
 md("""
 ## What this round does and does not settle
 
 - It does not propose shipping these columns. `typed_plus_structure` beats
-  `typed` by +0.00184 as scored here, but that comparison does not survive a
-  flexible size control (p=0.1315), so there is no fusion case to make.
+  `typed` against the linear baseline, but that comparison does not survive the
+  flexible size control — see the fusion line printed above — so there is no
+  fusion case to make.
 - It reads no section text. Any lexicon question belongs to the section-scope
   round, which already exists.
 - It does not revisit the `n_body_sections` cut on its own authority. Nothing
   above argues for reopening it; the audit's nonlinear diagnostic argues the
   other way.
 - The open question it leaves is Accommodation & Food Services: the one target
-  where article shape retains most of its lift under a flexible size control, and
-  the one worth a round of its own.
+  where article shape retains most of its lift under the flexible size control,
+  and the one worth a round of its own.
 """)
 
 
