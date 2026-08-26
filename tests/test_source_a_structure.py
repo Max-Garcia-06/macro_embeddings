@@ -305,20 +305,75 @@ def test_summary_records_the_vocabulary_it_chose(sections_frame: pd.DataFrame) -
     assert stats["stub_char_threshold"] == structure.STUB_CHAR_THRESHOLD
 
 
-def test_three_scored_arms_are_declared() -> None:
-    """The fourth arm is the baseline, which is the comparison rather than a block."""
+def test_four_scored_arms_are_declared() -> None:
+    """The unlisted fifth arm is the baseline, which is the comparison rather than a block."""
     import analyze_source_a_structure as scoring
 
     assert [arm.key for arm in scoring.ARMS] == [
         "structure",
         "typed",
         "typed_plus_structure",
+        "size_nonlinear",
     ]
 
 
-def test_typed_block_is_the_shipped_29_columns() -> None:
+def test_the_null_arm_is_labelled_as_a_null_control() -> None:
+    """A reader skimming the arms table must not mistake the calibration arm for a finding."""
     import analyze_source_a_structure as scoring
 
+    null_arm = next(arm for arm in scoring.ARMS if arm.key == "size_nonlinear")
+
+    assert null_arm.against is None
+    assert "null control" in null_arm.label.lower()
+
+
+def test_null_block_is_built_only_from_the_baseline_size_columns() -> None:
+    """It must add no information: every column is a function of the three size columns."""
+    import analyze_source_a_structure as scoring
+    from pillar_matrix import SIZE_FEATURES
+
+    frame = pd.DataFrame(
+        {
+            "fips_code": ["01001", "01003"],
+            "log_population": [10.0, 11.0],
+            "log_agi": [13.0, 14.0],
+            "log_gdp_latest": [15.0, 16.0],
+            "irrelevant": [999.0, -999.0],
+        }
+    )
+
+    block = scoring.size_nonlinear_block(frame)
+
+    # Three squares, three cubes, three pairwise products.
+    assert len(block.columns) == 9
+    assert block.loc[0, "log_population_sq"] == pytest.approx(100.0)
+    assert block.loc[1, "log_agi_cube"] == pytest.approx(14.0**3)
+    assert block.loc[0, "log_population_x_log_gdp_latest"] == pytest.approx(150.0)
+    assert all(
+        any(size in column for size in SIZE_FEATURES) for column in block.columns
+    ), "every null column must be named for the size columns it came from"
+
+
+def test_null_block_columns_never_collide_with_the_matrix() -> None:
+    """The null block is concatenated beside real columns; a collision would score the wrong thing."""
+    import analyze_source_a_structure as scoring
+    from pillar_matrix import build_matrix
+
+    matrix, _ = build_matrix()
+
+    block = scoring.size_nonlinear_block(matrix)
+
+    assert not set(block.columns) & set(matrix.columns)
+
+
+def test_typed_block_is_the_shipped_29_columns() -> None:
+    """Set equality, not width: two blocks of 29 different columns would pass a length check."""
+    import analyze_source_a_structure as scoring
+    from pillar_matrix import build_matrix
+
+    _, blocks = build_matrix()
+
+    assert set(scoring.typed_columns()) == set(blocks["A"])
     assert len(scoring.typed_columns()) == 29
 
 
@@ -345,9 +400,76 @@ def test_structure_columns_do_not_collide_with_matrix_columns() -> None:
     assert not set(columns) & set(matrix.columns)
 
 
+def test_attach_structure_rejects_a_duplicated_county(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A duplicated fips_code would put copies of one county in both train and test folds."""
+    import analyze_source_a_structure as scoring
+
+    matrix = pd.DataFrame({"fips_code": ["01001", "01003"], "log_population": [10.0, 11.0]})
+    duplicated = pd.DataFrame(
+        {"fips_code": ["01001", "01001", "01003"], "n_body_sections": [10.0, 10.0, 12.0]}
+    )
+    monkeypatch.setattr(scoring.pd, "read_parquet", lambda _path: duplicated)
+
+    with pytest.raises(ValueError, match="one row per county"):
+        scoring.attach_structure(matrix)
+
+
+def test_attach_structure_keeps_every_matrix_row_on_a_clean_merge(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The guard must not fire on the frame it is meant to allow."""
+    import analyze_source_a_structure as scoring
+
+    matrix = pd.DataFrame({"fips_code": ["01001", "01003"], "log_population": [10.0, 11.0]})
+    clean = pd.DataFrame({"fips_code": ["01001", "01003"], "n_body_sections": [10.0, 12.0]})
+    monkeypatch.setattr(scoring.pd, "read_parquet", lambda _path: clean)
+
+    attached, columns = scoring.attach_structure(matrix)
+
+    assert len(attached) == 2
+    assert columns == ["n_body_sections"]
+
+
 def test_arms_share_folds_and_rows() -> None:
     """Paired comparison is the headline statistic; unpaired folds would void it."""
+    from sklearn.model_selection import KFold
+
     import analyze_source_a_structure as scoring
 
     assert scoring.N_FOLDS == 5
     assert scoring.RANDOM_SEED == 42
+
+    # Shared folds: the splitter is deterministic, so every arm's loop over it
+    # sees byte-identical train/test indices.
+    design = np.zeros((200, 3))
+    splits = [
+        [
+            (train.tolist(), test.tolist())
+            for train, test in KFold(
+                n_splits=scoring.N_FOLDS, shuffle=True, random_state=scoring.RANDOM_SEED
+            ).split(design)
+        ]
+        for _ in range(2)
+    ]
+    assert splits[0] == splits[1]
+    assert len(splits[0]) == scoring.N_FOLDS
+
+    # Shared rows: every arm's block is built from the same row mask, so the
+    # per-target differences are paired rather than computed on different panels.
+    matrix = pd.DataFrame(
+        {
+            "fips_code": ["01001", "01003", "01005", "01007"],
+            "log_population": [10.0, 11.0, 12.0, 13.0],
+            "log_agi": [13.0, 14.0, 15.0, 16.0],
+            "log_gdp_latest": [15.0, 16.0, 17.0, 18.0],
+            "n_body_sections": [10.0, 12.0, 14.0, 16.0],
+        }
+    )
+    for column in scoring.typed_columns():
+        matrix[column] = 1.0
+    rows = np.array([True, True, False, True])
+
+    blocks = scoring.build_arm_blocks(matrix, ["n_body_sections"], rows)
+
+    assert {arm.key for arm in scoring.ARMS} == set(blocks)
+    assert {block.shape[0] for block in blocks.values()} == {int(rows.sum())}

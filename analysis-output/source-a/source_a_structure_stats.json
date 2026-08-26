@@ -2,7 +2,10 @@
   "n_targets": 28,
   "n_structure_features": 64,
   "n_typed_features": 29,
+  "n_size_nonlinear_features": 9,
   "mean_r2_baseline": 0.2612273780582838,
+  "null_arm_key": "size_nonlinear",
+  "structure_lift_in_null_arm_units": 0.15368073393777615,
   "arms": {
     "structure": {
       "label": "structural block (shape only)",
@@ -33,6 +36,16 @@
       "n_wins": 20,
       "wilcoxon_statistic": 94.0,
       "wilcoxon_p": 0.011838570237159729
+    },
+    "size_nonlinear": {
+      "label": "NULL CONTROL: nonlinear transforms of the baseline's own size columns",
+      "compared_against": "baseline",
+      "mean_lift": 0.01747840121926596,
+      "median_lift": 0.005520629287992629,
+      "mean_paired_difference": 0.01747840121926596,
+      "n_wins": 26,
+      "wilcoxon_statistic": 16.0,
+      "wilcoxon_p": 1.259148120880127e-06
     }
   },
   "by_pillar": [
@@ -41,35 +54,40 @@
       "n_targets": 20,
       "structure": 0.0031389541937563935,
       "typed": 0.002444640049755814,
-      "typed_plus_structure": 0.004973595986773549
+      "typed_plus_structure": 0.004973595986773549,
+      "size_nonlinear": 0.020098277513530854
     },
     {
       "pillar": "C",
       "n_targets": 3,
       "structure": 0.0013048229145590968,
       "typed": 0.001804247103838678,
-      "typed_plus_structure": 0.0029798992999291083
+      "typed_plus_structure": 0.0029798992999291083,
+      "size_nonlinear": 0.0017661003792368939
     },
     {
       "pillar": "D",
       "n_targets": 3,
       "structure": 3.6489276001120765e-06,
       "typed": 0.0015296615115516128,
-      "typed_plus_structure": 0.0007880228099625594
+      "typed_plus_structure": 0.0007880228099625594,
+      "size_nonlinear": 0.02106724948937481
     },
     {
       "pillar": "E",
       "n_targets": 1,
       "structure": 0.0017930206418097505,
       "typed": 0.005295595842387146,
-      "typed_plus_structure": 0.004473431949178486
+      "typed_plus_structure": 0.004473431949178486,
+      "size_nonlinear": 5.925599263045811e-06
     },
     {
       "pillar": "F",
       "n_targets": 1,
       "structure": 0.006713098724784761,
       "typed": 0.021816960040274447,
-      "typed_plus_structure": 0.022166321804471867
+      "typed_plus_structure": 0.022166321804471867,
+      "size_nonlinear": 0.01892370866373161
     }
   ]
 }
