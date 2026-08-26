@@ -335,3 +335,54 @@ def test_summary_records_the_sets_it_derived(sections_frame: pd.DataFrame) -> No
     assert stats["modal_title_min_share"] == shape.MODAL_TITLE_MIN_SHARE
     assert stats["unusual_title_max_share"] == shape.UNUSUAL_TITLE_MAX_SHARE
     assert len(stats["modal_title_set"]) > 0
+
+
+def test_five_arms_are_declared() -> None:
+    import analyze_source_a_shape_profile as scoring
+
+    assert [arm.key for arm in scoring.SHAPE_ARMS] == [
+        "shape_v1",
+        "shape_v2",
+        "typed",
+        "typed_plus_shape_v2",
+        "size_nonlinear",
+    ]
+
+
+def test_shape_v2_strictly_contains_shape_v1() -> None:
+    """v2 is v1 plus the new families; if it were not, the comparison is meaningless."""
+    import analyze_source_a_shape_profile as scoring
+    from pillar_matrix import build_matrix
+
+    matrix, _ = build_matrix()
+    matrix, v1_cols, profile_cols = scoring.attach_blocks(matrix)
+    rows = np.ones(len(matrix), dtype=bool)
+
+    blocks = scoring.build_arm_blocks(matrix, v1_cols, profile_cols, rows)
+
+    assert blocks["shape_v1"].shape[1] == len(v1_cols)
+    assert blocks["shape_v2"].shape[1] == len(v1_cols) + len(profile_cols)
+
+
+def test_both_blocks_attach_without_collision() -> None:
+    import analyze_source_a_shape_profile as scoring
+    from pillar_matrix import build_matrix
+
+    matrix, _ = build_matrix()
+    attached, v1_cols, profile_cols = scoring.attach_blocks(matrix)
+
+    assert len(attached) == len(matrix)
+    assert not set(v1_cols) & set(profile_cols)
+    assert attached[v1_cols + profile_cols].notna().all().all()
+
+
+def test_every_arm_carries_all_three_framings() -> None:
+    """A row missing a framing is how round one's number got quoted wrong."""
+    import analyze_source_a_shape_profile as scoring
+
+    record = scoring.empty_record_keys()
+
+    for arm in scoring.SHAPE_ARMS:
+        assert f"r2_alone_{arm.key}" in record
+        assert f"lift_{arm.key}" in record
+        assert f"lift_{arm.key}{scoring.FLEXIBLE_SUFFIX}" in record
