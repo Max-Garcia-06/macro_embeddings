@@ -163,3 +163,110 @@ def position_features(sections: pd.DataFrame, vocabulary: list[str]) -> pd.DataF
         flagged.groupby("fips_code")["_position"].std().reindex(index).fillna(0.0)
     )
     return features
+
+
+# A title is part of the house skeleton if more than half of counties carry it.
+# Half is the natural cut for "modal": below it, the set stops describing what a
+# typical county article looks like and starts describing a large minority.
+MODAL_TITLE_MIN_SHARE: float = 0.5
+
+# A title held by under 1% of counties is unusual -- roughly 31 counties. Set
+# well below round one's 5% flag floor on purpose: this measures the tail that
+# floor excludes, so the two cuts describe different populations rather than
+# two views of the same one.
+UNUSUAL_TITLE_MAX_SHARE: float = 0.01
+
+
+def title_county_shares(sections: pd.DataFrame) -> pd.Series:
+    """Share of counties holding each section title.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        Share per normalized title, indexed by title. Untitled sections are
+        excluded -- round one's `n_untitled_sections` already counts them.
+    """
+    titles = normalize_titles(sections)
+    n_counties = int(sections["fips_code"].nunique())
+    titled = sections.assign(_title=titles).loc[titles != ""]
+    return titled.groupby("_title")["fips_code"].nunique() / n_counties
+
+
+def modal_title_set(sections: pd.DataFrame) -> list[str]:
+    """The house skeleton: titles more than half of counties carry.
+
+    Computed from the corpus rather than hardcoded, and written to the stats
+    file, so a shifting skeleton is auditable rather than silent.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        Normalized titles above `MODAL_TITLE_MIN_SHARE`, most common first.
+    """
+    shares = title_county_shares(sections)
+    kept = shares[shares > MODAL_TITLE_MIN_SHARE]
+    return list(kept.sort_values(ascending=False).index)
+
+
+def template_features(sections: pd.DataFrame) -> pd.DataFrame:
+    """How far the county's article departs from the house skeleton.
+
+    Deviation from the template is editorial attention, which is a different
+    quantity from county size: a small county someone cared about carries
+    sections a large county's boilerplate article does not.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        DataFrame indexed by `fips_code` with `template_jaccard`,
+        `n_core_missing`, `n_unusual_sections`, `share_unusual_sections`,
+        `mean_title_rarity` and `n_title_words`.
+    """
+    titles = normalize_titles(sections)
+    shares = title_county_shares(sections)
+    modal = set(modal_title_set(sections))
+    unusual = set(shares[shares < UNUSUAL_TITLE_MAX_SHARE].index)
+
+    frame = sections.assign(_title=titles).loc[titles != ""]
+    index = pd.Index(sorted(sections["fips_code"].unique()), name="fips_code")
+    grouped = frame.groupby("fips_code")
+
+    held = grouped["_title"].apply(set).reindex(index)
+    held = held.where(held.notna(), other=pd.Series([set()] * len(index), index=index))
+
+    features = pd.DataFrame(index=index)
+    features["template_jaccard"] = [
+        len(county & modal) / len(county | modal) if county | modal else 1.0 for county in held
+    ]
+    features["n_core_missing"] = [float(len(modal - county)) for county in held]
+    features["n_unusual_sections"] = (
+        frame.assign(_unusual=frame["_title"].isin(unusual).astype("float64"))
+        .groupby("fips_code")["_unusual"]
+        .sum()
+        .reindex(index)
+        .fillna(0.0)
+    )
+    # Denominator is titled sections, matching the numerator: an untitled section
+    # cannot be unusual because it has no title to be rare.
+    n_titled = grouped.size().reindex(index).fillna(0.0)
+    features["share_unusual_sections"] = (
+        features["n_unusual_sections"] / n_titled.replace(0.0, np.nan)
+    ).fillna(0.0)
+    features["mean_title_rarity"] = (
+        frame.assign(_rarity=1.0 - frame["_title"].map(shares).astype("float64"))
+        .groupby("fips_code")["_rarity"]
+        .mean()
+        .reindex(index)
+        .fillna(0.0)
+    )
+    features["n_title_words"] = (
+        frame.assign(_words=frame["_title"].str.split().str.len().astype("float64"))
+        .groupby("fips_code")["_words"]
+        .mean()
+        .reindex(index)
+        .fillna(0.0)
+    )
+    return features

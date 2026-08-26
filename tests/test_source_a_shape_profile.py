@@ -99,3 +99,77 @@ def test_real_corpus_vocabulary_has_no_slugify_collisions(sections_frame: pd.Dat
     # If this passes, no collision in the real corpus; if it fails, the guard
     # correctly raises and we know about it.
     shape.position_features(sections_frame, vocabulary)
+
+
+def make_template_corpus() -> pd.DataFrame:
+    """Four counties. 'geography' and 'history' are modal; 'oddity' is not."""
+    rows = []
+    for i in range(1, 5):
+        rows.append((f"0100{i}", 1, "Geography", "x"))
+        rows.append((f"0100{i}", 2, "History", "x"))
+    rows.append(("01004", 3, "Oddity", "x"))
+    return make_sections(rows)
+
+
+def test_modal_set_is_the_titles_most_counties_hold() -> None:
+    modal = shape.modal_title_set(make_template_corpus())
+
+    assert set(modal) == {"geography", "history"}
+
+
+def test_modal_set_is_derived_not_hardcoded() -> None:
+    """A corpus with a different skeleton produces a different modal set."""
+    rows = [(f"0100{i}", 1, "Volcanology", "x") for i in range(1, 5)]
+
+    assert shape.modal_title_set(make_sections(rows)) == ["volcanology"]
+
+
+def test_jaccard_is_one_for_a_county_holding_exactly_the_modal_set() -> None:
+    features = shape.template_features(make_template_corpus())
+
+    assert features.loc["01001", "template_jaccard"] == pytest.approx(1.0)
+
+
+def test_jaccard_falls_when_a_county_adds_an_unusual_section() -> None:
+    features = shape.template_features(make_template_corpus())
+
+    # 01004 holds {geography, history, oddity} against a modal {geography, history}
+    assert features.loc["01004", "template_jaccard"] == pytest.approx(2 / 3)
+    assert features.loc["01004", "template_jaccard"] < features.loc["01001", "template_jaccard"]
+
+
+def test_missing_core_sections_are_counted() -> None:
+    corpus = make_template_corpus()
+    thin = pd.concat([corpus, make_sections([("01009", 1, "Geography", "x")])])
+
+    features = shape.template_features(thin)
+
+    assert features.loc["01009", "n_core_missing"] == 1.0  # has geography, lacks history
+    assert features.loc["01001", "n_core_missing"] == 0.0
+
+
+def test_unusual_sections_are_the_rare_ones() -> None:
+    rows = [(f"{i:05d}", 1, "Geography", "x") for i in range(1, 201)]
+    rows.append(("00007", 2, "One Off", "x"))  # 1 of 200 counties = 0.5%
+
+    features = shape.template_features(make_sections(rows))
+
+    assert features.loc["00007", "n_unusual_sections"] == 1.0
+    assert features.loc["00001", "n_unusual_sections"] == 0.0
+
+
+def test_title_rarity_is_higher_for_a_county_with_rare_titles() -> None:
+    rows = [(f"{i:05d}", 1, "Geography", "x") for i in range(1, 201)]
+    rows.append(("00007", 2, "One Off", "x"))
+
+    features = shape.template_features(make_sections(rows))
+
+    assert features.loc["00007", "mean_title_rarity"] > features.loc["00001", "mean_title_rarity"]
+
+
+def test_title_word_count_is_averaged_over_the_county() -> None:
+    sections = make_sections(
+        [("01001", 1, "Law and government", "x"), ("01001", 2, "Economy", "x")]
+    )
+
+    assert shape.template_features(sections).loc["01001", "n_title_words"] == pytest.approx(2.0)
