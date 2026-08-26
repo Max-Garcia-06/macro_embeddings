@@ -116,17 +116,31 @@ def position_features(sections: pd.DataFrame, vocabulary: list[str]) -> pd.DataF
         vocabulary entry plus `pos_longest_section`, `pos_first_economy`,
         `pos_first_census`, `pos_first_narrative`, `history_before_economy` and
         `position_spread`.
+
+    Raises:
+        ValueError: If two distinct titles slugify to the same column name.
+            Assigning both would keep the second and drop the first, leaving the
+            result reporting N vocabulary entries against N-1 position columns
+            and quietly breaking the auditability that using `flag_vocabulary`
+            promises. Not reachable on the current corpus, which is exactly why
+            it needs a guard rather than a comment.
     """
     frame = ordered_sections(sections)
     frame["_bucket"] = assign_buckets(frame)
     index = pd.Index(sorted(sections["fips_code"].unique()), name="fips_code")
     features = pd.DataFrame(index=index)
 
+    claimed_by: dict[str, str] = {}
     for title in vocabulary:
+        column = f"{POSITION_PREFIX}{slugify(title)}"
+        if column in claimed_by:
+            raise ValueError(
+                f"section titles {claimed_by[column]!r} and {title!r} share the slug "
+                f"{column!r}; the position vocabulary must map one title to one column"
+            )
+        claimed_by[column] = title
         matched = frame.loc[frame["_title"] == title].groupby("fips_code")["_position"].min()
-        features[f"{POSITION_PREFIX}{slugify(title)}"] = matched.reindex(index).fillna(
-            POSITION_ABSENT
-        )
+        features[column] = matched.reindex(index).fillna(POSITION_ABSENT)
 
     longest = frame.loc[frame.groupby("fips_code")["_chars"].idxmax()]
     features["pos_longest_section"] = longest.set_index("fips_code")["_position"].reindex(index)

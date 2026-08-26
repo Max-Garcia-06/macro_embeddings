@@ -16,8 +16,11 @@ def make_sections(rows: list[tuple[str, int, str, str]]) -> pd.DataFrame:
 
 
 def test_position_runs_from_zero_to_one_in_section_id_order() -> None:
+    # Use unevenly-spaced section_ids (1, 2, 100) to ensure position comes from
+    # rank order (0, 1, 2) not from section_id normalization. An id-based approach
+    # would yield ~(0.0, 0.01, 1.0) instead of (0.0, 0.5, 1.0).
     sections = make_sections(
-        [("01001", 5, "C", "x"), ("01001", 1, "A", "x"), ("01001", 3, "B", "x")]
+        [("01001", 100, "C", "x"), ("01001", 1, "A", "x"), ("01001", 2, "B", "x")]
     )
 
     ordered = shape.ordered_sections(sections)
@@ -76,3 +79,23 @@ def test_position_spread_is_zero_for_one_flagged_title() -> None:
     positions = shape.position_features(sections, ["geography"])
 
     assert positions.loc["01001", "position_spread"] == pytest.approx(0.0)
+
+
+def test_slug_collision_raises_valueerror() -> None:
+    """Two distinct titles that slugify to the same column name must raise."""
+    sections = make_sections([("01001", 1, "Test Title", "x"), ("01001", 2, "Test-Title", "x")])
+
+    # "Test Title" and "Test-Title" both slugify to "test_title"
+    with pytest.raises(ValueError, match="share the slug"):
+        shape.position_features(sections, ["Test Title", "Test-Title"])
+
+
+def test_real_corpus_vocabulary_has_no_slugify_collisions(sections_frame: pd.DataFrame) -> None:
+    """The real corpus vocabulary must not contain slug collisions."""
+    from extract_source_a_structure_features import flag_vocabulary
+
+    vocabulary = flag_vocabulary(sections_frame)
+
+    # If this passes, no collision in the real corpus; if it fails, the guard
+    # correctly raises and we know about it.
+    shape.position_features(sections_frame, vocabulary)
