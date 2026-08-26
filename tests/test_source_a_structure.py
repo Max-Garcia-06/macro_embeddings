@@ -150,6 +150,21 @@ def test_slugify_survives_a_title_with_no_usable_characters() -> None:
     assert structure.slugify("---") == "untitled"
 
 
+def test_two_titles_slugifying_the_same_way_raise_instead_of_overwriting() -> None:
+    """A silent overwrite would report N vocabulary entries against N-1 flag columns."""
+    rows = [("01001", 1, "2020 census", "x"), ("01001", 2, "2020-census", "y")]
+
+    with pytest.raises(ValueError, match="slug"):
+        structure.title_flag_features(make_sections(rows), ["2020 census", "2020-census"])
+
+
+def test_the_real_corpus_vocabulary_has_no_slug_collisions(sections_frame: pd.DataFrame) -> None:
+    """The guard above must not be firing on the corpus this round actually scored."""
+    vocabulary = structure.flag_vocabulary(sections_frame)
+
+    assert len({structure.slugify(title) for title in vocabulary}) == len(vocabulary)
+
+
 def test_flags_are_binary_per_county() -> None:
     rows = [
         ("01001", 1, "Geography", "x"),

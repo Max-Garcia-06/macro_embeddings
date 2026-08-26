@@ -10,8 +10,11 @@ during the section round, correlated r = 0.550 against log tax returns -- above
 `content_length`'s 0.359 -- and cut from the scored block for that reason
 (`pillar_matrix.SOURCE_A_DIAGNOSTIC_COLUMNS`). So this module only builds the
 block; `analyze_source_a_structure.py` scores it on a baseline that already
-holds three size measures, where a pure size proxy is worth approximately
-nothing.
+holds three size measures -- *linearly*, which is weaker than it sounds. That
+sweep's `size_nonlinear` null arm, built from nothing but curves on those same
+three columns, scores +0.01748 against +0.00269 for the block built here. A
+column from this module that is a curved function of population will score, and
+will not look like a size proxy while doing it.
 
 Output: `data/source_a_structure_features.parquet`, one row per county.
 """
@@ -59,7 +62,11 @@ def configure_logging() -> None:
 
 
 def normalize_titles(sections: pd.DataFrame) -> pd.Series:
-    """Strip and case-fold section titles.
+    """Strip and lower-case section titles.
+
+    `.str.lower()`, not `.str.casefold()`. The titles are English Wikipedia
+    section headings, where the two agree; saying "case-fold" would promise a
+    Unicode-aware fold this does not perform.
 
     Args:
         sections: Long-format section frame from `ingest_source_a.py`.
@@ -225,15 +232,31 @@ def title_flag_features(sections: pd.DataFrame, vocabulary: list[str]) -> pd.Dat
         DataFrame indexed by `fips_code`, one float64 0.0/1.0 column per title.
         A title appearing twice in one article is still one flag: this asks
         which structures are present, not how many times.
+
+    Raises:
+        ValueError: If two distinct titles slugify to the same column name.
+            Assigning both would keep the second and drop the first, leaving the
+            stats file reporting N vocabulary entries against N-1 flag columns
+            and quietly breaking the auditability `flag_vocabulary` promises.
+            Not reachable on the 2026-08-25 corpus (42 titles, 42 slugs), which
+            is exactly why it needs a guard rather than a comment.
     """
     titles = normalize_titles(sections)
     frame = sections[["fips_code"]].assign(_title=titles)
     index = pd.Index(sorted(sections["fips_code"].unique()), name="fips_code")
 
     flags = pd.DataFrame(index=index)
+    claimed_by: dict[str, str] = {}
     for title in vocabulary:
+        column = f"{TITLE_FLAG_PREFIX}{slugify(title)}"
+        if column in claimed_by:
+            raise ValueError(
+                f"section titles {claimed_by[column]!r} and {title!r} share the slug "
+                f"{column!r}; the flag vocabulary must map one title to one column"
+            )
+        claimed_by[column] = title
         holders = frame.loc[frame["_title"] == title, "fips_code"].unique()
-        flags[f"{TITLE_FLAG_PREFIX}{slugify(title)}"] = index.isin(holders).astype("float64")
+        flags[column] = index.isin(holders).astype("float64")
     return flags
 
 
