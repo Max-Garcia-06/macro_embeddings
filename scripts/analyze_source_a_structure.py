@@ -63,6 +63,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.impute import SimpleImputer
 from scipy.stats import wilcoxon
 from sklearn.metrics import r2_score
 from sklearn.model_selection import KFold
@@ -194,6 +195,94 @@ def size_nonlinear_block(frame: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(columns, index=frame.index)
 
 
+# Singular values below this share of the largest are dropped as numerically
+# degenerate. The augmented baseline is fitted by *unpenalized* OLS, so a
+# near-null direction is not merely useless there -- it is unstable.
+CURVATURE_SINGULAR_VALUE_FLOOR: float = 1e-8
+
+# Prefix for the whitened curvature directions appended to the flexible baseline.
+CURVATURE_PREFIX: str = "size_curve_"
+
+
+def size_curvature_directions(frame: pd.DataFrame) -> pd.DataFrame:
+    """Functional form of the size relationship, with the linear part removed.
+
+    Built in three steps from `size_nonlinear_block`'s nine terms:
+
+    1. **Residualize** against the three linear size columns, so what remains is
+       only the shape of the relationship and none of its level. Without this the
+       augmentation would carry the baseline's own linear information twice.
+    2. **SVD-whiten** and drop directions whose singular value falls below
+       `CURVATURE_SINGULAR_VALUE_FLOOR` of the largest. Squares and cubes of
+       log-scale columns are near-collinear over the observed range, and the
+       augmented baseline is fitted unpenalized, where near-collinearity is
+       instability rather than inefficiency.
+    3. Return unit-variance, mutually orthogonal columns.
+
+    The transform reads only the design, never a target, so fitting it on the
+    full panel rather than inside each fold leaks nothing.
+
+    Args:
+        frame: Any frame carrying the `SIZE_FEATURES` columns.
+
+    Returns:
+        DataFrame on `frame`'s index with one column per surviving direction,
+        named `size_curve_1` upward. Nine directions survive on the real panel.
+    """
+    size = SimpleImputer(strategy="median").fit_transform(frame[list(SIZE_FEATURES)])
+    terms = size_nonlinear_block(
+        pd.DataFrame(size, columns=list(SIZE_FEATURES), index=frame.index)
+    ).to_numpy(dtype="float64")
+
+    # Step 1 -- residualize against [1, the three linear size columns].
+    controls = np.column_stack([np.ones(len(size)), size])
+    coefficients, *_ = np.linalg.lstsq(controls, terms, rcond=None)
+    residuals = terms - controls @ coefficients
+
+    # Step 2 -- SVD, dropping the numerically dead directions.
+    left, singular_values, _ = np.linalg.svd(residuals, full_matrices=False)
+    if singular_values.size == 0 or singular_values[0] <= 0:
+        return pd.DataFrame(index=frame.index)
+    kept = singular_values > singular_values[0] * CURVATURE_SINGULAR_VALUE_FLOOR
+
+    # Step 3 -- unit variance. `left` already has orthonormal columns, so scaling
+    # by sqrt(n) is the whitening; nothing further is needed.
+    whitened = left[:, kept] * np.sqrt(len(residuals))
+    return pd.DataFrame(
+        whitened,
+        index=frame.index,
+        columns=[f"{CURVATURE_PREFIX}{i + 1}" for i in range(whitened.shape[1])],
+    )
+
+
+def build_flexible_baseline_design(
+    matrix: pd.DataFrame, baseline: pd.DataFrame
+) -> pd.DataFrame:
+    """Augment the control model with size curvature, adding no information.
+
+    This is a second *baseline*, not a fifth arm. Every arm is scored twice --
+    once against the linear-in-logs controls and once against these -- so the
+    pair of readings answers "how much of this lift is functional form?" A fifth
+    arm could not answer that, because an arm competes with the controls rather
+    than joining them.
+
+    The augmentation is information-free by construction (`size_curvature_directions`
+    removes the linear part), so mean baseline R2 should barely move. If it moves
+    materially, the augmentation is carrying information and the construction is
+    wrong.
+
+    Args:
+        matrix: Feature matrix carrying `SIZE_FEATURES`.
+        baseline: Linear design from `build_baseline_design`, whose columns are
+            kept in place and in order so the two designs stay comparable.
+
+    Returns:
+        `baseline` with the surviving curvature directions appended.
+    """
+    curvature = size_curvature_directions(matrix)
+    return pd.concat([baseline, curvature.set_axis(baseline.index)], axis=1)
+
+
 def attach_structure(matrix: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     """Merge the structural block onto the pillar matrix.
 
@@ -279,32 +368,46 @@ def build_arm_blocks(
     }
 
 
+# Suffix marking a lift measured against the flexible baseline rather than the
+# linear one. The unsuffixed columns keep their original meaning and their
+# original numbers; nothing downstream that reads them has to change.
+FLEXIBLE_SUFFIX: str = "_flexbase"
+
+
 def score_target(
     matrix: pd.DataFrame,
     structure_cols: list[str],
     baseline: pd.DataFrame,
+    flexible_baseline: pd.DataFrame,
     target: Target,
 ) -> dict[str, float | str | int]:
-    """Score every arm against one target.
+    """Score every arm against one target, under both baselines.
 
-    Every arm sees identical folds and identical rows, which is what makes the
-    per-target differences paired and the Wilcoxon test across targets legible.
+    One splitter is constructed here and handed to every fit, so every arm sees
+    identical folds and identical rows under both baselines. That is what makes
+    the per-target differences paired and the Wilcoxon test across targets
+    legible, and it is what `test_every_arm_is_scored_on_one_shared_splitter`
+    pins.
 
     Args:
         matrix: Matrix with structural columns attached.
         structure_cols: Structural column names.
         baseline: Size-plus-state design from `build_baseline_design`.
+        flexible_baseline: The same design plus whitened size curvature, from
+            `build_flexible_baseline_design`.
         target: The column to predict.
 
     Returns:
-        One record with the baseline R2 and each arm's lift over it.
+        One record with both baselines' R2 and each arm's lift over each.
     """
     rows = matrix[target.column].notna().to_numpy()
     y = matrix.loc[rows, target.column].to_numpy(dtype="float64")
     base_design = baseline.loc[rows].to_numpy(dtype="float64")
+    flexible_design = flexible_baseline.loc[rows].to_numpy(dtype="float64")
 
     folds = KFold(n_splits=N_FOLDS, shuffle=True, random_state=RANDOM_SEED)
     r2_baseline = float(r2_score(y, _baseline_oof_predictions(base_design, y, folds)))
+    r2_flexible = float(r2_score(y, _baseline_oof_predictions(flexible_design, y, folds)))
 
     record: dict[str, float | str | int] = {
         "pillar": target.pillar,
@@ -312,19 +415,29 @@ def score_target(
         "label": target.label,
         "n": int(rows.sum()),
         "r2_baseline": r2_baseline,
+        "r2_baseline_flexible": r2_flexible,
     }
 
     blocks = build_arm_blocks(matrix, structure_cols, rows)
     for arm in ARMS:
         predictions = _residual_oof_predictions(base_design, blocks[arm.key], y, folds, None)
         record[f"lift_{arm.key}"] = float(r2_score(y, predictions)) - r2_baseline
+        flexible_predictions = _residual_oof_predictions(
+            flexible_design, blocks[arm.key], y, folds, None
+        )
+        record[f"lift_{arm.key}{FLEXIBLE_SUFFIX}"] = (
+            float(r2_score(y, flexible_predictions)) - r2_flexible
+        )
     return record
 
 
 def run_sweep(
     matrix: pd.DataFrame, structure_cols: list[str], targets: list[Target]
 ) -> pd.DataFrame:
-    """Score every target against every arm.
+    """Score every target against every arm, under both baselines.
+
+    The flexible baseline is built once, outside the target loop: it depends on
+    the size columns only, never on a target or on which rows a target observes.
 
     Args:
         matrix: Matrix with structural columns attached.
@@ -332,15 +445,18 @@ def run_sweep(
         targets: Targets to score.
 
     Returns:
-        Per-target results, sorted by the structural arm's lift.
+        Per-target results, sorted by the structural arm's lift over the linear
+        baseline -- the same ordering as before the flexible baseline existed.
     """
     baseline = build_baseline_design(matrix)
+    flexible_baseline = build_flexible_baseline_design(matrix, baseline)
     records = []
     for target in targets:
-        record = score_target(matrix, structure_cols, baseline, target)
+        record = score_target(matrix, structure_cols, baseline, flexible_baseline, target)
         records.append(record)
         logger.info(
-            "%s %-28s n=%4d  structure=%+.4f  typed=%+.4f  both=%+.4f  [null size=%+.4f]",
+            "%s %-28s n=%4d  structure=%+.4f  typed=%+.4f  both=%+.4f  [null size=%+.4f]  "
+            "flexbase: structure=%+.4f  typed=%+.4f  both=%+.4f",
             record["pillar"],
             record["column"],
             record["n"],
@@ -348,6 +464,9 @@ def run_sweep(
             record["lift_typed"],
             record["lift_typed_plus_structure"],
             record["lift_size_nonlinear"],
+            record["lift_structure" + FLEXIBLE_SUFFIX],
+            record["lift_typed" + FLEXIBLE_SUFFIX],
+            record["lift_typed_plus_structure" + FLEXIBLE_SUFFIX],
         )
     return pd.DataFrame(records).sort_values("lift_structure", ascending=False).reset_index(drop=True)
 
@@ -361,30 +480,41 @@ def summarize_by_pillar(results: pd.DataFrame) -> pd.DataFrame:
     Returns:
         One row per pillar with the target count and each arm's mean lift.
     """
-    aggregated = results.groupby("pillar").agg(
-        n_targets=("column", "count"),
-        **{arm.key: (f"lift_{arm.key}", "mean") for arm in ARMS},
+    per_arm = {arm.key: (f"lift_{arm.key}", "mean") for arm in ARMS}
+    per_arm.update(
+        {
+            f"{arm.key}{FLEXIBLE_SUFFIX}": (f"lift_{arm.key}{FLEXIBLE_SUFFIX}", "mean")
+            for arm in ARMS
+        }
     )
+    aggregated = results.groupby("pillar").agg(n_targets=("column", "count"), **per_arm)
     return aggregated.reset_index()
 
 
-def _paired_test(results: pd.DataFrame, arm: Arm) -> dict[str, object]:
+def _paired_test(results: pd.DataFrame, arm: Arm, suffix: str = "") -> dict[str, object]:
     """Test one arm against its comparison across every target.
 
     Args:
-        results: Output of `run_sweep`.
+        results: Output of `run_sweep`, or a row subset of it.
         arm: The arm to test. `arm.against` names the arm it is paired with;
             None means it is compared against the baseline, where the lift
             column is already the difference.
+        suffix: `FLEXIBLE_SUFFIX` to read the flexible-baseline lift columns,
+            or "" for the linear ones. Both sides of a paired difference are
+            always read with the same suffix, so the two baselines are never
+            mixed inside one comparison.
 
     Returns:
-        Mean lift, mean paired difference, win count and the Wilcoxon
-        signed-rank p-value.
+        Mean lift, mean paired difference, win count, target count and the
+        Wilcoxon signed-rank p-value.
     """
-    lifts = results[f"lift_{arm.key}"]
-    differences = lifts if arm.against is None else lifts - results[f"lift_{arm.against}"]
+    lifts = results[f"lift_{arm.key}{suffix}"]
+    differences = (
+        lifts if arm.against is None else lifts - results[f"lift_{arm.against}{suffix}"]
+    )
     statistic, p_value = wilcoxon(differences)
     return {
+        "n_targets": int(len(results)),
         "label": arm.label,
         "compared_against": arm.against or "baseline",
         "mean_lift": float(lifts.mean()),
@@ -397,28 +527,52 @@ def _paired_test(results: pd.DataFrame, arm: Arm) -> dict[str, object]:
 
 
 def summarize(
-    results: pd.DataFrame, n_structure_features: int, n_size_nonlinear_features: int
+    results: pd.DataFrame,
+    n_structure_features: int,
+    n_size_nonlinear_features: int,
+    n_flexible_directions: int,
 ) -> dict[str, object]:
     """Assemble the stats artifact the notebook reads.
+
+    Two readings of the same four arms: `arms` against the linear-in-logs
+    baseline, `arms_flexible` against the curvature-augmented one. The linear
+    reading's numbers are exactly what they were before the flexible baseline
+    existed, and are computed from the same columns.
+
+    `arms_flexible_undegraded` restricts to the targets where the augmented
+    baseline did not lose out-of-fold R2 against the linear one. Both readings
+    are reported because unpenalized OLS on a wider design is less stable, and
+    on a target where the baseline itself got worse the "lift over it" is
+    measured against a moved goalpost.
 
     Args:
         results: Output of `run_sweep`.
         n_structure_features: Width of the structural block.
         n_size_nonlinear_features: Width of the null-control block.
+        n_flexible_directions: Curvature directions surviving the SVD floor.
 
     Returns:
-        Target count, block widths, per-arm paired tests, the structural arm's
-        lift expressed in units of the null arm's, and the per-pillar breakdown
-        as records.
+        Target counts, block widths, both baselines' mean R2, per-arm paired
+        tests under each baseline, the structural arm's lift in units of the
+        null arm's, and the per-pillar breakdown as records.
     """
     arms = {arm.key: _paired_test(results, arm) for arm in ARMS}
     null_lift = float(arms[NULL_ARM_KEY]["mean_lift"])
+
+    degraded = results["r2_baseline_flexible"] < results["r2_baseline"]
+    undegraded = results.loc[~degraded]
+
     return {
         "n_targets": int(len(results)),
         "n_structure_features": n_structure_features,
         "n_typed_features": len(typed_columns()),
         "n_size_nonlinear_features": n_size_nonlinear_features,
+        "n_flexible_directions": n_flexible_directions,
         "mean_r2_baseline": float(results["r2_baseline"].mean()),
+        "mean_r2_baseline_flexible": float(results["r2_baseline_flexible"].mean()),
+        "n_targets_flexible_degraded": int(degraded.sum()),
+        "n_targets_flexible_undegraded": int(len(undegraded)),
+        "flexible_degraded_targets": sorted(results.loc[degraded, "column"]),
         "null_arm_key": NULL_ARM_KEY,
         # The ratio the notebook and the findings register both quote. Computed
         # here rather than typed anywhere: it is the whole point of the null arm,
@@ -427,6 +581,26 @@ def summarize(
             float(arms["structure"]["mean_lift"] / null_lift) if null_lift else None
         ),
         "arms": arms,
+        "arms_flexible": {
+            arm.key: _paired_test(results, arm, FLEXIBLE_SUFFIX) for arm in ARMS
+        },
+        "arms_flexible_undegraded": {
+            arm.key: _paired_test(undegraded, arm, FLEXIBLE_SUFFIX) for arm in ARMS
+        },
+        # Retention: what share of each arm's linear-baseline lift survives the
+        # flexible one. Computed here so no reader has to divide two numbers out
+        # of two tables and no writer has to type the quotient into prose.
+        "flexible_retention": {
+            arm.key: (
+                float(
+                    _paired_test(results, arm, FLEXIBLE_SUFFIX)["mean_paired_difference"]
+                    / arms[arm.key]["mean_paired_difference"]
+                )
+                if arms[arm.key]["mean_paired_difference"]
+                else None
+            )
+            for arm in ARMS
+        },
         "by_pillar": summarize_by_pillar(results).to_dict(orient="records"),
     }
 
@@ -444,18 +618,22 @@ def main() -> None:
     matrix, structure_cols = attach_structure(matrix)
     targets = build_non_a_targets(blocks, NAICS2_LABELS)
     n_null_features = len(size_nonlinear_block(matrix.head(1)).columns)
+    n_flexible = len(size_curvature_directions(matrix).columns)
     logger.info(
         "scoring %d targets: %d structural columns against %d shipped typed columns, "
-        "calibrated against a %d-column null block built from the baseline's own size columns",
+        "calibrated against a %d-column null block built from the baseline's own size columns, "
+        "each scored twice -- once on the linear baseline and once on that baseline plus "
+        "%d whitened curvature directions",
         len(targets),
         len(structure_cols),
         len(typed_columns()),
         n_null_features,
+        n_flexible,
     )
 
     results = run_sweep(matrix, structure_cols, targets)
     pillar_results = summarize_by_pillar(results)
-    stats = summarize(results, len(structure_cols), n_null_features)
+    stats = summarize(results, len(structure_cols), n_null_features, n_flexible)
 
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
@@ -502,6 +680,35 @@ def main() -> None:
         stats["arms"]["structure"]["mean_lift"],
         ratio if ratio is not None else float("nan"),
     )
+
+    # The flexible baseline: same four arms, read against controls that know the
+    # *shape* of the size relationship and nothing more.
+    logger.info(
+        "FLEXIBLE BASELINE: %d whitened curvature directions appended, adding no information. "
+        "Mean baseline R2 %.4f -> %.4f. Degraded on %d of %d targets.",
+        stats["n_flexible_directions"],
+        stats["mean_r2_baseline"],
+        stats["mean_r2_baseline_flexible"],
+        stats["n_targets_flexible_degraded"],
+        stats["n_targets"],
+    )
+    for label, key in (("all targets", "arms_flexible"), ("undegraded", "arms_flexible_undegraded")):
+        for arm in ARMS:
+            test = stats[key][arm.key]
+            retention = stats["flexible_retention"][arm.key] if key == "arms_flexible" else None
+            logger.info(
+                "  [%-11s] %-22s mean lift %+.5f | vs %-8s mean diff %+.5f | wins %2d/%d | "
+                "p=%.4f%s",
+                label,
+                arm.key,
+                test["mean_lift"],
+                test["compared_against"],
+                test["mean_paired_difference"],
+                test["n_wins"],
+                test["n_targets"],
+                test["wilcoxon_p"],
+                f" | retains {retention:.0%}" if retention is not None else "",
+            )
 
     logger.info("wrote %s", OUTPUT_CSV_PATH)
     logger.info("wrote %s", OUTPUT_PILLAR_CSV_PATH)

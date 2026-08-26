@@ -415,6 +415,133 @@ def test_structure_columns_do_not_collide_with_matrix_columns() -> None:
     assert not set(columns) & set(matrix.columns)
 
 
+def _size_frame(n: int = 200, constant_gdp: bool = False) -> pd.DataFrame:
+    """Synthetic panel carrying the three size columns the baseline controls for."""
+    rng = np.random.default_rng(0)
+    return pd.DataFrame(
+        {
+            "fips_code": [f"{i:05d}" for i in range(n)],
+            "log_population": rng.normal(10.0, 1.2, n),
+            "log_agi": rng.normal(13.0, 1.1, n),
+            "log_gdp_latest": np.full(n, 15.0) if constant_gdp else rng.normal(15.0, 1.0, n),
+        }
+    )
+
+
+def test_size_curvature_carries_no_linear_size_information() -> None:
+    """The augmentation is functional form only; any linear content would be new information."""
+    import analyze_source_a_structure as scoring
+    from pillar_matrix import SIZE_FEATURES
+
+    frame = _size_frame()
+
+    curvature = scoring.size_curvature_directions(frame)
+
+    for size in SIZE_FEATURES:
+        assert curvature.corrwith(frame[size]).abs().max() < 1e-8
+
+
+def test_size_curvature_is_whitened() -> None:
+    """Unpenalized OLS on the augmented design is unstable if the terms stay collinear."""
+    import analyze_source_a_structure as scoring
+
+    curvature = scoring.size_curvature_directions(_size_frame())
+    correlation = curvature.corr().to_numpy()
+
+    assert np.allclose(curvature.std(ddof=0).to_numpy(), 1.0)
+    assert np.allclose(correlation, np.eye(len(correlation)), atol=1e-8)
+
+
+def test_size_curvature_drops_degenerate_directions() -> None:
+    """A constant size column collapses four of the nine terms; they must not reach the design."""
+    import analyze_source_a_structure as scoring
+
+    full = scoring.size_curvature_directions(_size_frame())
+    degenerate = scoring.size_curvature_directions(_size_frame(constant_gdp=True))
+
+    assert len(full.columns) == 9
+    assert len(degenerate.columns) < 9
+
+
+def test_flexible_baseline_extends_rather_than_replaces_the_linear_one() -> None:
+    """Both baselines must hold the same size and state columns, or the arms are not comparable."""
+    import analyze_source_a_structure as scoring
+
+    frame = _size_frame(120)
+    baseline = frame[["log_population", "log_agi", "log_gdp_latest"]]
+
+    flexible = scoring.build_flexible_baseline_design(frame, baseline)
+
+    assert list(flexible.columns[: len(baseline.columns)]) == list(baseline.columns)
+    assert len(flexible.columns) == len(baseline.columns) + 9
+    assert len(flexible) == len(frame)
+    assert np.isfinite(flexible.to_numpy(dtype="float64")).all()
+
+
+def test_summary_reports_both_baselines() -> None:
+    """Two baselines x four arms, not five arms: the flexible run is a second reading."""
+    import analyze_source_a_structure as scoring
+
+    rng = np.random.default_rng(1)
+    results = pd.DataFrame({"pillar": ["B"] * 12, "column": [f"t{i}" for i in range(12)]})
+    results["r2_baseline"] = 0.26
+    results["r2_baseline_flexible"] = 0.26
+    for arm in scoring.ARMS:
+        results[f"lift_{arm.key}"] = rng.normal(0.002, 0.001, 12)
+        results[f"lift_{arm.key}_flexbase"] = rng.normal(0.001, 0.001, 12)
+
+    stats = scoring.summarize(results, 64, 9, 9)
+
+    assert set(stats["arms_flexible"]) == {arm.key for arm in scoring.ARMS}
+    assert set(stats["arms_flexible_undegraded"]) == {arm.key for arm in scoring.ARMS}
+    assert stats["n_flexible_directions"] == 9
+    assert stats["n_targets_flexible_degraded"] == 0
+    # The linear-baseline reading is untouched by the flexible one.
+    assert stats["arms"]["structure"]["mean_lift"] == pytest.approx(
+        results["lift_structure"].mean()
+    )
+
+
+def test_every_arm_is_scored_on_one_shared_splitter(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Moving the KFold construction inside the arm loop must turn this red.
+
+    Asserting that sklearn's splitter is deterministic tests sklearn. This tests
+    `score_target`: every arm, under both baselines, has to be handed the *same*
+    splitter object, which is what makes the per-target differences paired.
+    """
+    import analyze_source_a_structure as scoring
+    from analyze_pillar_matrix_signal import Target
+
+    handed: list[object] = []
+
+    def record_baseline(base_design, y, folds):
+        handed.append(folds)
+        return np.zeros(len(y))
+
+    def record_residual(base_design, block, y, folds, n_components):
+        handed.append(folds)
+        return np.zeros(len(y))
+
+    monkeypatch.setattr(scoring, "_baseline_oof_predictions", record_baseline)
+    monkeypatch.setattr(scoring, "_residual_oof_predictions", record_residual)
+
+    matrix = _size_frame(40)
+    matrix["n_body_sections"] = np.arange(40, dtype="float64")
+    matrix["target"] = np.arange(40, dtype="float64")
+    for column in scoring.typed_columns():
+        matrix[column] = 1.0
+    baseline = matrix[["log_population", "log_agi", "log_gdp_latest"]]
+    flexible = scoring.build_flexible_baseline_design(matrix, baseline)
+
+    scoring.score_target(
+        matrix, ["n_body_sections"], baseline, flexible, Target("B", "target", "synthetic")
+    )
+
+    # Two baseline fits plus one fit per arm per baseline, all on one splitter.
+    assert len(handed) == 2 + 2 * len(scoring.ARMS)
+    assert all(folds is handed[0] for folds in handed)
+
+
 def test_attach_structure_rejects_a_duplicated_county(monkeypatch: pytest.MonkeyPatch) -> None:
     """A duplicated fips_code would put copies of one county in both train and test folds."""
     import analyze_source_a_structure as scoring
@@ -445,32 +572,15 @@ def test_attach_structure_keeps_every_matrix_row_on_a_clean_merge(
     assert columns == ["n_body_sections"]
 
 
-def test_arms_share_folds_and_rows() -> None:
-    """Paired comparison is the headline statistic; unpaired folds would void it."""
-    from sklearn.model_selection import KFold
-
+def test_every_arm_is_built_on_the_same_rows() -> None:
+    """The splitter half of this lives in `test_every_arm_is_scored_on_one_shared_splitter`."""
     import analyze_source_a_structure as scoring
 
     assert scoring.N_FOLDS == 5
     assert scoring.RANDOM_SEED == 42
 
-    # Shared folds: the splitter is deterministic, so every arm's loop over it
-    # sees byte-identical train/test indices.
-    design = np.zeros((200, 3))
-    splits = [
-        [
-            (train.tolist(), test.tolist())
-            for train, test in KFold(
-                n_splits=scoring.N_FOLDS, shuffle=True, random_state=scoring.RANDOM_SEED
-            ).split(design)
-        ]
-        for _ in range(2)
-    ]
-    assert splits[0] == splits[1]
-    assert len(splits[0]) == scoring.N_FOLDS
-
-    # Shared rows: every arm's block is built from the same row mask, so the
-    # per-target differences are paired rather than computed on different panels.
+    # Every arm's block is built from the same row mask, so the per-target
+    # differences are paired rather than computed on different panels.
     matrix = pd.DataFrame(
         {
             "fips_code": ["01001", "01003", "01005", "01007"],

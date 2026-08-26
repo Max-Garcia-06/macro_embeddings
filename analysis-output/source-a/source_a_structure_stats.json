@@ -3,11 +3,24 @@
   "n_structure_features": 64,
   "n_typed_features": 29,
   "n_size_nonlinear_features": 9,
+  "n_flexible_directions": 9,
   "mean_r2_baseline": 0.2612273780582838,
+  "mean_r2_baseline_flexible": 0.2607087128366304,
+  "n_targets_flexible_degraded": 6,
+  "n_targets_flexible_undegraded": 22,
+  "flexible_degraded_targets": [
+    "capital_to_wage_ratio",
+    "distress_count",
+    "lq_emp_31-33",
+    "out_partner_hhi",
+    "unemployment_rate_latest",
+    "unemployment_velocity"
+  ],
   "null_arm_key": "size_nonlinear",
   "structure_lift_in_null_arm_units": 0.15368073393777615,
   "arms": {
     "structure": {
+      "n_targets": 28,
       "label": "structural block (shape only)",
       "compared_against": "baseline",
       "mean_lift": 0.0026860935274357145,
@@ -18,6 +31,7 @@
       "wilcoxon_p": 0.0011721327900886536
     },
     "typed": {
+      "n_targets": 28,
       "label": "shipped 29 typed columns",
       "compared_against": "baseline",
       "mean_lift": 0.0030716815258553126,
@@ -28,6 +42,7 @@
       "wilcoxon_p": 0.0003814026713371277
     },
     "typed_plus_structure": {
+      "n_targets": 28,
       "label": "typed columns + structural block",
       "compared_against": "typed",
       "mean_lift": 0.004907694279242726,
@@ -38,6 +53,7 @@
       "wilcoxon_p": 0.011838570237159729
     },
     "size_nonlinear": {
+      "n_targets": 28,
       "label": "NULL CONTROL: nonlinear transforms of the baseline's own size columns",
       "compared_against": "baseline",
       "mean_lift": 0.01747840121926596,
@@ -48,6 +64,104 @@
       "wilcoxon_p": 1.259148120880127e-06
     }
   },
+  "arms_flexible": {
+    "structure": {
+      "n_targets": 28,
+      "label": "structural block (shape only)",
+      "compared_against": "baseline",
+      "mean_lift": 0.0007337618422992338,
+      "median_lift": 5.184844906225283e-05,
+      "mean_paired_difference": 0.0007337618422992338,
+      "n_wins": 20,
+      "wilcoxon_statistic": 107.0,
+      "wilcoxon_p": 0.028050199151039124
+    },
+    "typed": {
+      "n_targets": 28,
+      "label": "shipped 29 typed columns",
+      "compared_against": "baseline",
+      "mean_lift": 0.0016114705162544238,
+      "median_lift": 0.0007091897843016781,
+      "mean_paired_difference": 0.0016114705162544238,
+      "n_wins": 18,
+      "wilcoxon_statistic": 93.0,
+      "wilcoxon_p": 0.01102352887392044
+    },
+    "typed_plus_structure": {
+      "n_targets": 28,
+      "label": "typed columns + structural block",
+      "compared_against": "typed",
+      "mean_lift": 0.0025581632419343914,
+      "median_lift": 0.00036007101935503494,
+      "mean_paired_difference": 0.0009466927256799675,
+      "n_wins": 18,
+      "wilcoxon_statistic": 136.0,
+      "wilcoxon_p": 0.13146880269050598
+    },
+    "size_nonlinear": {
+      "n_targets": 28,
+      "label": "NULL CONTROL: nonlinear transforms of the baseline's own size columns",
+      "compared_against": "baseline",
+      "mean_lift": 7.309957300186528e-08,
+      "median_lift": 3.834358591747744e-08,
+      "mean_paired_difference": 7.309957300186528e-08,
+      "n_wins": 15,
+      "wilcoxon_statistic": 123.0,
+      "wilcoxon_p": 0.11281874216705877
+    }
+  },
+  "arms_flexible_undegraded": {
+    "structure": {
+      "n_targets": 22,
+      "label": "structural block (shape only)",
+      "compared_against": "baseline",
+      "mean_lift": 0.0006234871610257768,
+      "median_lift": 3.8651587678795174e-05,
+      "mean_paired_difference": 0.0006234871610257768,
+      "n_wins": 15,
+      "wilcoxon_statistic": 87.0,
+      "wilcoxon_p": 0.20992755889892578
+    },
+    "typed": {
+      "n_targets": 22,
+      "label": "shipped 29 typed columns",
+      "compared_against": "baseline",
+      "mean_lift": 0.0014833663302725628,
+      "median_lift": 0.0001609802540181171,
+      "mean_paired_difference": 0.0014833663302725628,
+      "n_wins": 13,
+      "wilcoxon_statistic": 79.0,
+      "wilcoxon_p": 0.12888002395629883
+    },
+    "typed_plus_structure": {
+      "n_targets": 22,
+      "label": "typed columns + structural block",
+      "compared_against": "typed",
+      "mean_lift": 0.0023897748376951115,
+      "median_lift": 0.00013236195544286122,
+      "mean_paired_difference": 0.0009064085074225484,
+      "n_wins": 14,
+      "wilcoxon_statistic": 93.0,
+      "wilcoxon_p": 0.2902231216430664
+    },
+    "size_nonlinear": {
+      "n_targets": 22,
+      "label": "NULL CONTROL: nonlinear transforms of the baseline's own size columns",
+      "compared_against": "baseline",
+      "mean_lift": 4.370293788979008e-08,
+      "median_lift": -5.0443093035923425e-09,
+      "mean_paired_difference": 4.370293788979008e-08,
+      "n_wins": 10,
+      "wilcoxon_statistic": 97.0,
+      "wilcoxon_p": 0.5202133776633694
+    }
+  },
+  "flexible_retention": {
+    "structure": 0.2731706229900793,
+    "typed": 0.524621612849564,
+    "typed_plus_structure": 0.5156242645555346,
+    "size_nonlinear": 4.182280294681051e-06
+  },
   "by_pillar": [
     {
       "pillar": "B",
@@ -55,7 +169,11 @@
       "structure": 0.0031389541937563935,
       "typed": 0.002444640049755814,
       "typed_plus_structure": 0.004973595986773549,
-      "size_nonlinear": 0.020098277513530854
+      "size_nonlinear": 0.020098277513530854,
+      "structure_flexbase": 0.0008618033902763778,
+      "typed_flexbase": 0.0016234549891202433,
+      "typed_plus_structure_flexbase": 0.002837256403193905,
+      "size_nonlinear_flexbase": 5.5434744195004273e-08
     },
     {
       "pillar": "C",
@@ -63,7 +181,11 @@
       "structure": 0.0013048229145590968,
       "typed": 0.001804247103838678,
       "typed_plus_structure": 0.0029798992999291083,
-      "size_nonlinear": 0.0017661003792368939
+      "size_nonlinear": 0.0017661003792368939,
+      "structure_flexbase": 0.0006478570796237445,
+      "typed_flexbase": 0.0010006345618675712,
+      "typed_plus_structure_flexbase": 0.0019360594032163207,
+      "size_nonlinear_flexbase": 1.2539761980641848e-07
     },
     {
       "pillar": "D",
@@ -71,7 +193,11 @@
       "structure": 3.6489276001120765e-06,
       "typed": 0.0015296615115516128,
       "typed_plus_structure": 0.0007880228099625594,
-      "size_nonlinear": 0.02106724948937481
+      "size_nonlinear": 0.02106724948937481,
+      "structure_flexbase": 2.880488980006035e-06,
+      "typed_flexbase": 0.001023553300786073,
+      "typed_plus_structure_flexbase": 0.00020708175950182964,
+      "size_nonlinear_flexbase": 2.0694453502686136e-07
     },
     {
       "pillar": "E",
@@ -79,7 +205,11 @@
       "structure": 0.0017930206418097505,
       "typed": 0.005295595842387146,
       "typed_plus_structure": 0.004473431949178486,
-      "size_nonlinear": 5.925599263045811e-06
+      "size_nonlinear": 5.925599263045811e-06,
+      "structure_flexbase": 0.0007486374859099199,
+      "typed_flexbase": 0.003108211181168996,
+      "typed_plus_structure_flexbase": 0.002716059916842428,
+      "size_nonlinear_flexbase": 2.5952446047750044e-07
     },
     {
       "pillar": "F",
@@ -87,7 +217,11 @@
       "structure": 0.006713098724784761,
       "typed": 0.021816960040274447,
       "typed_plus_structure": 0.022166321804471867,
-      "size_nonlinear": 0.01892370866373161
+      "size_nonlinear": 0.01892370866373161,
+      "structure_flexbase": 0.0006084135871298191,
+      "typed_flexbase": 0.0034712999035890757,
+      "typed_plus_structure_flexbase": 0.005737959305287976,
+      "size_nonlinear_flexbase": -3.184577648251974e-07
     }
   ]
 }
