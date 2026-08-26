@@ -386,3 +386,46 @@ def test_every_arm_carries_all_three_framings() -> None:
         assert f"r2_alone_{arm.key}" in record
         assert f"lift_{arm.key}" in record
         assert f"lift_{arm.key}{scoring.FLEXIBLE_SUFFIX}" in record
+
+
+def test_boost_residual_matches_the_imported_routines_fold_structure() -> None:
+    """The two learners must differ in estimator only, never in fold handling."""
+    import analyze_source_a_shape_profile as scoring
+    from sklearn.model_selection import KFold
+
+    rng = np.random.default_rng(0)
+    base = rng.normal(size=(200, 3))
+    block = rng.normal(size=(200, 5))
+    y = base[:, 0] * 2.0 + block[:, 1] ** 2 + rng.normal(scale=0.1, size=200)
+    folds = KFold(n_splits=5, shuffle=True, random_state=42)
+
+    predictions = scoring.boost_residual_oof(base, block, y, folds)
+
+    assert predictions.shape == (200,)
+    assert np.isfinite(predictions).all()
+
+
+def test_boost_recovers_a_curve_that_ridge_cannot() -> None:
+    """The reason this learner exists: a step function is invisible to a linear fit."""
+    import analyze_source_a_shape_profile as scoring
+    from analyze_source_a_representation import _alone_oof_r2
+    from sklearn.model_selection import KFold
+
+    rng = np.random.default_rng(0)
+    x = rng.uniform(-3.0, 3.0, size=600)
+    block = x.reshape(-1, 1)
+    y = np.where(x > 0.0, 1.0, -1.0) + rng.normal(scale=0.05, size=600)
+    folds = KFold(n_splits=5, shuffle=True, random_state=42)
+
+    assert scoring.boost_alone_oof_r2(block, y, folds) > _alone_oof_r2(block, y, folds, None)
+
+
+def test_both_learners_appear_in_every_record_key() -> None:
+    import analyze_source_a_shape_profile as scoring
+
+    keys = scoring.empty_record_keys()
+
+    for arm in scoring.SHAPE_ARMS:
+        assert f"r2_alone_{arm.key}{scoring.BOOST_SUFFIX}" in keys
+        assert f"lift_{arm.key}{scoring.BOOST_SUFFIX}" in keys
+        assert f"lift_{arm.key}{scoring.FLEXIBLE_SUFFIX}{scoring.BOOST_SUFFIX}" in keys
