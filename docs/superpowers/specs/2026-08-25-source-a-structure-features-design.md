@@ -1,7 +1,10 @@
 # Source A Structural Features — Design
 
 **Date:** 2026-08-25
-**Status:** approved, not yet implemented
+**Status:** implemented; two claims below were falsified in review and are
+corrected inline. See the **Corrections (2026-08-25, post-review)** section at
+the foot of this document, and `analysis-output/source-a/source-a-findings.md`
+§23 for what the round actually found.
 
 ## The question
 
@@ -22,6 +25,17 @@ That single result is the prior: structural features are size proxies wearing
 hats. This round tests whether *any* of them survive once size is controlled
 for, and it is designed so that a pure size proxy scores approximately zero
 rather than scoring well and looking like a finding.
+
+> **Correction (post-review).** That last clause is false as written, and the
+> design was approved on it. The baseline controls for size *linearly, in logs*.
+> A block of squares, cubes and pairwise products of the baseline's own three
+> size columns — carrying no information the baseline lacks — scores +0.01748
+> mean lift on 26 of 28 targets, against +0.00269 for the structural block. A
+> pure size proxy scores approximately zero only if it is a *linear* one. The
+> round therefore measures "beyond a linear-in-logs size model", not "beyond
+> county size". A fourth arm, `size_nonlinear`, was added to
+> `analyze_source_a_structure.py` to make that calibration visible in every
+> artifact rather than arguable in prose.
 
 ## What gets built
 
@@ -153,6 +167,7 @@ later extended to the external targets, that exclusion becomes live.
 | `structure` | the structural columns |
 | `typed` | the shipped 29 typed columns |
 | `typed_plus_structure` | both |
+| `size_nonlinear` | **null control, added in review:** squares, cubes and pairwise products of the baseline's own three size columns |
 
 Two comparisons carry the round:
 
@@ -191,10 +206,26 @@ A correlation table of every structural column against each of the three
 correlation. Three columns, not one: `n_body_sections` was cut on its
 correlation with log tax returns specifically, not with population, and a table
 that showed only population would have understated it. This runs *before* the
-scoring section and sets the expectation: most of these columns are size
-measurements. Columns that correlate weakly with all three size measures are
-the ones with anything left to contribute, and naming them in advance makes the
-scoring result checkable rather than surprising.
+scoring section, so the reader has the size question in hand before seeing the
+result. Columns that correlate weakly with all three size measures are the ones
+with anything left to contribute, and naming them in advance makes the scoring
+result checkable rather than surprising.
+
+> **Correction (post-review).** This section originally read "sets the
+> expectation: most of these columns are size measurements." The audit found the
+> opposite: 6 of 64 columns clear |r| = 0.4 against any size measure. A separate
+> defect: a Pearson table is a purely *linear* diagnostic, and a column can be a
+> near-deterministic curved function of log population while showing |r| ≈ 0.04
+> — which is exactly the channel the correction above says the round is exposed
+> to. The audit therefore also reports out-of-fold R² of each column against a
+> degree-3 polynomial basis in the same three size features, and the difference
+> between that and a straight-line fit. It comes back clean per column (largest
+> R² 0.340, largest curvature gain +0.076), which clears each column
+> individually and not the block. A third defect: sorting by |r| alone put three
+> near-constant flags — `has_section_demographics` fires for 3,140 of 3,144
+> counties — at the top of the "columns with headroom" list, where low |r| means
+> no variance rather than spare information. Prevalence and sd are now shown
+> beside the correlation.
 
 **Part three — the four arms.**
 
@@ -230,3 +261,27 @@ and renders as blank space without it.
 - It does not revisit the `n_body_sections` cut. That decision stands until a
   result argues otherwise, and this round is the thing that would produce such a
   result.
+
+## Corrections (2026-08-25, post-review)
+
+This design was approved and implemented as written. A whole-branch review then
+falsified two of its claims. Both are corrected inline above rather than edited
+out, because a design document that quietly stops saying what it said is not a
+review artifact any more.
+
+1. **"designed so that a pure size proxy scores approximately zero"** — false.
+   True only of a *linear* size proxy. An information-free block of curves on the
+   baseline's own three size columns scores +0.01748 against the structural
+   block's +0.00269. Fixed by adding the `size_nonlinear` null arm, which reports
+   that number in the scores CSV, the stats JSON, the log and the notebook.
+2. **"sets the expectation: most of these columns are size measurements"** —
+   false. The audit found 6 of 64. The audit was also linear-only, and therefore
+   blind to the channel correction 1 describes; it now carries a nonlinear
+   diagnostic and a variance column.
+
+The round's finding, restated honestly, is in
+`analysis-output/source-a/source-a-findings.md` §23. Short version: the
+structural lift is real but is measured against a linear-in-logs size model, and
+roughly a quarter of it survives a flexible size control — concentrated in a few
+consumer-facing location quotients, with Accommodation & Food Services the one
+target that clearly holds up. The fusion comparison does not survive.

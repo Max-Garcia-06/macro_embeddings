@@ -2401,3 +2401,191 @@ headline result, not evidence for it.
   geography-naive baseline is mostly (selected arm) or entirely and then some
   (`typed_transformed`) explained by county location rather than pillar
   content. Both facts are part of the resolution, not just the first one.
+
+## 23. What the Shape of an Article Knows — And What "Knows" Means Here (2026-08-25)
+
+**Context.** Source A had been scored three ways: a 1024-dim `bge-m3` embedding
+(§21, §22), a `content_length` scalar, and the shipped 29 typed columns (§13,
+§14). All three read content. This round asks the remaining question — how much
+of a county can be read off the *shape* of its Wikipedia article, without
+reading a word of the text. The prior was that the answer is "county size":
+`n_body_sections` was computed during the section round, correlated r = 0.550
+against log tax returns, and cut from the scored matrix on exactly that ground
+(`pillar_matrix.SOURCE_A_DIAGNOSTIC_COLUMNS`).
+
+### 23.1 What was built
+
+`scripts/extract_source_a_structure_features.py` turns
+`data/source_a_sections.parquet` (64,588 rows, 3,144 counties) into 64
+county-keyed columns, derived from two things only: a section's title and how
+many characters it holds. Five count features (`n_body_sections`,
+`n_distinct_titles`, `n_untitled_sections`, `max_section_id`, `n_id_gaps`), nine
+length features (totals, spread, Gini, stub counts and shares), 42 binary
+`has_section_<title>` flags for every title held by more than 5% of counties —
+computed from the corpus at runtime and written to the stats file, never
+hardcoded — and 8 `share_chars_<bucket>` columns splitting each article's
+characters across thematic buckets. No section text survives past the character
+count; a test enforces it.
+
+`scripts/analyze_source_a_structure.py` scores that block against the 28-target
+cross-pillar basket (§14.2b), reusing `analyze_source_a_representation.py`'s
+pipeline helpers rather than reimplementing them: unpenalized OLS baseline of
+`SIZE_FEATURES` plus state fixed effects, each block fitted to that baseline's
+residuals with a ridge whose penalty is chosen by nested crossvalidation, 5
+folds, seed 42, identical folds and rows across arms, Wilcoxon signed-rank
+across targets as the headline statistic. Verified as part of the review: adding
+a fourth arm left the other three's per-target numbers bit-identical.
+
+### 23.2 The headline numbers, as scored
+
+28 targets, mean baseline R² 0.2612.
+
+| arm | vs | mean lift | wins | Wilcoxon p |
+|---|---|---|---|---|
+| `structure` (64 cols) | baseline | +0.00269 | 21/28 | 0.0012 |
+| `typed` (29 cols) | baseline | +0.00307 | 22/28 | 0.0004 |
+| `typed_plus_structure` | `typed` | +0.00184 | 20/28 | 0.0118 |
+| **`size_nonlinear` (9 cols, NULL CONTROL)** | baseline | **+0.01748** | **26/28** | **1.3e-06** |
+
+Read the last row first. It is the round's most important number and it was not
+in the original sweep.
+
+### 23.3 The null-arm calibration — the round's central correction
+
+The design, the analysis module's docstring and the notebook's Part-three prose
+all made the same claim: that fitting each arm to the residuals of an
+unpenalized size-plus-state model "is what makes a pure size proxy worth
+approximately nothing instead of worth a headline." **That claim was false, and
+the round was approved on it.**
+
+The baseline holds `log_population`, `log_agi` and `log_gdp_latest` *linearly,
+in logs*. Three null blocks were run through the actual imported protocol
+helpers during review:
+
+| null block in the arm slot | mean lift | wins | p |
+|---|---|---|---|
+| the three baseline size columns themselves | +0.00000 | 16/28 | 0.203 |
+| 64 columns of pure Gaussian noise | +0.00008 | 12/28 | 0.938 |
+| **nonlinear transforms of those same three size columns** | **+0.0185** | 25/28 | <0.0001 |
+
+The first two behave as the design promised. The third does not. Squares, cubes
+and pairwise products of the baseline's own three columns carry no information
+the baseline lacks, and score roughly seven times the structural arm. That block
+is now a permanent fourth arm, `size_nonlinear`, and reproduces at **+0.01748,
+26/28, p = 1.3e-06** — 6.5x the structural arm's +0.00269 — reported in
+`outputs/source_a_structure_scores.csv`, `outputs/source_a_structure_by_pillar.csv`,
+`analysis-output/source-a/source_a_structure_stats.json`, the run log and the
+notebook. On 19 of the 28 targets the information-free block beats the
+structural block outright.
+
+So `lift > 0` in this round means "knows something a *linear-in-logs* size model
+does not". Any monotone-but-curved relationship with county size clears that
+bar, carrying no content at all.
+
+### 23.4 What survives a flexible size control
+
+Measured in review, under a baseline augmented with the same quadratic, cubic
+and interaction terms — residualized against the linear size columns and
+SVD-whitened, adding no information, mean baseline R² essentially unchanged at
+0.2612 → 0.2607:
+
+| arm | as shipped | + flexible size |
+|---|---|---|
+| `structure` | +0.00269, 21/28, p=0.0012 | +0.00073, 20/28, p=0.0281 |
+| `typed` | +0.00307, 22/28, p=0.0004 | +0.00161, 18/28, p=0.0110 |
+| `typed_plus_structure` vs `typed` | +0.00184, 20/28, p=0.0118 | +0.00095, 18/28, **p=0.1315** |
+
+Roughly a quarter of the structural lift survives. **The fusion comparison does
+not survive at all** — the one comparison that would have argued for shipping
+these columns.
+
+Per-target, the collapse concentrates where the headline lived:
+
+| target | as shipped | + flexible size | retained |
+|---|---|---|---|
+| Accommodation & Food Services LQ | +0.02546 | **+0.01455** | 57% |
+| Retail Trade LQ | +0.01031 | +0.00089 | 9% |
+| Agriculture, Forestry, Fishing & Hunting LQ | +0.00467 | +0.00008 | 2% |
+| Information LQ | +0.00366 | +0.00005 | 1% |
+| Wholesale Trade LQ | +0.00325 | −0.00040 | — |
+
+Accommodation & Food Services is the one target that clearly holds up.
+
+Two things this is **not**. It is not the six obvious size proxies: dropping
+`n_distinct_titles`, `n_body_sections`, `max_section_id`, `share_chars_census`,
+`total_body_chars` and `share_in_largest_section` and rescoring the remaining 58
+gives +0.00254 (21/28, p=0.0014), essentially unchanged. And it is not visible in
+a per-column audit: no structural column is a hidden curved size proxy — the
+largest out-of-fold R² against a degree-3 size basis is 0.340
+(`n_body_sections`), no column with |r| < 0.4 exceeds R² 0.4, and the largest
+gain from allowing a curve over a straight line is +0.076 (`total_body_chars`),
+median +0.002. The channel operates jointly across the block, which is why the
+per-column audit clears each column individually and clears nothing else.
+
+### 23.5 Precedent: this is §22.2's failure mode with curvature in place of geography
+
+§22.2 found the selected embedding arm's contribution collapsing from +0.0164 to
++0.0006 once two latitude/longitude columns were added to the baseline, and two
+raw coordinates alone reaching 96% of the arm's headline. This is the same shape
+of failure with a different omitted control: there, an apparent content win was
+mostly "where the county is"; here, an apparent shape win is mostly "how big the
+county is, in a way a straight line in logs could not express". Both were
+invisible until a control that costs nothing to add was added. The general
+lesson, now twice: **before reporting a lift, run the cheapest information-free
+block you can construct through the same protocol, and report what it scores.**
+A protocol that prices an information-free block above your finding is not
+measuring what its docstring says it measures.
+
+### 23.6 Status
+
+- **Status**: resolved, with the null-arm calibration load-bearing. The round is
+  complete and its artifacts are committed; it produces no change to
+  `pillar_matrix` and no argument for one. The `n_body_sections` cut stands —
+  nothing here argues for reopening it, and §23.4 argues against.
+- **Allowed wording**: "the shape of a county's Wikipedia article — section
+  counts, section lengths and which section titles are present, with no text
+  read — lifts out-of-fold R² by +0.00269 over a size-plus-state baseline on the
+  28-target cross-pillar basket (21/28, Wilcoxon p=0.0012)." "That baseline is
+  linear in the logs of population, AGI and GDP, so the lift measures what the
+  block knows beyond a *linear-in-logs* size model; an information-free block of
+  squares, cubes and pairwise products of those same three columns scores
+  +0.01748 (26/28, p=1.3e-06), 6.5 times as much (§23.3)." "Under a flexible size
+  control that adds no information, roughly a quarter of the structural lift
+  survives (+0.00073, 20/28, p=0.0281), concentrated in a few consumer-facing
+  location quotients; Accommodation & Food Services retains +0.01455 of +0.02546
+  and is the one target that clearly holds up (§23.4)." "The fusion comparison —
+  `typed_plus_structure` against `typed` — does not survive the flexible size
+  control (p=0.1315), so this round produces no case for shipping these columns."
+  "The result is not carried by the six obvious size-proxy columns: dropping them
+  and rescoring the remaining 58 gives +0.00254 (21/28, p=0.0014) (§23.4)."
+- **Forbidden wording**: **"article shape knows something county size does not"**,
+  and every variant of that claim shape — "beyond county size", "net of size",
+  "size-independent structure", "survives the size control". The size control is
+  linear; the round does not license any of them. Quoting the +0.00269 headline,
+  or the +0.00184 fusion number, without the null arm beside it — the null arm is
+  not an appendix, it is the unit those numbers are denominated in. "A pure size
+  proxy is worth approximately nothing under this protocol" (the falsified claim;
+  true only of a *linear* size proxy). "The size-proxy audit found most of these
+  columns are size measurements" — it found 6 of 64, the opposite; that
+  expectation was written into the design before the audit ran and survived in
+  three files until this section was written. "The audit shows no column is a
+  size proxy, therefore the block is not one" — the audit is per-column and the
+  channel is joint (§23.4). Any claim that these columns should ship, or that
+  §14/§22's decisions are reopened by this round.
+- **Caveat this does not fix**: the flexible-size-control numbers in §23.4 come
+  from the branch review, not from a committed sweep — the shipped arms are
+  `structure`, `typed`, `typed_plus_structure` and `size_nonlinear`, and the
+  flexible baseline is not among them. Anyone who needs those numbers to be
+  reproducible from an artifact should add the flexible baseline as a scored
+  variant first. Also unfixed: the aggregate is 71% one QCEW table (§14.2b,
+  §14.2c), so every basket-wide mean here inherits that caveat; the per-pillar
+  breakdown is in the stats file and the notebook beside every aggregate.
+- **Open question worth a round**: Accommodation & Food Services LQ. It is the
+  one target where article shape retains most of its lift under a flexible size
+  control, and a plausible mechanism exists — tourism and lodging show up in
+  article structure. That is a hypothesis with a target attached, which is more
+  than this round started with.
+- **Reproduction**: `uv run scripts/extract_source_a_structure_features.py`,
+  then `uv run scripts/analyze_source_a_structure.py`, then
+  `uv run scripts/build_source_a_structure_notebook.py`. Seed 42 throughout.
+  Notebook: `analysis-output/source-a/source_a_structure_round.ipynb`.

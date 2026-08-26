@@ -10,6 +10,34 @@
 
 **Design:** `docs/superpowers/specs/2026-08-25-source-a-structure-features-design.md`
 
+> ## Correction (2026-08-25, post-review) — read before using this plan as a reference
+>
+> This plan was executed as written. A whole-branch review then falsified two
+> claims it carries, both of which appear verbatim in the docstrings and notebook
+> prose the tasks below dictate. The code has been corrected; the tasks below are
+> left as they were executed, because a plan edited to match its outcome stops
+> being a record of what was done. Do not copy either claim forward.
+>
+> 1. **"a pure size proxy is worth approximately nothing"** (in the extraction
+>    module docstring at Task 1, and again in the analysis module docstring) —
+>    false. It is true only of a *linear* size proxy. The baseline holds
+>    `log_population`, `log_agi` and `log_gdp_latest` linearly, in logs. A block
+>    of squares, cubes and pairwise products of those same three columns, adding
+>    no information the baseline lacks, scores **+0.01748** mean lift on 26 of 28
+>    targets (p = 1.3e-06) against the structural block's **+0.00269** — six and
+>    a half times as much. A fourth arm, `size_nonlinear`, now reports this
+>    calibration in every artifact. "Lift" in this round means "beyond a
+>    linear-in-logs size model", not "beyond county size".
+> 2. **"sets the expectation: most of these columns are size measurements"** (the
+>    notebook builder's docstring and its Part-two prose, Task 5) — false. The
+>    audit found **6 of 64** columns clearing |r| = 0.4 against any size measure.
+>    The audit was also linear-only, and so blind to the channel correction 1
+>    describes; it now carries an out-of-fold R² against a degree-3 size basis
+>    and a variance column beside the correlation.
+>
+> What the round actually found, in the house format, is
+> `analysis-output/source-a/source-a-findings.md` §23.
+
 ## Global Constraints
 
 - Python 3.12; every command runs under `uv run` from the repo root.
