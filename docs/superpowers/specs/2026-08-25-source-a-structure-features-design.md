@@ -159,7 +159,7 @@ this basket and needs no exclusion here: it belongs to the separate 42-target
 external basket in `ingest_external_targets.EXTERNAL_TARGETS`. If this round is
 later extended to the external targets, that exclusion becomes live.
 
-**Four arms:**
+**Four arms** (a fifth, the null control, was added in review):
 
 | arm | block on top of the baseline |
 |---|---|
@@ -168,6 +168,12 @@ later extended to the external targets, that exclusion becomes live.
 | `typed` | the shipped 29 typed columns |
 | `typed_plus_structure` | both |
 | `size_nonlinear` | **null control, added in review:** squares, cubes and pairwise products of the baseline's own three size columns |
+
+Every arm is scored against **two** baselines, also added in review: the linear
+one above, and that baseline plus nine whitened curvature directions built from
+the same three size columns. That second baseline is an augmentation, not a
+fifth arm — an arm competes with the controls, an augmentation joins them, and
+only the second can answer how much of a lift was functional form.
 
 Two comparisons carry the round:
 
@@ -227,7 +233,7 @@ result checkable rather than surprising.
 > no variance rather than spare information. Prevalence and sd are now shown
 > beside the correlation.
 
-**Part three — the four arms.**
+**Part three — the arms, and the null control that prices them.**
 
 Mean out-of-fold R² lift per arm, the two headline paired tests, the per-pillar
 table, and the per-target detail. Then a short section on which individual
@@ -278,6 +284,15 @@ review artifact any more.
    false. The audit found 6 of 64. The audit was also linear-only, and therefore
    blind to the channel correction 1 describes; it now carries a nonlinear
    diagnostic and a variance column.
+
+3. **The round scored against one baseline where it needed two.** The design
+   specified a single linear-in-logs control. Correction 1 means that control
+   cannot distinguish content from curvature, so the sweep now also emits every
+   arm's lift against a curvature-augmented baseline — information-free by
+   construction, mean baseline R² 0.2612 → 0.2607. Under it the structural lift
+   falls to +0.00073 and the fusion comparison stops being significant
+   (p=0.1315). This was a review measurement until 2026-08-25 and is now a
+   committed sweep.
 
 The round's finding, restated honestly, is in
 `analysis-output/source-a/source-a-findings.md` §23. Short version: the

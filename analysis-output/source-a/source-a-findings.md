@@ -2448,7 +2448,8 @@ a fourth arm left the other three's per-target numbers bit-identical.
 | **`size_nonlinear` (9 cols, NULL CONTROL)** | baseline | **+0.01748** | **26/28** | **1.3e-06** |
 
 Read the last row first. It is the round's most important number and it was not
-in the original sweep.
+in the original sweep. Every arm above is also scored against a second,
+curvature-augmented baseline in the same run; that reading is §23.4.
 
 ### 23.3 The null-arm calibration — the round's central correction
 
@@ -2482,45 +2483,104 @@ So `lift > 0` in this round means "knows something a *linear-in-logs* size model
 does not". Any monotone-but-curved relationship with county size clears that
 bar, carrying no content at all.
 
+**The strongest confirmation is in §23.4, and it needs one sentence of
+reconciliation.** Those same nine terms, folded into the *baseline* instead of
+scored as an arm, move mean baseline R² by almost nothing (0.2612 → 0.2607) —
+and the null arm, scored against that augmented baseline, falls from +0.01748 to
++0.00000 (p=0.1128). Both readings of the same nine columns are correct and they
+are not in tension. As an **arm** the terms meet a ridge fitted to the baseline's
+residuals with its penalty chosen by nested crossvalidation, which extracts the
+little they carry efficiently. As a **baseline augmentation** they meet an
+unpenalized OLS fit beside three columns they are nearly collinear with, where
+the same directions are estimated noisily and mostly overfitted away. The
+augmentation absorbing the null arm to exactly zero is what a curvature-shaped
+control should do if the +0.01748 was curvature and nothing else, and it is the
+strongest single piece of evidence in this round that it was.
+
 ### 23.4 What survives a flexible size control
 
-Measured in review, under a baseline augmented with the same quadratic, cubic
-and interaction terms — residualized against the linear size columns and
-SVD-whitened, adding no information, mean baseline R² essentially unchanged at
-0.2612 → 0.2607:
+Since 2026-08-25 this is a committed sweep, not a review measurement. The
+flexible control is a second **baseline**, not a fifth arm: the nine nonlinear
+size terms are residualized against the three linear size columns (so they carry
+functional form and no level), SVD-whitened with near-null directions dropped
+(the augmented baseline is unpenalized OLS, where collinearity is instability
+rather than inefficiency), and appended to the design. All nine directions
+survive on the real panel. Every arm is then scored twice on one shared
+splitter, and both readings are emitted:
+`outputs/source_a_structure_scores.csv` carries `r2_baseline_flexible` and
+`lift_<arm>_flexbase` beside the untouched originals;
+`analysis-output/source-a/source_a_structure_stats.json` carries `arms_flexible`,
+`arms_flexible_undegraded` and `flexible_retention`.
 
-| arm | as shipped | + flexible size |
-|---|---|---|
-| `structure` | +0.00269, 21/28, p=0.0012 | +0.00073, 20/28, p=0.0281 |
-| `typed` | +0.00307, 22/28, p=0.0004 | +0.00161, 18/28, p=0.0110 |
-| `typed_plus_structure` vs `typed` | +0.00184, 20/28, p=0.0118 | +0.00095, 18/28, **p=0.1315** |
+The augmentation adds no information and behaves like it: **mean baseline R²
+0.2612 → 0.2607**.
+
+| arm | as shipped (linear baseline) | + flexible size | retained |
+|---|---|---|---|
+| `structure` | +0.00269, 21/28, p=0.0012 | +0.00073, 20/28, p=0.0281 | 27% |
+| `typed` | +0.00307, 22/28, p=0.0004 | +0.00161, 18/28, p=0.0110 | 52% |
+| `typed_plus_structure` vs `typed` | +0.00184, 20/28, p=0.0118 | +0.00095, 18/28, **p=0.1315** | 52% |
+| `size_nonlinear` (NULL CONTROL) | +0.01748, 26/28, p=1.3e-06 | **+0.00000, 15/28, p=0.1128** | **0%** |
 
 Roughly a quarter of the structural lift survives. **The fusion comparison does
 not survive at all** — the one comparison that would have argued for shipping
-these columns.
+these columns. And the null arm goes to zero, which is the construction check
+(§23.3).
+
+**The augmented baseline degrades on 6 of 28 targets** — `capital_to_wage_ratio`,
+`distress_count`, `lq_emp_31-33`, `out_partner_hhi`, `unemployment_rate_latest`,
+`unemployment_velocity` — from unpenalized-OLS instability that whitening
+reduces but does not remove. On those targets "lift over the baseline" is
+measured against a goalpost that moved, so the 22 undegraded targets are
+reported beside the full basket, never instead of it:
+
+| arm | all 28 targets | undegraded 22 only |
+|---|---|---|
+| `structure` | +0.00073, 20/28, p=0.0281 | +0.00062, 15/22, p=0.2099 |
+| `typed` | +0.00161, 18/28, p=0.0110 | +0.00148, 13/22, p=0.1289 |
+| `typed_plus_structure` vs `typed` | +0.00095, 18/28, p=0.1315 | +0.00091, 14/22, p=0.2902 |
+
+**On the undegraded 22 the structural lift is not significant at all**
+(p=0.2099), and neither is `typed` (p=0.1289). That reading is the more
+conservative one. It is not the headline only because it discards six targets on
+a criterion the *baseline* failed rather than the arm, and quoting it alone would
+overstate the collapse exactly as quoting the all-28 reading alone understates
+it. Rule: quote both, or quote neither.
 
 Per-target, the collapse concentrates where the headline lived:
 
 | target | as shipped | + flexible size | retained |
 |---|---|---|---|
-| Accommodation & Food Services LQ | +0.02546 | **+0.01455** | 57% |
-| Retail Trade LQ | +0.01031 | +0.00089 | 9% |
-| Agriculture, Forestry, Fishing & Hunting LQ | +0.00467 | +0.00008 | 2% |
-| Information LQ | +0.00366 | +0.00005 | 1% |
-| Wholesale Trade LQ | +0.00325 | −0.00040 | — |
+| Accommodation & Food Services LQ | +0.02546 | **+0.01203** | **47%** |
+| Wholesale Trade LQ | +0.00325 | +0.00107 | 33% |
+| Retail Trade LQ | +0.01031 | +0.00084 | 8% |
+| Information LQ | +0.00366 | +0.00008 | 2% |
+| Agriculture, Forestry, Fishing & Hunting LQ | +0.00467 | +0.00006 | 1% |
 
-Accommodation & Food Services is the one target that clearly holds up.
+Accommodation & Food Services is the one target that clearly holds up, at 47%
+retention against the basket's 27%.
+
+*Two small divergences from the branch review's own run of this control, both
+reported rather than reconciled.* The review measured Accommodation & Food at
++0.01455 (57%) where the committed sweep gets +0.01203 (47%), and Wholesale
+Trade at −0.00040 where the committed sweep gets +0.00107. Every aggregate
+matches the review to five decimals and every other per-target figure matches to
+the fourth; the divergence is confined to two targets and is the same
+basis-choice sensitivity that separates the review's +0.01850 null arm from the
+committed +0.01748 (§23.3). The committed numbers are the ones to quote, because
+they have an artifact behind them.
 
 Two things this is **not**. It is not the six obvious size proxies: dropping
 `n_distinct_titles`, `n_body_sections`, `max_section_id`, `share_chars_census`,
 `total_body_chars` and `share_in_largest_section` and rescoring the remaining 58
-gives +0.00254 (21/28, p=0.0014), essentially unchanged. And it is not visible in
-a per-column audit: no structural column is a hidden curved size proxy — the
-largest out-of-fold R² against a degree-3 size basis is 0.340
-(`n_body_sections`), no column with |r| < 0.4 exceeds R² 0.4, and the largest
-gain from allowing a curve over a straight line is +0.076 (`total_body_chars`),
-median +0.002. The channel operates jointly across the block, which is why the
-per-column audit clears each column individually and clears nothing else.
+gives +0.00254 (21/28, p=0.0014), essentially unchanged — measured in review, no
+artifact. And it is not visible in a per-column audit: no structural column is a
+hidden curved size proxy — the largest out-of-fold R² against a degree-3 size
+basis is 0.340 (`n_body_sections`), no column with |r| < 0.4 exceeds R² 0.4, and
+the largest gain from allowing a curve over a straight line is +0.076
+(`total_body_chars`), median +0.002. The channel operates jointly across the
+block, which is why the per-column audit clears each column individually and
+clears nothing else.
 
 ### 23.5 Precedent: this is §22.2's failure mode with curvature in place of geography
 
@@ -2538,7 +2598,8 @@ measuring what its docstring says it measures.
 
 ### 23.6 Status
 
-- **Status**: resolved, with the null-arm calibration load-bearing. The round is
+- **Status**: resolved, with the null-arm calibration and the flexible-baseline
+  reading both load-bearing. The round is
   complete and its artifacts are committed; it produces no change to
   `pillar_matrix` and no argument for one. The `n_body_sections` cut stands —
   nothing here argues for reopening it, and §23.4 argues against.
@@ -2550,12 +2611,19 @@ measuring what its docstring says it measures.
   block knows beyond a *linear-in-logs* size model; an information-free block of
   squares, cubes and pairwise products of those same three columns scores
   +0.01748 (26/28, p=1.3e-06), 6.5 times as much (§23.3)." "Under a flexible size
-  control that adds no information, roughly a quarter of the structural lift
-  survives (+0.00073, 20/28, p=0.0281), concentrated in a few consumer-facing
-  location quotients; Accommodation & Food Services retains +0.01455 of +0.02546
-  and is the one target that clearly holds up (§23.4)." "The fusion comparison —
+  control that adds no information — nine whitened curvature directions appended
+  to the baseline, moving mean baseline R² only 0.2612 → 0.2607 — roughly a
+  quarter of the structural lift survives across the full basket (+0.00073,
+  20/28, p=0.0281); on the 22 targets where the augmented baseline did not itself
+  degrade it is +0.00062, 15/22, p=0.2099, which is not significant, and both
+  readings have to be quoted together (§23.4)." "Accommodation & Food Services LQ
+  retains +0.01203 of +0.02546 (47%) against the basket's 27%, and is the one
+  target that clearly holds up (§23.4)." "The fusion comparison —
   `typed_plus_structure` against `typed` — does not survive the flexible size
-  control (p=0.1315), so this round produces no case for shipping these columns."
+  control (+0.00095, p=0.1315), so this round produces no case for shipping these
+  columns." "The flexible baseline absorbs the null arm exactly —
+  `size_nonlinear` falls from +0.01748 to +0.00000, p=0.1128 — which is what a
+  curvature-shaped control must do if that lift was curvature (§23.3)."
   "The result is not carried by the six obvious size-proxy columns: dropping them
   and rescoring the remaining 58 gives +0.00254 (21/28, p=0.0014) (§23.4)."
 - **Forbidden wording**: **"article shape knows something county size does not"**,
@@ -2570,18 +2638,26 @@ measuring what its docstring says it measures.
   expectation was written into the design before the audit ran and survived in
   three files until this section was written. "The audit shows no column is a
   size proxy, therefore the block is not one" — the audit is per-column and the
-  channel is joint (§23.4). Any claim that these columns should ship, or that
+  channel is joint (§23.4). Any flexible-size-control figure quoted without
+  saying which basket produced it: all-28 and undegraded-22 are two denominators
+  and they disagree on significance (p=0.0281 vs p=0.2099), so Rule 5 applies
+  here as it does in §22.4. Any claim that these columns should ship, or that
   §14/§22's decisions are reopened by this round.
-- **Caveat this does not fix**: the flexible-size-control numbers in §23.4 come
-  from the branch review, not from a committed sweep — the shipped arms are
-  `structure`, `typed`, `typed_plus_structure` and `size_nonlinear`, and the
-  flexible baseline is not among them. Anyone who needs those numbers to be
-  reproducible from an artifact should add the flexible baseline as a scored
-  variant first. Also unfixed: the aggregate is 71% one QCEW table (§14.2b,
-  §14.2c), so every basket-wide mean here inherits that caveat; the per-pillar
-  breakdown is in the stats file and the notebook beside every aggregate.
+- **Caveat this does not fix**: two supporting controls in this section still
+  have no artifact behind them and are review measurements only — the 64-column
+  Gaussian-noise null (+0.00008, 12/28, p=0.938, §23.3) and the
+  drop-the-six-size-proxies rescore (+0.00254, 21/28, p=0.0014, §23.4). Neither
+  carries a headline claim, both are corroboration, and both are labelled
+  review-derived where they appear. Everything else quoted in this section —
+  including every flexible-size-control number — comes from the committed sweep
+  and reproduces with the commands below. Also unfixed: the aggregate is 71% one
+  QCEW table (§14.2b, §14.2c), so every basket-wide mean here inherits that
+  caveat; the per-pillar breakdown is in the stats file and the notebook beside
+  every aggregate. And the flexible baseline is unpenalized OLS on a wider
+  design, which is why it degrades 6 of 28 targets — a penalized augmented
+  baseline would be a better control, and is not what this round ran.
 - **Open question worth a round**: Accommodation & Food Services LQ. It is the
-  one target where article shape retains most of its lift under a flexible size
+  one target where article shape retains most of its lift under the flexible size
   control, and a plausible mechanism exists — tourism and lodging show up in
   article structure. That is a hypothesis with a target attached, which is more
   than this round started with.
