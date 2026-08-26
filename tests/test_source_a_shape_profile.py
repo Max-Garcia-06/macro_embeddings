@@ -173,3 +173,106 @@ def test_title_word_count_is_averaged_over_the_county() -> None:
     )
 
     assert shape.template_features(sections).loc["01001", "n_title_words"] == pytest.approx(2.0)
+
+
+def test_digit_density_is_zero_for_letters_and_one_for_digits() -> None:
+    letters = make_sections([("01001", 1, "A", "abcdef")])
+    digits = make_sections([("01002", 1, "A", "123456")])
+
+    assert shape.surface_features(letters).loc["01001", "digit_density"] == pytest.approx(0.0)
+    assert shape.surface_features(digits).loc["01002", "digit_density"] == pytest.approx(1.0)
+
+
+def test_capital_ratio_counts_letters_only() -> None:
+    """Digits are neither upper nor lower, so they must not dilute the ratio."""
+    sections = make_sections([("01001", 1, "A", "AB12ab")])
+
+    assert shape.surface_features(sections).loc["01001", "capital_ratio"] == pytest.approx(0.5)
+
+
+def test_mean_word_length_ignores_whitespace() -> None:
+    sections = make_sections([("01001", 1, "A", "aa bbbb cc")])
+
+    assert shape.surface_features(sections).loc["01001", "mean_word_length"] == pytest.approx(
+        8 / 3
+    )
+
+
+def test_bucket_density_is_computed_only_where_that_bucket_has_characters() -> None:
+    """A density over zero characters is not a number; it must not be invented."""
+    sections = make_sections([("01001", 1, "Geography", "abc123")])
+
+    surface = shape.surface_features(sections)
+
+    assert surface.loc["01001", "digit_density_geography"] == pytest.approx(0.5)
+    assert surface.loc["01001", "digit_density_census"] == pytest.approx(0.0)
+
+
+def test_a_county_with_no_characters_gets_zero_not_nan() -> None:
+    sections = make_sections([("01001", 1, "A", "")])
+
+    surface = shape.surface_features(sections)
+
+    assert np.isfinite(surface.loc["01001"].to_numpy()).all()
+
+
+def test_top3_share_is_the_three_longest_sections() -> None:
+    sections = make_sections(
+        [
+            ("01001", 1, "A", "x" * 400),
+            ("01001", 2, "B", "x" * 300),
+            ("01001", 3, "C", "x" * 200),
+            ("01001", 4, "D", "x" * 100),
+        ]
+    )
+
+    curve = shape.length_curve_features(sections)
+
+    assert curve.loc["01001", "top3_length_share"] == pytest.approx(0.9)
+
+
+def test_top3_share_is_one_when_a_county_has_three_or_fewer_sections() -> None:
+    sections = make_sections([("01001", 1, "A", "x" * 10), ("01001", 2, "B", "x" * 20)])
+
+    assert shape.length_curve_features(sections).loc["01001", "top3_length_share"] == pytest.approx(
+        1.0
+    )
+
+
+def test_decay_slope_is_negative_when_lengths_fall_off() -> None:
+    steep = make_sections(
+        [("01001", i, f"S{i}", "x" * n) for i, n in enumerate([1000, 100, 10, 5], start=1)]
+    )
+    flat = make_sections([("01002", i, f"S{i}", "x" * 100) for i in range(1, 5)])
+
+    curve = shape.length_curve_features(pd.concat([steep, flat]))
+
+    assert curve.loc["01001", "length_decay_slope"] < curve.loc["01002", "length_decay_slope"]
+    assert curve.loc["01002", "length_decay_slope"] == pytest.approx(0.0)
+
+
+def test_absolute_bucket_characters_are_reported_for_every_bucket() -> None:
+    sections = make_sections([("01001", 1, "Geography", "x" * 250)])
+
+    curve = shape.length_curve_features(sections)
+
+    assert curve.loc["01001", "chars_geography"] == pytest.approx(250.0)
+    assert curve.loc["01001", "chars_census"] == pytest.approx(0.0)
+
+
+def test_recomputed_top_one_share_matches_round_one(sections_frame: pd.DataFrame) -> None:
+    """Cross-module consistency: the same quantity under two names must agree.
+
+    Round one ships `share_in_largest_section`; this module deliberately does not
+    ship a duplicate of it. Asserting the equality here catches a drift in either
+    module without putting the column in the block twice.
+    """
+    import extract_source_a_structure_features as structure
+
+    round_one = structure.length_features(sections_frame)["share_in_largest_section"]
+
+    chars = sections_frame["section_text"].fillna("").str.len().astype("float64")
+    grouped = sections_frame.assign(_chars=chars).groupby("fips_code")["_chars"]
+    recomputed = (grouped.max() / grouped.sum().replace(0.0, np.nan)).fillna(0.0)
+
+    assert np.allclose(recomputed.to_numpy(), round_one.reindex(recomputed.index).to_numpy())

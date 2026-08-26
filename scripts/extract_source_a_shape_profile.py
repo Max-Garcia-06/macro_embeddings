@@ -36,6 +36,7 @@ import numpy as np
 import pandas as pd
 
 from extract_source_a_structure_features import (
+    BUCKET_KEYS,
     SECTIONS_PARQUET_PATH,
     assign_buckets,
     flag_vocabulary,
@@ -270,3 +271,159 @@ def template_features(sections: pd.DataFrame) -> pd.DataFrame:
         .fillna(0.0)
     )
     return features
+
+
+# Buckets that get their own character-class densities. The four largest only:
+# `economy`, `government`, `highways` and `other` are absent or near-empty for a
+# large share of counties, and a density over zero characters is not a number --
+# it is a zero standing where "no data" belongs, which a model reads as a
+# measurement.
+DENSITY_BUCKETS: tuple[str, ...] = ("census", "lists", "narrative", "geography")
+
+
+def _class_counts(text: pd.Series) -> pd.DataFrame:
+    """Count character classes per section.
+
+    Args:
+        text: Section text.
+
+    Returns:
+        DataFrame with `chars`, `word_chars`, `digits`, `letters`, `uppers`,
+        `punct` and `words` columns, aligned to `text.index`. `word_chars`
+        excludes whitespace, so a mean built on it reports the length of the
+        words themselves rather than diluting it with the spaces between them.
+    """
+    filled = text.fillna("")
+    return pd.DataFrame(
+        {
+            "chars": filled.str.len().astype("float64"),
+            "word_chars": filled.str.count(r"\S").astype("float64"),
+            "digits": filled.str.count(r"\d").astype("float64"),
+            "letters": filled.str.count(r"[A-Za-z]").astype("float64"),
+            "uppers": filled.str.count(r"[A-Z]").astype("float64"),
+            "punct": filled.str.count(r"[^\w\s]").astype("float64"),
+            "words": filled.str.split().str.len().fillna(0.0).astype("float64"),
+        },
+        index=filled.index,
+    )
+
+
+def _safe_ratio(numerator: pd.Series, denominator: pd.Series) -> pd.Series:
+    """Divide, treating a zero denominator as zero rather than as NaN or an error.
+
+    Args:
+        numerator: Top of the ratio.
+        denominator: Bottom of the ratio.
+
+    Returns:
+        The ratio, with zero-denominator rows set to 0.0.
+    """
+    return (numerator / denominator.replace(0.0, np.nan)).fillna(0.0)
+
+
+def surface_features(sections: pd.DataFrame) -> pd.DataFrame:
+    """Character-class densities, overall and for the four largest buckets.
+
+    These read characters and never meaning. The signal they are after is
+    documented: a census table rendered as prose is roughly 30% digits, a list of
+    place names is short-worded and heavily capitalized, and narrative prose is
+    neither -- all three are facts about an article's shape.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        DataFrame indexed by `fips_code` with `digit_density`, `punct_density`,
+        `capital_ratio`, `mean_word_length`, `numeral_to_letter`, and
+        `digit_density_<bucket>` for each of `DENSITY_BUCKETS`.
+    """
+    counts = _class_counts(sections["section_text"])
+    frame = counts.assign(fips_code=sections["fips_code"].to_numpy(), _bucket=assign_buckets(sections))
+    index = pd.Index(sorted(sections["fips_code"].unique()), name="fips_code")
+    totals = (
+        frame.groupby("fips_code")[
+            ["chars", "word_chars", "digits", "letters", "uppers", "punct", "words"]
+        ]
+        .sum()
+        .reindex(index)
+        .fillna(0.0)
+    )
+
+    features = pd.DataFrame(index=index)
+    features["digit_density"] = _safe_ratio(totals["digits"], totals["chars"])
+    features["punct_density"] = _safe_ratio(totals["punct"], totals["chars"])
+    features["capital_ratio"] = _safe_ratio(totals["uppers"], totals["letters"])
+    features["mean_word_length"] = _safe_ratio(totals["word_chars"], totals["words"])
+    features["numeral_to_letter"] = _safe_ratio(totals["digits"], totals["letters"])
+
+    for bucket in DENSITY_BUCKETS:
+        within = frame.loc[frame["_bucket"] == bucket].groupby("fips_code")[["digits", "chars"]].sum().reindex(index).fillna(0.0)
+        features[f"digit_density_{bucket}"] = _safe_ratio(within["digits"], within["chars"])
+    return features
+
+
+def length_curve_features(sections: pd.DataFrame) -> pd.DataFrame:
+    """The shape of the sorted section-length curve, and absolute bucket lengths.
+
+    Round one shipped a Gini over section lengths and the share in the largest
+    section. Both are scale-free, so neither can express "this county has a long
+    economy section" -- only "a large fraction of this county's article is its
+    economy section". The absolute `chars_<bucket>` columns close that gap.
+
+    `chars_<bucket>` is `share_chars_<bucket>` times `total_body_chars`, both of
+    which round one already ships, so it is derivable rather than new. It earns
+    its place for the ridge learner, which cannot form products, and is redundant
+    for the boosting learner, which can.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        DataFrame indexed by `fips_code` with `top3_length_share`,
+        `length_decay_slope` and `chars_<bucket>` for every bucket.
+    """
+    frame = sections.assign(
+        _chars=sections["section_text"].fillna("").str.len().astype("float64"),
+        _bucket=assign_buckets(sections),
+    )
+    index = pd.Index(sorted(sections["fips_code"].unique()), name="fips_code")
+    grouped = frame.groupby("fips_code")["_chars"]
+
+    totals = grouped.sum().reindex(index).fillna(0.0)
+    top3 = grouped.apply(lambda s: float(np.sort(s.to_numpy())[::-1][:3].sum())).reindex(index).fillna(0.0)
+
+    features = pd.DataFrame(index=index)
+    features["top3_length_share"] = _safe_ratio(top3, totals)
+    features["length_decay_slope"] = (
+        grouped.apply(lambda s: _decay_slope(s.to_numpy())).reindex(index).fillna(0.0)
+    )
+
+    per_bucket = (
+        frame.pivot_table(index="fips_code", columns="_bucket", values="_chars", aggfunc="sum")
+        .reindex(index=index, columns=list(BUCKET_KEYS))
+        .fillna(0.0)
+    )
+    for bucket in BUCKET_KEYS:
+        features[f"chars_{bucket}"] = per_bucket[bucket]
+    return features
+
+
+def _decay_slope(lengths: np.ndarray) -> float:
+    """OLS slope of log length on rank, over a county's sections longest-first.
+
+    Measures how fast the article falls away from its main section: a steep
+    negative slope is one substantial section and a tail of stubs, a flat slope
+    is an evenly developed article.
+
+    Args:
+        lengths: Section lengths for one county.
+
+    Returns:
+        The slope, or 0.0 when the county has fewer than two sections.
+    """
+    if len(lengths) < 2:
+        return 0.0
+    ordered = np.sort(lengths.astype("float64"))[::-1]
+    ranks = np.arange(len(ordered), dtype="float64")
+    slope, _ = np.polyfit(ranks, np.log1p(ordered), 1)
+    return float(slope)
