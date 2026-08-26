@@ -427,3 +427,113 @@ def _decay_slope(lengths: np.ndarray) -> float:
     ranks = np.arange(len(ordered), dtype="float64")
     slope, _ = np.polyfit(ranks, np.log1p(ordered), 1)
     return float(slope)
+
+
+def shape_profile_columns(features: pd.DataFrame) -> list[str]:
+    """List the scored columns of an assembled shape profile.
+
+    Args:
+        features: Output of `build_shape_profile`.
+
+    Returns:
+        Every column except the `fips_code` key.
+    """
+    return [column for column in features.columns if column != "fips_code"]
+
+
+def build_shape_profile(sections: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, object]]:
+    """Assemble all four new families for every county.
+
+    Args:
+        sections: Long-format section frame from `ingest_source_a.py`.
+
+    Returns:
+        Tuple of (features, metadata). `features` carries `fips_code` as a
+        column and every feature as float64; `metadata` records the two title
+        sets that were derived from the corpus, so a shift in either is
+        auditable rather than silent.
+    """
+    vocabulary = flag_vocabulary(sections)
+    modal = modal_title_set(sections)
+    parts = [
+        position_features(sections, vocabulary),
+        template_features(sections),
+        surface_features(sections),
+        length_curve_features(sections),
+    ]
+    features = pd.concat(parts, axis=1).astype("float64")
+    features.index.name = "fips_code"
+    metadata: dict[str, object] = {
+        "flag_vocabulary": vocabulary,
+        "modal_title_set": modal,
+    }
+    return features.reset_index(), metadata
+
+
+def summarize(features: pd.DataFrame, metadata: dict[str, object]) -> dict[str, object]:
+    """Describe the profile for the notebook and for later auditing.
+
+    Args:
+        features: Output of `build_shape_profile`.
+        metadata: The derived title sets from `build_shape_profile`.
+
+    Returns:
+        Counts, the derived sets and thresholds, and per-column summary
+        statistics keyed by column name.
+    """
+    columns = shape_profile_columns(features)
+    block = features[columns]
+    return {
+        "n_counties": int(len(features)),
+        "n_features": len(columns),
+        "modal_title_set": metadata["modal_title_set"],
+        "flag_vocabulary": metadata["flag_vocabulary"],
+        "modal_title_min_share": MODAL_TITLE_MIN_SHARE,
+        "unusual_title_max_share": UNUSUAL_TITLE_MAX_SHARE,
+        "position_absent_sentinel": POSITION_ABSENT,
+        "density_buckets": list(DENSITY_BUCKETS),
+        "column_summary": {
+            column: {
+                "mean": float(block[column].mean()),
+                "sd": float(block[column].std()),
+                "min": float(block[column].min()),
+                "max": float(block[column].max()),
+            }
+            for column in columns
+        },
+    }
+
+
+def main() -> None:
+    """Build the shape profile from the section parquet and write it out."""
+    configure_logging()
+
+    try:
+        sections = pd.read_parquet(SECTIONS_PARQUET_PATH)
+    except FileNotFoundError:
+        logger.error("Need %s -- run ingest_source_a.py first.", SECTIONS_PARQUET_PATH)
+        raise
+
+    features, metadata = build_shape_profile(sections)
+    stats = summarize(features, metadata)
+
+    ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
+    features.to_parquet(SHAPE_PROFILE_PATH, index=False)
+    SHAPE_PROFILE_STATS_PATH.write_text(json.dumps(stats, indent=2))
+
+    logger.info(
+        "wrote %d shape-profile features for %d counties to %s",
+        stats["n_features"],
+        stats["n_counties"],
+        SHAPE_PROFILE_PATH,
+    )
+    logger.info(
+        "modal skeleton: %d titles above %.0f%% of counties",
+        len(metadata["modal_title_set"]),
+        MODAL_TITLE_MIN_SHARE * 100,
+    )
+    logger.info("wrote %s", SHAPE_PROFILE_STATS_PATH)
+
+
+if __name__ == "__main__":
+    main()

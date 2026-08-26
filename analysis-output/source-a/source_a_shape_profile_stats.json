@@ -1,0 +1,513 @@
+{
+  "n_counties": 3144,
+  "n_features": 73,
+  "modal_title_set": [
+    "demographics",
+    "geography",
+    "2020 census",
+    "communities",
+    "adjacent counties",
+    "history",
+    "major highways",
+    "education",
+    "politics",
+    "2000 census",
+    "unincorporated communities",
+    "racial and ethnic composition",
+    "cities",
+    "2010 census"
+  ],
+  "flag_vocabulary": [
+    "demographics",
+    "geography",
+    "2020 census",
+    "communities",
+    "adjacent counties",
+    "history",
+    "major highways",
+    "politics",
+    "education",
+    "2000 census",
+    "unincorporated communities",
+    "racial and ethnic composition",
+    "cities",
+    "2010 census",
+    "census-designated places",
+    "towns",
+    "townships",
+    "government",
+    "transportation",
+    "notable people",
+    "economy",
+    "national protected area",
+    "city",
+    "census-designated place",
+    "national protected areas",
+    "villages",
+    "ghost towns",
+    "other unincorporated communities",
+    "government and politics",
+    "media",
+    "airports",
+    "protected areas",
+    "town",
+    "population ranking",
+    "climate",
+    "elected officials",
+    "lakes",
+    "climate and weather",
+    "transit",
+    "colleges and universities",
+    "private schools",
+    "railroads"
+  ],
+  "modal_title_min_share": 0.5,
+  "unusual_title_max_share": 0.01,
+  "position_absent_sentinel": -1.0,
+  "density_buckets": [
+    "census",
+    "lists",
+    "narrative",
+    "geography"
+  ],
+  "column_summary": {
+    "pos_demographics": {
+      "mean": 0.3302918125933019,
+      "sd": 0.15045818757879684,
+      "min": -1.0,
+      "max": 0.8974358974358975
+    },
+    "pos_geography": {
+      "mean": 0.059904098015928775,
+      "sd": 0.14087928655039952,
+      "min": -1.0,
+      "max": 0.696969696969697
+    },
+    "pos_2020_census": {
+      "mean": 0.3854380153083657,
+      "sd": 0.2485909997426149,
+      "min": -1.0,
+      "max": 0.9743589743589743
+    },
+    "pos_communities": {
+      "mean": 0.5526528993573764,
+      "sd": 0.4226037014110821,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_adjacent_counties": {
+      "mean": 0.04705635786512942,
+      "sd": 0.3820588717353554,
+      "min": -1.0,
+      "max": 0.9130434782608695
+    },
+    "pos_history": {
+      "mean": -0.1802471764535465,
+      "sd": 0.3915821515753484,
+      "min": -1.0,
+      "max": 0.925
+    },
+    "pos_major_highways": {
+      "mean": -0.029446270321620574,
+      "sd": 0.5699216421131595,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_politics": {
+      "mean": 0.25888897395011956,
+      "sd": 0.8093800283028604,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_education": {
+      "mean": 0.26216494510115773,
+      "sd": 0.8086470183584912,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_2000_census": {
+      "mean": -0.01999614036213502,
+      "sd": 0.7014617977130029,
+      "min": -1.0,
+      "max": 0.9166666666666666
+    },
+    "pos_unincorporated_communities": {
+      "mean": 0.12342239442935035,
+      "sd": 0.8991475509012128,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_racial_and_ethnic_composition": {
+      "mean": -0.18938186984382296,
+      "sd": 0.7125878490608836,
+      "min": -1.0,
+      "max": 0.9230769230769231
+    },
+    "pos_cities": {
+      "mean": -0.04109266256705818,
+      "sd": 0.8483463423351236,
+      "min": -1.0,
+      "max": 0.9736842105263158
+    },
+    "pos_2010_census": {
+      "mean": -0.24440673143555713,
+      "sd": 0.740684633295799,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_census_designated_places": {
+      "mean": -0.2714749888111583,
+      "sd": 0.8895604297241594,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_towns": {
+      "mean": -0.40719598660986733,
+      "sd": 0.8308905253891568,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_townships": {
+      "mean": -0.4317363707618901,
+      "sd": 0.8554044674537422,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_government": {
+      "mean": -0.5935613132224964,
+      "sd": 0.6874211867532559,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_transportation": {
+      "mean": -0.6102024281234054,
+      "sd": 0.692535242017575,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_notable_people": {
+      "mean": -0.5484340351109265,
+      "sd": 0.8239095433712315,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_economy": {
+      "mean": -0.6816042980534484,
+      "sd": 0.6323144902604902,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_national_protected_area": {
+      "mean": -0.7681403098315178,
+      "sd": 0.4831842918481323,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_city": {
+      "mean": -0.6817723892360436,
+      "sd": 0.6637190221305216,
+      "min": -1.0,
+      "max": 0.9444444444444444
+    },
+    "pos_census_designated_place": {
+      "mean": -0.6947201010757303,
+      "sd": 0.6686953719189009,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_national_protected_areas": {
+      "mean": -0.7974044106879902,
+      "sd": 0.4558916981188789,
+      "min": -1.0,
+      "max": 0.8947368421052632
+    },
+    "pos_villages": {
+      "mean": -0.7118547541546931,
+      "sd": 0.6485242224359755,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_ghost_towns": {
+      "mean": -0.7655759010169808,
+      "sd": 0.6207799742555196,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_other_unincorporated_communities": {
+      "mean": -0.779779478992296,
+      "sd": 0.6007767792090272,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_government_and_politics": {
+      "mean": -0.8120506703260643,
+      "sd": 0.5180527055548327,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_media": {
+      "mean": -0.8181594717475486,
+      "sd": 0.527596090257329,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_airports": {
+      "mean": -0.8335961385016198,
+      "sd": 0.49060717905759244,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_protected_areas": {
+      "mean": -0.8713988804532986,
+      "sd": 0.3831822596162315,
+      "min": -1.0,
+      "max": 0.9411764705882353
+    },
+    "pos_town": {
+      "mean": -0.8344039511645074,
+      "sd": 0.5102333316575599,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_population_ranking": {
+      "mean": -0.8457299208290755,
+      "sd": 0.5223577281014988,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_climate": {
+      "mean": -0.9081001521596099,
+      "sd": 0.33225226657648593,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_elected_officials": {
+      "mean": -0.8855212350717419,
+      "sd": 0.4255309881438864,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_lakes": {
+      "mean": -0.9130775399170519,
+      "sd": 0.32259246816123555,
+      "min": -1.0,
+      "max": 0.92
+    },
+    "pos_climate_and_weather": {
+      "mean": -0.910205176507157,
+      "sd": 0.34002188645002596,
+      "min": -1.0,
+      "max": 0.88
+    },
+    "pos_transit": {
+      "mean": -0.9165620518837287,
+      "sd": 0.31602775077060724,
+      "min": -1.0,
+      "max": 0.96875
+    },
+    "pos_colleges_and_universities": {
+      "mean": -0.8978307330050758,
+      "sd": 0.3990062549606589,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_private_schools": {
+      "mean": -0.9028573023288768,
+      "sd": 0.3841676168702793,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_railroads": {
+      "mean": -0.921841846211246,
+      "sd": 0.33415597603512354,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_longest_section": {
+      "mean": 0.2805356844099995,
+      "sd": 0.19481246039968148,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "pos_first_economy": {
+      "mean": -0.6747682768523353,
+      "sd": 0.6368550463111754,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "pos_first_census": {
+      "mean": 0.33066413709562187,
+      "sd": 0.14858507659003967,
+      "min": -1.0,
+      "max": 0.8974358974358975
+    },
+    "pos_first_narrative": {
+      "mean": -0.10378191204990014,
+      "sd": 0.40882181897867953,
+      "min": -1.0,
+      "max": 1.0
+    },
+    "history_before_economy": {
+      "mean": 0.19147582697201018,
+      "sd": 0.3935252101805898,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "position_spread": {
+      "mean": 0.3125405844311666,
+      "sd": 0.02964474559329494,
+      "min": 0.0,
+      "max": 0.7071067811865476
+    },
+    "template_jaccard": {
+      "mean": 0.4969691033950035,
+      "sd": 0.14011286344222987,
+      "min": 0.058823529411764705,
+      "max": 0.9333333333333333
+    },
+    "n_core_missing": {
+      "mean": 3.2474554707379135,
+      "sd": 1.7147411303328937,
+      "min": 0.0,
+      "max": 13.0
+    },
+    "n_unusual_sections": {
+      "mean": 2.524491094147583,
+      "sd": 3.863240953758831,
+      "min": 0.0,
+      "max": 36.0
+    },
+    "share_unusual_sections": {
+      "mean": 0.09959522142322492,
+      "sd": 0.11111691955205016,
+      "min": 0.0,
+      "max": 0.6862745098039216
+    },
+    "mean_title_rarity": {
+      "mean": 0.48141568348911434,
+      "sd": 0.12271106177678577,
+      "min": 0.16103689567430027,
+      "max": 0.9144895586557866
+    },
+    "n_title_words": {
+      "mean": 1.7155241663718208,
+      "sd": 0.19876289655598997,
+      "min": 1.0,
+      "max": 2.9285714285714284
+    },
+    "digit_density": {
+      "mean": 0.05965885718323189,
+      "sd": 0.01556596487930757,
+      "min": 0.01221264367816092,
+      "max": 0.10372565622353937
+    },
+    "punct_density": {
+      "mean": 0.04654546292926993,
+      "sd": 0.008110868032061182,
+      "min": 0.0067842605156037995,
+      "max": 0.07423217740259325
+    },
+    "capital_ratio": {
+      "mean": 0.05983209751393292,
+      "sd": 0.01204413281984305,
+      "min": 0.03154153709462461,
+      "max": 0.14435327863384698
+    },
+    "mean_word_length": {
+      "mean": 4.966050628146353,
+      "sd": 0.1885652489739355,
+      "min": 4.538002980625931,
+      "max": 7.075757575757576
+    },
+    "numeral_to_letter": {
+      "mean": 0.08292445693390053,
+      "sd": 0.024231430662867273,
+      "min": 0.014604810996563574,
+      "max": 0.15715507759990224
+    },
+    "digit_density_census": {
+      "mean": 0.09596713287682371,
+      "sd": 0.009212693602198506,
+      "min": 0.0,
+      "max": 0.14132259147364887
+    },
+    "digit_density_lists": {
+      "mean": 0.002522811984325705,
+      "sd": 0.01019522978950395,
+      "min": 0.0,
+      "max": 0.24336283185840707
+    },
+    "digit_density_narrative": {
+      "mean": 0.025106853911078923,
+      "sd": 0.01820121910776745,
+      "min": 0.0,
+      "max": 0.2
+    },
+    "digit_density_geography": {
+      "mean": 0.0454823484809123,
+      "sd": 0.02030901647551841,
+      "min": 0.0,
+      "max": 0.2225609756097561
+    },
+    "top3_length_share": {
+      "mean": 0.5508984855690326,
+      "sd": 0.11999004056927946,
+      "min": 0.17710447729470652,
+      "max": 1.0
+    },
+    "length_decay_slope": {
+      "mean": -0.2654483642737462,
+      "sd": 0.08946301747202165,
+      "min": -1.0884484389152742,
+      "max": 0.0
+    },
+    "chars_census": {
+      "mean": 6347.826972010178,
+      "sd": 1884.2428054810891,
+      "min": 0.0,
+      "max": 24693.0
+    },
+    "chars_lists": {
+      "mean": 1166.7366412213742,
+      "sd": 1118.096225254086,
+      "min": 0.0,
+      "max": 27578.0
+    },
+    "chars_highways": {
+      "mean": 543.0445292620865,
+      "sd": 1286.380037030653,
+      "min": 0.0,
+      "max": 20430.0
+    },
+    "chars_narrative": {
+      "mean": 2362.6469465648856,
+      "sd": 3584.2393110376993,
+      "min": 0.0,
+      "max": 59659.0
+    },
+    "chars_economy": {
+      "mean": 255.24745547073792,
+      "sd": 970.355884850648,
+      "min": 0.0,
+      "max": 23574.0
+    },
+    "chars_geography": {
+      "mean": 1272.9637404580153,
+      "sd": 1478.2627135565494,
+      "min": 0.0,
+      "max": 18481.0
+    },
+    "chars_government": {
+      "mean": 1839.7830788804072,
+      "sd": 2214.2022282293815,
+      "min": 0.0,
+      "max": 22584.0
+    },
+    "chars_other": {
+      "mean": 3633.466921119593,
+      "sd": 8816.946725906339,
+      "min": 0.0,
+      "max": 132071.0
+    }
+  }
+}

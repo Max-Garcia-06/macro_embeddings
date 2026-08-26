@@ -276,3 +276,62 @@ def test_recomputed_top_one_share_matches_round_one(sections_frame: pd.DataFrame
     recomputed = (grouped.max() / grouped.sum().replace(0.0, np.nan)).fillna(0.0)
 
     assert np.allclose(recomputed.to_numpy(), round_one.reindex(recomputed.index).to_numpy())
+
+
+def test_every_county_appears_exactly_once(sections_frame: pd.DataFrame) -> None:
+    features, _ = shape.build_shape_profile(sections_frame)
+
+    assert len(features) == sections_frame["fips_code"].nunique()
+    assert features["fips_code"].is_unique
+
+
+def test_all_feature_columns_are_finite(sections_frame: pd.DataFrame) -> None:
+    features, _ = shape.build_shape_profile(sections_frame)
+    block = features[shape.shape_profile_columns(features)]
+
+    assert (block.dtypes == "float64").all()
+    assert np.isfinite(block.to_numpy()).all()
+
+
+def test_the_profile_shares_no_column_with_round_one(sections_frame: pd.DataFrame) -> None:
+    """The analysis module joins the two parquets; a shared name would collide."""
+    import extract_source_a_structure_features as structure
+
+    profile, _ = shape.build_shape_profile(sections_frame)
+    round_one, _ = structure.build_structure_features(sections_frame)
+
+    shared = (set(profile.columns) & set(round_one.columns)) - {"fips_code"}
+    assert shared == set(), f"colliding column names: {sorted(shared)}"
+
+
+def test_position_columns_cover_round_ones_flag_vocabulary(sections_frame: pd.DataFrame) -> None:
+    """`pos_x` and `has_section_x` must never describe different title sets."""
+    import extract_source_a_structure_features as structure
+
+    profile, _ = shape.build_shape_profile(sections_frame)
+
+    flagged = {
+        c[len(structure.TITLE_FLAG_PREFIX):]
+        for c in structure.build_structure_features(sections_frame)[0].columns
+        if c.startswith(structure.TITLE_FLAG_PREFIX)
+    }
+    positioned = {
+        c[len(shape.POSITION_PREFIX):]
+        for c in profile.columns
+        if c.startswith(shape.POSITION_PREFIX) and not c.startswith("pos_first_")
+        and c != "pos_longest_section"
+    }
+
+    assert positioned == flagged
+
+
+def test_summary_records_the_sets_it_derived(sections_frame: pd.DataFrame) -> None:
+    features, metadata = shape.build_shape_profile(sections_frame)
+
+    stats = shape.summarize(features, metadata)
+
+    assert stats["n_counties"] == len(features)
+    assert stats["modal_title_set"] == metadata["modal_title_set"]
+    assert stats["modal_title_min_share"] == shape.MODAL_TITLE_MIN_SHARE
+    assert stats["unusual_title_max_share"] == shape.UNUSUAL_TITLE_MAX_SHARE
+    assert len(stats["modal_title_set"]) > 0
