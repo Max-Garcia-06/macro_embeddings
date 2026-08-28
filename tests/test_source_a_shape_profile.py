@@ -429,3 +429,42 @@ def test_both_learners_appear_in_every_record_key() -> None:
         assert f"r2_alone_{arm.key}{scoring.BOOST_SUFFIX}" in keys
         assert f"lift_{arm.key}{scoring.BOOST_SUFFIX}" in keys
         assert f"lift_{arm.key}{scoring.FLEXIBLE_SUFFIX}{scoring.BOOST_SUFFIX}" in keys
+
+
+def test_size_recoverability_finds_a_planted_size_signal() -> None:
+    """A block that is a noisy copy of size must score high; noise must not."""
+    import analyze_source_a_shape_profile as scoring
+
+    rng = np.random.default_rng(0)
+    size = rng.normal(size=400)
+    matrix = pd.DataFrame(
+        {"log_population": size, "log_agi": size, "log_gdp_latest": size}
+    )
+    blocks = {
+        "copy": (size + rng.normal(scale=0.1, size=400)).reshape(-1, 1),
+        "noise": rng.normal(size=(400, 3)),
+    }
+
+    recovery = scoring.size_recoverability(matrix, blocks)
+
+    assert recovery["copy"]["log_population_ridge"] > 0.9
+    assert recovery["noise"]["log_population_ridge"] < 0.1
+
+
+def test_size_recoverability_reports_every_size_measure_and_learner() -> None:
+    import analyze_source_a_shape_profile as scoring
+
+    rng = np.random.default_rng(0)
+    matrix = pd.DataFrame(
+        {
+            "log_population": rng.normal(size=200),
+            "log_agi": rng.normal(size=200),
+            "log_gdp_latest": rng.normal(size=200),
+        }
+    )
+
+    recovery = scoring.size_recoverability(matrix, {"block": rng.normal(size=(200, 2))})
+
+    for measure in ("log_population", "log_agi", "log_gdp_latest"):
+        for learner in ("ridge", "boost"):
+            assert f"{measure}_{learner}" in recovery["block"]
