@@ -459,6 +459,78 @@ def size_recoverability(
     return recovery
 
 
+# Width of the noise block scored by `boost_floor_lift`. Arbitrary: boosting
+# cannot extract structure from independent Gaussian noise regardless of how
+# many columns it has, so this is fixed at a small value rather than searched.
+NOISE_BLOCK_WIDTH: int = 3
+
+
+def boost_floor_lift(
+    matrix: pd.DataFrame,
+    baseline: pd.DataFrame,
+    flexible_baseline: pd.DataFrame,
+    targets: list[Target],
+) -> pd.DataFrame:
+    """Score a block that carries no information at all through the boost path.
+
+    Fix-round finding: boost lifts were published on an uncalibrated scale --
+    `lift_shape_v1_boost = -0.0587` and `lift_shape_v1 = +0.0027` under the same
+    word "lift" with no offset stated -- and the arm meant to anchor that scale,
+    `size_nonlinear` (built from the baseline's own size columns), turned out to
+    be the *least* negative boost arm rather than the most, so it does not
+    bracket the real arms and cannot serve as a floor. This scores pure
+    Gaussian noise, independent of every target and every row's identity,
+    through the exact `boost_residual_oof` path every arm uses, under the same
+    per-target folds and both baselines. Its lift is what a block with zero
+    signal looks like on this scale, so every other boost arm's lift can be
+    read as a distance from it instead of as a bare, unanchored number.
+
+    Args:
+        matrix: Matrix with both blocks attached. Used only for row count and
+            alignment -- the noise block carries none of its columns.
+        baseline: Linear baseline design.
+        flexible_baseline: Curvature-augmented baseline design.
+        targets: Targets to score, matched one-for-one with `run_sweep`'s.
+
+    Returns:
+        Per-target frame with `column`, `lift_boost_floor` (vs the linear
+        baseline) and `lift_boost_floor_flexbase` (vs the flexible baseline),
+        named so it can merge onto `run_sweep`'s output without colliding with
+        any arm's columns.
+    """
+    rng = np.random.default_rng(RANDOM_SEED)
+    noise = rng.normal(size=(len(matrix), NOISE_BLOCK_WIDTH))
+
+    records: list[dict[str, float | str]] = []
+    for target in targets:
+        rows = matrix[target.column].notna().to_numpy()
+        y = matrix.loc[rows, target.column].to_numpy(dtype="float64")
+        base_design = baseline.loc[rows].to_numpy(dtype="float64")
+        flexible_design = flexible_baseline.loc[rows].to_numpy(dtype="float64")
+        block = noise[rows]
+
+        folds = KFold(n_splits=N_FOLDS, shuffle=True, random_state=RANDOM_SEED)
+        r2_baseline = float(r2_score(y, _baseline_oof_predictions(base_design, y, folds)))
+        r2_flexible = float(
+            r2_score(y, _baseline_oof_predictions(flexible_design, y, folds))
+        )
+
+        records.append(
+            {
+                "column": target.column,
+                "lift_boost_floor": float(
+                    r2_score(y, boost_residual_oof(base_design, block, y, folds))
+                )
+                - r2_baseline,
+                "lift_boost_floor_flexbase": float(
+                    r2_score(y, boost_residual_oof(flexible_design, block, y, folds))
+                )
+                - r2_flexible,
+            }
+        )
+    return pd.DataFrame(records)
+
+
 def summarize_by_pillar(results: pd.DataFrame) -> pd.DataFrame:
     """Mean lift per arm within each target's owning pillar.
 
@@ -479,35 +551,64 @@ def summarize_by_pillar(results: pd.DataFrame) -> pd.DataFrame:
     return results.groupby("pillar").agg(**aggregations).reset_index()
 
 
-def _paired_test(results: pd.DataFrame, arm: Arm, column: str) -> dict[str, object]:
-    """Test one arm's lift column against its comparison across every target.
+def _signed_rank(differences: pd.Series) -> dict[str, object]:
+    """Wilcoxon signed-rank test of one series of paired differences against zero.
 
     Args:
-        results: Output of `run_sweep`.
-        arm: The arm to test. `arm.against` names the arm it is paired with;
-            None means the comparison is against the baseline, where the lift
-            column is already the difference.
-        column: Full lift column name, carrying whichever suffixes apply.
+        differences: Paired differences to test.
 
     Returns:
-        Mean lift, mean paired difference, win count and the Wilcoxon
-        signed-rank p-value.
+        Mean paired difference, win count and the Wilcoxon statistic/p-value.
     """
-    lifts = results[column]
-    if arm.against is None:
-        differences = lifts
-    else:
-        differences = lifts - results[column.replace(arm.key, arm.against, 1)]
     statistic, p_value = wilcoxon(differences)
     return {
-        "mean_lift": float(lifts.mean()),
-        "median_lift": float(lifts.median()),
         "mean_paired_difference": float(differences.mean()),
-        "compared_against": arm.against or "baseline",
         "n_wins": int((differences > 0).sum()),
         "wilcoxon_statistic": float(statistic),
         "wilcoxon_p": float(p_value),
     }
+
+
+def _paired_test(results: pd.DataFrame, arm: Arm, column: str) -> dict[str, object]:
+    """Test one arm's lift column against the baseline and, if paired, its arm.
+
+    Fix-round finding: the previous version always reported `mean_lift` as the
+    lift over the baseline, but for a paired arm its `wilcoxon_p` tested a
+    different quantity -- the difference against the other arm, not against
+    zero. Published side by side (e.g. `shape_v2`'s +0.00260 mean lift next to
+    p=0.4515), a reader had no way to see that the p-value answered "does
+    shape_v2 beat shape_v1?" rather than "does shape_v2 beat the baseline?" (the
+    true against-baseline p was 0.0013). This version always runs the
+    against-baseline test on the lift column itself, under `vs_baseline`, and --
+    only when `arm.against` is set -- separately runs the against-arm test on
+    the paired difference, under `vs_arm`, a name that cannot be mistaken for
+    the baseline reading.
+
+    Args:
+        results: Output of `run_sweep`.
+        arm: The arm to test. `arm.against` names the arm it is paired with, or
+            None when the only comparison is the baseline.
+        column: Full lift column name, carrying whichever suffixes apply.
+
+    Returns:
+        Mean and median lift over the baseline, a `vs_baseline` signed-rank
+        reading of that same lift column and -- only when `arm.against` is set
+        -- a `vs_arm` signed-rank reading of the paired difference against that
+        arm's matching column, carrying its own `compared_against` name.
+    """
+    lifts = results[column]
+    record: dict[str, object] = {
+        "mean_lift": float(lifts.mean()),
+        "median_lift": float(lifts.median()),
+        "vs_baseline": _signed_rank(lifts),
+    }
+    if arm.against is not None:
+        other_column = column.replace(arm.key, arm.against, 1)
+        record["vs_arm"] = {
+            "compared_against": arm.against,
+            **_signed_rank(lifts - results[other_column]),
+        }
+    return record
 
 
 def summarize(
@@ -518,27 +619,45 @@ def summarize(
 ) -> dict[str, object]:
     """Assemble the stats artifact the notebook reads.
 
+    `results` must already carry `lift_boost_floor` and `lift_boost_floor_flexbase`
+    -- `main` merges `boost_floor_lift`'s output onto `run_sweep`'s output by
+    `column` before calling this. Every boost-learner arm entry gets a
+    `vs_boost_floor` reading under each framing, so no boost lift is published
+    without its floor visible in the same artifact (fix-round finding 2).
+
     Args:
-        results: Output of `run_sweep`.
+        results: Output of `run_sweep`, merged with `boost_floor_lift`'s output.
         size_recovery: Output of `size_recoverability`.
         n_v1: Width of round one's block.
         n_profile: Width of the new shape profile.
 
     Returns:
-        Target counts, block widths, the size diagnostic, and per-arm results in
-        all three framings under both learners.
+        Target counts, block widths, the size diagnostic, the boost floor, and
+        per-arm results in all three framings under both learners -- each
+        carrying a `vs_baseline` reading, a `vs_arm` reading when paired, and
+        (boost learner only) a `vs_boost_floor` reading.
     """
     arms: dict[str, object] = {}
     for arm in SHAPE_ARMS:
         for learner, suffix in (("ridge", ""), ("boost", BOOST_SUFFIX)):
+            linear = _paired_test(results, arm, f"lift_{arm.key}{suffix}")
+            flexible = _paired_test(
+                results, arm, f"lift_{arm.key}{FLEXIBLE_SUFFIX}{suffix}"
+            )
+            if learner == "boost":
+                linear["vs_boost_floor"] = _signed_rank(
+                    results[f"lift_{arm.key}{suffix}"] - results["lift_boost_floor"]
+                )
+                flexible["vs_boost_floor"] = _signed_rank(
+                    results[f"lift_{arm.key}{FLEXIBLE_SUFFIX}{suffix}"]
+                    - results["lift_boost_floor_flexbase"]
+                )
             arms[f"{arm.key}_{learner}"] = {
                 "label": arm.label,
                 "learner": learner,
                 "mean_r2_alone": float(results[f"r2_alone_{arm.key}{suffix}"].mean()),
-                "linear": _paired_test(results, arm, f"lift_{arm.key}{suffix}"),
-                "flexible": _paired_test(
-                    results, arm, f"lift_{arm.key}{FLEXIBLE_SUFFIX}{suffix}"
-                ),
+                "linear": linear,
+                "flexible": flexible,
             }
     return {
         "n_targets": int(len(results)),
@@ -549,13 +668,55 @@ def summarize(
         "mean_r2_baseline": float(results["r2_baseline"].mean()),
         "mean_r2_baseline_flexible": float(results["r2_baseline_flexible"].mean()),
         "size_recoverability": size_recovery,
+        "boost_floor": {
+            "linear": {
+                "mean_lift": float(results["lift_boost_floor"].mean()),
+                **_signed_rank(results["lift_boost_floor"]),
+            },
+            "flexible": {
+                "mean_lift": float(results["lift_boost_floor_flexbase"].mean()),
+                **_signed_rank(results["lift_boost_floor_flexbase"]),
+            },
+        },
         "arms": arms,
         "by_pillar": summarize_by_pillar(results).to_dict(orient="records"),
     }
 
 
+def _format_framing(framing: dict[str, object]) -> str:
+    """Render one framing's lift and its test(s) for a single log line.
+
+    Fix-round finding 1 was a mean printed beside a p-value that tested a
+    different comparison. This renders the against-baseline p right next to the
+    lift it actually measures, and adds the against-arm and against-floor
+    readings -- when present -- each labeled with what it is against, so the
+    log line cannot be misread the way the JSON's old flat fields were.
+
+    Args:
+        framing: One of `_paired_test`'s return values, as stored in
+            `summarize`'s `arms` entries (optionally carrying `vs_boost_floor`).
+
+    Returns:
+        A compact string for one log line.
+    """
+    text = (
+        f"{framing['mean_lift']:+.5f} "
+        f"(vs_baseline p={framing['vs_baseline']['wilcoxon_p']:.4f}"
+    )
+    if "vs_arm" in framing:
+        vs_arm = framing["vs_arm"]
+        text += f", vs {vs_arm['compared_against']} p={vs_arm['wilcoxon_p']:.4f}"
+    if "vs_boost_floor" in framing:
+        vs_floor = framing["vs_boost_floor"]
+        text += (
+            f", vs floor Δ={vs_floor['mean_paired_difference']:+.5f}"
+            f" p={vs_floor['wilcoxon_p']:.4f}"
+        )
+    return text + ")"
+
+
 def main() -> None:
-    """Attach both blocks, run the sweep and the diagnostic, write the artifacts."""
+    """Attach both blocks, run the sweep and the diagnostics, write the artifacts."""
     configure_logging()
 
     import sys
@@ -576,6 +737,20 @@ def main() -> None:
     )
 
     results = run_sweep(matrix, v1_cols, profile_cols, targets)
+
+    # Fix-round finding 2: calibrate the boost lift scale with an
+    # information-free block scored through the identical path, under the same
+    # two baselines this sweep already built inside `run_sweep`. Rebuilding them
+    # here is safe -- both are pure functions of `matrix` with no randomness --
+    # and merging the floor onto `results` makes it a computed artifact sitting
+    # beside the arms it calibrates, in the same CSV, rather than a number that
+    # only exists in prose.
+    baseline = build_baseline_design(matrix)
+    flexible_baseline = build_flexible_baseline_design(matrix, baseline)
+    floor = boost_floor_lift(matrix, baseline, flexible_baseline, targets)
+    results = results.merge(floor, on="column", how="left", validate="one_to_one")
+    if results[["lift_boost_floor", "lift_boost_floor_flexbase"]].isna().any().any():
+        raise ValueError("boost floor is missing a target that the sweep scored")
 
     all_rows = np.ones(len(matrix), dtype=bool)
     diagnostic_blocks = build_arm_blocks(matrix, v1_cols, profile_cols, all_rows)
@@ -603,15 +778,23 @@ def main() -> None:
                 scores[f"{measure}_boost"],
             )
 
+    floor_stats = stats["boost_floor"]
+    logger.info(
+        "boost floor (information-free block, out-of-fold lift): "
+        "linear %+.5f (p=%.4f) | flexible %+.5f (p=%.4f)",
+        floor_stats["linear"]["mean_lift"],
+        floor_stats["linear"]["wilcoxon_p"],
+        floor_stats["flexible"]["mean_lift"],
+        floor_stats["flexible"]["wilcoxon_p"],
+    )
+
     for name, arm_stats in stats["arms"].items():
         logger.info(
-            "%-26s alone %.4f | linear %+.5f (p=%.4f) | flexible %+.5f (p=%.4f)",
+            "%-26s alone %.4f | linear %s | flexible %s",
             name,
             arm_stats["mean_r2_alone"],
-            arm_stats["linear"]["mean_lift"],
-            arm_stats["linear"]["wilcoxon_p"],
-            arm_stats["flexible"]["mean_lift"],
-            arm_stats["flexible"]["wilcoxon_p"],
+            _format_framing(arm_stats["linear"]),
+            _format_framing(arm_stats["flexible"]),
         )
 
     logger.info("wrote %s", OUTPUT_CSV_PATH)

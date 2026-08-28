@@ -468,3 +468,156 @@ def test_size_recoverability_reports_every_size_measure_and_learner() -> None:
     for measure in ("log_population", "log_agi", "log_gdp_latest"):
         for learner in ("ridge", "boost"):
             assert f"{measure}_{learner}" in recovery["block"]
+
+
+def _make_lift_frame(n: int = 12, seed: int = 0) -> pd.DataFrame:
+    """A synthetic results-shaped frame carrying every arm's lift columns."""
+    import analyze_source_a_shape_profile as scoring
+
+    rng = np.random.default_rng(seed)
+    data: dict[str, object] = {
+        "pillar": ["B"] * n,
+        "column": [f"target_{i}" for i in range(n)],
+    }
+    for arm in scoring.SHAPE_ARMS:
+        for suffix in ("", scoring.BOOST_SUFFIX):
+            for key in scoring.arm_record_keys(arm.key, suffix):
+                data[key] = rng.normal(scale=0.01, size=n)
+    return pd.DataFrame(data)
+
+
+def test_paired_test_resolves_every_arm_framing_learner_combination() -> None:
+    """Finding 3: `_paired_test` must resolve the right column for all 20 combos."""
+    import analyze_source_a_shape_profile as scoring
+    from scipy.stats import wilcoxon
+
+    results = _make_lift_frame()
+
+    for arm in scoring.SHAPE_ARMS:
+        for suffix in ("", scoring.BOOST_SUFFIX):
+            for column in (
+                f"lift_{arm.key}{suffix}",
+                f"lift_{arm.key}{scoring.FLEXIBLE_SUFFIX}{suffix}",
+            ):
+                record = scoring._paired_test(results, arm, column)
+
+                assert record["mean_lift"] == pytest.approx(results[column].mean())
+                assert record["vs_baseline"]["wilcoxon_p"] == pytest.approx(
+                    wilcoxon(results[column])[1]
+                )
+                if arm.against is None:
+                    assert "vs_arm" not in record
+                else:
+                    other_column = column.replace(arm.key, arm.against, 1)
+                    expected_diff = results[column] - results[other_column]
+                    assert record["vs_arm"]["compared_against"] == arm.against
+                    assert record["vs_arm"]["wilcoxon_p"] == pytest.approx(
+                        wilcoxon(expected_diff)[1]
+                    )
+
+
+def test_vs_baseline_and_vs_arm_can_diverge_sharply() -> None:
+    """The exact failure fix round 1 found: a real lift over baseline read as
+    insignificant only because the wrong comparison's p-value was published
+    beside it. This constructs data where the two readings must disagree."""
+    import analyze_source_a_shape_profile as scoring
+
+    n = 30
+    rng = np.random.default_rng(1)
+    lift_v1 = rng.normal(loc=0.02, scale=0.002, size=n)  # clearly beats baseline
+    lift_v2 = lift_v1 + rng.normal(scale=0.02, size=n)  # no clear edge over v1
+
+    arm = next(a for a in scoring.SHAPE_ARMS if a.key == "shape_v2")
+    results = pd.DataFrame({"lift_shape_v1": lift_v1, "lift_shape_v2": lift_v2})
+
+    record = scoring._paired_test(results, arm, "lift_shape_v2")
+
+    assert record["vs_baseline"]["wilcoxon_p"] < 0.01
+    assert record["vs_arm"]["wilcoxon_p"] > 0.05
+
+
+def test_summarize_by_pillar_reproduces_a_known_mean() -> None:
+    import analyze_source_a_shape_profile as scoring
+
+    results = _make_lift_frame(n=4)
+    results["pillar"] = ["B", "B", "C", "C"]
+
+    by_pillar = scoring.summarize_by_pillar(results).set_index("pillar")
+
+    b_rows = results[results["pillar"] == "B"]
+    assert int(by_pillar.loc["B", "n_targets"]) == 2
+    assert by_pillar.loc["B", "shape_v1"] == pytest.approx(b_rows["lift_shape_v1"].mean())
+    assert by_pillar.loc["B", "shape_v1_boost"] == pytest.approx(
+        b_rows[f"lift_shape_v1{scoring.BOOST_SUFFIX}"].mean()
+    )
+
+
+def test_boost_floor_lift_scores_pure_noise_through_the_boost_path() -> None:
+    """The floor must run every target through the same boost_residual_oof path."""
+    import analyze_source_a_shape_profile as scoring
+    from analyze_pillar_matrix_signal import Target
+
+    rng = np.random.default_rng(3)
+    n = 300
+    matrix = pd.DataFrame({"target_a": rng.normal(size=n)})
+    baseline = pd.DataFrame({"const": np.ones(n)})
+    flexible_baseline = pd.DataFrame(
+        {"const": np.ones(n), "curve": rng.normal(scale=0.01, size=n)}
+    )
+    targets = [Target("B", "target_a", "Target A")]
+
+    floor = scoring.boost_floor_lift(matrix, baseline, flexible_baseline, targets)
+
+    assert list(floor["column"]) == ["target_a"]
+    assert "lift_boost_floor" in floor.columns
+    assert "lift_boost_floor_flexbase" in floor.columns
+    assert np.isfinite(floor["lift_boost_floor"]).all()
+    assert np.isfinite(floor["lift_boost_floor_flexbase"]).all()
+
+
+def _make_summarize_frame(n: int = 12, seed: int = 0) -> pd.DataFrame:
+    """A synthetic frame carrying everything `summarize` reads, floor included."""
+    import analyze_source_a_shape_profile as scoring
+
+    frame = _make_lift_frame(n=n, seed=seed)
+    rng = np.random.default_rng(seed + 1)
+    frame["r2_baseline"] = rng.uniform(0.2, 0.3, size=n)
+    frame["r2_baseline_flexible"] = rng.uniform(0.2, 0.3, size=n)
+    frame["lift_boost_floor"] = rng.normal(scale=0.01, size=n)
+    frame["lift_boost_floor_flexbase"] = rng.normal(scale=0.01, size=n)
+    for arm in scoring.SHAPE_ARMS:
+        for suffix in ("", scoring.BOOST_SUFFIX):
+            frame[f"r2_alone_{arm.key}{suffix}"] = rng.uniform(0.0, 0.2, size=n)
+    return frame
+
+
+def test_summarize_emits_both_p_value_readings_for_every_arm() -> None:
+    """Finding 3: `summarize` must expose vs_baseline (always), vs_arm (when
+    paired) and vs_boost_floor (boost learner only) for every arm."""
+    import analyze_source_a_shape_profile as scoring
+
+    results = _make_summarize_frame()
+    size_recovery: dict[str, dict[str, float]] = {"shape_v1": {}, "shape_v2": {}}
+
+    stats = scoring.summarize(results, size_recovery, n_v1=64, n_profile=73)
+
+    for arm in scoring.SHAPE_ARMS:
+        for learner in ("ridge", "boost"):
+            entry = stats["arms"][f"{arm.key}_{learner}"]
+            for framing in ("linear", "flexible"):
+                assert "vs_baseline" in entry[framing]
+                if arm.against is None:
+                    assert "vs_arm" not in entry[framing]
+                else:
+                    assert entry[framing]["vs_arm"]["compared_against"] == arm.against
+                if learner == "boost":
+                    assert "vs_boost_floor" in entry[framing]
+                else:
+                    assert "vs_boost_floor" not in entry[framing]
+
+    assert stats["boost_floor"]["linear"]["mean_lift"] == pytest.approx(
+        results["lift_boost_floor"].mean()
+    )
+    assert stats["boost_floor"]["flexible"]["mean_lift"] == pytest.approx(
+        results["lift_boost_floor_flexbase"].mean()
+    )
