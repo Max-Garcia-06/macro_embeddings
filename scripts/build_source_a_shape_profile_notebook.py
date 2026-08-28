@@ -239,10 +239,11 @@ the information-free null control. Neither is a finding.
 
 **Reading the boost rows.** `lift_linear` and `lift_flexible` are negative for
 every boost arm in the table below — that is the boost baseline offset
-(`boost_floor`, printed after the table), not the arms failing. `p_vs_floor` is
-the reading that actually tests an arm under the boost learner: it compares the
-arm to the boost baseline run through the same pipeline, not to the
-ridge-baseline zero line the raw lift implies.
+(`boost_floor`, printed after the table), not the arms failing.
+`p_linear_vs_floor` and `p_flexible_vs_floor` are the readings that actually
+test an arm under the boost learner: each compares the arm to the boost
+baseline run through the same pipeline, not to the ridge-baseline zero line
+the raw lift implies.
 """)
 
 code("""
@@ -338,13 +339,22 @@ md("""
 
 Twenty of the twenty-eight targets are one QCEW table, so a basket-wide mean is
 71% one pillar. Reading it as a breadth claim is a mistake this project has made
-before. The chart below is restricted to the ridge columns of `by_pillar` --
-boost has no per-pillar floor to read its lifts against, so a per-pillar boost
-bar would repeat exactly the framing mistake `vs_boost_floor` exists to avoid.
+before. The table below carries every arm's boost columns as raw lifts -- read
+them against the printed floor beneath the table, not against zero, for the
+same reason the arms section does. The chart that follows is restricted to the
+ridge columns: boost has no *per-pillar* floor to read its lifts against (the
+floor below was measured on the whole basket, not decomposed by pillar), so a
+per-pillar boost bar would repeat exactly the framing mistake `vs_boost_floor`
+exists to avoid.
 """)
 
 code("""
 display(by_pillar.round(5))
+
+floor = stats["boost_floor"]
+print(f"boost_floor (whole basket, not decomposed by pillar): linear {floor['linear']['mean_lift']:+.5f}, "
+      f"flexible {floor['flexible']['mean_lift']:+.5f} "
+      "-- read every _boost column above against this floor, not against zero.")
 
 fig, ax = plt.subplots(figsize=(11, 4.5))
 keys = [c for c in by_pillar.columns if c not in ("pillar", "n_targets") and not c.endswith("_boost")]
