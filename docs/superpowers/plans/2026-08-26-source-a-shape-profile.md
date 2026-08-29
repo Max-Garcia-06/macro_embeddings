@@ -751,13 +751,21 @@ def surface_features(sections: pd.DataFrame) -> pd.DataFrame:
     counts = _class_counts(sections["section_text"])
     frame = counts.assign(fips_code=sections["fips_code"].to_numpy(), _bucket=assign_buckets(sections))
     index = pd.Index(sorted(sections["fips_code"].unique()), name="fips_code")
-    totals = frame.groupby("fips_code")[["chars", "digits", "letters", "uppers", "punct", "words"]].sum().reindex(index).fillna(0.0)
+    totals = frame.groupby("fips_code")[["chars", "word_chars", "digits", "letters", "uppers", "punct", "words"]].sum().reindex(index).fillna(0.0)  # `word_chars` per the correction below
 
     features = pd.DataFrame(index=index)
     features["digit_density"] = _safe_ratio(totals["digits"], totals["chars"])
     features["punct_density"] = _safe_ratio(totals["punct"], totals["chars"])
     features["capital_ratio"] = _safe_ratio(totals["uppers"], totals["letters"])
-    features["mean_word_length"] = _safe_ratio(totals["chars"], totals["words"])
+    # POST-HOC CORRECTION (2026-08-28, branch review finding I5): this plan's
+    # formula was `chars / words`, which counts whitespace and punctuation into
+    # the numerator and so reports "characters per word including the spaces
+    # between them". The shipped code corrected it to `word_chars / words`,
+    # where `word_chars` excludes whitespace, and the test below pins the
+    # corrected value (8 / 3 for "aa bbbb cc", not 10 / 3). The code is right;
+    # this line is left in place with the correction noted rather than
+    # rewritten, so the record shows what changed and why.
+    features["mean_word_length"] = _safe_ratio(totals["word_chars"], totals["words"])
     features["numeral_to_letter"] = _safe_ratio(totals["digits"], totals["letters"])
 
     for bucket in DENSITY_BUCKETS:

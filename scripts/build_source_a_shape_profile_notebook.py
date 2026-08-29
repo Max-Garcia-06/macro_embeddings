@@ -12,12 +12,20 @@ nothing else, because the dependence is joint across the block. Predicting size
 *from* shape measures that joint channel in one number, and the reader should
 have it before seeing what the block scores, not after.
 
-**A boost lift is never shown without its floor.** HistGradientBoosting scores
-every arm's *baseline* comparison worse than ridge does on this dataset -- the
-boost floor itself sits at roughly -0.078 (linear) / -0.071 (flexible) -- so a
-raw boost lift is mostly that offset, not a verdict on the arm. Every boost
-number here is shown beside `vs_boost_floor`, which is the comparison that
-actually answers whether the arm adds anything under that learner.
+**A boost lift is never shown without its floor.** Both learners are differenced
+against the *same* OLS baseline -- there is no separate boost baseline anywhere
+in this round -- so a boost arm's negative lift is not a baseline offset. It is
+the boosting estimator's own overfitting cost on the residual target, paid where
+`RidgeCV` shrinks toward zero and `HistGradientBoosting` does not. That cost
+scales with block width, so every arm is priced against an information-free
+Gaussian block of *its own width*, scored through the identical boost path.
+`vs_boost_floor` is that comparison, and it is the reading that answers whether
+an arm adds anything under this learner.
+
+**Both flexible denominators are quoted, always.** The curvature-augmented
+baseline degrades on 6 of the 28 targets, so "lift over the flexible baseline"
+has two honest denominators -- all 28, and the 22 the baseline did not degrade --
+and they disagree on significance. §23.6 forbids quoting either alone.
 
 Every number is read from a committed artifact. Matplotlib, not plotly: plotly's
 mimetype output needs a JupyterLab extension and renders as blank space without
@@ -68,28 +76,42 @@ Wikipedia article — how many sections, how long, which ones, in what order, ho
 far from the county template, and what the characters look like — without
 reading a word for meaning?
 
-**Why every number here carries three readings.** Round one reported +0.00269
+**Why no number here is reported in one framing.** Round one reported +0.00269
 mean lift for article shape and it was arithmetically correct. It was also
 misleading, because the baseline it was measured against controlled for county
 size *linearly, in logs*, and an information-free curve on those same size
 columns scores +0.01748 through the identical protocol. The number was right;
-its framing was invisible. So nothing below is reported in one framing:
+its framing was invisible. So:
 
 - **`r2_alone`** — the block as the only predictor, no controls. How much of a
   county is recoverable from article shape, size and geography included.
 - **`lift` (linear)** — over the linear size-plus-state baseline. Comparable to
   §13–§23.
 - **`lift` (flexible)** — over the curvature-augmented baseline. The strict
-  reading.
+  reading, and it comes with **two denominators**: the flexible baseline
+  degrades on 6 of the 28 targets, so "all 28" and "the undegraded 22" are both
+  honest baskets and they disagree on significance. §23.6 forbids quoting either
+  alone, so both appear everywhere a flexible number does.
 
-**Why a boost lift additionally carries `vs_boost_floor`.** The two learners
-are not on equal footing here: the ridge path imputes missing predictor values
-inside its pipeline, while the boosting path (HistGradientBoosting) handles
-`NaN` natively and never imputes. That difference alone moves boost's own
-*baseline* score, so a boost arm's raw lift is dominated by that shift, not by
-what the arm adds. `vs_boost_floor` compares an arm to the boost baseline run
-through the identical boost pipeline, which is the reading that isolates the
-arm's own contribution under that learner.
+**Why a boost lift additionally carries `vs_boost_floor`.** Every boost lift in
+this notebook is negative, and it is worth being precise about why, because the
+obvious explanation is wrong. It is *not* that the two learners are measured
+against different baselines: `score_target` computes one `r2_baseline` and one
+`r2_flexible` per target and subtracts those same two numbers from the ridge
+arms and the boost arms alike. There is no boost baseline in this round at all.
+Nor is it imputation — the ridge path does impute inside its pipeline where
+HistGradientBoosting handles `NaN` natively, but `shape_v1` and `shape_v2`
+contain zero missing cells and carry the offset anyway.
+
+What the negative numbers measure is the boosting estimator's **overfitting cost
+on the residual target**. Fitted to what a size-plus-state model could not
+explain, boosting finds structure in fold noise where `RidgeCV`'s nested
+penalty search shrinks toward zero. That cost is a function of how wide the
+block is, so it cannot be read off a single number: each arm is compared to a
+block of pure Gaussian noise **at that arm's own width**, run through the
+identical boost path under the identical folds. `vs_boost_floor` is that
+comparison, and it is the only reading here that says whether an arm carries
+anything a same-shaped block of noise does not.
 
 Two arms are not findings and are labelled so wherever they appear:
 `shape_v1` re-scores round one's block as a regression check, and
@@ -168,7 +190,15 @@ plt.show()
 
 print(f"median template conformity {profile['template_jaccard'].median():.3f}; "
       f"median digit density {profile['digit_density'].median():.3f}")
-print(f"history precedes economy in {profile['history_before_economy'].mean():.1%} of counties")
+has_economy = profile["pos_first_economy"] != POSITION_ABSENT
+precedes = profile["history_before_economy"] == 1.0
+print(f"{has_economy.sum():,} of {len(profile):,} counties ({has_economy.mean():.1%}) have an "
+      "economy-bucket section at all.")
+print(f"Among those {has_economy.sum():,}, a narrative section precedes it in "
+      f"{precedes[has_economy].mean():.1%} ({precedes[has_economy].sum():,} counties).")
+print(f"Over the whole corpus that is {precedes.mean():.1%} -- which is the column's mean, and "
+      "is NOT '81% of counties lead with economy': "
+      f"{(~has_economy).sum():,} counties have no economy section to lead with.")
 """)
 
 code("""
@@ -238,17 +268,27 @@ three. `shape_v1` is a regression check on round one's block; `size_nonlinear` i
 the information-free null control. Neither is a finding.
 
 **Reading the boost rows.** `lift_linear` and `lift_flexible` are negative for
-every boost arm in the table below — that is the boost baseline offset
-(`boost_floor`, printed after the table), not the arms failing.
-`p_linear_vs_floor` and `p_flexible_vs_floor` are the readings that actually
-test an arm under the boost learner: each compares the arm to the boost
-baseline run through the same pipeline, not to the ridge-baseline zero line
-the raw lift implies.
+every boost arm in the table below. That is not a different baseline — both
+learners are differenced against the same OLS baseline — and it is not
+imputation. It is what boosting costs itself by overfitting the residual target
+where ridge shrinks. Since that cost grows with block width, each arm is priced
+against a Gaussian noise block of its own width (`floor` and `floor_width` in
+the table): `d_linear_vs_floor` / `d_flexible_vs_floor` are how far the arm sits
+*above* its own floor, and `p_linear_vs_floor` / `p_flexible_vs_floor` say
+whether that distance is distinguishable from zero. Those are the only columns
+here that test a boost arm.
+
+**Reading the flexible columns.** `lift_flexible` is the all-28 reading;
+`lift_flexible_undeg22` is the same quantity over the 22 targets the flexible
+baseline did not degrade. §23.6 forbids quoting either without the other, so
+both are in the table and neither is the headline.
 """)
 
 code("""
 def _arm_row(name: str, a: dict) -> dict:
     linear, flexible = a["linear"], a["flexible"]
+    undegraded = flexible["undegraded"]
+    arm_key = name.rsplit("_", 1)[0]
     row = {
         "arm": name,
         "learner": a["learner"],
@@ -257,13 +297,20 @@ def _arm_row(name: str, a: dict) -> dict:
         "p_linear_vs_baseline": linear["vs_baseline"]["wilcoxon_p"],
         "lift_flexible": flexible["mean_lift"],
         "p_flexible_vs_baseline": flexible["vs_baseline"]["wilcoxon_p"],
+        f"lift_flexible_undeg{undegraded['n_targets']}": undegraded["mean_lift"],
+        f"p_flexible_undeg{undegraded['n_targets']}": undegraded["vs_baseline"]["wilcoxon_p"],
     }
     if "vs_arm" in linear:
         row["vs_arm"] = linear["vs_arm"]["compared_against"]
         row["p_linear_vs_arm"] = linear["vs_arm"]["wilcoxon_p"]
         row["p_flexible_vs_arm"] = flexible["vs_arm"]["wilcoxon_p"]
     if "vs_boost_floor" in linear:
+        row["floor_width"] = stats["boost_floor"][arm_key]["width"]
+        row["floor_linear"] = stats["boost_floor"][arm_key]["linear"]["mean_lift"]
+        row["d_linear_vs_floor"] = linear["vs_boost_floor"]["mean_paired_difference"]
         row["p_linear_vs_floor"] = linear["vs_boost_floor"]["wilcoxon_p"]
+        row["floor_flexible"] = stats["boost_floor"][arm_key]["flexible"]["mean_lift"]
+        row["d_flexible_vs_floor"] = flexible["vs_boost_floor"]["mean_paired_difference"]
         row["p_flexible_vs_floor"] = flexible["vs_boost_floor"]["wilcoxon_p"]
     return row
 
@@ -271,13 +318,21 @@ def _arm_row(name: str, a: dict) -> dict:
 arms = pd.DataFrame([_arm_row(name, a) for name, a in stats["arms"].items()])
 display(arms.round(5))
 
-floor = stats["boost_floor"]
-print(f"boost_floor: linear {floor['linear']['mean_lift']:+.5f}, "
-      f"flexible {floor['flexible']['mean_lift']:+.5f} "
-      "-- every boost lift above is measured against this, not against zero.")
+print(f"The flexible baseline degraded {len(stats['flexible_degraded_targets'])} of "
+      f"{stats['n_targets']} targets, so every flexible figure has two denominators:")
+print("  " + ", ".join(stats["flexible_degraded_targets"]))
+print()
+print("Width-matched boost floor -- an information-free Gaussian block at each arm's own width,")
+print("scored through the identical boost path. Read every _boost lift against ITS OWN row:")
+for arm_key, entry in stats["boost_floor"].items():
+    print(f"  {arm_key:22} w={entry['width']:>4}  linear {entry['linear']['mean_lift']:+.5f}"
+          f"  flexible {entry['flexible']['mean_lift']:+.5f}")
 """)
 
 code("""
+ridge_arms = arms[arms["learner"] == "ridge"]
+arm_keys = [n.replace("_ridge", "") for n in ridge_arms["arm"]]
+
 fig, axes = plt.subplots(1, 3, figsize=(15, 4.8))
 for ax, column, title in zip(
     axes,
@@ -292,20 +347,20 @@ for ax, column, title in zip(
             if "size_nonlinear" in arm_name or "shape_v1" in arm_name:
                 bar.set_hatch("//")
     if column != "r2_alone":
+        # One floor per arm, not one line across the chart: the floor is an
+        # overfitting penalty and it scales with the arm's block width.
         floor_key = "linear" if column == "lift_linear" else "flexible"
-        ax.axhline(stats["boost_floor"][floor_key]["mean_lift"], color="#2f5d8a", lw=1,
-                   ls="--", label="boost floor")
-    ax.set_xticks(np.arange(len(arms[arms["learner"] == "ridge"])))
-    ax.set_xticklabels(
-        [n.replace("_ridge", "") for n in arms[arms["learner"] == "ridge"]["arm"]],
-        rotation=35, ha="right",
-    )
+        floors = [stats["boost_floor"][k][floor_key]["mean_lift"] for k in arm_keys]
+        ax.scatter(np.arange(len(arm_keys)) + 0.2, floors, marker="_", s=900,
+                   color="#c1440e", lw=2, zorder=5, label="width-matched floor")
+    ax.set_xticks(np.arange(len(arm_keys)))
+    ax.set_xticklabels(arm_keys, rotation=35, ha="right")
     ax.axhline(0, color="#333", lw=1)
     ax.set_title(title)
     ax.legend(fontsize=8)
 fig.suptitle("Hatched bars are not findings: shape_v1 is a regression check, "
-             "size_nonlinear is the null control. Dashed line is the boost floor -- "
-             "boost bars must be read against it, not against zero.")
+             "size_nonlinear is the null control. Red ticks are each arm's own "
+             "width-matched boost floor -- boost bars are read against those, not against zero.")
 fig.tight_layout()
 plt.show()
 """)
@@ -332,6 +387,20 @@ print(f"shape_v2_ridge linear: mean_lift={v2['linear']['mean_lift']:+.5f}, "
       f"p={v2['linear']['vs_arm']['wilcoxon_p']:.4f}")
 print(f"shape_v1_ridge linear (for comparison): mean_lift={v1_regression_check['linear']['mean_lift']:+.5f}, "
       f"vs_baseline p={v1_regression_check['linear']['vs_baseline']['wilcoxon_p']:.4f}")
+print()
+for name in ("shape_v1_ridge", "shape_v2_ridge", "typed_ridge", "typed_plus_shape_v2_ridge",
+             "size_nonlinear_ridge"):
+    flexible = stats["arms"][name]["flexible"]
+    undegraded = flexible["undegraded"]
+    print(f"{name:26} flexible  all-{stats['n_targets']}: {flexible['mean_lift']:+.5f} "
+          f"p={flexible['vs_baseline']['wilcoxon_p']:.4f} "
+          f"({flexible['vs_baseline']['n_wins']}/{stats['n_targets']})   "
+          f"undegraded-{undegraded['n_targets']}: {undegraded['mean_lift']:+.5f} "
+          f"p={undegraded['vs_baseline']['wilcoxon_p']:.4f} "
+          f"({undegraded['vs_baseline']['n_wins']}/{undegraded['n_targets']})")
+print()
+print("Both denominators, side by side, because they disagree: typed_ridge is significant on")
+print("all 28 and not on the undegraded 22. §23.6 forbids quoting either alone.")
 """)
 
 md("""
@@ -339,11 +408,18 @@ md("""
 
 Twenty of the twenty-eight targets are one QCEW table, so a basket-wide mean is
 71% one pillar. Reading it as a breadth claim is a mistake this project has made
-before. The table below carries every arm's boost columns as raw lifts -- read
-them against the printed floor beneath the table, not against zero, for the
-same reason the arms section does. The chart that follows is restricted to the
-ridge columns: boost has no *per-pillar* floor to read its lifts against (the
-floor below was measured on the whole basket, not decomposed by pillar), so a
+before.
+
+Every column in the table names the baseline that produced it — `_linear` over
+the size-plus-state baseline, `_flexbase` over the curvature-augmented one — so
+this file cannot be opened on its own and read in a framing its reader cannot
+see. That was finding I4 of the branch review: the committed CSV used to carry
+the linear framing only, under column names that said so nowhere.
+
+The boost columns are raw lifts and must be read against the per-arm floors
+printed beneath the table, not against zero. The chart that follows is
+restricted to the linear ridge columns: boost has no *per-pillar* floor to read
+its lifts against (the floors are whole-basket, not decomposed by pillar), so a
 per-pillar boost bar would repeat exactly the framing mistake `vs_boost_floor`
 exists to avoid.
 """)
@@ -351,13 +427,15 @@ exists to avoid.
 code("""
 display(by_pillar.round(5))
 
-floor = stats["boost_floor"]
-print(f"boost_floor (whole basket, not decomposed by pillar): linear {floor['linear']['mean_lift']:+.5f}, "
-      f"flexible {floor['flexible']['mean_lift']:+.5f} "
-      "-- read every _boost column above against this floor, not against zero.")
+print("Every column above names its baseline: _linear over the size-plus-state baseline,")
+print("_flexbase over the curvature-augmented one. Boost floors are per arm and whole-basket,")
+print("not decomposed by pillar:")
+for arm_key, entry in stats["boost_floor"].items():
+    print(f"  {arm_key:22} w={entry['width']:>4}  linear {entry['linear']['mean_lift']:+.5f}"
+          f"  flexible {entry['flexible']['mean_lift']:+.5f}")
 
 fig, ax = plt.subplots(figsize=(11, 4.5))
-keys = [c for c in by_pillar.columns if c not in ("pillar", "n_targets") and not c.endswith("_boost")]
+keys = [c for c in by_pillar.columns if c.endswith("_linear")]
 x = np.arange(len(by_pillar))
 width = 0.8 / len(keys)
 for i, key in enumerate(keys):
@@ -365,7 +443,7 @@ for i, key in enumerate(keys):
 ax.set_xticks(x)
 ax.set_xticklabels([f"{p}\\n({n})" for p, n in zip(by_pillar["pillar"], by_pillar["n_targets"])])
 ax.axhline(0, color="#333", lw=1)
-ax.set_title("Mean lift by owning pillar (ridge, linear baseline)")
+ax.set_title("Mean lift by owning pillar (ridge and boost, linear baseline)")
 ax.legend(fontsize=8)
 fig.tight_layout()
 plt.show()
@@ -396,9 +474,13 @@ ax.legend()
 fig.tight_layout()
 plt.show()
 
+undegraded_rows = scores["r2_baseline_flexible"] >= scores["r2_baseline"]
 print(f"Mean R² alone across all {stats['n_targets']} targets: "
       f"{scores['r2_alone_shape_v2'].mean():.4f}")
-print(f"Mean lift over the flexible baseline: {scores['lift_shape_v2_flexbase'].mean():+.5f}")
+print(f"Mean lift over the flexible baseline, all {stats['n_targets']}: "
+      f"{scores['lift_shape_v2_flexbase'].mean():+.5f}")
+print(f"Mean lift over the flexible baseline, undegraded {int(undegraded_rows.sum())}: "
+      f"{scores.loc[undegraded_rows, 'lift_shape_v2_flexbase'].mean():+.5f}")
 """)
 
 

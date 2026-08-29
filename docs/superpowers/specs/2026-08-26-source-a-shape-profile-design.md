@@ -37,6 +37,12 @@ finding. The new families live in their own file and the analysis joins the two.
 
 Roughly 50 new columns in four families.
 
+> **Post-hoc correction (2026-08-28, branch review finding I5).** 73 columns
+> shipped, not roughly 50. The estimate was written before the `pos_<title>`
+> vocabulary was counted -- it turns out to be 42 titles, one per round-one
+> flag -- and was never revised. The shipped widths are `shape_v1` 64,
+> profile 73, `shape_v2` 137.
+
 **Order and position.** Where a section sits, normalized to `[0, 1]` by its
 index among the county's body sections.
 
@@ -72,9 +78,18 @@ editorial attention, which is not the same quantity as county size.
 | `template_jaccard` | Jaccard similarity between the county's title set and the corpus-modal title set |
 | `n_core_missing` | count of modal-set titles the county lacks |
 | `n_unusual_sections` | sections whose title is held by under 1% of counties |
-| `share_unusual_sections` | `n_unusual_sections / n_body_sections` |
+| `share_unusual_sections` | `n_unusual_sections / n_titled_sections` (see correction below) |
 | `mean_title_rarity` | mean over the county's titles of `1 - (counties holding it / all counties)` |
 | `n_title_words` | mean word count of the county's section titles |
+
+> **Post-hoc correction (2026-08-28, branch review finding I5).** This design
+> defined `share_unusual_sections` as `n_unusual_sections / n_body_sections`.
+> The shipped code divides by *titled* sections and carries a comment saying
+> why: the numerator counts sections whose title is rare, and an untitled
+> section has no title that could be rare, so a body-section denominator would
+> price untitled sections into a share they cannot contribute to. The
+> implementation plan already agreed with the code; only this design was stale.
+> The shipped denominator is the correct one and the table above now states it.
 
 The modal title set is computed at runtime as the titles held by more than half
 of counties, and written to the stats file — never hardcoded, on the same rule
@@ -90,7 +105,7 @@ shape rather than its content.
 | `digit_density`, `digit_density_<bucket>` | digits ÷ characters |
 | `punct_density` | punctuation ÷ characters |
 | `capital_ratio` | uppercase letters ÷ letters |
-| `mean_word_length` | characters ÷ whitespace-delimited tokens |
+| `mean_word_length` | *non-whitespace* characters ÷ whitespace-delimited tokens |
 | `numeral_to_letter` | digits ÷ letters |
 
 Per-bucket densities are computed for the four largest buckets only — census,
@@ -170,7 +185,21 @@ row that carries all three cannot be misquoted the same way.
 
 Outputs: `outputs/source_a_shape_profile_scores.csv`,
 `outputs/source_a_shape_profile_by_pillar.csv`,
-`analysis-output/source-a/source_a_shape_profile_stats.json`.
+`analysis-output/source-a/source_a_shape_profile_stats_scoring.json`.
+
+> **Post-hoc correction (2026-08-28, branch review finding I5).** This line
+> originally named the scoring stats `source_a_shape_profile_stats.json`, which
+> is the *extraction* module's own output path (§1 above). The implementation
+> resolved the collision by giving the scoring module
+> `source_a_shape_profile_stats_scoring.json`; the design never recorded it.
+> Both files ship, and the notebook reads both.
+
+> **Post-hoc correction (2026-08-28, branch review finding I4).** The by-pillar
+> CSV shipped carrying the linear framing only, under column names that named
+> no baseline. It now carries both framings under names that do
+> (`lift_<arm>_linear`, `lift_<arm>_flexbase`, and the `_boost` variants of
+> each), since a file whose header cannot say which baseline produced it is
+> exactly the failure this round exists to avoid.
 
 ### 3. The joint-size diagnostic
 
