@@ -25,6 +25,23 @@ it re-scores round one's exact block through this module, and its
 `lift_shape_v1` must reproduce §23's `lift_structure`. If it does not, something
 drifted and the rest of the sweep is not trustworthy.
 
+Both learners are differenced against the *same* OLS-derived baseline. There is
+no separate boost baseline: `score_target` computes `r2_baseline` and
+`r2_flexible` once per target and subtracts those same two numbers from the
+ridge arms and the boost arms alike. So a boost arm's negative lift is not a
+baseline offset -- it is the boosting estimator's own overfitting cost on the
+residual target, where `RidgeCV` shrinks toward zero and `HistGradientBoosting`
+does not. That cost scales with block width, which is why `boost_floor_lift`
+prices each arm against a width-matched information-free Gaussian block scored
+through the identical path.
+
+(The two learners do differ in one way that has nothing to do with the offset:
+the ridge path imputes inside `_residual_pipeline` while boosting handles NaN
+natively. It can only matter where a block actually holds NaN, which here is the
+`typed` blocks -- 1,930 cells -- and `size_nonlinear`'s 259. `shape_v1` and
+`shape_v2` hold none at all and still carry the offset, so imputation does not
+explain it.)
+
 Run after `extract_source_a_structure_features.py` and
 `extract_source_a_shape_profile.py`.
 """
@@ -433,6 +450,14 @@ def size_recoverability(
     reading of it would understate it -- which is the same mistake round one made
     one level up.
 
+    One difference from the arms, stated because it is a difference: this
+    median-imputes the size measure it is predicting, where `score_target` drops
+    the rows whose target is missing. The headline figure is unaffected --
+    `log_population` has zero missing values across the 3,144 counties, so
+    nothing is imputed for it. `log_agi` (1 row) and `log_gdp_latest` (64 rows)
+    do carry imputed targets, and their numbers should be read with that in
+    mind.
+
     Args:
         matrix: Any frame carrying `SIZE_FEATURES`.
         blocks_by_key: Feature arrays to test, keyed by name. Every array must
@@ -459,10 +484,37 @@ def size_recoverability(
     return recovery
 
 
-# Width of the noise block scored by `boost_floor_lift`. Arbitrary: boosting
-# cannot extract structure from independent Gaussian noise regardless of how
-# many columns it has, so this is fixed at a small value rather than searched.
-NOISE_BLOCK_WIDTH: int = 3
+def floor_column_names(arm_key: str) -> tuple[str, str]:
+    """The two floor columns that calibrate one arm's boost lifts.
+
+    Named per arm rather than per width so the floor sits in the CSV directly
+    beside the arm it prices, but *computed* per width -- see `boost_floor_lift`.
+
+    Args:
+        arm_key: One of `SHAPE_ARMS`' `.key` values.
+
+    Returns:
+        Tuple of (floor vs the linear baseline, floor vs the flexible baseline).
+    """
+    return (
+        f"lift_boost_floor_{arm_key}",
+        f"lift_boost_floor_{arm_key}{FLEXIBLE_SUFFIX}",
+    )
+
+
+def arm_block_widths(blocks_by_key: dict[str, np.ndarray]) -> dict[str, int]:
+    """Column count per arm, for width-matching the boost floor.
+
+    Every arm slices a fixed column list, so its width is the same for every
+    target and can be read once off any target's blocks.
+
+    Args:
+        blocks_by_key: Output of `build_arm_blocks`.
+
+    Returns:
+        Mapping of arm key to block width.
+    """
+    return {key: int(block.shape[1]) for key, block in blocks_by_key.items()}
 
 
 def boost_floor_lift(
@@ -470,36 +522,59 @@ def boost_floor_lift(
     baseline: pd.DataFrame,
     flexible_baseline: pd.DataFrame,
     targets: list[Target],
+    widths_by_arm: dict[str, int],
 ) -> pd.DataFrame:
-    """Score a block that carries no information at all through the boost path.
+    """Score information-free blocks through the boost path, one per arm width.
 
     Fix-round finding: boost lifts were published on an uncalibrated scale --
     `lift_shape_v1_boost = -0.0587` and `lift_shape_v1 = +0.0027` under the same
     word "lift" with no offset stated -- and the arm meant to anchor that scale,
     `size_nonlinear` (built from the baseline's own size columns), turned out to
     be the *least* negative boost arm rather than the most, so it does not
-    bracket the real arms and cannot serve as a floor. This scores pure
-    Gaussian noise, independent of every target and every row's identity,
-    through the exact `boost_residual_oof` path every arm uses, under the same
-    per-target folds and both baselines. Its lift is what a block with zero
-    signal looks like on this scale, so every other boost arm's lift can be
-    read as a distance from it instead of as a bare, unanchored number.
+    bracket the real arms and cannot serve as a floor. This scores pure Gaussian
+    noise, independent of every target and every row's identity, through the
+    exact `boost_residual_oof` path every arm uses, under the same per-target
+    folds and both baselines. Its lift is what a block with zero signal looks
+    like on this scale.
+
+    **The floor is width-matched, and it has to be.** An earlier version fixed
+    the noise block at three columns, on the argument that boosting cannot
+    extract structure from independent Gaussian noise regardless of how many
+    columns it has. The premise is true and the conclusion does not follow: the
+    floor does not measure extracted signal, it measures the *overfitting
+    penalty* the boosting estimator pays for being handed a block at all, and
+    that penalty is a function of the block's width. Measured on three targets
+    against the linear baseline, a three-column noise block scored -0.0126,
+    -0.0459 and -0.0970 where a 137-column one scored -0.0094, -0.0442 and
+    -0.0674 -- the narrow block was the more negative in every case, so it
+    flattered every arm's distance from the floor. Each arm is therefore priced
+    against noise of its own width, which is also §23's precedent: its
+    Gaussian null was 64 columns against a 64-column block.
+
+    The noise block is seeded from its width rather than drawn from one
+    advancing generator, so a floor computed for one arm alone is identical to
+    the same arm's floor computed alongside others. Without that, the artifact
+    would depend on the order the arms happen to be iterated in.
 
     Args:
         matrix: Matrix with both blocks attached. Used only for row count and
-            alignment -- the noise block carries none of its columns.
+            alignment -- the noise blocks carry none of its columns.
         baseline: Linear baseline design.
         flexible_baseline: Curvature-augmented baseline design.
         targets: Targets to score, matched one-for-one with `run_sweep`'s.
+        widths_by_arm: Arm key to block width, from `arm_block_widths`.
 
     Returns:
-        Per-target frame with `column`, `lift_boost_floor` (vs the linear
-        baseline) and `lift_boost_floor_flexbase` (vs the flexible baseline),
-        named so it can merge onto `run_sweep`'s output without colliding with
-        any arm's columns.
+        Per-target frame with `column` and, per arm, the two columns
+        `floor_column_names` names -- named so they merge onto `run_sweep`'s
+        output without colliding with any arm's own columns.
     """
-    rng = np.random.default_rng(RANDOM_SEED)
-    noise = rng.normal(size=(len(matrix), NOISE_BLOCK_WIDTH))
+    noise_by_arm = {
+        arm_key: np.random.default_rng([RANDOM_SEED, width]).normal(
+            size=(len(matrix), width)
+        )
+        for arm_key, width in widths_by_arm.items()
+    }
 
     records: list[dict[str, float | str]] = []
     for target in targets:
@@ -507,7 +582,6 @@ def boost_floor_lift(
         y = matrix.loc[rows, target.column].to_numpy(dtype="float64")
         base_design = baseline.loc[rows].to_numpy(dtype="float64")
         flexible_design = flexible_baseline.loc[rows].to_numpy(dtype="float64")
-        block = noise[rows]
 
         folds = KFold(n_splits=N_FOLDS, shuffle=True, random_state=RANDOM_SEED)
         r2_baseline = float(r2_score(y, _baseline_oof_predictions(base_design, y, folds)))
@@ -515,39 +589,64 @@ def boost_floor_lift(
             r2_score(y, _baseline_oof_predictions(flexible_design, y, folds))
         )
 
-        records.append(
-            {
-                "column": target.column,
-                "lift_boost_floor": float(
-                    r2_score(y, boost_residual_oof(base_design, block, y, folds))
-                )
-                - r2_baseline,
-                "lift_boost_floor_flexbase": float(
-                    r2_score(y, boost_residual_oof(flexible_design, block, y, folds))
-                )
-                - r2_flexible,
-            }
-        )
+        record: dict[str, float | str] = {"column": target.column}
+        for arm_key, noise in noise_by_arm.items():
+            block = noise[rows]
+            linear_key, flexible_key = floor_column_names(arm_key)
+            record[linear_key] = (
+                float(r2_score(y, boost_residual_oof(base_design, block, y, folds)))
+                - r2_baseline
+            )
+            record[flexible_key] = (
+                float(r2_score(y, boost_residual_oof(flexible_design, block, y, folds)))
+                - r2_flexible
+            )
+        records.append(record)
     return pd.DataFrame(records)
 
 
+# Written into the by-pillar column names so no column there can be read
+# without knowing which baseline produced it. The scores CSV marks the flexible
+# framing with `FLEXIBLE_SUFFIX` and leaves the linear one unmarked; that is
+# tolerable in a file whose every arm carries both, and was not tolerable in the
+# by-pillar file, which is the artifact most likely to be opened alone.
+LINEAR_SUFFIX: str = "_linear"
+
+
 def summarize_by_pillar(results: pd.DataFrame) -> pd.DataFrame:
-    """Mean lift per arm within each target's owning pillar.
+    """Mean lift per arm, learner and framing within each target's owning pillar.
 
     Reported beside the aggregate and never instead of it: 20 of the 28 targets
     are one QCEW table, so a basket-wide mean is 71% one pillar.
+
+    Fix-round finding I4: this used to aggregate the linear framing only, under
+    column names (`shape_v1`, `shape_v2`, ...) that named neither the baseline
+    nor the framing. The committed CSV was therefore a file whose header could
+    not tell a reader which of the round's two baselines produced it -- the
+    round's own "never one framing without the others" discipline suspended in
+    the one artifact most likely to be read on its own. Both framings are now
+    aggregated and every column names its baseline.
 
     Args:
         results: Output of `run_sweep`.
 
     Returns:
-        One row per pillar with the target count and each arm's mean lift under
-        each learner.
+        One row per pillar with the target count and, for each arm under each
+        learner, the mean lift over the linear baseline and over the flexible
+        one, each in an explicitly named column.
     """
     aggregations: dict[str, tuple[str, str]] = {"n_targets": ("column", "count")}
     for arm in SHAPE_ARMS:
         for suffix in ("", BOOST_SUFFIX):
-            aggregations[f"{arm.key}{suffix}"] = (f"lift_{arm.key}{suffix}", "mean")
+            _, linear_column, flexible_column = arm_record_keys(arm.key, suffix)
+            aggregations[f"lift_{arm.key}{LINEAR_SUFFIX}{suffix}"] = (
+                linear_column,
+                "mean",
+            )
+            aggregations[f"lift_{arm.key}{FLEXIBLE_SUFFIX}{suffix}"] = (
+                flexible_column,
+                "mean",
+            )
     return results.groupby("pillar").agg(**aggregations).reset_index()
 
 
@@ -611,47 +710,121 @@ def _paired_test(results: pd.DataFrame, arm: Arm, column: str) -> dict[str, obje
     return record
 
 
+def flexible_degraded_mask(results: pd.DataFrame) -> pd.Series:
+    """Targets where the flexible baseline scores *worse* than the linear one.
+
+    The augmented baseline is unpenalized OLS on a wider design, so on some
+    targets it degrades rather than improves -- §23.4 found 6 of 28 and this
+    round reproduces them. On those targets "lift over the baseline" is measured
+    against a goalpost that moved, which is why §23.6's Forbidden wording bans
+    quoting a flexible figure without saying which basket produced it: all-28
+    and undegraded-22 are two denominators and they disagree on significance.
+
+    Read from the data, never hardcoded. Which targets degrade is a property of
+    the run, and a hardcoded list would silently mislabel a future one.
+
+    Args:
+        results: Output of `run_sweep`, carrying both baselines' R2.
+
+    Returns:
+        Boolean series, True where the flexible baseline degraded.
+    """
+    return results["r2_baseline_flexible"] < results["r2_baseline"]
+
+
+def _undegraded_reading(
+    results: pd.DataFrame, arm: Arm, column: str, floor_column: str | None
+) -> dict[str, object]:
+    """The same framing recomputed on the targets the flexible baseline kept.
+
+    Args:
+        results: Output of `run_sweep`.
+        arm: The arm being read.
+        column: Full flexible-lift column name.
+        floor_column: The arm's width-matched flexible floor column, or None for
+            the ridge learner, which has no floor.
+
+    Returns:
+        `_paired_test`'s structure over the undegraded rows, plus the count of
+        targets it was computed on. Signed-rank readings are omitted when the
+        subset is too small to test.
+    """
+    kept = results.loc[~flexible_degraded_mask(results)]
+    reading: dict[str, object] = {"n_targets": int(len(kept))}
+    if kept.empty:
+        return reading
+    reading.update(_paired_test(kept, arm, column))
+    if floor_column is not None:
+        reading["vs_boost_floor"] = _signed_rank(kept[column] - kept[floor_column])
+    return reading
+
+
 def summarize(
     results: pd.DataFrame,
     size_recovery: dict[str, dict[str, float]],
     n_v1: int,
     n_profile: int,
+    widths_by_arm: dict[str, int] | None = None,
 ) -> dict[str, object]:
     """Assemble the stats artifact the notebook reads.
 
-    `results` must already carry `lift_boost_floor` and `lift_boost_floor_flexbase`
-    -- `main` merges `boost_floor_lift`'s output onto `run_sweep`'s output by
-    `column` before calling this. Every boost-learner arm entry gets a
-    `vs_boost_floor` reading under each framing, so no boost lift is published
-    without its floor visible in the same artifact (fix-round finding 2).
+    `results` must already carry every arm's two floor columns -- `main` merges
+    `boost_floor_lift`'s output onto `run_sweep`'s output by `column` before
+    calling this. Every boost-learner arm entry gets a `vs_boost_floor` reading
+    under each framing against the floor at *its own width* (finding I1), so no
+    boost lift is published without its floor visible in the same artifact.
+
+    Every flexible framing additionally carries an `undegraded` reading, over
+    the targets where the flexible baseline did not itself degrade (finding C2).
+    §23.6's Forbidden wording bans quoting a flexible figure without saying which
+    basket produced it -- all-28 and undegraded-22 are two denominators and they
+    disagree on significance -- so a stats file carrying only one of them cannot
+    be quoted from without committing that violation.
 
     Args:
         results: Output of `run_sweep`, merged with `boost_floor_lift`'s output.
         size_recovery: Output of `size_recoverability`.
         n_v1: Width of round one's block.
         n_profile: Width of the new shape profile.
+        widths_by_arm: Arm key to block width, from `arm_block_widths`, recorded
+            beside each arm's floor so a reader can see what the floor was
+            matched to. Optional only so a test can call this without a matrix.
 
     Returns:
-        Target counts, block widths, the size diagnostic, the boost floor, and
-        per-arm results in all three framings under both learners -- each
-        carrying a `vs_baseline` reading, a `vs_arm` reading when paired, and
-        (boost learner only) a `vs_boost_floor` reading.
+        Target counts, block widths, the size diagnostic, the degraded-target
+        list, a width-matched boost floor per arm, and per-arm results in all
+        three framings under both learners -- each carrying a `vs_baseline`
+        reading, a `vs_arm` reading when paired, (boost learner only) a
+        `vs_boost_floor` reading, and (flexible framing) an `undegraded`
+        re-reading of all of those on the undegraded basket.
     """
+    widths_by_arm = widths_by_arm or {}
+    degraded = flexible_degraded_mask(results)
+
     arms: dict[str, object] = {}
     for arm in SHAPE_ARMS:
+        linear_floor_column, flexible_floor_column = floor_column_names(arm.key)
         for learner, suffix in (("ridge", ""), ("boost", BOOST_SUFFIX)):
+            flexible_column = f"lift_{arm.key}{FLEXIBLE_SUFFIX}{suffix}"
             linear = _paired_test(results, arm, f"lift_{arm.key}{suffix}")
-            flexible = _paired_test(
-                results, arm, f"lift_{arm.key}{FLEXIBLE_SUFFIX}{suffix}"
-            )
+            flexible = _paired_test(results, arm, flexible_column)
             if learner == "boost":
                 linear["vs_boost_floor"] = _signed_rank(
-                    results[f"lift_{arm.key}{suffix}"] - results["lift_boost_floor"]
+                    results[f"lift_{arm.key}{suffix}"] - results[linear_floor_column]
                 )
                 flexible["vs_boost_floor"] = _signed_rank(
-                    results[f"lift_{arm.key}{FLEXIBLE_SUFFIX}{suffix}"]
-                    - results["lift_boost_floor_flexbase"]
+                    results[flexible_column] - results[flexible_floor_column]
                 )
+            # Only the flexible framing gets an undegraded reading: the linear
+            # baseline is the one every earlier round used and it did not move,
+            # so restricting it to the targets a *different* baseline happened
+            # to keep would be a basket with no meaning behind it.
+            flexible["undegraded"] = _undegraded_reading(
+                results,
+                arm,
+                flexible_column,
+                flexible_floor_column if learner == "boost" else None,
+            )
             arms[f"{arm.key}_{learner}"] = {
                 "label": arm.label,
                 "learner": learner,
@@ -668,15 +841,21 @@ def summarize(
         "mean_r2_baseline": float(results["r2_baseline"].mean()),
         "mean_r2_baseline_flexible": float(results["r2_baseline_flexible"].mean()),
         "size_recoverability": size_recovery,
+        "flexible_degraded_targets": sorted(results.loc[degraded, "column"]),
+        "n_flexible_undegraded_targets": int((~degraded).sum()),
         "boost_floor": {
-            "linear": {
-                "mean_lift": float(results["lift_boost_floor"].mean()),
-                **_signed_rank(results["lift_boost_floor"]),
-            },
-            "flexible": {
-                "mean_lift": float(results["lift_boost_floor_flexbase"].mean()),
-                **_signed_rank(results["lift_boost_floor_flexbase"]),
-            },
+            arm.key: {
+                "width": widths_by_arm[arm.key] if widths_by_arm else None,
+                "linear": {
+                    "mean_lift": float(results[floor_column_names(arm.key)[0]].mean()),
+                    **_signed_rank(results[floor_column_names(arm.key)[0]]),
+                },
+                "flexible": {
+                    "mean_lift": float(results[floor_column_names(arm.key)[1]].mean()),
+                    **_signed_rank(results[floor_column_names(arm.key)[1]]),
+                },
+            }
+            for arm in SHAPE_ARMS
         },
         "arms": arms,
         "by_pillar": summarize_by_pillar(results).to_dict(orient="records"),
@@ -712,7 +891,15 @@ def _format_framing(framing: dict[str, object]) -> str:
             f", vs floor Δ={vs_floor['mean_paired_difference']:+.5f}"
             f" p={vs_floor['wilcoxon_p']:.4f}"
         )
-    return text + ")"
+    text += ")"
+    if "undegraded" in framing and "vs_baseline" in framing["undegraded"]:
+        undegraded = framing["undegraded"]
+        text += (
+            f" | undegraded-{undegraded['n_targets']}: "
+            f"{undegraded['mean_lift']:+.5f} "
+            f"(vs_baseline p={undegraded['vs_baseline']['wilcoxon_p']:.4f})"
+        )
+    return text
 
 
 def main() -> None:
@@ -738,28 +925,37 @@ def main() -> None:
 
     results = run_sweep(matrix, v1_cols, profile_cols, targets)
 
+    all_rows = np.ones(len(matrix), dtype=bool)
+    diagnostic_blocks = build_arm_blocks(matrix, v1_cols, profile_cols, all_rows)
+    widths_by_arm = arm_block_widths(diagnostic_blocks)
+
     # Fix-round finding 2: calibrate the boost lift scale with an
     # information-free block scored through the identical path, under the same
     # two baselines this sweep already built inside `run_sweep`. Rebuilding them
     # here is safe -- both are pure functions of `matrix` with no randomness --
     # and merging the floor onto `results` makes it a computed artifact sitting
     # beside the arms it calibrates, in the same CSV, rather than a number that
-    # only exists in prose.
+    # only exists in prose. Finding I1: one floor per arm, matched to that arm's
+    # width, because the quantity the floor measures is an overfitting penalty
+    # and that penalty scales with how wide the block is.
     baseline = build_baseline_design(matrix)
     flexible_baseline = build_flexible_baseline_design(matrix, baseline)
-    floor = boost_floor_lift(matrix, baseline, flexible_baseline, targets)
+    floor = boost_floor_lift(
+        matrix, baseline, flexible_baseline, targets, widths_by_arm
+    )
     results = results.merge(floor, on="column", how="left", validate="one_to_one")
-    if results[["lift_boost_floor", "lift_boost_floor_flexbase"]].isna().any().any():
+    floor_columns = [name for arm in SHAPE_ARMS for name in floor_column_names(arm.key)]
+    if results[floor_columns].isna().any().any():
         raise ValueError("boost floor is missing a target that the sweep scored")
 
-    all_rows = np.ones(len(matrix), dtype=bool)
-    diagnostic_blocks = build_arm_blocks(matrix, v1_cols, profile_cols, all_rows)
     size_recovery = size_recoverability(
         matrix, {key: diagnostic_blocks[key] for key in ("shape_v1", "shape_v2")}
     )
 
     pillar_results = summarize_by_pillar(results)
-    stats = summarize(results, size_recovery, len(v1_cols), len(profile_cols))
+    stats = summarize(
+        results, size_recovery, len(v1_cols), len(profile_cols), widths_by_arm
+    )
 
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     ANALYSIS_DIR.mkdir(parents=True, exist_ok=True)
@@ -778,14 +974,25 @@ def main() -> None:
                 scores[f"{measure}_boost"],
             )
 
-    floor_stats = stats["boost_floor"]
     logger.info(
-        "boost floor (information-free block, out-of-fold lift): "
-        "linear %+.5f (p=%.4f) | flexible %+.5f (p=%.4f)",
-        floor_stats["linear"]["mean_lift"],
-        floor_stats["linear"]["wilcoxon_p"],
-        floor_stats["flexible"]["mean_lift"],
-        floor_stats["flexible"]["wilcoxon_p"],
+        "boost floor (information-free Gaussian block, width-matched per arm):"
+    )
+    for arm_key, floor_stats in stats["boost_floor"].items():
+        logger.info(
+            "  %-20s w=%-4s linear %+.5f (p=%.4f) | flexible %+.5f (p=%.4f)",
+            arm_key,
+            floor_stats["width"],
+            floor_stats["linear"]["mean_lift"],
+            floor_stats["linear"]["wilcoxon_p"],
+            floor_stats["flexible"]["mean_lift"],
+            floor_stats["flexible"]["wilcoxon_p"],
+        )
+
+    logger.info(
+        "flexible baseline degraded %d of %d targets: %s",
+        len(stats["flexible_degraded_targets"]),
+        stats["n_targets"],
+        ", ".join(stats["flexible_degraded_targets"]) or "none",
     )
 
     for name, arm_stats in stats["arms"].items():

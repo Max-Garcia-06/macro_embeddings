@@ -158,6 +158,36 @@ def test_unusual_sections_are_the_rare_ones() -> None:
     assert features.loc["00001", "n_unusual_sections"] == 0.0
 
 
+def test_share_unusual_sections_divides_by_titled_sections_not_all_sections() -> None:
+    """Deferred #5. The design says `/ n_body_sections`; the code says `/ titled`,
+    with a comment explaining why (an untitled section has no title to be rare).
+    This pins the shipped denominator so the two cannot drift apart silently."""
+    rows = [(f"{i:05d}", 1, "Geography", "x") for i in range(1, 201)]
+    rows.append(("00007", 2, "One Off", "x"))  # rare: 1 of 201 counties
+    rows.append(("00007", 3, None, "x"))  # untitled: excluded from the denominator
+
+    features = shape.template_features(make_sections(rows))
+
+    # Two titled sections, one of them unusual -- not three body sections.
+    assert features.loc["00007", "n_unusual_sections"] == 1.0
+    assert features.loc["00007", "share_unusual_sections"] == pytest.approx(0.5)
+
+
+def test_template_jaccard_is_zero_when_a_county_has_no_titled_sections() -> None:
+    """Deferred #5. The empty-title-set branch: `held` is an empty set, so the
+    Jaccard numerator is 0 and the denominator is the modal set."""
+    corpus = make_template_corpus()
+    untitled_only = pd.concat([corpus, make_sections([("01009", 1, None, "x")])])
+
+    features = shape.template_features(untitled_only)
+
+    assert features.loc["01009", "template_jaccard"] == pytest.approx(0.0)
+    assert features.loc["01009", "n_core_missing"] == 2.0
+    # Zero titled sections is a zero denominator; the column reports 0.0, not NaN.
+    assert features.loc["01009", "share_unusual_sections"] == pytest.approx(0.0)
+    assert np.isfinite(features.loc["01009"].to_numpy(dtype="float64")).all()
+
+
 def test_title_rarity_is_higher_for_a_county_with_rare_titles() -> None:
     rows = [(f"{i:05d}", 1, "Geography", "x") for i in range(1, 201)]
     rows.append(("00007", 2, "One Off", "x"))
@@ -546,8 +576,10 @@ def test_summarize_by_pillar_reproduces_a_known_mean() -> None:
 
     b_rows = results[results["pillar"] == "B"]
     assert int(by_pillar.loc["B", "n_targets"]) == 2
-    assert by_pillar.loc["B", "shape_v1"] == pytest.approx(b_rows["lift_shape_v1"].mean())
-    assert by_pillar.loc["B", "shape_v1_boost"] == pytest.approx(
+    assert by_pillar.loc["B", "lift_shape_v1_linear"] == pytest.approx(
+        b_rows["lift_shape_v1"].mean()
+    )
+    assert by_pillar.loc["B", f"lift_shape_v1_linear{scoring.BOOST_SUFFIX}"] == pytest.approx(
         b_rows[f"lift_shape_v1{scoring.BOOST_SUFFIX}"].mean()
     )
 
@@ -566,13 +598,16 @@ def test_boost_floor_lift_scores_pure_noise_through_the_boost_path() -> None:
     )
     targets = [Target("B", "target_a", "Target A")]
 
-    floor = scoring.boost_floor_lift(matrix, baseline, flexible_baseline, targets)
+    floor = scoring.boost_floor_lift(
+        matrix, baseline, flexible_baseline, targets, {"shape_v1": 4}
+    )
 
+    linear_floor, flexible_floor = scoring.floor_column_names("shape_v1")
     assert list(floor["column"]) == ["target_a"]
-    assert "lift_boost_floor" in floor.columns
-    assert "lift_boost_floor_flexbase" in floor.columns
-    assert np.isfinite(floor["lift_boost_floor"]).all()
-    assert np.isfinite(floor["lift_boost_floor_flexbase"]).all()
+    assert linear_floor in floor.columns
+    assert flexible_floor in floor.columns
+    assert np.isfinite(floor[linear_floor]).all()
+    assert np.isfinite(floor[flexible_floor]).all()
 
 
 def _make_summarize_frame(n: int = 12, seed: int = 0) -> pd.DataFrame:
@@ -583,8 +618,9 @@ def _make_summarize_frame(n: int = 12, seed: int = 0) -> pd.DataFrame:
     rng = np.random.default_rng(seed + 1)
     frame["r2_baseline"] = rng.uniform(0.2, 0.3, size=n)
     frame["r2_baseline_flexible"] = rng.uniform(0.2, 0.3, size=n)
-    frame["lift_boost_floor"] = rng.normal(scale=0.01, size=n)
-    frame["lift_boost_floor_flexbase"] = rng.normal(scale=0.01, size=n)
+    for arm in scoring.SHAPE_ARMS:
+        for column in scoring.floor_column_names(arm.key):
+            frame[column] = rng.normal(scale=0.01, size=n)
     for arm in scoring.SHAPE_ARMS:
         for suffix in ("", scoring.BOOST_SUFFIX):
             frame[f"r2_alone_{arm.key}{suffix}"] = rng.uniform(0.0, 0.2, size=n)
@@ -615,9 +651,243 @@ def test_summarize_emits_both_p_value_readings_for_every_arm() -> None:
                 else:
                     assert "vs_boost_floor" not in entry[framing]
 
-    assert stats["boost_floor"]["linear"]["mean_lift"] == pytest.approx(
-        results["lift_boost_floor"].mean()
+    for arm in scoring.SHAPE_ARMS:
+        linear_floor, flexible_floor = scoring.floor_column_names(arm.key)
+        assert stats["boost_floor"][arm.key]["linear"]["mean_lift"] == pytest.approx(
+            results[linear_floor].mean()
+        )
+        assert stats["boost_floor"][arm.key]["flexible"]["mean_lift"] == pytest.approx(
+            results[flexible_floor].mean()
+        )
+
+
+def _make_scorable_matrix(n: int = 150, seed: int = 5) -> tuple[pd.DataFrame, list[str], list[str]]:
+    """A tiny matrix carrying everything `build_arm_blocks` slices.
+
+    Small enough to fit every arm through both learners in seconds, real enough
+    that `score_target` runs its actual code path rather than a stand-in.
+    """
+    from analyze_source_a_structure import typed_columns
+    from pillar_matrix import SIZE_FEATURES
+
+    rng = np.random.default_rng(seed)
+    data: dict[str, object] = {}
+    for name in SIZE_FEATURES:
+        data[name] = rng.normal(loc=10.0, scale=1.0, size=n)
+    for name in typed_columns():
+        data[name] = rng.normal(size=n)
+    v1_cols = [f"v1_{i}" for i in range(3)]
+    profile_cols = [f"profile_{i}" for i in range(2)]
+    for name in [*v1_cols, *profile_cols]:
+        data[name] = rng.normal(size=n)
+    data["target_a"] = rng.normal(size=n)
+    return pd.DataFrame(data), v1_cols, profile_cols
+
+
+def test_score_target_writes_every_key_empty_record_keys_promises() -> None:
+    """Finding I3: the key-consistency assertions were circular.
+
+    `empty_record_keys` is built by looping `arm_record_keys`, so a test that
+    re-derives its expectations from `arm_record_keys` and checks them against
+    `empty_record_keys` would still pass if `score_target` stopped writing the
+    boost keys entirely. This runs the real `score_target` and checks the real
+    record against the promise, which is the assertion the docstring claims.
+    """
+    import analyze_source_a_shape_profile as scoring
+    from analyze_pillar_matrix_signal import Target
+
+    matrix, v1_cols, profile_cols = _make_scorable_matrix()
+    baseline = pd.DataFrame({"const": np.ones(len(matrix))}, index=matrix.index)
+    flexible = baseline.assign(curve=matrix["log_population"] ** 2)
+
+    record = scoring.score_target(
+        matrix,
+        v1_cols,
+        profile_cols,
+        baseline,
+        flexible,
+        Target("B", "target_a", "Target A"),
     )
-    assert stats["boost_floor"]["flexible"]["mean_lift"] == pytest.approx(
-        results["lift_boost_floor_flexbase"].mean()
+
+    assert set(scoring.empty_record_keys()) <= set(record)
+    for key in scoring.empty_record_keys():
+        assert isinstance(record[key], float)
+        assert np.isfinite(record[key])
+
+
+def test_boost_floor_is_scored_at_each_arms_own_width() -> None:
+    """Finding I1: the floor is an overfitting penalty, and that penalty scales
+    with block width. A single narrow floor is not a fair comparison for a
+    137-column arm."""
+    import analyze_source_a_shape_profile as scoring
+    from analyze_pillar_matrix_signal import Target
+
+    rng = np.random.default_rng(3)
+    n = 300
+    matrix = pd.DataFrame({"target_a": rng.normal(size=n), "target_b": rng.normal(size=n)})
+    baseline = pd.DataFrame({"const": np.ones(n)})
+    flexible_baseline = pd.DataFrame(
+        {"const": np.ones(n), "curve": rng.normal(scale=0.01, size=n)}
     )
+    targets = [Target("B", "target_a", "A"), Target("B", "target_b", "B")]
+
+    floor = scoring.boost_floor_lift(
+        matrix, baseline, flexible_baseline, targets, {"narrow": 2, "wide": 40}
+    )
+
+    assert list(floor["column"]) == ["target_a", "target_b"]
+    for arm in ("narrow", "wide"):
+        for column in scoring.floor_column_names(arm):
+            assert column in floor.columns
+            assert np.isfinite(floor[column]).all()
+    # Different widths must actually produce different floors, or width-matching
+    # would be ceremony.
+    assert not np.allclose(
+        floor["lift_boost_floor_narrow"], floor["lift_boost_floor_wide"]
+    )
+
+
+def test_boost_floor_noise_does_not_depend_on_the_order_arms_are_scored_in() -> None:
+    """The noise block is seeded from the width, so scoring one arm alone and
+    scoring it alongside others give the identical floor. Without this, a floor
+    computed in two passes would not agree with one computed in a single pass."""
+    import analyze_source_a_shape_profile as scoring
+    from analyze_pillar_matrix_signal import Target
+
+    rng = np.random.default_rng(4)
+    n = 250
+    matrix = pd.DataFrame({"target_a": rng.normal(size=n)})
+    baseline = pd.DataFrame({"const": np.ones(n)})
+    flexible_baseline = pd.DataFrame({"const": np.ones(n), "curve": rng.normal(size=n)})
+    targets = [Target("B", "target_a", "A")]
+
+    alone = scoring.boost_floor_lift(
+        matrix, baseline, flexible_baseline, targets, {"wide": 12}
+    )
+    together = scoring.boost_floor_lift(
+        matrix, baseline, flexible_baseline, targets, {"narrow": 2, "wide": 12}
+    )
+
+    assert alone["lift_boost_floor_wide"].to_numpy() == pytest.approx(
+        together["lift_boost_floor_wide"].to_numpy()
+    )
+
+
+def test_each_boost_arm_is_compared_to_the_floor_at_its_own_width() -> None:
+    """Finding I1, in `summarize`: `vs_boost_floor` must read the arm's own
+    width-matched floor column, not one shared narrow floor."""
+    import analyze_source_a_shape_profile as scoring
+    from scipy.stats import wilcoxon
+
+    results = _make_summarize_frame()
+    widths = {arm.key: 10 + i for i, arm in enumerate(scoring.SHAPE_ARMS)}
+    stats = scoring.summarize(results, {"shape_v1": {}, "shape_v2": {}}, 64, 73, widths)
+
+    for arm in scoring.SHAPE_ARMS:
+        entry = stats["arms"][f"{arm.key}_boost"]
+        linear_floor, flexible_floor = scoring.floor_column_names(arm.key)
+        expected_linear = (
+            results[f"lift_{arm.key}{scoring.BOOST_SUFFIX}"] - results[linear_floor]
+        )
+        assert entry["linear"]["vs_boost_floor"]["wilcoxon_p"] == pytest.approx(
+            wilcoxon(expected_linear)[1]
+        )
+        expected_flexible = (
+            results[f"lift_{arm.key}{scoring.FLEXIBLE_SUFFIX}{scoring.BOOST_SUFFIX}"]
+            - results[flexible_floor]
+        )
+        assert entry["flexible"]["vs_boost_floor"]["wilcoxon_p"] == pytest.approx(
+            wilcoxon(expected_flexible)[1]
+        )
+        assert stats["boost_floor"][arm.key]["width"] == widths[arm.key]
+
+
+def test_summarize_reports_the_undegraded_basket_beside_the_full_one() -> None:
+    """Finding C2. §23.6's Forbidden wording bans quoting a flexible figure
+    without saying which basket produced it, so both baskets must be in the
+    artifact."""
+    import analyze_source_a_shape_profile as scoring
+    from scipy.stats import wilcoxon
+
+    results = _make_summarize_frame(n=16, seed=2)
+    degraded = results["r2_baseline_flexible"] < results["r2_baseline"]
+    assert 0 < int(degraded.sum()) < len(results)  # the fixture must exercise both
+
+    stats = scoring.summarize(results, {"shape_v1": {}, "shape_v2": {}}, 64, 73)
+
+    assert stats["flexible_degraded_targets"] == sorted(results.loc[degraded, "column"])
+    assert stats["n_flexible_undegraded_targets"] == int((~degraded).sum())
+
+    kept = results.loc[~degraded]
+    for arm in scoring.SHAPE_ARMS:
+        for learner, suffix in (("ridge", ""), ("boost", scoring.BOOST_SUFFIX)):
+            entry = stats["arms"][f"{arm.key}_{learner}"]
+            column = f"lift_{arm.key}{scoring.FLEXIBLE_SUFFIX}{suffix}"
+            undegraded = entry["flexible"]["undegraded"]
+
+            assert undegraded["n_targets"] == len(kept)
+            assert undegraded["mean_lift"] == pytest.approx(kept[column].mean())
+            assert undegraded["vs_baseline"]["wilcoxon_p"] == pytest.approx(
+                wilcoxon(kept[column])[1]
+            )
+            if arm.against is not None:
+                other = column.replace(arm.key, arm.against, 1)
+                assert undegraded["vs_arm"]["wilcoxon_p"] == pytest.approx(
+                    wilcoxon(kept[column] - kept[other])[1]
+                )
+
+
+def test_the_undegraded_basket_is_read_from_the_data_not_hardcoded() -> None:
+    """Which targets the flexible baseline degrades is a property of the run."""
+    import analyze_source_a_shape_profile as scoring
+
+    results = _make_summarize_frame(n=16, seed=2)
+    results.loc[:, "r2_baseline_flexible"] = results["r2_baseline"] + 0.01
+
+    stats = scoring.summarize(results, {"shape_v1": {}, "shape_v2": {}}, 64, 73)
+
+    assert stats["flexible_degraded_targets"] == []
+    assert stats["n_flexible_undegraded_targets"] == len(results)
+
+
+def test_only_the_flexible_framing_carries_an_undegraded_reading() -> None:
+    """The degradation is the *flexible* baseline's; the linear one never moved,
+    so an undegraded reading of the linear framing would be meaningless."""
+    import analyze_source_a_shape_profile as scoring
+
+    results = _make_summarize_frame(n=16, seed=2)
+    stats = scoring.summarize(results, {"shape_v1": {}, "shape_v2": {}}, 64, 73)
+
+    for arm in scoring.SHAPE_ARMS:
+        for learner in ("ridge", "boost"):
+            entry = stats["arms"][f"{arm.key}_{learner}"]
+            assert "undegraded" not in entry["linear"]
+            assert "undegraded" in entry["flexible"]
+
+
+def test_by_pillar_names_the_framing_of_every_column_it_reports() -> None:
+    """Finding I4: the by-pillar CSV is the artifact most likely to be opened
+    alone, and its header said nothing about which baseline produced it."""
+    import analyze_source_a_shape_profile as scoring
+
+    results = _make_lift_frame(n=4)
+    results["pillar"] = ["B", "B", "C", "C"]
+
+    by_pillar = scoring.summarize_by_pillar(results).set_index("pillar")
+    b_rows = results[results["pillar"] == "B"]
+
+    for arm in scoring.SHAPE_ARMS:
+        for suffix in ("", scoring.BOOST_SUFFIX):
+            linear = f"lift_{arm.key}_linear{suffix}"
+            flexible = f"lift_{arm.key}{scoring.FLEXIBLE_SUFFIX}{suffix}"
+            assert by_pillar.loc["B", linear] == pytest.approx(
+                b_rows[f"lift_{arm.key}{suffix}"].mean()
+            )
+            assert by_pillar.loc["B", flexible] == pytest.approx(
+                b_rows[f"lift_{arm.key}{scoring.FLEXIBLE_SUFFIX}{suffix}"].mean()
+            )
+    # No column may leave its baseline unnamed.
+    for column in by_pillar.columns:
+        if column == "n_targets":
+            continue
+        assert "_linear" in column or scoring.FLEXIBLE_SUFFIX in column
