@@ -2665,3 +2665,268 @@ measuring what its docstring says it measures.
   then `uv run scripts/analyze_source_a_structure.py`, then
   `uv run scripts/build_source_a_structure_notebook.py`. Seed 42 throughout.
   Notebook: `analysis-output/source-a/source_a_structure_round.ipynb`.
+
+## 24. How Much Is In the Shape of an Article — And What Size Recovery Says About It (2026-08-26)
+
+**Context.** §23 scored a 64-column structural block and answered "does article
+shape know anything beyond county size?" with "a little, mostly not, and the
+apparent signal was three-quarters curvature in size that a linear control could
+not absorb". It closed on an open problem it could not measure: the per-column
+size audit clears every column individually while the block as a whole carries
+size, because the dependence is **joint** across columns and no per-column
+statistic can see it. This round asks the other question — *how much can be
+extracted from article shape at all* — and, on the way, measures the joint
+channel §23 said no statistic could see.
+
+### 24.1 What was built
+
+`scripts/extract_source_a_shape_profile.py` adds **73 columns** in four families
+on top of round one's 64, in a separate parquet so §23's committed artifact is
+never mutated:
+
+- **Order and position** — where each section sits, normalized to `[0, 1]` among
+  the county's body sections, with absence encoded `-1.0` (position `0.0` means
+  "first", which is the opposite of absent). One `pos_<title>` per title in round
+  one's flag vocabulary, imported rather than re-derived, plus
+  `pos_longest_section`, `pos_first_<bucket>`, `history_before_economy` and
+  `position_spread`.
+- **Template conformity** — Jaccard against the corpus-modal title set (14
+  titles, computed at runtime, written to the stats file, never hardcoded),
+  `n_core_missing`, `n_unusual_sections`, `share_unusual_sections`,
+  `mean_title_rarity`, `n_title_words`.
+- **Surface densities** — digit, punctuation, capital and numeral-to-letter
+  ratios over the whole article and per thematic bucket. These read characters
+  and never meaning; that boundary is enforced by test.
+- **Length curve** — `top3_length_share`, `length_decay_slope`, and absolute
+  `chars_<bucket>` for all eight buckets.
+
+`scripts/analyze_source_a_shape_profile.py` scores five arms — `shape_v1` (round
+one's 64, a regression check), `shape_v2` (137), `typed` (29),
+`typed_plus_shape_v2` (166) and the `size_nonlinear` null control (9) — under two
+learners (`RidgeCV` as in §13–§23; `HistGradientBoosting` at fixed
+hyperparameters), in three framings that are never reported one without the
+others: `r2_alone` (no controls), `lift` (over the linear size-plus-state
+baseline) and `lift_flexbase` (over the curvature-augmented baseline). 28
+targets, mean baseline R² 0.2612, flexible 0.2607.
+
+### 24.2 The headline: article shape reconstructs county size at R² = 0.676
+
+Invert §23's question. Instead of asking whether any column looks like size, ask
+how much of size the whole block can rebuild:
+
+| block | log_population | log_agi | log_gdp_latest |
+|---|---|---|---|
+| `shape_v1` (64), ridge | 0.4934 | 0.4798 | 0.4528 |
+| `shape_v1` (64), boost | 0.6060 | 0.5805 | 0.5471 |
+| `shape_v2` (137), ridge | 0.6107 | 0.5913 | 0.5551 |
+| **`shape_v2` (137), boost** | **0.6760** | 0.6509 | 0.6039 |
+
+**Out-of-fold R² 0.676 on `log_population`.** That is §23's open problem
+converted into one number: the joint size channel is not subtle, it is most of
+what the block is. A per-column audit could not see it because no column carries
+it; the block does. Any lift reported below is what survives *after* a control
+has already removed size, and should be read knowing the block would have
+rebuilt two-thirds of it unaided.
+
+### 24.3 The null control out-predicts article shape on raw power
+
+| arm | `r2_alone` ridge | `r2_alone` boost |
+|---|---|---|
+| `shape_v1` (64) | 0.0836 | 0.0626 |
+| `shape_v2` (137) | 0.0913 | 0.0836 |
+| `typed` (29) | 0.0477 | −0.0044 |
+| `typed_plus_shape_v2` (166) | 0.1022 | 0.0999 |
+| **`size_nonlinear` (9, NULL CONTROL)** | **0.1706** | 0.1148 |
+
+Nine information-free reshapings of the baseline's own three size columns
+predict the 28-target basket **nearly twice as well, with no controls, as the
+full 137-column shape block**. This is §23.3's calibration restated in the
+framing that has no baseline in it at all, and it is the cleanest statement of
+what "how much is in the shape of an article" is worth: less, on raw power, than
+squaring `log_population`.
+
+### 24.4 The 73 new columns bought no lift
+
+| arm | linear lift | vs baseline | vs `shape_v1` |
+|---|---|---|---|
+| `shape_v1` ridge | +0.00269 | 21/28, p=0.0012 | — |
+| `shape_v2` ridge | +0.00260 | 21/28, p=0.0013 | **p=0.4515** |
+
+`shape_v2` does not beat `shape_v1`. Four new families, 73 columns, and the
+paired test against round one's block cannot distinguish them (p=0.4515 under
+both baselines). What the new columns did do is raise size recoverability from
+0.61 to 0.68 (§24.2), and only **10 of the 73 stay under |r| = 0.5** against any
+round-one column. The most duplicated are position columns for common sections;
+the most novel are `digit_density_lists`, `position_spread` and
+`pos_demographics`.
+
+Note that the two questions have opposite answers and must be quoted together:
+"does shape add anything over no-shape?" is yes (p=0.0013), "do the four new
+families add anything over round one's block?" is not detectably (p=0.4515).
+
+### 24.5 Both flexible denominators
+
+The curvature-augmented baseline degrades on **6 of 28 targets** — the same six
+as §23.4: `capital_to_wage_ratio`, `distress_count`, `lq_emp_31-33`,
+`out_partner_hhi`, `unemployment_rate_latest`, `unemployment_velocity`, with
+`distress_count` going from R² 0.2017 to **−0.0446**, worse than predicting the
+mean. On those targets "lift over the baseline" is measured against a goalpost
+that moved, so both baskets are reported and neither alone:
+
+| arm (ridge) | all 28 | undegraded 22 |
+|---|---|---|
+| `shape_v1` | +0.00073, 20/28, p=0.0281 | +0.00062, 15/22, p=0.2099 |
+| `shape_v2` | +0.00084, 23/28, p=0.0048 | +0.00076, 18/22, p=0.0229 |
+| `typed` | +0.00161, 18/28, **p=0.0110** | +0.00148, 13/22, **p=0.1289** |
+| `typed_plus_shape_v2` | +0.00225, 22/28, p=0.0016 | +0.00199, 16/22, p=0.0229 |
+| `size_nonlinear` (NULL) | +0.00000, 15/28, p=0.1128 | +0.00000, 10/22, p=0.5202 |
+
+`shape_v1`'s row reproduces §23.4 exactly, on both denominators. `typed` is the
+arm most likely to be quoted and it **flips**: significant on all 28, not
+significant on the honest basket. §23.6's Forbidden wording already banned
+quoting one without the other; this round's first cut computed only the all-28
+basket and was corrected in review.
+
+The fusion comparison — `typed_plus_shape_v2` against `typed`, the one
+comparison that would argue for shipping these columns — does not reach
+significance in any framing: +0.00206 (p=0.0564) over the linear baseline,
++0.00064 (p=0.0900) over the flexible one, +0.00051 (p=0.1129) on the
+undegraded 22. That is the same verdict §23.4 reached for round one's block
+(+0.00095, p=0.1315), reached again with 73 more columns in the arm.
+
+### 24.6 The regression check reproduces §23 bit-for-bit
+
+`shape_v1` exists to prove nothing drifted while a fifth arm, a second learner
+and a second baseline were added around it. Against
+`outputs/source_a_structure_scores.csv`, across nine columns — `n`,
+`r2_baseline`, `r2_baseline_flexible`, `lift_structure` / `lift_shape_v1`, their
+flexbase pairs, `lift_typed` and both `lift_size_nonlinear` readings — the
+**maximum absolute difference is 0.0**. Not "within tolerance": identical. That
+is a real result about the machinery and not a formality, since §23.4 itself had
+to report two per-target divergences between a review measurement and the
+committed sweep.
+
+(A caution found while re-deriving this: `pandas.read_csv` does not use a
+correctly-rounded float parser by default, so a committed CSV read back and
+rewritten loses up to an ulp. Recomputations from these artifacts should pass
+`float_precision="round_trip"` before claiming bit-identity.)
+
+### 24.7 The boost learner, and what a floor has to be matched to
+
+`HistGradientBoosting` at fixed hyperparameters (200 iterations, lr 0.06,
+`min_samples_leaf` 40, `l2` 1.0, no early stopping), so the ceiling it reports is
+a lower bound. **Every boost arm's lift is negative under both baselines.** That
+is not a different baseline — `score_target` computes one `r2_baseline` and one
+`r2_flexible` per target and subtracts those same two numbers from the ridge and
+boost arms alike, and there is no boost baseline anywhere in this round — and it
+is not imputation, since `shape_v1` and `shape_v2` hold zero missing cells and
+carry the offset anyway. It is the estimator's **overfitting cost on the residual
+target**, paid where `RidgeCV`'s nested penalty search shrinks toward zero.
+
+A raw boost lift is therefore uninterpretable without a floor: what does a block
+carrying *nothing* score through this path? The first cut answered with a
+3-column Gaussian block and a comment claiming the floor is width-invariant
+because "boosting cannot extract structure from independent Gaussian noise
+regardless of how many columns it has". The premise is true and the conclusion
+does not follow — the floor measures the overfitting penalty, not extracted
+signal, and that penalty is a function of width. Measured, the 3-column block was
+the more negative on every target tried, so it flattered every arm. Each arm is
+now priced against noise **of its own width**, which is also §23.3's precedent (a
+64-column Gaussian null against a 64-column block):
+
+| arm | width | floor, linear | floor, flexible | arm − floor, flexible | p |
+|---|---|---|---|---|---|
+| `shape_v1` | 64 | −0.06859 | −0.06068 | **+0.00136** | **0.4791** |
+| `shape_v2` | 137 | −0.06811 | −0.06275 | +0.01200 | 0.0014 |
+| `typed` | 29 | −0.07489 | −0.06726 | +0.01115 | 0.0006 |
+| `typed_plus_shape_v2` | 166 | −0.06674 | −0.05991 | +0.01303 | 0.0048 |
+| `size_nonlinear` (NULL) | 9 | −0.08518 | −0.08260 | +0.02114 | 0.0000 |
+
+Every arm clears its own floor except **`shape_v1` under the flexible baseline**:
+round one's 64-column block, boosted against a curvature-augmented baseline, is
+not distinguishable from 64 columns of Gaussian noise (+0.00136, p=0.4791; on the
+undegraded 22, +0.00166, p=0.5235). Under the 3-column floor that arm read as
+comfortably above it (p=0.0008) and the null control read as the only failure
+(p=0.1093). Width-matching reverses which arm fails. Both readings existed
+before this correction; only the matched one is defensible.
+
+### 24.8 Status
+
+- **Status**: resolved. The round produces no change to `pillar_matrix` and no
+  argument for one — `shape_v2` does not beat `shape_v1` (p=0.4515) and the
+  fusion arm does not beat `typed` in any framing (p=0.0564 linear, p=0.0900
+  flexible, p=0.1129 undegraded-22). §23's `n_body_sections` cut stands, and
+  §24.2 argues harder for it than §23 could.
+- **Allowed wording**: "Article shape reconstructs county size at out-of-fold
+  R² = 0.676 (`log_population`, 137-column block, boosting) — §23's open problem,
+  which no per-column statistic could see, measured directly and answered
+  (§24.2)." "The information-free null control has the highest raw predictive
+  power of any arm in the round: `r2_alone` 0.1706 against the full shape block's
+  0.0913, so nine reshapings of the baseline's own size columns out-predict 137
+  columns of article shape with no controls on either (§24.3)." "Four new feature
+  families and 73 new columns do not beat round one's 64: paired p = 0.4515 under
+  both baselines, while raising size recoverability from 0.61 to 0.68 and leaving
+  only 10 of the 73 under |r| = 0.5 against a round-one column (§24.4)." "Under
+  the flexible size control the shape block lifts +0.00084 across all 28 targets
+  (23/28, p=0.0048) and +0.00076 on the 22 the baseline did not degrade (18/22,
+  p=0.0229); both readings have to be quoted together (§24.5)." "`typed` is
+  significant on all 28 (p=0.0110) and not on the undegraded 22 (p=0.1289), which
+  is why one denominator is never enough (§24.5)." "The fusion comparison —
+  `typed_plus_shape_v2` against `typed` — reaches significance in no framing:
+  p=0.0564 linear, p=0.0900 flexible, p=0.1129 on the undegraded 22, so this
+  round produces no case for shipping these columns either (§24.5)." "`shape_v1` re-scored through
+  the new module reproduces §23 exactly: nine columns, maximum absolute
+  difference 0.0 (§24.6)." "Every boost arm's lift is negative because boosting
+  overfits the residual target where ridge shrinks — both learners are
+  differenced against the same OLS baseline — and each arm is priced against
+  Gaussian noise of its own width; on that scale round one's block under the
+  flexible baseline is indistinguishable from noise (+0.00136, p=0.4791, §24.7)."
+- **Forbidden wording**: **"article shape knows something county size does not"**
+  — §23.6's ban, carried forward unchanged and strengthened: §24.2 now puts a
+  number on how much size the block holds (0.676), so the claim is not merely
+  unlicensed, it is contradicted. Every variant — "beyond county size", "net of
+  size", "size-independent structure", "survives the size control" — stays
+  forbidden. Any `shape_v2` or `typed_plus_shape_v2` flexible figure quoted
+  without saying which basket produced it: all-28 and undegraded-22 are two
+  denominators and on `typed` they disagree on significance, so §23.6's rule
+  applies to every arm in this round, not only the ones where the disagreement
+  happens to be visible. Any raw boost lift quoted without its floor — a bare
+  "−0.0587" is an estimator-variance penalty, not a verdict on an arm, and the
+  floor it must be read against is the one at that arm's width, never another
+  arm's and never a 3-column one. "The boost arms are negative because boosting
+  uses a different baseline" or "because the ridge path imputes and boosting does
+  not" — both were in the notebook, both are false, and the second is disproved
+  by two arms with zero missing cells. "The new families found signal round one
+  missed" — p=0.4515. "`shape_v2` beats `shape_v1`." Quoting the +0.00269 or
+  +0.00260 headline without the null control beside it (§23.6's rule; the null
+  control is the unit those numbers are denominated in). Any claim that these
+  columns should ship, or that §14/§22/§23's decisions are reopened by this round.
+- **Caveat this does not fix**: the aggregate is 71% one QCEW table (§14.2b,
+  §14.2c), so every basket-wide mean here inherits that caveat; the per-pillar
+  breakdown is in `outputs/source_a_shape_profile_by_pillar.csv` and the notebook
+  beside every aggregate, and since 2026-08-28 every column there names the
+  baseline that produced it. The flexible baseline is still unpenalized OLS on a
+  wider design, which is why it degrades 6 of 28 — a penalized augmented baseline
+  would be a better control and is still not what this round ran. The boost arm's
+  hyperparameters are fixed rather than searched, so its ceiling is a lower
+  bound. `size_recoverability` median-imputes the size measure it predicts where
+  the arms drop those rows; `log_population` — the headline — has zero missing
+  values, so §24.2's number is unaffected, but `log_agi` (1 row) and
+  `log_gdp_latest` (64 rows) carry imputed targets.
+- **Open question worth a round**: §23's was Accommodation & Food Services LQ,
+  and this round did not take it. The new one is narrower and follows from
+  §24.2: since the shape block reconstructs `log_population` at R² = 0.676, the
+  honest version of "what does article shape know" is to residualize the block
+  against recovered size *before* scoring it, rather than residualizing the
+  target against measured size after. That is a different experiment, not a
+  reanalysis of this one.
+- **Reproduction**: `uv run scripts/extract_source_a_structure_features.py`,
+  then `uv run scripts/extract_source_a_shape_profile.py`, then
+  `uv run scripts/analyze_source_a_shape_profile.py`, then
+  `uv run scripts/build_source_a_shape_profile_notebook.py`. Seed 42 throughout;
+  the sweep is roughly 25 minutes. Notebook:
+  `analysis-output/source-a/source_a_shape_profile_round.ipynb`. Artifacts:
+  `outputs/source_a_shape_profile_scores.csv`,
+  `outputs/source_a_shape_profile_by_pillar.csv`,
+  `analysis-output/source-a/source_a_shape_profile_stats.json` (extraction) and
+  `analysis-output/source-a/source_a_shape_profile_stats_scoring.json` (scoring).
