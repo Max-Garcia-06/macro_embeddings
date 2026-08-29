@@ -543,13 +543,29 @@ def boost_floor_lift(
     columns it has. The premise is true and the conclusion does not follow: the
     floor does not measure extracted signal, it measures the *overfitting
     penalty* the boosting estimator pays for being handed a block at all, and
-    that penalty is a function of the block's width. Measured on three targets
-    against the linear baseline, a three-column noise block scored -0.0126,
-    -0.0459 and -0.0970 where a 137-column one scored -0.0094, -0.0442 and
-    -0.0674 -- the narrow block was the more negative in every case, so it
-    flattered every arm's distance from the floor. Each arm is therefore priced
-    against noise of its own width, which is also §23's precedent: its
-    Gaussian null was 64 columns against a 64-column block.
+    that penalty is a function of the block's width.
+
+    The error a single fixed width introduces has **no consistent direction**,
+    which is the reason to match rather than to pick a conservative constant.
+    Against the three-column floor's basket means (-0.07791 linear / -0.07147
+    flexible), the width-matched floor is shallower for the four wide arms --
+    `shape_v1` -0.06859/-0.06068, `shape_v2` -0.06811/-0.06275, `typed`
+    -0.07489/-0.06726, `typed_plus_shape_v2` -0.06674/-0.05991, so for those the
+    old floor sat too deep and flattered their distance from it -- and *deeper*
+    for the one narrow arm, `size_nonlinear` at -0.08518/-0.08260, where the old
+    floor was too shallow and penalized it. Nor is the relationship monotone in
+    width: w=9 is more negative than w=3. That is why width-matching changed
+    which arm fails its floor rather than shifting every arm one way
+    (`size_nonlinear_boost` flexible went from failing at p=0.1093 to passing at
+    p=0.0000, and `shape_v1_boost` flexible went the other way). Each arm is
+    therefore priced against noise of its own width, which is also §23's
+    precedent: its Gaussian null was 64 columns against a 64-column block.
+
+    Matched on width, not on missingness. Every floor block is dense Gaussian,
+    while `typed` and `typed_plus_shape_v2` carry 1,930 NaN cells and
+    `size_nonlinear` 259, and HistGradientBoosting routes NaN as its own
+    category. The floors for those three arms are therefore same-shaped on
+    width and not on sparsity.
 
     The noise block is seeded from its width rather than drawn from one
     advancing generator, so a floor computed for one arm alone is identical to

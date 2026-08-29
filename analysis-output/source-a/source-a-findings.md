@@ -2753,8 +2753,9 @@ squaring `log_population`.
 | `shape_v2` ridge | +0.00260 | 21/28, p=0.0013 | **p=0.4515** |
 
 `shape_v2` does not beat `shape_v1`. Four new families, 73 columns, and the
-paired test against round one's block cannot distinguish them (p=0.4515 under
-both baselines). What the new columns did do is raise size recoverability from
+paired test against round one's block cannot distinguish them: p=0.4515 over the
+linear baseline and p=0.4515 over the flexible one on all 28 targets, p=0.4245 on
+the undegraded 22. What the new columns did do is raise size recoverability from
 0.61 to 0.68 (§24.2), and only **10 of the 73 stay under |r| = 0.5** against any
 round-one column. The most duplicated are position columns for common sections;
 the most novel are `digit_density_lists`, `position_spread` and
@@ -2808,7 +2809,8 @@ committed sweep.
 
 (A caution found while re-deriving this: `pandas.read_csv` does not use a
 correctly-rounded float parser by default, so a committed CSV read back and
-rewritten loses up to an ulp. Recomputations from these artifacts should pass
+rewritten loses tens of ulps of the affected values (measured here at up to
+9.9e-17 absolute). Recomputations from these artifacts should pass
 `float_precision="round_trip"` before claiming bit-identity.)
 
 ### 24.7 The boost learner, and what a floor has to be matched to
@@ -2829,33 +2831,48 @@ carrying *nothing* score through this path? The first cut answered with a
 because "boosting cannot extract structure from independent Gaussian noise
 regardless of how many columns it has". The premise is true and the conclusion
 does not follow — the floor measures the overfitting penalty, not extracted
-signal, and that penalty is a function of width. Measured, the 3-column block was
-the more negative on every target tried, so it flattered every arm. Each arm is
-now priced against noise **of its own width**, which is also §23.3's precedent (a
+signal, and that penalty is a function of width.
+
+**The error a fixed width introduces has no consistent direction**, and that —
+not "the narrow floor was too generous" — is the reason to match rather than to
+pick one conservative constant. Against the 3-column floor's basket means
+(−0.07791 linear / −0.07147 flexible), the width-matched floor is **shallower for
+the four wide arms**, so for those the old floor sat too deep and flattered their
+distance from it; and it is **deeper for the one narrow arm**, `size_nonlinear` at
+w=9, where the old floor was too shallow and penalized it. The relationship is
+not even monotone in width — w=9 is more negative than w=3. Each arm is now
+priced against noise **of its own width**, which is also §23.3's precedent (a
 64-column Gaussian null against a 64-column block):
 
-| arm | width | floor, linear | floor, flexible | arm − floor, flexible | p |
-|---|---|---|---|---|---|
-| `shape_v1` | 64 | −0.06859 | −0.06068 | **+0.00136** | **0.4791** |
-| `shape_v2` | 137 | −0.06811 | −0.06275 | +0.01200 | 0.0014 |
-| `typed` | 29 | −0.07489 | −0.06726 | +0.01115 | 0.0006 |
-| `typed_plus_shape_v2` | 166 | −0.06674 | −0.05991 | +0.01303 | 0.0048 |
-| `size_nonlinear` (NULL) | 9 | −0.08518 | −0.08260 | +0.02114 | 0.0000 |
+| arm | width | floor, linear | floor, flexible | vs the old w=3 floor | arm − floor, flexible, all 28 | p | arm − floor, flexible, undegraded 22 | p |
+|---|---|---|---|---|---|---|---|---|
+| `shape_v1` | 64 | −0.06859 | −0.06068 | shallower (old flattered) | **+0.00136** | **0.4791** | **+0.00166** | **0.5235** |
+| `shape_v2` | 137 | −0.06811 | −0.06275 | shallower (old flattered) | +0.01200 | 0.0014 | +0.01091 | 0.0141 |
+| `typed` | 29 | −0.07489 | −0.06726 | shallower (old flattered) | +0.01115 | 0.0006 | +0.01050 | 0.0103 |
+| `typed_plus_shape_v2` | 166 | −0.06674 | −0.05991 | shallower (old flattered) | +0.01303 | 0.0048 | +0.01197 | 0.0190 |
+| `size_nonlinear` (NULL) | 9 | −0.08518 | −0.08260 | **deeper (old penalized)** | +0.02114 | 0.0000 | +0.01808 | 0.0004 |
+
+Both flexible denominators are in the table because this section's own Forbidden
+block extends §23.6's two-denominator rule to every arm in this round, and the
+floor readings are no exception: they move by an order of magnitude between
+baskets, though no conclusion turns on it.
 
 Every arm clears its own floor except **`shape_v1` under the flexible baseline**:
 round one's 64-column block, boosted against a curvature-augmented baseline, is
-not distinguishable from 64 columns of Gaussian noise (+0.00136, p=0.4791; on the
-undegraded 22, +0.00166, p=0.5235). Under the 3-column floor that arm read as
-comfortably above it (p=0.0008) and the null control read as the only failure
-(p=0.1093). Width-matching reverses which arm fails. Both readings existed
-before this correction; only the matched one is defensible.
+not distinguishable from 64 columns of Gaussian noise (+0.00136, p=0.4791 on all
+28; +0.00166, p=0.5235 on the undegraded 22). Under the 3-column floor that arm
+read as comfortably above it (p=0.0008) and the null control read as the only
+failure (p=0.1093) — precisely because that floor was too deep for the wide arms
+and too shallow for the narrow one. Width-matching therefore *reverses* which arm
+fails rather than moving every arm one way. Both readings existed before this
+correction; only the matched one is defensible.
 
 ### 24.8 Status
 
 - **Status**: resolved. The round produces no change to `pillar_matrix` and no
   argument for one — `shape_v2` does not beat `shape_v1` (p=0.4515) and the
   fusion arm does not beat `typed` in any framing (p=0.0564 linear, p=0.0900
-  flexible, p=0.1129 undegraded-22). §23's `n_body_sections` cut stands, and
+  flexible all-28, p=0.1129 flexible undegraded-22). §23's `n_body_sections` cut stands, and
   §24.2 argues harder for it than §23 could.
 - **Allowed wording**: "Article shape reconstructs county size at out-of-fold
   R² = 0.676 (`log_population`, 137-column block, boosting) — §23's open problem,
@@ -2864,23 +2881,31 @@ before this correction; only the matched one is defensible.
   power of any arm in the round: `r2_alone` 0.1706 against the full shape block's
   0.0913, so nine reshapings of the baseline's own size columns out-predict 137
   columns of article shape with no controls on either (§24.3)." "Four new feature
-  families and 73 new columns do not beat round one's 64: paired p = 0.4515 under
-  both baselines, while raising size recoverability from 0.61 to 0.68 and leaving
-  only 10 of the 73 under |r| = 0.5 against a round-one column (§24.4)." "Under
+  families and 73 new columns do not beat round one's 64: paired p = 0.4515 over
+  the linear baseline and p = 0.4515 over the flexible one on all 28 targets
+  (p = 0.4245 on the undegraded 22), while raising size recoverability from 0.61
+  to 0.68 and leaving only 10 of the 73 under |r| = 0.5 against a round-one
+  column (§24.4)." "Under
   the flexible size control the shape block lifts +0.00084 across all 28 targets
   (23/28, p=0.0048) and +0.00076 on the 22 the baseline did not degrade (18/22,
   p=0.0229); both readings have to be quoted together (§24.5)." "`typed` is
   significant on all 28 (p=0.0110) and not on the undegraded 22 (p=0.1289), which
   is why one denominator is never enough (§24.5)." "The fusion comparison —
   `typed_plus_shape_v2` against `typed` — reaches significance in no framing:
-  p=0.0564 linear, p=0.0900 flexible, p=0.1129 on the undegraded 22, so this
-  round produces no case for shipping these columns either (§24.5)." "`shape_v1` re-scored through
+  p=0.0564 over the linear baseline, p=0.0900 over the flexible one on all 28,
+  p=0.1129 on the undegraded 22, so this round produces no case for shipping
+  these columns either (§24.5)." "`shape_v1` re-scored through
   the new module reproduces §23 exactly: nine columns, maximum absolute
   difference 0.0 (§24.6)." "Every boost arm's lift is negative because boosting
   overfits the residual target where ridge shrinks — both learners are
   differenced against the same OLS baseline — and each arm is priced against
   Gaussian noise of its own width; on that scale round one's block under the
-  flexible baseline is indistinguishable from noise (+0.00136, p=0.4791, §24.7)."
+  flexible baseline is indistinguishable from noise (+0.00136, p=0.4791 on all
+  28; +0.00166, p=0.5235 on the undegraded 22, §24.7)." "Fixing the floor at one
+  width errs in no consistent direction — the 3-column floor sat too deep for the
+  four wide arms and too shallow for `size_nonlinear` at w=9 — which is why
+  width-matching reversed which arm fails rather than moving them all one way
+  (§24.7)."
 - **Forbidden wording**: **"article shape knows something county size does not"**
   — §23.6's ban, carried forward unchanged and strengthened: §24.2 now puts a
   number on how much size the block holds (0.676), so the claim is not merely
@@ -2893,7 +2918,11 @@ before this correction; only the matched one is defensible.
   happens to be visible. Any raw boost lift quoted without its floor — a bare
   "−0.0587" is an estimator-variance penalty, not a verdict on an arm, and the
   floor it must be read against is the one at that arm's width, never another
-  arm's and never a 3-column one. "The boost arms are negative because boosting
+  arm's and never a 3-column one. "The 3-column floor flattered every arm" — it
+  flattered the four wide arms and *penalized* `size_nonlinear` at w=9, which is
+  why width-matching reversed which arm fails; this fix wave published the
+  universal before catching it, and it is the same species of unsupported
+  universal that the width-invariance claim was. "The boost arms are negative because boosting
   uses a different baseline" or "because the ridge path imputes and boosting does
   not" — both were in the notebook, both are false, and the second is disproved
   by two arms with zero missing cells. "The new families found signal round one
@@ -2909,7 +2938,12 @@ before this correction; only the matched one is defensible.
   wider design, which is why it degrades 6 of 28 — a penalized augmented baseline
   would be a better control and is still not what this round ran. The boost arm's
   hyperparameters are fixed rather than searched, so its ceiling is a lower
-  bound. `size_recoverability` median-imputes the size measure it predicts where
+  bound. The boost floor is matched on **width and not on missingness**: every
+  floor block is dense Gaussian, while `typed` and `typed_plus_shape_v2` carry
+  1,930 NaN cells and `size_nonlinear` 259, and HistGradientBoosting routes NaN
+  as its own category. No figure here is wrong because of it, but "a same-shaped
+  block of noise" is accurate on width and silent on sparsity, so those three
+  arms' floors are the least exactly matched of the five. `size_recoverability` median-imputes the size measure it predicts where
   the arms drop those rows; `log_population` — the headline — has zero missing
   values, so §24.2's number is unaffected, but `log_agi` (1 row) and
   `log_gdp_latest` (64 rows) carry imputed targets.
@@ -2924,7 +2958,9 @@ before this correction; only the matched one is defensible.
   then `uv run scripts/extract_source_a_shape_profile.py`, then
   `uv run scripts/analyze_source_a_shape_profile.py`, then
   `uv run scripts/build_source_a_shape_profile_notebook.py`. Seed 42 throughout;
-  the sweep is roughly 25 minutes. Notebook:
+  the sweep is roughly 40 minutes (it was ~25 before the floor was
+  width-matched; five noise blocks at the arms' own widths cost more than one
+  3-column block did). Notebook:
   `analysis-output/source-a/source_a_shape_profile_round.ipynb`. Artifacts:
   `outputs/source_a_shape_profile_scores.csv`,
   `outputs/source_a_shape_profile_by_pillar.csv`,

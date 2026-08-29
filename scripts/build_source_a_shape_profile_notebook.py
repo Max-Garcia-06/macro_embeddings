@@ -111,7 +111,9 @@ block is, so it cannot be read off a single number: each arm is compared to a
 block of pure Gaussian noise **at that arm's own width**, run through the
 identical boost path under the identical folds. `vs_boost_floor` is that
 comparison, and it is the only reading here that says whether an arm carries
-anything a same-shaped block of noise does not.
+anything a same-width block of noise does not. ("Same-width", precisely: the
+noise blocks are dense, while the `typed` blocks hold 1,930 `NaN` cells and
+`size_nonlinear` 259, so the floor is matched on width and not on sparsity.)
 
 Two arms are not findings and are labelled so wherever they appear:
 `shape_v1` re-scores round one's block as a regression check, and
@@ -272,11 +274,16 @@ every boost arm in the table below. That is not a different baseline — both
 learners are differenced against the same OLS baseline — and it is not
 imputation. It is what boosting costs itself by overfitting the residual target
 where ridge shrinks. Since that cost grows with block width, each arm is priced
-against a Gaussian noise block of its own width (`floor` and `floor_width` in
-the table): `d_linear_vs_floor` / `d_flexible_vs_floor` are how far the arm sits
-*above* its own floor, and `p_linear_vs_floor` / `p_flexible_vs_floor` say
-whether that distance is distinguishable from zero. Those are the only columns
-here that test a boost arm.
+against a Gaussian noise block of its own width (`floor_width`, `floor_linear`
+and `floor_flexible` in the table): `d_linear_vs_floor` / `d_flexible_vs_floor`
+are how far the arm sits *above* its own floor, and `p_linear_vs_floor` /
+`p_flexible_vs_floor` say whether that distance is distinguishable from zero,
+with `p_flexible_undeg22_vs_floor` giving the same test on the undegraded
+basket. Those are the only columns here that test a boost arm.
+
+The floor is matched on width and **not** on missingness: the noise blocks are
+dense, while the `typed` blocks carry 1,930 `NaN` cells and `size_nonlinear` 259,
+and HistGradientBoosting routes `NaN` as its own category.
 
 **Reading the flexible columns.** `lift_flexible` is the all-28 reading;
 `lift_flexible_undeg22` is the same quantity over the 22 targets the flexible
@@ -312,6 +319,15 @@ def _arm_row(name: str, a: dict) -> dict:
         row["floor_flexible"] = stats["boost_floor"][arm_key]["flexible"]["mean_lift"]
         row["d_flexible_vs_floor"] = flexible["vs_boost_floor"]["mean_paired_difference"]
         row["p_flexible_vs_floor"] = flexible["vs_boost_floor"]["wilcoxon_p"]
+        # The floor readings obey the same two-denominator rule as every other
+        # flexible figure: they move by an order of magnitude between baskets.
+        n_kept = undegraded["n_targets"]
+        row[f"d_flexible_undeg{n_kept}_vs_floor"] = undegraded["vs_boost_floor"][
+            "mean_paired_difference"
+        ]
+        row[f"p_flexible_undeg{n_kept}_vs_floor"] = undegraded["vs_boost_floor"][
+            "wilcoxon_p"
+        ]
     return row
 
 
@@ -443,7 +459,7 @@ for i, key in enumerate(keys):
 ax.set_xticks(x)
 ax.set_xticklabels([f"{p}\\n({n})" for p, n in zip(by_pillar["pillar"], by_pillar["n_targets"])])
 ax.axhline(0, color="#333", lw=1)
-ax.set_title("Mean lift by owning pillar (ridge and boost, linear baseline)")
+ax.set_title("Mean lift by owning pillar (ridge only, linear baseline)")
 ax.legend(fontsize=8)
 fig.tight_layout()
 plt.show()
