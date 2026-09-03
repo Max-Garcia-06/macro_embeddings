@@ -1,0 +1,242 @@
+{
+  "early_vintage": "ACS 2021 5-year",
+  "late_vintage": "ACS 2024 5-year",
+  "overlap_years": 2,
+  "n_folds": 5,
+  "fold_strategy": "GroupKFold on state_fips (spatially blocked)",
+  "random_seed": 42,
+  "n_targets_scored": 42,
+  "n_targets_in_basket": 6,
+  "max_noise_share": 0.75,
+  "excluded_mostly_noise": [
+    "bachelors_share",
+    "bottled_gas_heating_share",
+    "carpooled_share",
+    "children_female_householder_share",
+    "children_male_householder_share",
+    "children_married_couple_share",
+    "computer_ownership_share",
+    "drove_alone_share",
+    "electric_heating_share",
+    "family_household_share",
+    "foreign_born_share",
+    "fuel_oil_heating_share",
+    "gas_heating_share",
+    "household_earnings_share",
+    "household_ss_income_share",
+    "housing_vacancy_rate",
+    "labor_force_participation",
+    "masters_share",
+    "mean_commute_minutes",
+    "mean_household_size",
+    "median_age",
+    "median_family_income",
+    "median_household_income",
+    "median_year_built",
+    "mortgaged_share",
+    "moved_different_state_share",
+    "moved_within_county_share",
+    "naturalized_share_of_foreign_born",
+    "no_fuel_used_share",
+    "owner_occupied_share",
+    "per_capita_income",
+    "poverty_rate",
+    "public_transit_share",
+    "same_house_share",
+    "single_unit_share",
+    "walked_share"
+  ],
+  "basket": [
+    "broadband_rate",
+    "median_contract_rent",
+    "median_gross_rent",
+    "median_home_value",
+    "median_monthly_housing_cost",
+    "work_from_home_share"
+  ],
+  "mean_r2_lagged": 0.3778271833206368,
+  "mean_r2_lagged_size": 0.4318334326158757,
+  "mean_r2_lagged_size_emacro": 0.4341651494989391,
+  "mean_lift_over_lagged_size": 0.0023317168830633097,
+  "mean_lift_over_lagged_size_geo": 0.0003411921384014656,
+  "n_targets_positive": 3,
+  "drop_one": {
+    "A": {
+      "mean_contribution": -0.0037530014453241813,
+      "n_positive": 0,
+      "max_placebo": 0.002130613129374459
+    },
+    "B": {
+      "mean_contribution": -0.013199508443234234,
+      "n_positive": 0,
+      "max_placebo": 0.005643253553765715
+    },
+    "C": {
+      "mean_contribution": -0.005676735575767126,
+      "n_positive": 0,
+      "max_placebo": 0.002081091590467321
+    },
+    "D": {
+      "mean_contribution": 0.005183779948326676,
+      "n_positive": 5,
+      "max_placebo": 0.0010765936684017374
+    },
+    "E": {
+      "mean_contribution": 0.008623523889826753,
+      "n_positive": 5,
+      "max_placebo": 0.0017555896493137713
+    },
+    "F": {
+      "mean_contribution": 0.005966793697997352,
+      "n_positive": 5,
+      "max_placebo": 0.004076171376559801
+    }
+  },
+  "bootstrap": {
+    "n_replicates": 10000,
+    "percentiles": [
+      2.5,
+      97.5
+    ],
+    "n_targets": 6,
+    "n_tables": 6,
+    "naive": {
+      "lift_over_lagged_size": {
+        "point": 0.0023317168830633097,
+        "low": -0.014731718159804638,
+        "high": 0.020086418378395438,
+        "covers_zero": true
+      },
+      "lift_over_lagged_size_geo": {
+        "point": 0.0003411921384014656,
+        "low": -0.018034807214344712,
+        "high": 0.020627431390173867,
+        "covers_zero": true
+      },
+      "drop_A": {
+        "point": -0.0037530014453241813,
+        "low": -0.005011351870107816,
+        "high": -0.0024235469013030495,
+        "covers_zero": false
+      },
+      "drop_B": {
+        "point": -0.013199508443234234,
+        "low": -0.019051761075469836,
+        "high": -0.00909289676478133,
+        "covers_zero": false
+      },
+      "drop_C": {
+        "point": -0.005676735575767126,
+        "low": -0.007801867414128434,
+        "high": -0.0037534243163251193,
+        "covers_zero": false
+      },
+      "drop_D": {
+        "point": 0.005183779948326676,
+        "low": 0.0012925589596522458,
+        "high": 0.010709261879764231,
+        "covers_zero": false
+      },
+      "drop_E": {
+        "point": 0.008623523889826753,
+        "low": 0.002989445735444148,
+        "high": 0.015218480408352072,
+        "covers_zero": false
+      },
+      "drop_F": {
+        "point": 0.005966793697997352,
+        "low": 0.0027811791884477985,
+        "high": 0.008408533526839143,
+        "covers_zero": false
+      }
+    },
+    "table_clustered": {
+      "lift_over_lagged_size": {
+        "point": 0.0023317168830633097,
+        "low": -0.014670301214175027,
+        "high": 0.019808381017331584,
+        "covers_zero": true
+      },
+      "lift_over_lagged_size_geo": {
+        "point": 0.0003411921384014656,
+        "low": -0.01788610840108475,
+        "high": 0.019934180344043657,
+        "covers_zero": true
+      },
+      "drop_A": {
+        "point": -0.0037530014453241813,
+        "low": -0.005018102810513218,
+        "high": -0.0024267210945842868,
+        "covers_zero": false
+      },
+      "drop_B": {
+        "point": -0.013199508443234234,
+        "low": -0.018952292645080786,
+        "high": -0.009078796618136098,
+        "covers_zero": false
+      },
+      "drop_C": {
+        "point": -0.005676735575767126,
+        "low": -0.007824150582358377,
+        "high": -0.003624734582937291,
+        "covers_zero": false
+      },
+      "drop_D": {
+        "point": 0.005183779948326676,
+        "low": 0.0013099686400357229,
+        "high": 0.010709261879764231,
+        "covers_zero": false
+      },
+      "drop_E": {
+        "point": 0.008623523889826753,
+        "low": 0.002989445735444148,
+        "high": 0.015218480408352072,
+        "covers_zero": false
+      },
+      "drop_F": {
+        "point": 0.005966793697997352,
+        "low": 0.0028595662170128136,
+        "high": 0.008408533526839143,
+        "covers_zero": false
+      }
+    }
+  },
+  "by_target": {
+    "broadband_rate": {
+      "r2_lagged_size": 0.5010875494546088,
+      "r2_lagged_size_emacro": 0.4677026895770914,
+      "lift": -0.03338485987751738,
+      "noise_share_of_change": 0.6561639238815394
+    },
+    "median_home_value": {
+      "r2_lagged_size": 0.6704752598067539,
+      "r2_lagged_size_emacro": 0.705744535430811,
+      "lift": 0.03526927562405702,
+      "noise_share_of_change": 0.10821926995281475
+    },
+    "median_gross_rent": {
+      "r2_lagged_size": 0.3153793605138562,
+      "r2_lagged_size_emacro": 0.30818145971114574,
+      "lift": -0.007197900802710433,
+      "noise_share_of_change": 0.7247665996367514
+    },
+    "median_contract_rent": {
+      "r2_lagged_size": 0.41733234227479854,
+      "r2_lagged_size_emacro": 0.41767395715291444,
+      "lift": 0.0003416148781159034,
+      "noise_share_of_change": 0.5577340433506608
+    },
+    "median_monthly_housing_cost": {
+      "r2_lagged_size": 0.43365853216769445,
+      "r2_lagged_size_emacro": 0.4294070440894613,
+      "lift": -0.004251488078233168,
+      "noise_share_of_change": 0.5025716023085195
+    },
+    "work_from_home_share": {
+      "r2_lagged_size": 0.25306755147754256,
+      "r2_lagged_size_emacro": 0.2762812110322105,
+      "lift": 0.02321365955466792,
+      "noise_share_of_change": 0.6131530233462803
+    }
+  }
+}
