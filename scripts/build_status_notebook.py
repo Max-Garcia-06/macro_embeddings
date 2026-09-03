@@ -1,8 +1,9 @@
 """Generate analysis-output/E_macro_pillar_worth_2026-08-13.ipynb.
 
-An executive status notebook, presented live to the commissioning side and their
-leadership in roughly 30 minutes. A progress artifact, not the go/no-go: it
-reports what the project knows, and does not ask for the decision.
+An executive notebook for the commissioning side and their leadership. A progress
+artifact, not the go/no-go: it reports what the project knows, and does not ask
+for the decision. Content only -- no timing notes, run stamps or other framing
+about the document itself.
 
 **Present from the HTML, not from the notebook.**
 
@@ -27,7 +28,8 @@ Design: docs/superpowers/specs/2026-08-13-exec-status-notebook-design.md
 **The spine is the assignment.** The commissioning side asked for Sources A and E
 to be split into groups and tested for whether they should be modelled separately.
 Sections 1-4 answer that (no, for both, and here is what the groups exposed
-anyway); section 5 generalises the same question to all six pillars; section 6 settles how Source A should be represented, and finds the win is geography; section 7 is
+anyway); section 5 generalises the same question to all six pillars; section 6 settles how Source A should be represented, finds the win is
+geography, and puts an interval on what is left; section 7 is
 limits and status. The through-line is that a pillar has to earn the right to
 branch, and therefore also has to earn its slot at all.
 
@@ -101,11 +103,7 @@ def code(text: str) -> None:
 # Title
 # ==========================================================================
 md("""
-# `E_macro` — Source A and Source E: what the groups revealed
-
-**Status report, 13 August 2026**, covering two weeks of work. Roughly 30 minutes;
-sections 1–7 are the talk, the appendix is so the notebook stands on its own
-afterwards.
+# `E_macro` — which pillars earn their slot
 
 The assignment was to split Sources A and E into groups and see whether they
 should be modelled separately. The answer is **no, for both** — and the groups
@@ -121,9 +119,7 @@ code('''
 %config InlineBackend.figure_format = "retina"
 
 import json
-import subprocess
 import textwrap
-from datetime import date
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -143,6 +139,10 @@ XSRC = ANALYSIS / "cross-source"
 # ---- artifacts -----------------------------------------------------------
 ext = json.loads((XSRC / "external_target_stats.json").read_text())
 blk = json.loads((XSRC / "pillar_block_marginal_stats.json").read_text())
+# The five original ACS targets. The external sweep now scores 42, and the
+# pillar-worth figure stays on the five its prose describes; the wide basket is
+# reported separately under `geo_control` and `bootstrap`.
+HEADLINE = ext["headline_basket"]
 gst = json.loads((XSRC / "grain_effect_stats.json").read_text())
 scope = json.loads((ANALYSIS / "source-a" / "source_a_section_scope_stats.json").read_text())
 embed = json.loads((ANALYSIS / "source-a" / "source_a_tiered_embedding_stats.json").read_text())
@@ -154,6 +154,11 @@ mrep = json.loads(
 acomp = json.loads(
     (ANALYSIS / "source-a" / "source_a_section_composition_stats.json").read_text())
 etier = json.loads((ANALYSIS / "source-e" / "source_e_tier_stats.json").read_text())
+
+# Tables here carry sentence-length cells. pandas elides anything past 50
+# characters in BOTH the text and the HTML repr, so an un-widened table ships to
+# the export with its explanation replaced by "...".
+pd.set_option("display.max_colwidth", None)
 
 A_TIERS = ["stub", "thin", "mid", "rich"]
 
@@ -256,28 +261,11 @@ def label_bars(ax, xs, ys, fmt="{:+.4f}", size=10.5, pad=0.012, horizontal=False
                     fontsize=size, color=INK)
 
 
-# ---- provenance ----------------------------------------------------------
-sha = subprocess.run(
-    ["git", "-C", str(REPO), "rev-parse", "--short", "HEAD"],
-    capture_output=True, text=True,
-).stdout.strip()
-# Tracked modifications only, and notebooks excluded: this notebook lives under
-# analysis-output/ and its own execution would otherwise register as drift in
-# the artifacts it is reporting on.
-dirty = subprocess.run(
-    ["git", "-C", str(REPO), "status", "--porcelain", "--untracked-files=no",
-     "--", "outputs", "analysis-output", ":(exclude)*.ipynb"],
-    capture_output=True, text=True,
-).stdout.strip()
-
-print(f"Run stamp · {date.today():%d %B %Y} · commit {sha}")
-print("Every figure and table below is computed from outputs/ and analysis-output/,")
-print("regenerated from data/*.parquet by the six analysis scripts on 13 Aug 2026.")
-print("Regenerated artifacts vs. committed: "
-      f"{'IDENTICAL — no drift' if not dirty else 'DIFFER — see git diff'}")
-print()
-print(f"Evidence base · {ext['n_targets']} external targets · {ext['fold_strategy']} "
-      f"· {blk['n_null_reps']} null reps · seed {ext['random_seed']}")
+# ---- evidence base -------------------------------------------------------
+print(f"Evidence base · {ext['headline_basket']['n_targets']} external targets for the "
+      f"pillar-worth figure, {ext['n_targets']} for the geography control "
+      f"· {ext['fold_strategy']} · {blk['n_null_reps']} null reps "
+      f"· seed {ext['random_seed']}")
 ''')
 
 # ==========================================================================
@@ -303,36 +291,59 @@ below are what the groups exposed; the branching verdict after them is why
 branching loses anyway.
 
 **What the groups were worth regardless.** They picked the feature family Source A
-now ships, showed where to go looking for it, corrected an earlier Source E
-conclusion that was backwards, and forced a disclosure that now travels with the
+now ships, showed where to go looking for it, established how Source E's ratio
+behaves across county sizes, and forced a disclosure that now travels with the
 pillar. The tiers were never going to be the deliverable — they were the
 instrument.
 
+### Six terms, used precisely
+
+| Term | What it means here |
+|---|---|
+| **pillar** | One of the six sources (A–F), each a named group of columns in the shipped matrix. |
+| **block** | A pillar's columns treated as one unit for scoring — you add or drop a block, never a single column. |
+| **arm** | One version of a thing being compared, holding everything else fixed. "The 29-dimension arm" is the same vectors as the 384-dimension arm, reduced. |
+| **tier** | A group *inside* one pillar, cut on how much raw material a county has: Source A's stub/thin/mid/rich, Source E's T1–T4. |
+| **basket** | The set of target columns a number is averaged over. Four of them exist and they are not interchangeable — the next table is which is which. |
+| **restatement ablation** | Removing a pillar column that simply restates the target, before scoring. Without it a pillar gets credit for repeating the answer back. |
+
 ### The evidence baskets
 
-Four different sets of targets appear in this notebook, and **a lift measured on
-one is not comparable with a lift measured on another** — different targets,
-different baselines, different models. The basket is named wherever a number is
-quoted, and nothing below is ever read across rows of this table.
+Every result in this notebook is an average over a set of target columns — the
+things being predicted. Four such sets appear, and **a number from one cannot be
+compared with a number from another**: different targets, different baselines,
+different models. Each is named wherever its numbers are quoted.
+
+The first two are internal — pillars predicting each other, which measures whether
+the six sources agree. The last two are external ACS outcomes, which is the only
+way to ask whether any of them is useful. The tier sections and the branching
+verdict use the first basket; the ACS ones arrive, and are explained, in the
+pillar-worth section.
 """)
 
 code("""
+# The wide ACS basket carries two uses -- the geography control and the Source A
+# representation decision -- but it is one target set: both artifacts pull the
+# same 42 candidates and exclude the same degenerate one. Listing it twice was
+# what made this table read as five baskets when the text says four.
+assert ext["n_targets"] == mrep["n_targets"] - len(mrep["excluded_targets"])
+
 baskets = pd.DataFrame([
-    ("In-repo cross-pillar", arep["n_targets"],
-     "columns of the other five pillars, predicted from Source A",
-     "every Source A tier and text-scope number: both tier sections, "
-     "the branching verdict, appendix A2"),
-    ("Internal, in-matrix", blk["n_targets"],
-     "columns inside the six-pillar matrix, each predicted from the rest",
+    ("Internal — Source A vs the rest", arep["n_targets"],
+     "features of the other five pillars",
+     "both tier sections, the branching verdict, appendix A2"),
+    ("Internal — every pillar vs the rest", blk["n_targets"],
+     "features inside the six-pillar matrix",
      "pillar coherence, and Source F's internal number in appendix A5"),
-    ("External ACS, headline", ext["n_targets"],
-     "public ACS outcomes no pillar is built from",
-     "the +0.190 headline and every number in the pillar-worth section"),
-    ("External ACS, decision", mrep["n_targets"] - len(mrep["excluded_targets"]),
-     f"a wider ACS pull: {mrep['n_targets']} candidates less "
-     f"{len(mrep['excluded_targets'])} excluded as degenerate",
-     "the Source A representation decision and the geography control"),
-], columns=["Basket", "Targets", "What the targets are", "What rests on it"])
+    ("External ACS — the five", ext["headline_basket"]["n_targets"],
+     "public survey outcomes no pillar is built from",
+     "the +0.190 headline and the pillar-worth figure"),
+    ("External ACS — the wide pull", ext["n_targets"],
+     f"the same survey, widened to {ext['n_targets_scored']} targets less "
+     f"{len(ext['excluded_targets'])} too degenerate to score",
+     "the geography control, the intervals, and the Source A "
+     "representation decision"),
+], columns=["Basket", "Targets", "What is predicted", "Where it is used"])
 display(baskets.set_index("Basket"))
 """)
 
@@ -365,24 +376,22 @@ lexicon:
 The seven industry flags appearing twice — once from the lead, once from the
 economy sections — is the whole subject of the next chart.
 
-**Two encoders were tested against those columns, and both tied.** bge-m3 at
-1,024 dimensions and 2.2GB: 11 of 28 targets, p = 0.52. `all-MiniLM-L6-v2` at 384
-dimensions and 90MB, reading the full article rather than the lead: 14 of 28
-targets, p = 0.76, with the median favouring the typed columns. Neither encoder
-was beaten and neither won.
+**Why columns and not the encoder — two reasons, of which one survived.** At the
+time of the cut, neither encoder tested could beat the typed block and neither
+lost to it: `bge-m3` at 1,024 dimensions and 2.2GB and `all-MiniLM-L6-v2` at 384
+dimensions and 90MB both came out ties on the in-repo basket (Wilcoxon **p =
+0.52** and **p = 0.76**). With nothing separating them on lift, the tie broke on
+cost and interpretability — no model download, no inference pass, and columns
+whose names a reader can check against the article.
 
-That tie is what the typed block shipped on — cost and interpretability, not
-measured lift. What the columns buy is no model download, no inference, and a
-column you can read the name of.
-
-**Both ties have since been shown to be an artifact of how the encoder was
-configured, and the representation section replaces this account.** Both arms above read the whole
-article, and ~46% of an average county article is census tables and lists of place
-names against 1.5% economy-titled prose. Both were also scored at full width — 384
-and 1,024 dimensions against the typed block's 29. Fix the reading scope and match
-the width and the encoder stops tying and starts winning. That section runs the
-comparison properly on a non-circular basket, and then finds a reason the win is
-narrower than it looks.
+**That comparison was confounded, and what keeps the columns is a different
+reason.** Both arms read whole articles — ~46% census tables and place-name lists —
+and neither was width-matched against 29 columns. Corrected for both, the encoder
+wins; but the win is **mostly geography**, and two latitude/longitude columns
+already in the repo score **+0.0158** on the decision basket against the encoder's
+**+0.0164**. The representation section asks whether typed columns are the right
+representation at all. This section takes the 29 as given and asks only whether
+they should be fitted separately by tier.
 
 **What the tiers then contributed was the answer to what should be built
 instead.** The split showed where economic content actually lives in the corpus.
@@ -451,28 +460,22 @@ actually retired it.
 
 **Then branching lost on its own terms, and the loss scaled with how much branching
 there was.** Three ways to fit the *same* 29 columns, from most shared to least.
-The difference between them is entirely in how many separate copies of a
-coefficient the model is allowed to estimate, and how much data each copy sees:
+Exactly one thing varies across them — how many copies of each coefficient the
+model estimates, and how much data each copy gets to see.
 
-- **One model, one coefficient per feature — 29 coefficients, fit once, on all
-  3,144 counties.** `has_port` gets a single weight, and it applies whether the
-  county is stub or rich. A stub county and a rich county are just two rows in
-  the same regression. This is what ships.
-- **One model, coefficients free to vary by tier — 120 coefficients (29 features
-  × 4 tiers), fit once, still on all 3,144 counties.** Each county's 29 features
-  are copied into the column slot for its own tier and zeroed out in the other
-  three tiers' slots, plus a tier dummy so the intercept can shift too. So
-  `has_port` is now four separate coefficients — `has_port_stub`, `has_port_thin`,
-  `has_port_mid`, `has_port_rich` — each seeing only the rows from its own tier,
-  because the other three copies are zero on that row. But it is still **one
-  training run and one shared ridge penalty**: the penalty strength is chosen
-  once, across all 3,144 rows, so a tier with nothing to say still gets shrunk by
-  a penalty the other three tiers helped pick.
-- **Four models, one fitted per tier — 29 coefficients × 4, but four separate
-  training runs, each on only its own tier's counties.** The shared fit is
-  abandoned entirely: stub's model never sees a thin, mid, or rich row, and each
-  tier picks its own ridge penalty from its own data alone. Nothing is borrowed
-  across tiers — not the coefficients, not the penalty, not the sample.
+| Arm | Coefficients estimated | Rows each coefficient sees | Ridge penalty |
+|---|---|---|---|
+| **One model** — what ships | 29, in one training run | all 3,144 counties | one, shared |
+| **Coefficients vary by tier** | 120 — 4 × 29 slopes, plus one intercept per tier — still one training run | only its own tier's counties | one, shared across all four tiers |
+| **Four separate models** | 29 × 4, in four training runs | only its own tier's counties | four, each chosen from one tier's data |
+
+The middle arm is the one worth a sentence: each county's features are copied into
+its own tier's column slot and zeroed in the other three, so `has_port_stub` sees
+stub rows only — that is the 116 slopes, and the four tier dummies prepended to
+them let the intercept shift per tier as well — but the penalty strength is still chosen once across all 3,144
+rows, so a tier with nothing to say is shrunk by a penalty the other three helped
+pick. The bottom arm gives up the shared fit entirely: nothing is borrowed across
+tiers, not the coefficients, not the penalty, not the sample.
 
 The three arms are ordered by how much sharing survives: full sharing (one
 coefficient set, one sample, one penalty) → shared sample and penalty but split
@@ -578,24 +581,37 @@ piv = (emb_tier[emb_tier["representation"].isin([k for k, _, _ in SWEEP])]
 tiers = [t for t in A_TIERS if t in piv.columns]
 n_by_tier = [asec["by_tier"][t]["n_counties"] for t in tiers]
 
+# Twenty bars in one cluster is what the arms produce and more than a reader can
+# hold. The claim has two halves, so it gets two panels: what withholding a tier's
+# own text does to that tier, and what stub's withholding costs everyone else.
+# Every cell the panels omit is in the table below.
 x = np.arange(len(tiers))
-w = 0.16
-fig, ax = plt.subplots(figsize=(11.5, 5.0))
-for i, (key, label, colour) in enumerate(SWEEP):
-    vals = [piv.loc[key, t] for t in tiers]
-    ax.bar(x + (i - 2) * w, vals, w, color=colour, label=label)
-ax.axhline(0, color=INK2, linewidth=0.8)
-ax.set_xticks(x)
-ax.set_xticklabels([f"{t}\\n{n:,} counties" for t, n in zip(tiers, n_by_tier)])
-ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
-ax.set_ylabel("mean R² lift within the tier", fontsize=10.5, color=INK2)
-style(ax,
-      "Only stub gains from reading less — and mid and rich pay for it",
-      "Each arm holds every tier at full section depth except one, which falls "
-      "back to its lead. Row-normalised vectors, so what is measured is the text "
-      "read and not the vector length that reading more produces. The stub "
-      "estimate rests on 21 targets rather than 28.",
-      legend=True)
+w = 0.34
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.5, 4.4), sharey=True)
+
+base = [piv.loc["uniform_l2", t] for t in tiers]
+own = [piv.loc[f"drop_{t}_l2", t] for t in tiers]
+spill = [piv.loc["drop_stub_l2", t] for t in tiers]
+
+for ax, other, other_label in ((ax1, own, "that tier reads lead only"),
+                               (ax2, spill, "stub reads lead only")):
+    ax.bar(x - w / 2, base, w, color=SERIES[0], label="every tier reads all")
+    ax.bar(x + w / 2, other, w, color=SERIES[1], label=other_label)
+    ax.axhline(0, color=INK2, linewidth=0.8)
+    ax.set_xticks(x)
+    ax.set_xticklabels(tiers)
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:+.3f}"))
+    label_bars(ax, x - w / 2, base, "{:+.4f}", size=8.5, pad=0.02)
+    label_bars(ax, x + w / 2, other, "{:+.4f}", size=8.5, pad=0.02)
+
+ax1.set_ylabel("mean R² lift within the tier", fontsize=10.5, color=INK2)
+style(ax1, "Withholding a tier's own text",
+      "Only stub improves. Thin and mid lose what they had.", legend=True)
+# ax2's orange series is a DIFFERENT arm from ax1's, so it carries its own
+# legend rather than borrowing the one under the left panel.
+style(ax2, "What stub's gain costs the others",
+      "The same arm, read across every tier.", legend=True)
+fig.subplots_adjust(wspace=0.08)
 plt.show()
 
 # The same numbers the prose below reads off. Printed from the pivot the chart
@@ -609,63 +625,23 @@ display(piv.loc[[k for k, _, _ in SWEEP], tiers]
 
 md("""
 **The encoder side of the same question, and the sign is not what the plan
-expected.** This section has so far asked whether the 29 typed columns should branch
-on tier. This chart asks it of the input text itself: does it help to let each
-tier's *article* stay uniform except one tier, which reads only its lead? Mean L2
-lift within each tier, drop-one against `uniform`, is the table under the chart.
+expected.** The chart asks of the input text what the arms above asked of the
+columns: does it help to let one tier read only its lead while the others read the
+whole article? Mean L2 lift within each tier, drop-one against `uniform`.
 
-**Stub is predicted *better* when it stops reading its own article.** Withholding
-stub's body text and falling back to its lead raises stub's own lift from
-+0.00021 to +0.00388 — a diagonal gain of **+0.00367**. Stub's body text is not
-neutral, it is actively counterproductive, which lines up with the corpus
-diagnosis three charts back: a stub lead names an industry in 0.7% of counties, so
-there is next to nothing in a stub article for the encoder to lose by not reading
-past it.
+**Stub is predicted *better* when it stops reading its own article** — its own-tier
+lift rises from +0.00021 to **+0.00388** — while thin and mid, the tiers actually
+carrying the signal, drop from clearly positive to flat or negative when theirs is
+withheld. **And stub's gain does not survive pooling:** `drop_stub` also costs mid
+and rich through the one fit all four tiers share, so pooled it loses to `uniform`,
+**+0.00343** against **+0.00351** — the same cross-tier interference that beat the
+typed columns above.
 
-**thin and mid are the tiers actually carrying signal.** Dropping thin's text
-costs its own tier **−0.00190** (+0.00196 → +0.00006) and dropping mid's costs
-**−0.00323** (+0.00288 → −0.00035) — both go from clearly positive to flat or
-negative. rich barely moves, **−0.00028** (+0.00708 → +0.00680): the tier with the
-most text to read is close to redundant over its own lead.
-
-**And stub's gain does not survive pooling, for the same structural reason
-already given for the typed columns.** The own-tier gain from dropping stub's
-text is real, but `drop_stub` also costs mid (+0.00288 → +0.00235) and rich
-(+0.00708 → +0.00671) through the one fit those four tiers share, and pooled it
-loses to
-`uniform`: **+0.00343** against **+0.00351**. That is cross-tier interference
-through the shared model — a rule tuned to help one tier is paid for by the
-others, exactly the mechanism behind the typed-column result above. The
-off-diagonal cost is not always smaller than the diagonal gain, either:
-`drop_thin` gives its own tier +0.00006 but costs the stub tier **−0.00247**, a
-larger move in the opposite direction.
-
-**The chart plots the row-normalised arm, and the gap to the raw arm is the
-reason.** `tier_variance_share` — how much of the embedding's variance tracks
-which tier a county is in, rather than anything else — sits at 0.0121 for
-`uniform` and rises to 0.0481–0.0698 for the drop arms. Splicing a lead-only row
-into an otherwise uniform arm manufactures a norm discontinuity at the tier
-boundary: `lead_only` rows carry a norm of roughly 1.0 against `uniform`'s
-0.63–0.71, so an unnormalised drop arm partly encodes *which tier a county is in*
-through vector length rather than through content. Quoting one arm's raw-vs-L2
-gap makes the size of that artifact concrete: `drop_stub` reads +0.00256 raw
-against +0.00343 row-normalised, a 0.00087 gap.
-
-**One line on how the drop arms are built, because it matters for what the
-comparison is holding fixed.** Each `drop_*` arm is built by splicing that tier's
-`lead_only` rows into the `uniform` arm's vectors, not by re-encoding the whole
-corpus with a different reading rule. That is the cleaner contrast, not a
-shortcut: the three untouched tiers in each arm are exactly `uniform`'s own
-vectors, whereas re-encoding them would perturb each by roughly 1e-7 of padding
-noise — drift injected into precisely the tiers the comparison is supposed to
-hold fixed.
-
-**What this does not change, and the one thing it did.** `uniform` beat every
-branching rule tested on the typed columns, and it beats three of the four drop
-arms here — `drop_rich` edges it by +0.00014, noted in the branching verdict and
-too narrow to
-carry a decision. Branching on tier loses on the encoder side too, and that
-conclusion has since survived a third, independent test (the branching verdict).
+**So branching loses on the encoder side too.** `uniform` beats three of the four
+drop arms; `drop_rich` edges it by +0.00014, too narrow to carry a decision and
+picked up again in the branching verdict. Method detail — the per-cell walk through
+the table, why the chart plots the row-normalised arm, and how the drop arms are
+spliced — is in A2.
 
 What this sweep *did* reopen is the reading scope. Every arm above varies **how
 much** of the article each tier reads while holding the section filter fixed.
@@ -721,29 +697,26 @@ feature is measuring. That is not a reason to reweight it — weighting was test
 and rejected below — but it is a reason to *say so*, which Source E's schema doc
 now does.
 
-**Two corrections the split forced**, both against conclusions from the earlier
-Source E review. The ratio every number below describes is
-`capital_to_wage_ratio`: a county's net capital gains plus qualified dividends,
-over its wages and salaries.
+**What the tiers establish about the ratio.** The ratio every number below
+describes is `capital_to_wage_ratio`: a county's net capital gains plus qualified
+dividends, over its wages and salaries.
 
-- **The stability finding was backwards.** The earlier review concluded that
-  small counties' ratios were the unstable ones, and proposed weighting the
-  feature by `num_returns` to damp them. Neither half holds. A typical small
-  county's ratio moves *less* from one tax year to the next — median
-  |Δratio| ÷ prior-year ratio, TY2021→TY2022, of **0.298 in T1 against 0.393 in
-  T4** — and small counties hold their place in the national ordering worse, not
-  better: the Spearman correlation between a tier's TY2021 and TY2022 ratios is
-  **0.861 in T1 against 0.941 in T4**. The tail is the one thing it got right:
-  **17.4%** of T1 counties move by more than half their own prior-year ratio in
-  one year, against **9.5%** of T4. And weighting by `num_returns` gives *more*
-  weight to counties with more returns — the large ones, which are exactly the
-  counties whose ratios move most in the typical case.
-- **The spread among small counties is real, not measurement noise.** If it were
-  just noise from averaging few tax returns, that spread would shrink sharply as
-  counties get bigger. It does not: regressing log dispersion of the ratio on log
-  median returns across population deciles gives a slope of **+0.026** (r² =
-  0.014), where pure sampling error would give **−0.5**. Small counties genuinely
-  differ from one another, so there is nothing to smooth away.
+- **Small counties' ratios are the steadier ones year to year, and the volatility
+  that exists is in the tail.** A typical T1 county's ratio moves *less* between
+  tax years than a typical T4 county's — median |Δratio| ÷ prior-year ratio,
+  TY2021→TY2022, of **0.298 in T1 against 0.393 in T4** — while holding its place
+  in the national ordering less well: the Spearman correlation between a tier's
+  TY2021 and TY2022 ratios is **0.861 in T1 against 0.941 in T4**. The tail runs
+  the other way from the median: **17.4%** of T1 counties move by more than half
+  their own prior-year ratio in one year, against **9.5%** of T4. Weighting the
+  feature by `num_returns` damps none of this — it gives *more* weight to the
+  counties with more returns, which are the ones whose ratios move most in the
+  typical case, and that is why the weighted arm was rejected.
+- **Small counties genuinely differ from each other — the spread is not noise.**
+  If it came from averaging few tax returns, it would shrink as counties get
+  bigger, and shrink fast: sampling noise falls with the square root of sample
+  size, a slope of **−0.5**. Measured across population deciles the slope is
+  **+0.026** — flat. There is nothing to smooth away.
 
 **And one caveat that now ships with the pillar.** The strongest link between any
 two pillars in this project — how concentrated a county's real-estate employment
@@ -755,45 +728,29 @@ rural inventory needs that said out loud before leaning on it.
 
 ## 4. Why neither pillar branches
 
-The two pillars fail branching for the same underlying reason, and it is
-measurable rather than rhetorical.
-
-**Partitioning 3,144 counties costs more in pooled evidence than heterogeneity
-costs in bias.** Each per-tier model trains on a fraction of the rows; the variance
-that buys is larger than the bias it removes.
-
-**The construction rule leaks into the representation.** Across every arm that
-reads by tier, tier membership alone explains **3.7–7.0%** of the vector's variance,
-against **0.9–1.2%** under a uniform rule — three to seven times more, for a
-variable the baseline already controls for. The model was partly learning how the
+**Two mechanisms, both measured.** Partitioning 3,144 counties costs more in
+pooled evidence than heterogeneity costs in bias: each per-tier model trains on a
+fraction of the rows, and the variance that buys exceeds the bias it removes. And
+the construction rule leaks into the representation — across every arm that reads
+by tier, tier membership alone explains **3.7–7.0%** of the vector's variance
+against **0.9–1.2%** under a uniform rule, so the model was partly learning how the
 input was built rather than anything about the counties.
 
-**The same answer comes back from an independent test.** The Source A tier
-section branched the
-*model* on tier; the encoder experiment branched the *input*, deciding how much of
-each article to read from its tier. Reading the same text for everyone wins there
-too — **+0.00322 uniform against +0.00180 tier-conditional** — and the drop-one
-sweep catches the argument above happening in miniature: withholding stub's article
-*helps* stub, **+0.00367** inside its own tier, and still loses pooled, because the
-gain is charged to mid and rich through the one fit all four tiers share. Two
-tests, two layers, one conclusion.
+**Three tests, three mechanisms, one answer.** The tier section branched the
+*model* on tier. The encoder sweep branched the *input* by depth — how much of each
+article a tier reads — and uniform wins there too, **+0.00322** against
+**+0.00180** tier-conditional; its drop-one arm shows the first mechanism in
+miniature, since withholding stub's article helps stub (**+0.00367** inside its own
+tier) and still loses pooled once mid and rich are charged for it. A third arm
+branched on *content availability* — rich and mid read prose, stub and thin read
+their lead, on the theory that a stub's body is all census table and place-name
+list — and scores **+0.00192** at the same raw depth. "Do not branch on tier" is a
+firmer conclusion than the two tests originally on file supported.
 
-**A third independent test, and it fails the same way.** The two tests above both
-branch on *depth* — how much of the article a tier reads. A later arm branched on
-*content availability* instead, on the reasoning that a stub county's body is
-almost entirely census table and place-name list, so there is no prose there to
-read and reading it is wasted. `prose_by_tier` — rich and mid read substantive
-prose, stub and thin read their lead — scores **+0.00192** against the uniform
-rule's **+0.00322**, both read at the same raw depth. Three tests, three
-different mechanisms, one answer. "Do not
-branch on tier" is now a considerably firmer conclusion than the two tests
-originally on file supported.
-
-**One caveat, since it cuts against that.** Withholding the *rich* tier's text
-edges reading everything, **+0.00365** against **+0.00351**. The margin decides
-nothing. It also no longer describes the best arm on the board: changing *which
-sections* are read beats every arm in this section by a wider margin than any of
-them separate from each other (the representation section).
+**One caveat.** Withholding the *rich* tier's text edges reading everything,
+**+0.00365** against **+0.00351** — a margin that decides nothing, against an arm
+that is no longer the best on the board anyway: changing *which sections* are read
+beats everything here by a wider margin (the representation section).
 
 **So what shipped instead:**
 
@@ -803,43 +760,40 @@ them separate from each other (the representation section).
 - **Source E ships with an explicit size-conditionality warning**, and prefers the
   vintage-normalised ratio over the raw one.
 
-The groups changed **what gets shipped and what gets disclosed**. They did not
-become part of the model, and that was the right outcome rather than a null one.
+The groups changed **what gets shipped and what gets disclosed** rather than
+becoming part of the model.
 
 ---
 
 ## 5. The same question, asked of all six
 
-If a pillar has to earn the right to branch, it has to earn its slot at all. That
-generalisation is what the second week tested.
+If a pillar has to earn the right to branch, it has to earn its slot at all.
 
-**Every validation before it was pillar against pillar** — predict one federal
+**Every validation before this was pillar against pillar** — predict one federal
 source's features from the other five. That measures whether six agencies agree
-with each other; it cannot say whether any of them is *useful*. The bias even runs
-the wrong way, penalising a source precisely for agreeing with the others. And a
-real label is not available: the project is scoped to public data only, which is a
-boundary, not an oversight.
+with each other; it cannot say whether any of them is *useful*, and the bias runs
+backwards, penalising a source precisely for agreeing with the others. No real
+label is available: the project is scoped to public data only.
 
-**The substitute is five public outcomes no pillar measures** — ACS broadband
-adoption, median household income, median age, median home value, mean commute.
-None is constructed from any pillar's inputs.
+**The substitute is five public outcomes no pillar measures.** They come from the
+Census Bureau's **American Community Survey**, 2023 5-year estimates — which
+publish for every county, including the small ones a 1-year release skips:
+broadband adoption, median household income, median age, median home value, mean
+commute. None is built from any pillar's inputs, and everything from here on is
+measured against ACS.
 
-**The design is built around one specific objection.** The consuming team joins on
-DMA with millions of impressions per market, so it can estimate a geographic fixed
-effect essentially for free — which makes any static geo-keyed feature look
-redundant. A fixed effect has exactly one weakness: **no parameter for a place it
-has never seen.** So the test holds out **whole states** and compares against a
-model that knows only county size. That seam is the whole design, and it is what
-the limits section returns to.
+**The design answers one objection.** The consuming team joins on DMA with millions
+of impressions per market, so it gets a geographic fixed effect essentially for
+free — which makes any static geo-keyed feature look redundant. A fixed effect has
+exactly one weakness: **no parameter for a place it has never seen.** So the test
+holds out **whole states**, against a model that knows only county size.
 
-**The same seam then goes one level down.** Withhold a single pillar's block from a
-model that already holds county size *and the other five*, and measure the R² it
-loses. Three decisions make the result survivable: every pillar takes the same test;
-restatements are ablated, so no pillar is paid for repeating a neighbour; and the
-noise floor is measured by shuffling each block rather than assumed.
-
-The pass/fail rule was written down before the numbers arrived and was not
-renegotiated afterwards — full text in appendix A3, *Drop-one method*.
+**Then the same seam, one level down.** Withhold a single pillar's block from a
+model already holding county size *and the other five*, and measure the R² lost.
+Every pillar takes the same test, restatements are ablated so no pillar is paid for
+repeating a neighbour, and the noise floor is measured by shuffling each block
+rather than assumed. The pass/fail rule was fixed before the numbers arrived —
+full text in appendix A3, *Drop-one method*.
 """)
 
 # ==========================================================================
@@ -866,17 +820,21 @@ band is the noise floor — the most any *shuffled* version of a block managed.
 """)
 
 code('''
-floor = ext["drop_one_noise_floor"]
+# `HEADLINE` is the five-target basket, bound in the setup cell. Reading
+# `ext["drop_one"]` here instead would move the bars onto the 41-target basket
+# while the prose around them still described the five -- exactly the
+# cross-basket read the evidence-basket table exists to forbid.
+floor = HEADLINE["noise_floor"]
 # Contribution comes from drop_one, NOT from the noise-floor dict: the latter
 # carries F's `_no_ametro` robustness variant (+0.0410, scored against a
 # different reference model), and quoting it here would silently understate the
 # headline figure the findings report and docs both use (+0.0413).
 rows = [{"pillar": p,
          "label": PILLAR_NAME[p],
-         "contribution": ext["drop_one"][f"size_emacro_drop_{p}"]["mean_contribution_ablated"],
+         "contribution": HEADLINE["drop_one"][f"size_emacro_drop_{p}"]["mean_contribution_ablated"],
          "floor": floor[p]["max_placebo"],
          "above": floor[p]["n_targets_above_floor"],
-         "positive": ext["drop_one"][f"size_emacro_drop_{p}"]["n_positive_ablated"]}
+         "positive": HEADLINE["drop_one"][f"size_emacro_drop_{p}"]["n_positive_ablated"]}
         for p in PILLARS]
 worth = pd.DataFrame(rows).sort_values("contribution")
 
@@ -926,29 +884,26 @@ display(table[["label", "Marginal R²", "Positive on", "Above noise floor on"]]
 ''')
 
 md("""
-**The caveat travels with the headline, not after it.** These five targets are
-**public proxies, not the consuming team's label** — which is unobtainable under
-the scope this project was given. Everything above is an argument by analogy. It is
-the strongest non-circular evidence this project can produce, and it is still an
-analogy. Appendix A1 takes that objection seriously rather than footnoting it.
+**The caveat travels with the headline.** These five targets are **public proxies,
+not the consuming team's label**, which is unobtainable under this project's scope.
+Everything above is an argument by analogy — the strongest non-circular evidence
+available here, and still an analogy. Appendix A1 takes the objection seriously.
 """)
 
 md("""
-**Source F, in one line:** it was the pillar previously flagged as falling short,
-it took the fairer test its own status doc had proposed, and it passed decisively —
-**+0.0413**, second of the six. Appendix A5 carries the full story, including the
-pairwise test it still fails and the seven eighths of its *internal* number that
-is USDA restating BLS.
+**Source F, in one line:** on the five public ACS targets, measured as marginal R²
+over the rest of the matrix, F contributes **+0.0413** — second of the six.
+Appendix A5 carries the full story, including the pairwise correlation test it
+fails and the seven eighths of its *internal* number that is USDA restating BLS.
 
 ### Source A — the uncomfortable finding
 
-Source A is the pillar this project marked **"Good shape. Done."** Its embedding was
-cut on evidence, its 29 typed columns were validated, its schema was frozen first.
-It contributes **−0.0000**.
+Source A ships 29 validated typed columns under the first schema this project
+froze. It contributes **−0.0000**.
 """)
 
 code('''
-a_stats = ext["drop_one"]["size_emacro_drop_A"]
+a_stats = HEADLINE["drop_one"]["size_emacro_drop_A"]
 a_pl = placebo[placebo["pillar"] == "A"].set_index("target")
 labels = [TARGET_LABEL[t] for t in TARGET_ORDER]
 vals = [a_stats["by_target"][t] for t in TARGET_ORDER]
@@ -983,70 +938,52 @@ md("""
 for F, the placebo distributions behave, and A's per-target numbers are small in
 *both* directions rather than wildly negative.
 
-**Not a contradiction of the evidence on file either.** A's typed block was
-justified on a marginal lift of **+0.0010** over a baseline holding every other
-pillar — a real effect, at p = 0.010 with power 0.92, and a tiny one. A
-contribution indistinguishable from zero against five external outcomes is what
-that effect size predicts. A is also the only block negative in **both** arms:
-−0.0031 internally, −0.0000 externally.
+**Consistent with what the in-repo basket measures.** A's typed block carries a
+marginal lift of **+0.0010** over a baseline holding every other pillar — a real
+effect, at p = 0.010 with power 0.92, and a tiny one. A contribution
+indistinguishable from zero against five external outcomes is what that effect
+size predicts. A is also the only block negative in **both** arms: −0.0031
+internally, −0.0000 externally.
 
 **What it means.** Applied consistently, the operating principle that every pillar
-earns its slot on evidence now points at Source A rather than Source F. That is
-uncomfortable and it is the honest reading.
+earns its slot on evidence points at Source A. That is uncomfortable and it is the
+honest reading.
 
-**A note on the two Source A results in this notebook, because they are easy to
-run together.** The Source A tier section says A should not branch. This section
-says A adds nothing marginal. **They are independent measurements that happen to land on the
-same pillar, and the first did not predict the second.** The tier work asked
-whether one model or four fits A best, and would have returned exactly the same
-answer if A were the strongest pillar in the matrix. Nothing in it anticipated
-−0.0000. What is fair to say is narrower and still worth saying: the pillar this
-project spent the most instrument time on is the one that turned out to add least.
+**The two Source A results here are independent.** The tier section says A should
+not branch; this one says A adds nothing marginal. The tier work asked whether one
+model or four fits A best and would have returned the same answer if A were the
+strongest pillar in the matrix — nothing in it anticipated −0.0000. What is fair to
+say is narrower: the pillar this project spent the most instrument time on is the
+one that adds least.
 
-**This was blamed on the representation, and that has since been overturned.**
-The natural defence of A is that 29 regex columns are a thin way to represent an
-article. When first tested, that defence failed hard: swapping in the
-384-dimension embedding moved A's marginal contribution from −0.0000 to
-**−0.044**, negative on all five targets.
+**Read this as a fact about the typed columns, not the pillar.** 29 regex columns
+are a thin way to represent an article, and a properly scoped, width-matched
+encoder does lift A clear of zero on a wider, non-circular basket. It still does
+not rescue A: nearly all of that lift is geography, and two latitude/longitude
+columns supply 96% of it more cheaply. The comparison, the geography control and
+the intervals are in the representation section.
 
-**That −0.044 turns out to be mostly a width artifact.** The embedding carried 384
-columns against the typed block's 29, and the comparison never controlled for it.
-Reduce the *identical vectors* to 29 dimensions and the same arm scores
-**+0.011** instead of −0.021. The representation section runs the controlled
-version on 41 non-circular external targets, and A's contribution under a properly configured
-encoding is positive, not near-zero.
+### The open question this leaves
 
-**It does not rescue Source A, for a reason nobody had tested.** Nearly all of
-that recovered signal is geography — two latitude/longitude columns capture 96% of
-it. The representation section has the numbers. Read this section's −0.0000 as a
-fact about *the typed columns*, not about the pillar; and read that section before
-concluding the encoder fixes it.
-
-### The open question this puts to the room
-
-> **Does Source A ship?** The recommendation is to cut it from the shipped
-> matrix. Three arguments defend keeping it, and after the representation section
-> the score is one failed, one revived-then-neutralised, one still untested.
+> **Does Source A ship?** Three arguments defend keeping it: one is about cost
+> rather than worth, one is neutralised by the geography control, and one is
+> untested.
 >
-> *A is nearly free* is an argument about cost, not worth — it justifies leaving
-> the code in the repo, not calling A a pillar. *A better representation would
-> rescue it* looked dead and is now half-alive: a properly scoped, width-matched
-> encoding does lift A's contribution well clear of zero, but almost all of the
-> lift is geography that two coordinate columns supply more cheaply (below).
-> *Redundancy is insurance for a county missing another pillar* is plausible and
-> remains untested; no coverage-failure scenario in this repo has been scored with
-> and without A.
+> *A is nearly free* is about cost, not worth — it justifies leaving the code in
+> the repo, not calling A a pillar, and the limits section prices "nearly".
+> *A better representation would rescue it* gets halfway, then loses the lift to
+> geography (above). *Redundancy is insurance for a county missing another pillar*
+> is plausible and untested — no coverage-failure scenario here has been scored
+> with and without A.
 >
-> **One argument is still live, and it is the one this project cannot settle.**
-> A encodes named industries, universities, ports and protected land. Whether that
-> is worth anything depends on whether the downstream target is closer to "who
-> lives here" — where A adds nothing — or "what happens here economically." The
-> five ACS proxies are squarely the former.
+> **One argument is still live, and this project cannot settle it.** A encodes
+> named industries, universities, ports and protected land. Whether that is worth
+> anything depends on whether the downstream target is closer to "who lives here"
+> — where A adds nothing — or "what happens here economically". The five ACS
+> proxies are squarely the former. Only the commissioning side has that answer.
 >
-> So the evidence points one way and stops short of the decision: **if the
-> consuming team's target is demographic, A should come out. If it is economic,
-> this test was never the right one.** That is the answer only the commissioning
-> side has.
+> **The decision, its owner and its default are one row in the decision list** at
+> the end of the limits section, so the recommendation lives in one place.
 """)
 
 # ==========================================================================
@@ -1055,15 +992,17 @@ concluding the encoder fixes it.
 md("""
 ---
 
-## 6. How Source A should be represented — settled, then complicated
+## 6. How Source A should be represented
 
-The Source A tier section left this at a tie and shipped the typed columns on
-cost. The pillar-worth section said a richer encoding made A *worse*. Both
-accounts were produced by comparisons that had two uncontrolled confounds in
-them. This section removes both, and the answer changes twice.
+Four moves: what ships today, what a correctly run encoder comparison says about
+it, what survives a geography control, and what that leaves to do. Two earlier
+answers, both from comparisons with uncontrolled confounds, are in appendix A9.
 
-**Confound one: the encoder was reading mostly boilerplate.** Every body section
-in the corpus, by share of characters:
+### 1. What ships today, and why
+
+Source A ships 29 typed columns extracted with a fixed lexicon (the table in the
+Source A tier section lists them). They exist because of what the corpus is
+actually made of. Every body section, by share of characters:
 """)
 
 code("""
@@ -1079,42 +1018,51 @@ display(comp.set_index("what the encoder reads"))
 """)
 
 md("""
-Mean-pooling averages the economy sections into the rest. They also exist for
-only 660 of 3,144 counties, which is why "just read the economy sections" is
-not the fix — it scores **+0.0017**, statistically indistinguishable from reading
-nothing but the lead (**+0.0017**), because 79% of counties fall back to their
-lead anyway.
+**Economy-titled prose is 1.5% of the corpus; census tables and place-name lists
+are ~46%.** That is what the typed columns answer: a lexicon extracts the 1.5% and
+ignores the rest, with no model download, no inference, and columns you can read by
+name. Mean-pooling an encoder over the same text averages that 1.5% into the
+boilerplate instead.
+
+"Just read the economy sections" is not the fix either — they exist for only 660 of
+3,144 counties, so it scores **+0.0017**, indistinguishable from reading nothing but
+the lead (**+0.0017**), because 79% of counties fall back to their lead anyway.
+
+### 2. The encoder comparison, run correctly
+
+**Confound one: the encoder was reading mostly boilerplate** — the composition
+above. Every earlier arm read the whole article, so the 1.5% that carries economic
+content was averaged into census tables and lists of place names.
 
 **Confound two: nobody controlled for width.** Every embedding arm carried 384 or
 1,024 columns against the typed block's 29, so part of every measured penalty was
 width rather than content. Reducing the *identical* vectors to 29 dimensions —
 fitted inside each fold, never on the full corpus — moves the same arm from
-**−0.021 to +0.011**. That single control accounts for most of the pillar-worth
-section's −0.044.
+**−0.021 to +0.011**. That single control accounts for most of the **−0.044** an
+earlier account of Source A reported (appendix A9).
 
-**A third thing, which is not a confound but a leak.** County census sections state
-the ACS targets verbatim — *"The median age was 38.9 years"* — and 2,589 counties
-carry one quoting median income. The encoder reads that; the typed block, which
-extracts lexicon counts and no numbers, cannot. Dropping census sections is
-therefore a leakage control, not a tuning choice. Of 42 candidate targets, 8 are
-flagged as restated in article text and 15 were never screened at all — the latter
-are reported as unscreened rather than counted clean.
+**A third thing, not a confound but a leak.** County census sections state the ACS
+targets verbatim — *"The median age was 38.9 years"* — and 2,589 counties carry one
+quoting median income. The encoder reads that; the typed block, which extracts
+lexicon counts and no numbers, cannot. Dropping census sections is a leakage
+control, not a tuning choice; 8 of 42 targets are flagged as restated in article
+text and drop out of the screened subset.
 
-**The decision rule was fixed before any of it was scored.** The winning text scope
-was chosen on the in-repo 28-target basket; the decision was run on 41 external ACS
-targets that share no target with it. Under that rule the encoder wins outright —
-not a tie — on both the full basket and the leakage-screened subset.
+**The decision rule was fixed before scoring.** The text scope was chosen on the
+in-repo 28-target basket, the decision run on 41 external ACS targets sharing none
+of them. Under that rule the encoder wins outright, on both the full basket and the
+leakage-screened subset.
 
-**And then the geography control.** `GroupKFold` on state prevents a county's own
-row leaking into its training fold. It does nothing about regional vocabulary: a
-held-out New England county's article shares dialect, place names and climate
-description with training-fold New England counties, so an encoder can place it
-regionally without ever seeing its state. The selected arm's largest per-target
-gains are exactly what that predicts — electric heating +0.125, fuel-oil heating
-+0.101, gas heating +0.061, foreign-born share +0.041, median year built +0.038.
+### 3. The geography control
 
-So the arms were re-scored against a baseline that already holds two columns of
-latitude and longitude.
+`GroupKFold` on state stops a county's own row leaking into its training fold. It
+does nothing about regional vocabulary: a held-out New England county's article
+shares dialect, place names and climate description with training-fold New England
+counties, so an encoder can place it regionally without ever seeing its state. The
+selected arm's largest per-target gains are what that predicts — electric heating
++0.125, fuel-oil heating +0.101, gas heating +0.061, foreign-born share +0.041,
+median year built +0.038. So the arms were re-scored against a baseline that
+already holds latitude and longitude.
 """)
 
 code('''
@@ -1159,13 +1107,59 @@ scores **+0.0158**, which is 96% of the encoder's own headline. The typed column
 go *negative* net of geography, at −0.0127, so their information was partly
 geographic too; they simply carried less of it.
 
+**And what is left of the encoder cannot be told from zero.** Every figure above is
+a mean over 41 targets quoted to four decimals, a precision the basket does not
+have. Each now carries a bootstrap interval — resampled over targets, and again
+over whole ACS tables, so the clustering is priced in rather than described.
+Nothing was re-fitted; the per-target contributions behind the chart are what get
+resampled.
+""")
+
+code('''
+def band(block, scheme, statistic):
+    """One interval, formatted point [low, high]."""
+    interval = block[scheme][statistic]
+    return f"{interval['point']:+.4f}   [{interval['low']:+.4f}, {interval['high']:+.4f}]"
+
+sel_boot = R["minilm_prose_plus_history_ccr_pca29"]["bootstrap"]
+lat_boot = R["latlong_only"]["bootstrap"]
+CI_ROWS = [
+    ("selected encoder", sel_boot, "contribution"),
+    ("lat/lon only", lat_boot, "contribution"),
+    ("selected encoder, net of lat/lon", sel_boot, "contribution_geo"),
+]
+ci = pd.DataFrame(
+    {"resampling targets": [band(b, "naive", s) for _, b, s in CI_ROWS],
+     "resampling whole ACS tables": [band(b, "table_clustered", s) for _, b, s in CI_ROWS]},
+    index=[label for label, _, _ in CI_ROWS])
+ci.index.name = (f"95% interval, {sel_boot['n_replicates']:,} replicates over "
+                 f"{sel_boot['n_targets']} targets in {sel_boot['n_tables']} ACS tables")
+display(ci)
+''')
+
+md("""
+The encoder's plain contribution clears zero on both resamples. Its contribution
+**net of geography does not**: +0.0006, with a table-clustered interval of
+**[−0.0070, +0.0082]**. So the sentence to carry out of this section is not that
+the encoder's geography-free contribution is small — it is that this basket
+cannot distinguish it from nothing.
+
+The third row is also the encoder-minus-`latlong_only` difference, not merely
+close to it. `latlong_only`'s full model *is* the geography-adjusted baseline
+every other arm is scored against, so "net of lat/lon" and "minus lat/lon" are
+the same subtraction. Reporting a difference rather than a ratio is deliberate:
+an interval on "96%" divides by a mean this small and is unreadable, so 96% stays
+a point estimate in prose and the interval is quoted on the gap.
+
 This does not overturn the pre-registered verdict — a paired comparison cancels any
 baseline both arms share, so the encoder still beats the typed block by the rule as
 written. What it overturns is the *interpretation*. `E_macro`'s stated job is
 distinguishing physically similar places sitting in different **economic** climates.
 What this measured is a pillar that mostly encodes **where the county is**.
 
-**What that means for shipping.** Not "ship the encoder." A competitor gets 96% of
+### 4. What that means for shipping
+
+Not "ship the encoder." A competitor gets 96% of
 the measured gain from two columns already sitting in
 `data/county_centroids.parquet`, with no model download, no inference cost, and no
 opaque dimensions. The question worth asking next is not which encoding of Source A
@@ -1173,16 +1167,26 @@ is better — it is whether `E_macro` needs Source A at all once `E_local` and
 `E_census` supply location, and that is a drop-one test against the sibling tiers
 rather than another representation sweep.
 
-**Three caveats that belong with the numbers.** The basket is clustered — 5 of 42
-targets are heating-fuel shares from one ACS table, and 35 target pairs correlate
-above 0.7, so the effective sample is nearer 28 than 42 and the reported power is
-overstated (the direction survives a table-collapsed recomputation). One target,
-`no_fuel_used_share`, was excluded outright: both its models score worse than
-predicting the mean, so its apparent contribution was the gap between two useless
-fits. And the pre-registered typed transform *backfired* — `typed_transformed`
-scored **+0.0017** against the raw block's **+0.0031** — which is reported here
-rather than quietly swapped for the better arm, because the rule named it in
-advance.
+### Known weaknesses in the decision basket
+
+**The basket is clustered.** 5 of 42 targets are heating-fuel shares from one ACS
+table and 35 target pairs correlate above 0.7, so the effective sample is nearer
+28 than 42. The table-clustered column above is what that costs, measured rather
+than asserted: drawing 28 whole tables instead of 41 independent targets widens
+the encoder's plain contribution from **[+0.0093, +0.0251]** to
+**[+0.0071, +0.0297]**.
+
+**15 of the 42 targets were never leakage-screened.** They are reported as
+unscreened rather than counted clean, which is why the pre-registered rule is
+checked on the screened subset as well as the full basket.
+
+**One target was excluded outright.** `no_fuel_used_share`: both its models score
+worse than predicting the mean, so its apparent contribution was the gap between
+two useless fits rather than a gain.
+
+**The pre-registered typed transform backfired.** `typed_transformed` scored
+**+0.0017** against the raw block's **+0.0031**. It is reported rather than
+quietly swapped for the better arm, because the rule named it in advance.
 """)
 
 # ==========================================================================
@@ -1222,12 +1226,12 @@ plt.show()
 ''')
 
 md("""
-**2. On the smallest counties the model cannot win — and that is a data fact, not a
-model failure.** The size-only baseline scores a *negative* R² there. ACS publishes
-a margin of error with every estimate, and ingesting those alongside the values
-splits each outcome's variance into signal and sampling noise. In the smallest
-population decile, **30% of the variance is sampling noise** — error no model can
-ever explain. In the largest, under 1%.
+**2. On the smallest counties the model cannot win, and that is a data fact rather
+than a model failure.** ACS publishes a margin of error with every estimate, so
+ingesting those alongside the values splits each outcome's variance into signal and
+sampling noise. In the smallest population decile **30% of the variance is sampling
+noise** — error no model can explain — against under 1% in the largest. The
+size-only baseline scores a *negative* R² there.
 """)
 
 code('''
@@ -1266,7 +1270,8 @@ readiness = pd.DataFrame([
     ("Six sources ingested, validated, schema frozen", "Done",
      "3,143–3,144 counties; six schema docs; vintage per pillar"),
     ("Evidence against a target outside the six pillars", "Done",
-     f"{ext['mean_lift_over_size_ablated']:+.3f} mean R² over a size baseline, 5 of 5 positive"),
+     f"{HEADLINE['mean_lift_over_size_ablated']:+.3f} mean R² over a size baseline, "
+     f"{HEADLINE['targets_with_positive_lift']} of {HEADLINE['n_targets']} positive"),
     ("Each pillar's worth measured, not asserted", "Done",
      "drop-one, restatements ablated, noise floor measured"),
     ("Evidence against the consumer's real target", "Not possible in scope",
@@ -1282,16 +1287,122 @@ display(readiness.set_index("What a go/no-go needs"))
 ''')
 
 md("""
-**The remaining path**, in order, measured in weeks of availability:
+**What "it" actually is.** The readiness table says the matrix is done without
+ever saying how big it is. Counted from `build_matrix()` rather than typed:
+""")
 
-1. **Settle the join grain** — the single highest-leverage unblock; nothing after it
-   is safe to build first.
-2. **Benchmark against a geographic fixed effect** — the test that decides whether
-   `E_macro` earns a slot in a production model.
-3. **Test temporal transfer** — the one argument a fixed effect cannot answer.
-4. **Then package** — schema freeze, imputation policy, serving format. Days, not
-   weeks: `build_matrix()` already joins all six pillars.
+code('''
+import sys
+if str(REPO / "scripts") not in sys.path:
+    sys.path.insert(0, str(REPO / "scripts"))
+from pillar_matrix import build_matrix, SIZE_FEATURES
 
+matrix, blocks = build_matrix()
+shape = pd.DataFrame(
+    [(PILLAR_NAME[p], len(blocks[p])) for p in PILLARS],
+    columns=["Block", "Feature columns"])
+shape.loc[len(shape)] = ("TOTAL, pillar features", int(shape["Feature columns"].sum()))
+shape.loc[len(shape)] = ("Size controls, held out of every block",
+                         len(SIZE_FEATURES))
+print(f"{len(matrix):,} counties x {sum(len(b) for b in blocks.values()):,} pillar "
+      f"feature columns, plus {len(SIZE_FEATURES)} size controls "
+      f"and {matrix.shape[1] - sum(len(b) for b in blocks.values()):,} identifier "
+      f"and size columns carried alongside.")
+display(shape.set_index("Block"))
+''')
+
+md("""
+**And what maintaining it costs**, since every row above is evidence rather than
+cost. Cadence and reference period come from `outputs/pillar_vintages.csv`; each
+refresh figure is stated with its basis, because one measured number beside five
+guesses would otherwise read as six measurements.
+""")
+
+code('''
+# Refresh cost per pillar. `basis` is not decoration: only Source B has been
+# timed end to end. Request counts marked "counted" are structural -- one
+# request per county, per state or per year, read off the ingest script -- and
+# will not drift unless the ingest changes. Everything marked "estimated" is a
+# guess and is labelled as one.
+COST = {
+    "A": ("3,144 article requests (one per county) + 1 auth call",
+          "~25 min", "Wikimedia Enterprise credentials",
+          "requests counted; wall-clock estimated"),
+    "B": ("1 bulk QCEW zip, stream-filtered to county rows",
+          "4m36s", "none",
+          "measured end to end, 2026-08-05 run log"),
+    "C": ("6,288 FRED requests (2 series x 3,144 counties)",
+          ">=63 min", "FRED_API_KEY",
+          "requests counted; floor derived from the script's own 100/min limiter"),
+    "D": ("51 state zip downloads via curl",
+          "~20 min", "none; host is flaky, retries are built in",
+          "downloads counted; wall-clock estimated"),
+    "E": ("5 CSV downloads, one per tax year",
+          "~5 min", "none",
+          "downloads counted; wall-clock estimated"),
+    "F": ("1 static CSV download",
+          "<1 min", "none",
+          "download counted; wall-clock estimated"),
+}
+v = vintages.set_index("pillar")
+cost = pd.DataFrame(
+    [(PILLAR_NAME[p], v.loc[p, "cadence"], COST[p][0], COST[p][1],
+      COST[p][2], COST[p][3]) for p in PILLARS],
+    columns=["Pillar", "How often it is paid", "What a refresh fetches",
+             "Wall-clock", "Manual steps", "Basis"])
+display(cost.set_index("Pillar"))
+''')
+
+md("""
+**The row that matters for the open decision is A's.** "Source A is nearly free"
+has been asserted in this project without a number attached; the number is 3,144
+API requests against credentialled Wikimedia Enterprise access, on a source with
+no reference period, refetched whenever someone decides the corpus has moved.
+That is cheap, and it is not free, and it is the whole of the cost argument for
+keeping A in the repo.
+
+### The decisions, and what happens if nobody makes them
+
+Every open item below has an owner and a **default** — what this project does if
+no answer comes back. A default is not a preference; it is what removes the
+decision from the critical path.
+""")
+
+code('''
+decisions = pd.DataFrame([
+    ("Join grain: county or market?",
+     "Consuming team",
+     "Ship at county grain and document the aggregation path. Coarsening costs "
+     f"{gst['row_count_effect']:+.3f} and gains {gst['aggregation_effect']:+.3f}; "
+     "they roughly cancel, so county is the reversible choice.",
+     "2026-09-18"),
+    ("Does Source A ship?",
+     "Consuming team (target is demographic or economic?)",
+     "Ship five pillars plus two centroid columns from "
+     "data/county_centroids.parquet, which supply 96% of A's measured gain. "
+     "Source A stays in the repo, unshipped, and the go/no-go deck says why.",
+     "2026-09-18"),
+    ("Benchmark against a geographic fixed effect",
+     "This project",
+     "Run it at county grain against the public proxies and report the result "
+     "either way. It is the test that decides whether E_macro earns a slot in a "
+     "production model.",
+     "Starts once grain settles"),
+    ("Temporal transfer",
+     "This project",
+     "Remains untested and stays on the limits list. It is the one argument a "
+     "fixed effect cannot answer, so it is named rather than quietly dropped.",
+     "Not started"),
+    ("Fusion / serving format",
+     "This project",
+     "Stays deferred until grain settles. Days of work, not weeks: "
+     "build_matrix() already joins all six pillars.",
+     "After grain"),
+], columns=["Open decision", "Owner", "Default if no answer comes back", "By"])
+display(decisions.set_index("Open decision"))
+''')
+
+md("""
 **Not blocked by any of it:** ingestion, validation, schema freeze and the external
 benchmark are complete and stand on their own.
 """)
@@ -1303,8 +1414,6 @@ md("""
 ---
 
 # Appendix
-
-Written to be read without a narrator.
 
 ## A1 — Do public proxies mean anything?
 
@@ -1421,15 +1530,36 @@ the one place in this project where a higher number was deliberately declined.
 section**, including the
 drop-one sweep that locates which tier the tier-conditional rule actually costs.
 
-**A correction worth recording, made 2026-08-17.** The MiniLM arms above were
-first run with a chunk cap that truncated input at ~9,000 characters, which bound
-on **1,871 of 3,144 counties (59.5%)** and discarded 43% of the uniform arm's own
-text. On that truncated input the encoder appeared to lose to the typed block.
-Raised to ~57,600 characters, where it binds on 47 counties, the uniform arm rises
-from +0.00226 to **+0.00322** and its row-normalised twin to **+0.00351** — level
-with the typed block rather than behind it. The conclusion that the *input* should
-not branch on tier is unaffected and is cleaner uncapped. Full detail in
-`source-a-findings.md` §20.
+**The drop-one sweep, cell by cell.** Withholding stub's body text raises stub's
+own lift from +0.00021 to +0.00388, a diagonal gain of **+0.00367** — its lead
+names an industry in 0.7% of counties, so there is next to nothing past it to
+lose. Dropping thin's text costs its own tier **−0.00190** (+0.00196 → +0.00006)
+and mid's costs **−0.00323** (+0.00288 → −0.00035). rich barely moves,
+**−0.00028** (+0.00708 → +0.00680): the tier with the most text to read is close
+to redundant over its own lead. `drop_stub`'s off-diagonal cost falls on mid
+(+0.00288 → +0.00235) and rich (+0.00708 → +0.00671). **The off-diagonal cost is
+not always smaller than the diagonal gain:** `drop_thin` gives its own tier
++0.00006 and costs the stub tier **−0.00247**, a larger move in the opposite
+direction.
+
+**Why the tier chart plots the row-normalised arm.** `tier_variance_share` — how
+much of the embedding's variance tracks which tier a county is in rather than
+anything else — sits at 0.0121 for `uniform` and 0.0481–0.0698 for the drop arms.
+Splicing a lead-only row into an otherwise uniform arm manufactures a norm
+discontinuity at the tier boundary: `lead_only` rows carry a norm near 1.0 against
+`uniform`'s 0.63–0.71, so an unnormalised drop arm partly encodes tier membership
+through vector length rather than content. `drop_stub` reads +0.00256 raw against
++0.00343 row-normalised — a 0.00087 artifact.
+
+**How the drop arms are built.** Each `drop_*` arm splices that tier's `lead_only`
+rows into `uniform`'s vectors rather than re-encoding the corpus under a different
+reading rule, so the three untouched tiers are exactly `uniform`'s own vectors.
+Re-encoding would perturb each by ~1e-7 of padding noise — drift injected into
+precisely the tiers the comparison holds fixed.
+
+**The MiniLM arms above are the uncapped run.** An earlier chunk cap truncated
+their input and made them look worse than they are; that correction is recorded
+with the other superseded Source A numbers in A9.
 
 ## A3 — Drop-one method
 
@@ -1518,7 +1648,7 @@ code('''
 fb = blk["by_block"]["F"]
 # Headline external figure, not the `_no_ametro` robustness variant — see the
 # comment on the pillar-worth figure.
-f_ext = ext["drop_one"]["size_emacro_drop_F"]["mean_contribution_ablated"]
+f_ext = HEADLINE["drop_one"]["size_emacro_drop_F"]["mean_contribution_ablated"]
 # NOTE: newlines in these labels are escaped because this cell's source is a
 # non-raw triple-quoted string in the builder — an unescaped \\n would be
 # consumed at build time and split the string literal.
@@ -1604,6 +1734,7 @@ numbered references went stale both times.
 | Limits · grain | `grain_effect_stats.json` | `scripts/analyze_grain_effect.py` |
 | Limits · sampling noise | `outputs/external_target_by_decile.csv` | `scripts/analyze_external_target.py` |
 | A2 · arms ruled out | `source_a_section_scope_stats.json`, `source_a_tiered_embedding_stats.json` | `scripts/analyze_source_a_section_scope.py`, `scripts/analyze_source_a_tiered_embedding.py` |
+| A9 · superseded accounts | `source-a-findings.md` §20, §21.2; `source_a_representation_stats.json` | the scripts that produced each, named in the entry |
 | A5 · Source F | `pillar_block_marginal_stats.json` (`by_block`) | `scripts/analyze_pillar_block_marginal.py` |
 | A6 · vintages | `outputs/pillar_vintages.csv` | `scripts/pillar_vintage.py` |
 
@@ -1612,6 +1743,54 @@ Long-form evidence:
 `analysis-output/cross-source/external-target-findings.md`,
 `analysis-output/E_macro_key_findings.ipynb`,
 `docs/pillar_status.md`, `docs/PROJECT_GOAL.md`.
+
+## A9 — Superseded Source A accounts
+
+Three accounts of Source A that earlier versions of this notebook stated, and
+stated confidently. Each was measured honestly and each is now wrong. They are
+kept because a conclusion that moved is more informative than one that was always
+right, and because a reader carrying a number from an earlier version deserves to
+find it here rather than meet its silent absence.
+
+**1. "Two encoders were tested and both tied, so the typed columns shipped on
+cost."** bge-m3 at 1,024 dimensions and 2.2GB scored 11 of 28 targets, p = 0.52.
+`all-MiniLM-L6-v2` at 384 dimensions and 90MB, reading the full article rather
+than the lead, scored 14 of 28 targets, p = 0.76, with the median favouring the
+typed columns. Neither encoder was beaten and neither won, so the typed block was
+justified on cost and interpretability rather than measured lift.
+
+> *Replaced by* the representation section. Both arms read the whole article, of
+> which ~46% is census tables and place-name lists against 1.5% economy prose,
+> and both were scored at full width against the typed block's 29 columns. Fix
+> the reading scope and match the width and the tie becomes an outright win for
+> the encoder. The cost argument survives as an argument about cost; it is no
+> longer an argument about lift, because there is now a lift difference to
+> explain.
+
+**2. "A richer representation makes Source A worse: −0.044."** Swapping the
+384-dimension embedding in for the typed columns moved A's marginal contribution
+from −0.0000 to −0.044, negative on all five external targets. Read at the time
+as closing the "a better representation would rescue A" defence.
+
+> *Replaced by* the width control. The embedding carried 384 columns against the
+> typed block's 29 and nothing in the comparison held width fixed. Reducing the
+> *identical* vectors to 29 dimensions inside each fold moves the same arm from
+> −0.021 to +0.011. The defence was not closed; it was mismeasured.
+
+**3. "The MiniLM arms lose to the typed block."** Corrected 2026-08-17. Those arms
+were first run with a chunk cap that truncated input at ~9,000 characters, which
+bound on **1,871 of 3,144 counties (59.5%)** and discarded 43% of the uniform
+arm's own text.
+
+> *Replaced by* the uncapped run. Raised to ~57,600 characters, where it binds on
+> 47 counties, the uniform arm rises from +0.00226 to **+0.00322** and its
+> row-normalised twin to **+0.00351** — level with the typed block rather than
+> behind it. The conclusion that the *input* should not branch on tier is
+> unaffected and is cleaner uncapped. Full detail in `source-a-findings.md` §20.
+
+**What did not move.** The tier work — branching, the drop-one sweep, and the
+third independent test behind the branching verdict — is a different question and
+survived all three corrections unchanged.
 """)
 
 # --------------------------------------------------------------------------
