@@ -1,0 +1,1184 @@
+{
+  "n_counties": 3143,
+  "n_counties_growth": 3132,
+  "n_source_a_columns": 29,
+  "source_a_columns": [
+    "content_length",
+    "has_manufacturing",
+    "has_mining",
+    "has_oil_gas",
+    "has_agriculture",
+    "has_tourism",
+    "has_timber",
+    "has_logistics",
+    "has_university",
+    "has_military_base",
+    "has_protected_land",
+    "has_tribal_land",
+    "has_river",
+    "has_interstate",
+    "has_port",
+    "n_industry_mentions",
+    "has_metro_attachment",
+    "has_namesake",
+    "founding_year",
+    "n_distinct_proper_nouns",
+    "sec_has_manufacturing",
+    "sec_has_mining",
+    "sec_has_oil_gas",
+    "sec_has_agriculture",
+    "sec_has_tourism",
+    "sec_has_timber",
+    "sec_has_logistics",
+    "sec_n_industry_mentions",
+    "has_economy_section"
+  ],
+  "level_target": "wage_per_return_thousands",
+  "growth_target": "wage_growth_log",
+  "growth_years": [
+    2018,
+    2022
+  ],
+  "tier_edges": [
+    0,
+    100,
+    284,
+    462
+  ],
+  "tier_labels": [
+    "stub",
+    "thin",
+    "mid",
+    "rich"
+  ],
+  "q_threshold": 0.05,
+  "tier_summary": {
+    "stub": {
+      "n_counties": 294,
+      "median_content_length": 69.5,
+      "median_population": 15848.0,
+      "mean_wage": 41.0099137322,
+      "median_wage": 40.8122603306,
+      "mean_growth": 0.1541275911,
+      "median_growth": 0.1544988672,
+      "n_growth": 294
+    },
+    "thin": {
+      "n_counties": 1274,
+      "median_content_length": 191.0,
+      "median_population": 20609.0,
+      "mean_wage": 43.3123148017,
+      "median_wage": 41.8285938497,
+      "mean_growth": 0.1554744238,
+      "median_growth": 0.1563827328,
+      "n_growth": 1268
+    },
+    "mid": {
+      "n_counties": 788,
+      "median_content_length": 354.0,
+      "median_population": 30861.0,
+      "mean_wage": 44.7356051139,
+      "median_wage": 42.6535016053,
+      "mean_growth": 0.1529655305,
+      "median_growth": 0.1536108788,
+      "n_growth": 785
+    },
+    "rich": {
+      "n_counties": 787,
+      "median_content_length": 686.0,
+      "median_population": 58785.0,
+      "mean_wage": 50.6491996878,
+      "median_wage": 46.3901077375,
+      "mean_growth": 0.1570927722,
+      "median_growth": 0.1566552217,
+      "n_growth": 785
+    }
+  },
+  "tier_gradient": {
+    "wage_per_return_thousands": {
+      "reference_tier": "stub",
+      "raw_coefficients": {
+        "thin": 2.3024010695199784,
+        "mid": 3.725691381722499,
+        "rich": 9.639285955608903
+      },
+      "size_controlled_coefficients": {
+        "thin": 0.6628890030227899,
+        "mid": 0.5356899727778275,
+        "rich": 3.0255627164624137
+      },
+      "raw_r2": 0.07079488542712487,
+      "size_controlled_r2": 0.3295719555740969,
+      "top_tier": "rich",
+      "share_of_top_gap_surviving_size": 0.3138783028531175
+    },
+    "wage_growth_log": {
+      "reference_tier": "stub",
+      "raw_coefficients": {
+        "thin": 0.0013468327433135974,
+        "mid": -0.0011620605786611137,
+        "rich": 0.002965181176003287
+      },
+      "size_controlled_coefficients": {
+        "thin": -8.235714858592163e-05,
+        "mid": -0.004027737129594871,
+        "rich": -0.0029497895729672366
+      },
+      "raw_r2": 0.0011046477284782918,
+      "size_controlled_r2": 0.01607399367413076,
+      "top_tier": "rich",
+      "share_of_top_gap_surviving_size": -0.9948092200366669
+    }
+  },
+  "scores": {
+    "wage_per_return_thousands": {
+      "n_counties": 3143,
+      "by_baseline": {
+        "headcount": {
+          "n_control_columns": 1,
+          "reduced_r2": 0.30845398796871537,
+          "full_r2": 0.3338956275067002,
+          "contribution": 0.02544163953798484,
+          "bootstrap": {
+            "point": 0.02544163953798484,
+            "low": 0.004306255719860479,
+            "high": 0.04576946004454327
+          },
+          "by_tier": {
+            "stub": {
+              "n_counties": 294,
+              "reduced_r2": 0.1711744733279058,
+              "full_r2": 0.14898084482437157,
+              "contribution": -0.022193628503534235
+            },
+            "thin": {
+              "n_counties": 1274,
+              "reduced_r2": 0.1645679586385984,
+              "full_r2": 0.17751363408728704,
+              "contribution": 0.012945675448688632
+            },
+            "mid": {
+              "n_counties": 788,
+              "reduced_r2": 0.22987468725525706,
+              "full_r2": 0.2423714383939075,
+              "contribution": 0.012496751138650453
+            },
+            "rich": {
+              "n_counties": 787,
+              "reduced_r2": 0.3096559817437997,
+              "full_r2": 0.352008436183622,
+              "contribution": 0.042352454439822274
+            }
+          }
+        },
+        "geo": {
+          "n_control_columns": 3,
+          "reduced_r2": 0.31609388339483246,
+          "full_r2": 0.344279233008039,
+          "contribution": 0.028185349613206512,
+          "bootstrap": {
+            "point": 0.028185349613206512,
+            "low": 0.008257329452666953,
+            "high": 0.04757752751372566
+          }
+        },
+        "size_full": {
+          "n_control_columns": 4,
+          "reduced_r2": 0.649512018296871,
+          "full_r2": 0.6556380394994754,
+          "contribution": 0.006126021202604415,
+          "bootstrap": {
+            "point": 0.006126021202604415,
+            "low": -0.0020537836132454245,
+            "high": 0.013787510447578718
+          }
+        }
+      }
+    },
+    "wage_growth_log": {
+      "n_counties": 3132,
+      "by_baseline": {
+        "headcount": {
+          "n_control_columns": 2,
+          "reduced_r2": 0.008216881072807047,
+          "full_r2": 0.013457136902837785,
+          "contribution": 0.005240255830030738,
+          "bootstrap": {
+            "point": 0.005240255830030738,
+            "low": -0.009791052083311692,
+            "high": 0.019260691096503746
+          },
+          "by_tier": {
+            "stub": {
+              "n_counties": 294,
+              "reduced_r2": 0.021227770917389588,
+              "full_r2": 0.02133713794204406,
+              "contribution": 0.00010936702465447201
+            },
+            "thin": {
+              "n_counties": 1268,
+              "reduced_r2": 0.017435789496254128,
+              "full_r2": 0.013053266485290926,
+              "contribution": -0.004382523010963202
+            },
+            "mid": {
+              "n_counties": 785,
+              "reduced_r2": -0.013591851573570013,
+              "full_r2": 0.007462097294273162,
+              "contribution": 0.021053948867843175
+            },
+            "rich": {
+              "n_counties": 785,
+              "reduced_r2": 0.0054497007466928205,
+              "full_r2": 0.013254725299401304,
+              "contribution": 0.007805024552708484
+            }
+          }
+        },
+        "geo": {
+          "n_control_columns": 4,
+          "reduced_r2": 0.004183309112301026,
+          "full_r2": 0.008110078681093924,
+          "contribution": 0.003926769568792898,
+          "bootstrap": {
+            "point": 0.003926769568792898,
+            "low": -0.010663902851384851,
+            "high": 0.017804873260998617
+          }
+        },
+        "size_full": {
+          "n_control_columns": 5,
+          "reduced_r2": 0.18739295364877018,
+          "full_r2": 0.1732797161170252,
+          "contribution": -0.014113237531744982,
+          "bootstrap": {
+            "point": -0.014113237531744982,
+            "low": -0.02406258837716399,
+            "high": -0.004591582645740531
+          }
+        }
+      }
+    }
+  },
+  "blocks": {
+    "columns": {
+      "length_only": [
+        "content_length"
+      ],
+      "sections_only": [
+        "n_body_sections"
+      ],
+      "counts_and_lengths": [
+        "n_body_sections",
+        "n_distinct_titles",
+        "n_untitled_sections",
+        "max_section_id",
+        "n_id_gaps",
+        "total_body_chars",
+        "mean_section_chars",
+        "median_section_chars",
+        "max_section_chars",
+        "sd_section_chars",
+        "n_stub_sections",
+        "section_length_gini",
+        "share_in_largest_section",
+        "share_stub_sections"
+      ],
+      "which_sections": [
+        "has_section_demographics",
+        "has_section_geography",
+        "has_section_2020_census",
+        "has_section_communities",
+        "has_section_adjacent_counties",
+        "has_section_history",
+        "has_section_major_highways",
+        "has_section_politics",
+        "has_section_education",
+        "has_section_2000_census",
+        "has_section_unincorporated_communities",
+        "has_section_racial_and_ethnic_composition",
+        "has_section_cities",
+        "has_section_2010_census",
+        "has_section_census_designated_places",
+        "has_section_towns",
+        "has_section_townships",
+        "has_section_government",
+        "has_section_transportation",
+        "has_section_notable_people",
+        "has_section_economy",
+        "has_section_national_protected_area",
+        "has_section_city",
+        "has_section_census_designated_place",
+        "has_section_national_protected_areas",
+        "has_section_villages",
+        "has_section_ghost_towns",
+        "has_section_other_unincorporated_communities",
+        "has_section_government_and_politics",
+        "has_section_media",
+        "has_section_airports",
+        "has_section_protected_areas",
+        "has_section_town",
+        "has_section_population_ranking",
+        "has_section_climate",
+        "has_section_elected_officials",
+        "has_section_lakes",
+        "has_section_climate_and_weather",
+        "has_section_transit",
+        "has_section_colleges_and_universities",
+        "has_section_private_schools",
+        "has_section_railroads"
+      ],
+      "section_mix": [
+        "share_chars_census",
+        "share_chars_lists",
+        "share_chars_highways",
+        "share_chars_narrative",
+        "share_chars_economy",
+        "share_chars_geography",
+        "share_chars_government",
+        "share_chars_other"
+      ],
+      "structure": [
+        "n_body_sections",
+        "n_distinct_titles",
+        "n_untitled_sections",
+        "max_section_id",
+        "n_id_gaps",
+        "total_body_chars",
+        "mean_section_chars",
+        "median_section_chars",
+        "max_section_chars",
+        "sd_section_chars",
+        "n_stub_sections",
+        "section_length_gini",
+        "share_in_largest_section",
+        "share_stub_sections",
+        "has_section_demographics",
+        "has_section_geography",
+        "has_section_2020_census",
+        "has_section_communities",
+        "has_section_adjacent_counties",
+        "has_section_history",
+        "has_section_major_highways",
+        "has_section_politics",
+        "has_section_education",
+        "has_section_2000_census",
+        "has_section_unincorporated_communities",
+        "has_section_racial_and_ethnic_composition",
+        "has_section_cities",
+        "has_section_2010_census",
+        "has_section_census_designated_places",
+        "has_section_towns",
+        "has_section_townships",
+        "has_section_government",
+        "has_section_transportation",
+        "has_section_notable_people",
+        "has_section_economy",
+        "has_section_national_protected_area",
+        "has_section_city",
+        "has_section_census_designated_place",
+        "has_section_national_protected_areas",
+        "has_section_villages",
+        "has_section_ghost_towns",
+        "has_section_other_unincorporated_communities",
+        "has_section_government_and_politics",
+        "has_section_media",
+        "has_section_airports",
+        "has_section_protected_areas",
+        "has_section_town",
+        "has_section_population_ranking",
+        "has_section_climate",
+        "has_section_elected_officials",
+        "has_section_lakes",
+        "has_section_climate_and_weather",
+        "has_section_transit",
+        "has_section_colleges_and_universities",
+        "has_section_private_schools",
+        "has_section_railroads",
+        "share_chars_census",
+        "share_chars_lists",
+        "share_chars_highways",
+        "share_chars_narrative",
+        "share_chars_economy",
+        "share_chars_geography",
+        "share_chars_government",
+        "share_chars_other"
+      ],
+      "shape_profile": [
+        "pos_demographics",
+        "pos_geography",
+        "pos_2020_census",
+        "pos_communities",
+        "pos_adjacent_counties",
+        "pos_history",
+        "pos_major_highways",
+        "pos_politics",
+        "pos_education",
+        "pos_2000_census",
+        "pos_unincorporated_communities",
+        "pos_racial_and_ethnic_composition",
+        "pos_cities",
+        "pos_2010_census",
+        "pos_census_designated_places",
+        "pos_towns",
+        "pos_townships",
+        "pos_government",
+        "pos_transportation",
+        "pos_notable_people",
+        "pos_economy",
+        "pos_national_protected_area",
+        "pos_city",
+        "pos_census_designated_place",
+        "pos_national_protected_areas",
+        "pos_villages",
+        "pos_ghost_towns",
+        "pos_other_unincorporated_communities",
+        "pos_government_and_politics",
+        "pos_media",
+        "pos_airports",
+        "pos_protected_areas",
+        "pos_town",
+        "pos_population_ranking",
+        "pos_climate",
+        "pos_elected_officials",
+        "pos_lakes",
+        "pos_climate_and_weather",
+        "pos_transit",
+        "pos_colleges_and_universities",
+        "pos_private_schools",
+        "pos_railroads",
+        "pos_longest_section",
+        "pos_first_economy",
+        "pos_first_census",
+        "pos_first_narrative",
+        "history_before_economy",
+        "position_spread",
+        "template_jaccard",
+        "n_core_missing",
+        "n_unusual_sections",
+        "share_unusual_sections",
+        "mean_title_rarity",
+        "n_title_words",
+        "digit_density",
+        "punct_density",
+        "capital_ratio",
+        "mean_word_length",
+        "numeral_to_letter",
+        "digit_density_census",
+        "digit_density_lists",
+        "digit_density_narrative",
+        "digit_density_geography",
+        "top3_length_share",
+        "length_decay_slope",
+        "chars_census",
+        "chars_lists",
+        "chars_highways",
+        "chars_narrative",
+        "chars_economy",
+        "chars_geography",
+        "chars_government",
+        "chars_other"
+      ],
+      "everything_dumb": [
+        "n_body_sections",
+        "n_distinct_titles",
+        "n_untitled_sections",
+        "max_section_id",
+        "n_id_gaps",
+        "total_body_chars",
+        "mean_section_chars",
+        "median_section_chars",
+        "max_section_chars",
+        "sd_section_chars",
+        "n_stub_sections",
+        "section_length_gini",
+        "share_in_largest_section",
+        "share_stub_sections",
+        "has_section_demographics",
+        "has_section_geography",
+        "has_section_2020_census",
+        "has_section_communities",
+        "has_section_adjacent_counties",
+        "has_section_history",
+        "has_section_major_highways",
+        "has_section_politics",
+        "has_section_education",
+        "has_section_2000_census",
+        "has_section_unincorporated_communities",
+        "has_section_racial_and_ethnic_composition",
+        "has_section_cities",
+        "has_section_2010_census",
+        "has_section_census_designated_places",
+        "has_section_towns",
+        "has_section_townships",
+        "has_section_government",
+        "has_section_transportation",
+        "has_section_notable_people",
+        "has_section_economy",
+        "has_section_national_protected_area",
+        "has_section_city",
+        "has_section_census_designated_place",
+        "has_section_national_protected_areas",
+        "has_section_villages",
+        "has_section_ghost_towns",
+        "has_section_other_unincorporated_communities",
+        "has_section_government_and_politics",
+        "has_section_media",
+        "has_section_airports",
+        "has_section_protected_areas",
+        "has_section_town",
+        "has_section_population_ranking",
+        "has_section_climate",
+        "has_section_elected_officials",
+        "has_section_lakes",
+        "has_section_climate_and_weather",
+        "has_section_transit",
+        "has_section_colleges_and_universities",
+        "has_section_private_schools",
+        "has_section_railroads",
+        "share_chars_census",
+        "share_chars_lists",
+        "share_chars_highways",
+        "share_chars_narrative",
+        "share_chars_economy",
+        "share_chars_geography",
+        "share_chars_government",
+        "share_chars_other",
+        "pos_demographics",
+        "pos_geography",
+        "pos_2020_census",
+        "pos_communities",
+        "pos_adjacent_counties",
+        "pos_history",
+        "pos_major_highways",
+        "pos_politics",
+        "pos_education",
+        "pos_2000_census",
+        "pos_unincorporated_communities",
+        "pos_racial_and_ethnic_composition",
+        "pos_cities",
+        "pos_2010_census",
+        "pos_census_designated_places",
+        "pos_towns",
+        "pos_townships",
+        "pos_government",
+        "pos_transportation",
+        "pos_notable_people",
+        "pos_economy",
+        "pos_national_protected_area",
+        "pos_city",
+        "pos_census_designated_place",
+        "pos_national_protected_areas",
+        "pos_villages",
+        "pos_ghost_towns",
+        "pos_other_unincorporated_communities",
+        "pos_government_and_politics",
+        "pos_media",
+        "pos_airports",
+        "pos_protected_areas",
+        "pos_town",
+        "pos_population_ranking",
+        "pos_climate",
+        "pos_elected_officials",
+        "pos_lakes",
+        "pos_climate_and_weather",
+        "pos_transit",
+        "pos_colleges_and_universities",
+        "pos_private_schools",
+        "pos_railroads",
+        "pos_longest_section",
+        "pos_first_economy",
+        "pos_first_census",
+        "pos_first_narrative",
+        "history_before_economy",
+        "position_spread",
+        "template_jaccard",
+        "n_core_missing",
+        "n_unusual_sections",
+        "share_unusual_sections",
+        "mean_title_rarity",
+        "n_title_words",
+        "digit_density",
+        "punct_density",
+        "capital_ratio",
+        "mean_word_length",
+        "numeral_to_letter",
+        "digit_density_census",
+        "digit_density_lists",
+        "digit_density_narrative",
+        "digit_density_geography",
+        "top3_length_share",
+        "length_decay_slope",
+        "chars_census",
+        "chars_lists",
+        "chars_highways",
+        "chars_narrative",
+        "chars_economy",
+        "chars_geography",
+        "chars_government",
+        "chars_other"
+      ],
+      "typed_lexicon": [
+        "content_length",
+        "has_manufacturing",
+        "has_mining",
+        "has_oil_gas",
+        "has_agriculture",
+        "has_tourism",
+        "has_timber",
+        "has_logistics",
+        "has_university",
+        "has_military_base",
+        "has_protected_land",
+        "has_tribal_land",
+        "has_river",
+        "has_interstate",
+        "has_port",
+        "n_industry_mentions",
+        "has_metro_attachment",
+        "has_namesake",
+        "founding_year",
+        "n_distinct_proper_nouns",
+        "sec_has_manufacturing",
+        "sec_has_mining",
+        "sec_has_oil_gas",
+        "sec_has_agriculture",
+        "sec_has_tourism",
+        "sec_has_timber",
+        "sec_has_logistics",
+        "sec_n_industry_mentions",
+        "has_economy_section"
+      ]
+    },
+    "widths": {
+      "length_only": 1,
+      "sections_only": 1,
+      "counts_and_lengths": 14,
+      "which_sections": 42,
+      "section_mix": 8,
+      "structure": 64,
+      "shape_profile": 73,
+      "everything_dumb": 137,
+      "typed_lexicon": 29
+    },
+    "scores": {
+      "wage_per_return_thousands": {
+        "headcount": {
+          "length_only": {
+            "n_columns": 1,
+            "reduced_r2": 0.30845398796871537,
+            "full_r2": 0.3264941124340268,
+            "contribution": 0.018040124465311447,
+            "noise_floor": -0.0005491771656263392,
+            "net_of_noise_floor": 0.018589301630937787,
+            "ci_low": 0.0029825103272907915,
+            "ci_high": 0.032973976089414284,
+            "clears_zero": true
+          },
+          "sections_only": {
+            "n_columns": 1,
+            "reduced_r2": 0.30845398796871537,
+            "full_r2": 0.30187493714894975,
+            "contribution": -0.0065790508197656195,
+            "noise_floor": -0.0005491771656263392,
+            "net_of_noise_floor": -0.00602987365413928,
+            "ci_low": -0.010053518224676988,
+            "ci_high": -0.0033082063488498433,
+            "clears_zero": false
+          },
+          "counts_and_lengths": {
+            "n_columns": 14,
+            "reduced_r2": 0.30845398796871537,
+            "full_r2": 0.3214022718400108,
+            "contribution": 0.01294828387129543,
+            "noise_floor": -0.002090760824653204,
+            "net_of_noise_floor": 0.015039044695948633,
+            "ci_low": -0.002864975186452623,
+            "ci_high": 0.028376629837584832,
+            "clears_zero": false
+          },
+          "which_sections": {
+            "n_columns": 42,
+            "reduced_r2": 0.30845398796871537,
+            "full_r2": 0.24827004732928404,
+            "contribution": -0.06018394063943133,
+            "noise_floor": -0.009252543740135214,
+            "net_of_noise_floor": -0.05093139689929612,
+            "ci_low": -0.08675685857950029,
+            "ci_high": -0.036295885865624426,
+            "clears_zero": false
+          },
+          "section_mix": {
+            "n_columns": 8,
+            "reduced_r2": 0.30845398796871537,
+            "full_r2": 0.2960224801505934,
+            "contribution": -0.012431507818121967,
+            "noise_floor": -0.0022209497786524666,
+            "net_of_noise_floor": -0.0102105580394695,
+            "ci_low": -0.020727728631710574,
+            "ci_high": -0.004644732195443396,
+            "clears_zero": false
+          },
+          "structure": {
+            "n_columns": 64,
+            "reduced_r2": 0.30845398796871537,
+            "full_r2": 0.2501343969849428,
+            "contribution": -0.058319590983772596,
+            "noise_floor": -0.015336252327781944,
+            "net_of_noise_floor": -0.042983338655990654,
+            "ci_low": -0.08796711218332033,
+            "ci_high": -0.0312436395263314,
+            "clears_zero": false
+          },
+          "shape_profile": {
+            "n_columns": 73,
+            "reduced_r2": 0.30845398796871537,
+            "full_r2": 0.20041715797389825,
+            "contribution": -0.10803682999481712,
+            "noise_floor": -0.019022000042602055,
+            "net_of_noise_floor": -0.08901482995221506,
+            "ci_low": -0.1422719567570976,
+            "ci_high": -0.07691933156027955,
+            "clears_zero": false
+          },
+          "everything_dumb": {
+            "n_columns": 137,
+            "reduced_r2": 0.30845398796871537,
+            "full_r2": 0.22775043567476327,
+            "contribution": -0.0807035522939521,
+            "noise_floor": -0.03645764361109453,
+            "net_of_noise_floor": -0.04424590868285757,
+            "ci_low": -0.11507903201364252,
+            "ci_high": -0.051191734541666735,
+            "clears_zero": false
+          },
+          "typed_lexicon": {
+            "n_columns": 29,
+            "reduced_r2": 0.30845398796871537,
+            "full_r2": 0.3338956275067002,
+            "contribution": 0.02544163953798484,
+            "noise_floor": -0.007183329975651816,
+            "net_of_noise_floor": 0.03262496951363666,
+            "ci_low": 0.004306255719860479,
+            "ci_high": 0.04576946004454327,
+            "clears_zero": true
+          }
+        },
+        "geo": {
+          "length_only": {
+            "n_columns": 1,
+            "reduced_r2": 0.31609388339483246,
+            "full_r2": 0.3345850411964305,
+            "contribution": 0.018491157801598046,
+            "noise_floor": -0.0005126378176982435,
+            "net_of_noise_floor": 0.01900379561929629,
+            "ci_low": 0.004126604796482469,
+            "ci_high": 0.03276195425991963,
+            "clears_zero": true
+          },
+          "sections_only": {
+            "n_columns": 1,
+            "reduced_r2": 0.31609388339483246,
+            "full_r2": 0.31021889705747374,
+            "contribution": -0.005874986337358723,
+            "noise_floor": -0.0005126378176982435,
+            "net_of_noise_floor": -0.00536234851966048,
+            "ci_low": -0.009708888540889877,
+            "ci_high": -0.0023228629714680733,
+            "clears_zero": false
+          },
+          "counts_and_lengths": {
+            "n_columns": 14,
+            "reduced_r2": 0.31609388339483246,
+            "full_r2": 0.3270074265637447,
+            "contribution": 0.010913543168912243,
+            "noise_floor": -0.0027903506225721944,
+            "net_of_noise_floor": 0.013703893791484437,
+            "ci_low": -0.004265522593135212,
+            "ci_high": 0.02589901514397905,
+            "clears_zero": false
+          },
+          "which_sections": {
+            "n_columns": 42,
+            "reduced_r2": 0.31609388339483246,
+            "full_r2": 0.27162502480903683,
+            "contribution": -0.044468858585795634,
+            "noise_floor": -0.006807552259406102,
+            "net_of_noise_floor": -0.03766130632638953,
+            "ci_low": -0.06981728200722223,
+            "ci_high": -0.02179569683633849,
+            "clears_zero": false
+          },
+          "section_mix": {
+            "n_columns": 8,
+            "reduced_r2": 0.31609388339483246,
+            "full_r2": 0.30550309129554154,
+            "contribution": -0.010590792099290924,
+            "noise_floor": -0.0021254497508991963,
+            "net_of_noise_floor": -0.008465342348391728,
+            "ci_low": -0.019485707124257404,
+            "ci_high": -0.002173530214739881,
+            "clears_zero": false
+          },
+          "structure": {
+            "n_columns": 64,
+            "reduced_r2": 0.31609388339483246,
+            "full_r2": 0.2714242839772061,
+            "contribution": -0.04466959941762638,
+            "noise_floor": -0.01386695978605712,
+            "net_of_noise_floor": -0.030802639631569262,
+            "ci_low": -0.07130715400803504,
+            "ci_high": -0.020185903169758504,
+            "clears_zero": false
+          },
+          "shape_profile": {
+            "n_columns": 73,
+            "reduced_r2": 0.31609388339483246,
+            "full_r2": 0.22997567877831382,
+            "contribution": -0.08611820461651865,
+            "noise_floor": -0.018387419802511462,
+            "net_of_noise_floor": -0.06773078481400718,
+            "ci_low": -0.11695957284360131,
+            "ci_high": -0.05704901083970542,
+            "clears_zero": false
+          },
+          "everything_dumb": {
+            "n_columns": 137,
+            "reduced_r2": 0.31609388339483246,
+            "full_r2": 0.2514177820709157,
+            "contribution": -0.06467610132391677,
+            "noise_floor": -0.03591573334526236,
+            "net_of_noise_floor": -0.02876036797865441,
+            "ci_low": -0.09545403585390184,
+            "ci_high": -0.03715909422325019,
+            "clears_zero": false
+          },
+          "typed_lexicon": {
+            "n_columns": 29,
+            "reduced_r2": 0.31609388339483246,
+            "full_r2": 0.344279233008039,
+            "contribution": 0.028185349613206512,
+            "noise_floor": -0.009357169848727698,
+            "net_of_noise_floor": 0.03754251946193421,
+            "ci_low": 0.008257329452666953,
+            "ci_high": 0.04757752751372566,
+            "clears_zero": true
+          }
+        }
+      },
+      "wage_growth_log": {
+        "headcount": {
+          "length_only": {
+            "n_columns": 1,
+            "reduced_r2": 0.008216881072807047,
+            "full_r2": 0.007120039610075457,
+            "contribution": -0.0010968414627315903,
+            "noise_floor": -0.0010153638274189951,
+            "net_of_noise_floor": -8.147763531259522e-05,
+            "ci_low": -0.0022291615373591115,
+            "ci_high": 5.778963970022579e-05,
+            "clears_zero": false
+          },
+          "sections_only": {
+            "n_columns": 1,
+            "reduced_r2": 0.008216881072807047,
+            "full_r2": 0.0054195099833372895,
+            "contribution": -0.002797371089469758,
+            "noise_floor": -0.0010153638274189951,
+            "net_of_noise_floor": -0.0017820072620507628,
+            "ci_low": -0.005784043047870671,
+            "ci_high": 0.00010087163629782102,
+            "clears_zero": false
+          },
+          "counts_and_lengths": {
+            "n_columns": 14,
+            "reduced_r2": 0.008216881072807047,
+            "full_r2": 0.004445328423434813,
+            "contribution": -0.003771552649372234,
+            "noise_floor": -0.008139825926187486,
+            "net_of_noise_floor": 0.004368273276815252,
+            "ci_low": -0.010462457691482904,
+            "ci_high": 0.0025737917146590465,
+            "clears_zero": false
+          },
+          "which_sections": {
+            "n_columns": 42,
+            "reduced_r2": 0.008216881072807047,
+            "full_r2": -0.05842444808136271,
+            "contribution": -0.06664132915416976,
+            "noise_floor": -0.013623360416752347,
+            "net_of_noise_floor": -0.05301796873741741,
+            "ci_low": -0.08848630333182331,
+            "ci_high": -0.04617568063493388,
+            "clears_zero": false
+          },
+          "section_mix": {
+            "n_columns": 8,
+            "reduced_r2": 0.008216881072807047,
+            "full_r2": -0.0028864285445706628,
+            "contribution": -0.01110330961737771,
+            "noise_floor": -0.0049483150273663306,
+            "net_of_noise_floor": -0.00615499459001138,
+            "ci_low": -0.018104047171185432,
+            "ci_high": -0.003926146792275618,
+            "clears_zero": false
+          },
+          "structure": {
+            "n_columns": 64,
+            "reduced_r2": 0.008216881072807047,
+            "full_r2": -0.059148036504705015,
+            "contribution": -0.06736491757751206,
+            "noise_floor": -0.01134880446085836,
+            "net_of_noise_floor": -0.0560161131166537,
+            "ci_low": -0.089078134876913,
+            "ci_high": -0.046294507863080966,
+            "clears_zero": false
+          },
+          "shape_profile": {
+            "n_columns": 73,
+            "reduced_r2": 0.008216881072807047,
+            "full_r2": -0.05938347946276812,
+            "contribution": -0.06760036053557517,
+            "noise_floor": -0.024588088901789724,
+            "net_of_noise_floor": -0.043012271633785445,
+            "ci_low": -0.08887355712779842,
+            "ci_high": -0.047459057061062584,
+            "clears_zero": false
+          },
+          "everything_dumb": {
+            "n_columns": 137,
+            "reduced_r2": 0.008216881072807047,
+            "full_r2": -0.06718099141215617,
+            "contribution": -0.07539787248496321,
+            "noise_floor": -0.02908987442134862,
+            "net_of_noise_floor": -0.04630799806361459,
+            "ci_low": -0.10061714673958559,
+            "ci_high": -0.051863581640187784,
+            "clears_zero": false
+          },
+          "typed_lexicon": {
+            "n_columns": 29,
+            "reduced_r2": 0.008216881072807047,
+            "full_r2": 0.013457136902837785,
+            "contribution": 0.005240255830030738,
+            "noise_floor": -0.016654026789154657,
+            "net_of_noise_floor": 0.021894282619185395,
+            "ci_low": -0.009791052083311692,
+            "ci_high": 0.019260691096503746,
+            "clears_zero": false
+          }
+        },
+        "geo": {
+          "length_only": {
+            "n_columns": 1,
+            "reduced_r2": 0.004183309112301026,
+            "full_r2": 0.0033325449057621803,
+            "contribution": -0.0008507642065388454,
+            "noise_floor": -0.0006577515382726699,
+            "net_of_noise_floor": -0.00019301266826617558,
+            "ci_low": -0.0018653712803621797,
+            "ci_high": 9.521008639436064e-05,
+            "clears_zero": false
+          },
+          "sections_only": {
+            "n_columns": 1,
+            "reduced_r2": 0.004183309112301026,
+            "full_r2": 0.0036180333878557125,
+            "contribution": -0.0005652757244453133,
+            "noise_floor": -0.0006577515382726699,
+            "net_of_noise_floor": 9.247581382735659e-05,
+            "ci_low": -0.003721071402644066,
+            "ci_high": 0.0024582946537918026,
+            "clears_zero": false
+          },
+          "counts_and_lengths": {
+            "n_columns": 14,
+            "reduced_r2": 0.004183309112301026,
+            "full_r2": 0.0018972487901947055,
+            "contribution": -0.0022860603221063203,
+            "noise_floor": -0.007078122037961987,
+            "net_of_noise_floor": 0.004792061715855667,
+            "ci_low": -0.009132867167459952,
+            "ci_high": 0.0043839170670674655,
+            "clears_zero": false
+          },
+          "which_sections": {
+            "n_columns": 42,
+            "reduced_r2": 0.004183309112301026,
+            "full_r2": -0.0691169460905876,
+            "contribution": -0.07330025520288863,
+            "noise_floor": -0.01720100587025597,
+            "net_of_noise_floor": -0.05609924933263266,
+            "ci_low": -0.09513158896589638,
+            "ci_high": -0.05252790025231146,
+            "clears_zero": false
+          },
+          "section_mix": {
+            "n_columns": 8,
+            "reduced_r2": 0.004183309112301026,
+            "full_r2": -0.007840019502808993,
+            "contribution": -0.012023328615110018,
+            "noise_floor": -0.0037364330231807186,
+            "net_of_noise_floor": -0.0082868955919293,
+            "ci_low": -0.018580821129036425,
+            "ci_high": -0.005550361161652279,
+            "clears_zero": false
+          },
+          "structure": {
+            "n_columns": 64,
+            "reduced_r2": 0.004183309112301026,
+            "full_r2": -0.07233209764297954,
+            "contribution": -0.07651540675528057,
+            "noise_floor": -0.010270416705852973,
+            "net_of_noise_floor": -0.06624499004942759,
+            "ci_low": -0.09865785429861636,
+            "ci_high": -0.05520747696443655,
+            "clears_zero": false
+          },
+          "shape_profile": {
+            "n_columns": 73,
+            "reduced_r2": 0.004183309112301026,
+            "full_r2": -0.07107049726065529,
+            "contribution": -0.07525380637295631,
+            "noise_floor": -0.023719233834984938,
+            "net_of_noise_floor": -0.051534572537971376,
+            "ci_low": -0.09745706442731433,
+            "ci_high": -0.05430249500055218,
+            "clears_zero": false
+          },
+          "everything_dumb": {
+            "n_columns": 137,
+            "reduced_r2": 0.004183309112301026,
+            "full_r2": -0.07667171673286788,
+            "contribution": -0.0808550258451689,
+            "noise_floor": -0.027558578743250368,
+            "net_of_noise_floor": -0.05329644710191854,
+            "ci_low": -0.10577067949539172,
+            "ci_high": -0.0577324512160311,
+            "clears_zero": false
+          },
+          "typed_lexicon": {
+            "n_columns": 29,
+            "reduced_r2": 0.004183309112301026,
+            "full_r2": 0.008110078681093924,
+            "contribution": 0.003926769568792898,
+            "noise_floor": -0.01566673695778864,
+            "net_of_noise_floor": 0.01959350652658154,
+            "ci_low": -0.010663902851384851,
+            "ci_high": 0.017804873260998617,
+            "clears_zero": false
+          }
+        }
+      }
+    },
+    "size_recoverability": {
+      "length_only": 0.11910408095562719,
+      "sections_only": 0.28663164241450945,
+      "counts_and_lengths": 0.2794010628673901,
+      "which_sections": 0.3723414202162494,
+      "section_mix": 0.2542123621268044,
+      "structure": 0.4159959684391108,
+      "shape_profile": 0.5536108917879274,
+      "everything_dumb": 0.5487485285568718,
+      "typed_lexicon": 0.3922136964602613
+    },
+    "cv_transfer": {
+      "wage_per_return_thousands": {
+        "length_only": {
+          "grouped_by_state": 0.018040124465311447,
+          "random_folds": 0.013750327167279752,
+          "transfer_gap": 0.0042897972980316945
+        },
+        "sections_only": {
+          "grouped_by_state": -0.0065790508197656195,
+          "random_folds": -0.0008083889132329825,
+          "transfer_gap": -0.005770661906532637
+        },
+        "counts_and_lengths": {
+          "grouped_by_state": 0.01294828387129543,
+          "random_folds": 0.0046163110785233386,
+          "transfer_gap": 0.008331972792772091
+        },
+        "which_sections": {
+          "grouped_by_state": -0.06018394063943133,
+          "random_folds": 0.035864258616881806,
+          "transfer_gap": -0.09604819925631314
+        },
+        "section_mix": {
+          "grouped_by_state": -0.012431507818121967,
+          "random_folds": 0.003078817755469032,
+          "transfer_gap": -0.015510325573591
+        },
+        "structure": {
+          "grouped_by_state": -0.058319590983772596,
+          "random_folds": 0.02877024661993277,
+          "transfer_gap": -0.08708983760370537
+        },
+        "shape_profile": {
+          "grouped_by_state": -0.10803682999481712,
+          "random_folds": 0.017499383156958093,
+          "transfer_gap": -0.1255362131517752
+        },
+        "everything_dumb": {
+          "grouped_by_state": -0.0807035522939521,
+          "random_folds": 0.02470337106015108,
+          "transfer_gap": -0.10540692335410318
+        },
+        "typed_lexicon": {
+          "grouped_by_state": 0.02544163953798484,
+          "random_folds": 0.030770602236623756,
+          "transfer_gap": -0.005328962698638917
+        }
+      },
+      "wage_growth_log": {
+        "length_only": {
+          "grouped_by_state": -0.0010968414627315903,
+          "random_folds": -0.0008919586247987388,
+          "transfer_gap": -0.00020488283793285156
+        },
+        "sections_only": {
+          "grouped_by_state": -0.002797371089469758,
+          "random_folds": 0.0013098323958303792,
+          "transfer_gap": -0.004107203485300137
+        },
+        "counts_and_lengths": {
+          "grouped_by_state": -0.003771552649372234,
+          "random_folds": 0.0033126600314068444,
+          "transfer_gap": -0.007084212680779078
+        },
+        "which_sections": {
+          "grouped_by_state": -0.06664132915416976,
+          "random_folds": 0.03714476687737023,
+          "transfer_gap": -0.10378609603153999
+        },
+        "section_mix": {
+          "grouped_by_state": -0.01110330961737771,
+          "random_folds": 0.004093014410366247,
+          "transfer_gap": -0.015196324027743957
+        },
+        "structure": {
+          "grouped_by_state": -0.06736491757751206,
+          "random_folds": 0.03969395500409245,
+          "transfer_gap": -0.10705887258160451
+        },
+        "shape_profile": {
+          "grouped_by_state": -0.06760036053557517,
+          "random_folds": 0.04241833345357582,
+          "transfer_gap": -0.11001869398915098
+        },
+        "everything_dumb": {
+          "grouped_by_state": -0.07539787248496321,
+          "random_folds": 0.04871583267107715,
+          "transfer_gap": -0.12411370515604037
+        },
+        "typed_lexicon": {
+          "grouped_by_state": 0.005240255830030738,
+          "random_folds": 0.012072714105184734,
+          "transfer_gap": -0.006832458275153996
+        }
+      }
+    },
+    "n_noise_draws": 3
+  },
+  "n_bootstrap": 10000
+}
