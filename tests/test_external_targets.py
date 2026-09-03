@@ -105,7 +105,7 @@ def test_derive_masks_negative_numerator_sentinel(monkeypatch) -> None:
         },
         index=pd.Index(["01001", "01003"], name="fips_code"),
     )
-    monkeypatch.setattr(iet, "_download_table", lambda table: fake)
+    monkeypatch.setattr(iet, "_download_table", lambda table, year=iet.ACS_YEAR: fake)
 
     target = iet.ExternalTarget(
         column="fake_rate",
@@ -145,7 +145,7 @@ def test_derive_masks_negative_denominator_sentinel(monkeypatch) -> None:
         },
         index=pd.Index(["01001", "01003"], name="fips_code"),
     )
-    monkeypatch.setattr(iet, "_download_table", lambda table: fake)
+    monkeypatch.setattr(iet, "_download_table", lambda table, year=iet.ACS_YEAR: fake)
 
     target = iet.ExternalTarget(
         column="fake_rate",
@@ -171,7 +171,7 @@ def test_download_table_is_memoized(monkeypatch) -> None:
     """A second request for the same table must not hit the network."""
     calls: list[str] = []
 
-    def fake_fetch(table: str) -> pd.DataFrame:
+    def fake_fetch(table: str, year: int = iet.ACS_YEAR) -> pd.DataFrame:
         calls.append(table)
         return pd.DataFrame(
             {"B00000_E001": [1.0], "B00000_M001": [0.1]},
@@ -186,3 +186,49 @@ def test_download_table_is_memoized(monkeypatch) -> None:
 
     assert calls == ["b00000"], "second call should be served from cache"
     pd.testing.assert_frame_equal(first, second)
+
+
+def test_supported_vintages_span_enough_years_for_a_temporal_gap() -> None:
+    """`analyze_temporal_transfer.py` needs two vintages, as far apart as possible."""
+    assert len(iet.SUPPORTED_ACS_YEARS) >= 2
+    assert max(iet.SUPPORTED_ACS_YEARS) - min(iet.SUPPORTED_ACS_YEARS) >= 3
+    assert iet.ACS_YEAR in iet.SUPPORTED_ACS_YEARS
+
+
+def test_pre_table_based_vintage_is_refused() -> None:
+    """ACS 2019 publishes only sequence-based files; a silent 404 parse is worse."""
+    with pytest.raises(ValueError, match="no table-based summary file"):
+        iet._fetch_table_uncached("b19013", year=2019)
+
+
+def test_vintage_cache_paths_do_not_collide() -> None:
+    """Two vintages in one repo must not overwrite each other's parquet."""
+    default = iet.vintage_cache_path(iet.ACS_YEAR)
+    other = iet.vintage_cache_path(min(iet.SUPPORTED_ACS_YEARS))
+
+    assert default == iet.EXTERNAL_TARGETS_PATH, "default vintage keeps its filename"
+    assert other != default
+    assert str(min(iet.SUPPORTED_ACS_YEARS)) in other.name
+
+
+def test_download_table_keys_its_cache_on_the_vintage(monkeypatch) -> None:
+    """Scoring two vintages in one process must not serve the second from the first."""
+    calls: list[tuple[str, int]] = []
+
+    def fake_fetch(table: str, year: int = iet.ACS_YEAR) -> pd.DataFrame:
+        calls.append((table, year))
+        return pd.DataFrame(
+            {"B00000_E001": [float(year)], "B00000_M001": [0.1]},
+            index=pd.Index(["01001"], name="fips_code"),
+        )
+
+    monkeypatch.setattr(iet, "_fetch_table_uncached", fake_fetch)
+    iet._download_table.cache_clear()
+
+    first = iet._download_table("b00000", 2021)
+    second = iet._download_table("b00000", 2024)
+    repeat = iet._download_table("b00000", 2021)
+
+    assert calls == [("b00000", 2021), ("b00000", 2024)]
+    assert first.iloc[0, 0] != second.iloc[0, 0], "vintages must not share a cache entry"
+    pd.testing.assert_frame_equal(first, repeat)

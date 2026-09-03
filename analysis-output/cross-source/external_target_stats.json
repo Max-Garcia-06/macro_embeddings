@@ -3,194 +3,2449 @@
     "size_emacro_drop_A": {
       "withheld_pillars": "A",
       "reference_model": "size_emacro",
-      "n_targets": 5,
-      "mean_contribution": 0.001915175435128469,
-      "mean_contribution_ablated": -4.573467939910092e-05,
-      "n_positive_ablated": 2,
+      "n_targets": 41,
+      "mean_contribution": 0.0031755200112419907,
+      "mean_contribution_ablated": 0.003139327881299503,
+      "n_positive_ablated": 23,
       "by_target": {
-        "broadband_rate": -0.0025629520333230182,
-        "median_household_income": -0.003156548411528015,
-        "median_age": 0.006960352765634226,
-        "median_home_value": -0.0025107274757792952,
-        "mean_commute_minutes": 0.0010412017580005983
+        "broadband_rate": -0.002562952033323,
+        "median_household_income": -0.003156548411528,
+        "median_age": 0.0069603527656342,
+        "median_home_value": -0.0025107274757792,
+        "mean_commute_minutes": 0.0010412017580005,
+        "per_capita_income": 0.0021316153265065,
+        "median_family_income": 0.0013304481329958,
+        "median_gross_rent": 0.0001881602736869,
+        "median_contract_rent": 0.0013007017863488,
+        "median_monthly_housing_cost": -0.0011391248813562,
+        "median_year_built": 0.005962631199361,
+        "mean_household_size": 0.0042715237097978,
+        "owner_occupied_share": -0.0043295609488843,
+        "poverty_rate": -0.0030280869602766,
+        "family_household_share": 0.0129634524101582,
+        "single_unit_share": 0.0245151097434128,
+        "bachelors_share": 0.0007715203969134,
+        "masters_share": -0.0006365223344816,
+        "labor_force_participation": -0.0014656592640069,
+        "housing_vacancy_rate": -0.0073688656446321,
+        "electric_heating_share": -0.0071145962359928,
+        "gas_heating_share": -0.0061093533780552,
+        "bottled_gas_heating_share": 0.0077704912558391,
+        "fuel_oil_heating_share": -0.0138667399246636,
+        "drove_alone_share": 0.0272124606528902,
+        "carpooled_share": -0.0021986003315067,
+        "public_transit_share": 0.0639375909786353,
+        "walked_share": 0.0162977995709806,
+        "work_from_home_share": -0.007765707771618,
+        "foreign_born_share": 0.0107106452045523,
+        "naturalized_share_of_foreign_born": 0.0002909994588745,
+        "same_house_share": 0.0082774999979526,
+        "moved_within_county_share": 0.0051690346301571,
+        "moved_different_state_share": -0.0108895503870142,
+        "children_married_couple_share": 0.0010184365309909,
+        "children_female_householder_share": 0.0024356552116843,
+        "children_male_householder_share": -0.0038124878809424,
+        "household_earnings_share": 0.0090349176248462,
+        "household_ss_income_share": -0.0020986571796223,
+        "mortgaged_share": -0.0053080813690248,
+        "computer_ownership_share": 0.0004820169257685
       }
     },
     "size_emacro_drop_B": {
       "withheld_pillars": "B",
       "reference_model": "size_emacro",
-      "n_targets": 5,
-      "mean_contribution": 0.004311704990239695,
-      "mean_contribution_ablated": 0.006671778906858572,
-      "n_positive_ablated": 3,
+      "n_targets": 41,
+      "mean_contribution": 0.01143004770528567,
+      "mean_contribution_ablated": 0.010911721676846592,
+      "n_positive_ablated": 25,
       "by_target": {
-        "broadband_rate": 0.0034501178380634823,
-        "median_household_income": 0.02305568501480615,
-        "median_age": -0.004638121499641268,
-        "median_home_value": -0.0016178980019433409,
-        "mean_commute_minutes": 0.013109111183007838
+        "broadband_rate": 0.0034501178380634,
+        "median_household_income": 0.0230556850148061,
+        "median_age": -0.0046381214996412,
+        "median_home_value": -0.0016178980019433,
+        "mean_commute_minutes": 0.0131091111830078,
+        "per_capita_income": 0.0023935355048525,
+        "median_family_income": -0.0064846219170959,
+        "median_gross_rent": 0.0054984997783629,
+        "median_contract_rent": 0.0039438488120084,
+        "median_monthly_housing_cost": 0.0007339374178155,
+        "median_year_built": 0.0148301128709558,
+        "mean_household_size": -0.0108942911675359,
+        "owner_occupied_share": 0.014415961661229,
+        "poverty_rate": -0.0078171751482348,
+        "family_household_share": -0.0056989844007514,
+        "single_unit_share": 0.0204770305529288,
+        "bachelors_share": 0.0179059578100266,
+        "masters_share": 0.0335485560808107,
+        "labor_force_participation": -0.0130100976288047,
+        "housing_vacancy_rate": 0.0022431902574534,
+        "electric_heating_share": 0.0182887236280265,
+        "gas_heating_share": -0.0104659334005383,
+        "bottled_gas_heating_share": -0.005348492368748,
+        "fuel_oil_heating_share": 0.0018534704160417,
+        "drove_alone_share": 0.0604027930543401,
+        "carpooled_share": 0.0010572987569537,
+        "public_transit_share": 0.0191920596391592,
+        "walked_share": 0.1646509552562197,
+        "work_from_home_share": 0.0135781315645168,
+        "foreign_born_share": 0.0008319722451541,
+        "naturalized_share_of_foreign_born": -0.0046453876728924,
+        "same_house_share": 0.0380602755474194,
+        "moved_within_county_share": 0.0223035112033003,
+        "moved_different_state_share": 0.0814586613322979,
+        "children_married_couple_share": -0.017901658678093,
+        "children_female_householder_share": -0.0211782078222008,
+        "children_male_householder_share": -0.0104040969492894,
+        "household_earnings_share": -0.0127606530293412,
+        "household_ss_income_share": -0.0047040972898609,
+        "mortgaged_share": 0.0089412103391134,
+        "computer_ownership_share": -0.0012743020391822
       }
     },
     "size_emacro_drop_BE": {
       "withheld_pillars": "B;E",
       "reference_model": "size_emacro",
-      "n_targets": 5,
-      "mean_contribution": 0.08535838900894226,
-      "mean_contribution_ablated": 0.06324439966360977,
-      "n_positive_ablated": 5,
+      "n_targets": 41,
+      "mean_contribution": 0.07015540731240917,
+      "mean_contribution_ablated": 0.06305226738065757,
+      "n_positive_ablated": 40,
       "by_target": {
-        "broadband_rate": 0.027315166207315777,
-        "median_household_income": 0.10630725868699242,
-        "median_age": 0.024201723179125723,
-        "median_home_value": 0.11139935982332094,
-        "mean_commute_minutes": 0.046998490421294004
+        "broadband_rate": 0.0273151662073157,
+        "median_household_income": 0.1063072586869924,
+        "median_age": 0.0242017231791257,
+        "median_home_value": 0.1113993598233209,
+        "mean_commute_minutes": 0.046998490421294,
+        "per_capita_income": 0.1030222141561495,
+        "median_family_income": 0.070152606272096,
+        "median_gross_rent": 0.0999903537960552,
+        "median_contract_rent": 0.0799203268386019,
+        "median_monthly_housing_cost": 0.1211768516546808,
+        "median_year_built": 0.0422739574612559,
+        "mean_household_size": 0.0919868102778052,
+        "owner_occupied_share": 0.0284128934846084,
+        "poverty_rate": 0.038950144952972,
+        "family_household_share": 0.0664703903725612,
+        "single_unit_share": 0.0329870637009408,
+        "bachelors_share": 0.1571062069630697,
+        "masters_share": 0.1574342876835925,
+        "labor_force_participation": 0.0009122281720942,
+        "housing_vacancy_rate": 0.0142191767315276,
+        "electric_heating_share": 0.0951249784040846,
+        "gas_heating_share": -0.0041614712998758,
+        "bottled_gas_heating_share": 0.0473906082653814,
+        "fuel_oil_heating_share": 0.0068358166387454,
+        "drove_alone_share": 0.1077833128970642,
+        "carpooled_share": 0.0729800754491571,
+        "public_transit_share": 0.0596630888051371,
+        "walked_share": 0.1420343800498466,
+        "work_from_home_share": 0.1897767102264639,
+        "foreign_born_share": 0.0431480936437362,
+        "naturalized_share_of_foreign_born": 0.0092246560348353,
+        "same_house_share": 0.0270894425081812,
+        "moved_within_county_share": 0.0458257605603111,
+        "moved_different_state_share": 0.0687319382326705,
+        "children_married_couple_share": 0.0575529877112476,
+        "children_female_householder_share": 0.0384900650126215,
+        "children_male_householder_share": 0.0213545861469364,
+        "household_earnings_share": 0.0316143849981815,
+        "household_ss_income_share": 0.0363302961925168,
+        "mortgaged_share": 0.0446405075115746,
+        "computer_ownership_share": 0.0224752337820836
       }
     },
     "size_emacro_drop_C": {
       "withheld_pillars": "C",
       "reference_model": "size_emacro",
-      "n_targets": 5,
-      "mean_contribution": 0.005051392427792489,
-      "mean_contribution_ablated": 0.005352013813654688,
-      "n_positive_ablated": 5,
+      "n_targets": 41,
+      "mean_contribution": 0.0030538887929716266,
+      "mean_contribution_ablated": 0.003257838927132298,
+      "n_positive_ablated": 30,
       "by_target": {
-        "broadband_rate": 0.003884846423541699,
-        "median_household_income": 0.0034840094904013963,
-        "median_age": 0.012041481193707182,
+        "broadband_rate": 0.0038848464235416,
+        "median_household_income": 0.0034840094904013,
+        "median_age": 0.0120414811937071,
         "median_home_value": 0.0070792238266707,
-        "mean_commute_minutes": 0.00027050813395246287
+        "mean_commute_minutes": 0.0002705081339524,
+        "per_capita_income": 0.01032156221905,
+        "median_family_income": 0.0044599771500792,
+        "median_gross_rent": 0.0049480698281588,
+        "median_contract_rent": 0.0035110083462466,
+        "median_monthly_housing_cost": 0.003376688316488,
+        "median_year_built": 0.0015480788619733,
+        "mean_household_size": 0.0020465179812844,
+        "owner_occupied_share": 0.0031635640969853,
+        "poverty_rate": 0.0019860368258156,
+        "family_household_share": 0.002824796873333,
+        "single_unit_share": -0.0006493428153331,
+        "bachelors_share": 0.0054310497963235,
+        "masters_share": -0.0034062613815183,
+        "labor_force_participation": 0.0259610052590341,
+        "housing_vacancy_rate": 0.0103237358746834,
+        "electric_heating_share": 0.0028911142400173,
+        "gas_heating_share": -0.018373534881092,
+        "bottled_gas_heating_share": -0.0003179594904038,
+        "fuel_oil_heating_share": -0.007800975149798,
+        "drove_alone_share": 0.0137911163186159,
+        "carpooled_share": -0.0044291610359673,
+        "public_transit_share": -0.0091518165979692,
+        "walked_share": 0.0056073360357424,
+        "work_from_home_share": -0.0028886146035318,
+        "foreign_born_share": 0.0041967724284376,
+        "naturalized_share_of_foreign_born": 0.0105288031104624,
+        "same_house_share": 0.0032496399556072,
+        "moved_within_county_share": -0.0058973071438569,
+        "moved_different_state_share": -0.0020478780348455,
+        "children_married_couple_share": 0.0037839394630011,
+        "children_female_householder_share": 0.0013832015164766,
+        "children_male_householder_share": -0.0001782783580299,
+        "household_earnings_share": 0.0155589268691126,
+        "household_ss_income_share": 0.0098340088738426,
+        "mortgaged_share": 0.0054121177530163,
+        "computer_ownership_share": 0.0058133884427097
       }
     },
     "size_emacro_drop_D": {
       "withheld_pillars": "D",
       "reference_model": "size_emacro",
-      "n_targets": 5,
-      "mean_contribution": 0.019570763408199056,
-      "mean_contribution_ablated": 0.019084518442214572,
-      "n_positive_ablated": 5,
+      "n_targets": 41,
+      "mean_contribution": 0.014646154615040822,
+      "mean_contribution_ablated": 0.01390961203923799,
+      "n_positive_ablated": 33,
       "by_target": {
-        "broadband_rate": 0.014072529956680735,
-        "median_household_income": 0.01665517635360736,
-        "median_age": 0.024417881389467655,
-        "median_home_value": 0.027850599092755335,
-        "mean_commute_minutes": 0.01242640541856177
+        "broadband_rate": 0.0140725299566807,
+        "median_household_income": 0.0166551763536073,
+        "median_age": 0.0244178813894676,
+        "median_home_value": 0.0278505990927553,
+        "mean_commute_minutes": 0.0124264054185617,
+        "per_capita_income": 0.0109238656140143,
+        "median_family_income": 0.0071042562141181,
+        "median_gross_rent": 0.011812019415364,
+        "median_contract_rent": 0.0128004928523031,
+        "median_monthly_housing_cost": 0.0089416810070596,
+        "median_year_built": 0.0222882709401478,
+        "mean_household_size": 0.0298013369189767,
+        "owner_occupied_share": -0.0046343050973122,
+        "poverty_rate": -0.0033004072996082,
+        "family_household_share": 0.0251163239518608,
+        "single_unit_share": 0.0050629621702885,
+        "bachelors_share": -0.0018591131971346,
+        "masters_share": 0.0109485506369543,
+        "labor_force_participation": 0.030912465677099,
+        "housing_vacancy_rate": 0.0103791124873546,
+        "electric_heating_share": 0.0603712798636868,
+        "gas_heating_share": 0.0751227074283954,
+        "bottled_gas_heating_share": 0.0039668221340044,
+        "fuel_oil_heating_share": 0.0190099339131166,
+        "drove_alone_share": 0.0100542240795121,
+        "carpooled_share": -0.0008513372371765,
+        "public_transit_share": -0.0066535560467121,
+        "walked_share": 0.0026458205042741,
+        "work_from_home_share": 0.0161731545625218,
+        "foreign_born_share": 0.002588329559285,
+        "naturalized_share_of_foreign_born": 0.0009633640966878,
+        "same_house_share": -0.0048154176319074,
+        "moved_within_county_share": 0.0153752823533074,
+        "moved_different_state_share": -0.0112358458071872,
+        "children_married_couple_share": 0.0171466254487696,
+        "children_female_householder_share": 0.0314082969352292,
+        "children_male_householder_share": 0.0028285663973112,
+        "household_earnings_share": 0.0231781960406055,
+        "household_ss_income_share": 0.0338601140662494,
+        "mortgaged_share": 0.0077885710272057,
+        "computer_ownership_share": -0.0003511425809796
       }
     },
     "size_emacro_drop_E": {
       "withheld_pillars": "E",
       "reference_model": "size_emacro",
-      "n_targets": 5,
-      "mean_contribution": 0.08040214509468857,
-      "mean_contribution_ablated": 0.05821471793287527,
-      "n_positive_ablated": 5,
+      "n_targets": 41,
+      "mean_contribution": 0.04779093297281491,
+      "mean_contribution_ablated": 0.041615689100579584,
+      "n_positive_ablated": 37,
       "by_target": {
-        "broadband_rate": 0.04036425100537511,
-        "median_household_income": 0.08017867303053094,
-        "median_age": 0.03045933099995124,
-        "median_home_value": 0.10553676862000028,
-        "mean_commute_minutes": 0.034534566008518786
+        "broadband_rate": 0.0403642510053751,
+        "median_household_income": 0.0801786730305309,
+        "median_age": 0.0304593309999512,
+        "median_home_value": 0.1055367686200002,
+        "mean_commute_minutes": 0.0345345660085187,
+        "per_capita_income": 0.0813379515269653,
+        "median_family_income": 0.0519419855103349,
+        "median_gross_rent": 0.0618679826896731,
+        "median_contract_rent": 0.0546173347830448,
+        "median_monthly_housing_cost": 0.1034218485147276,
+        "median_year_built": 0.0158100125694992,
+        "mean_household_size": 0.0883637396771375,
+        "owner_occupied_share": -0.003861243735459,
+        "poverty_rate": 0.0588438306459454,
+        "family_household_share": 0.0522239318520532,
+        "single_unit_share": 0.0222223316832813,
+        "bachelors_share": 0.089754298891741,
+        "masters_share": 0.0656392452916279,
+        "labor_force_participation": -0.001447603598129,
+        "housing_vacancy_rate": 0.0118086548420364,
+        "electric_heating_share": 0.0435214726364902,
+        "gas_heating_share": 0.013031374568627,
+        "bottled_gas_heating_share": 0.0301645752177371,
+        "fuel_oil_heating_share": -0.0153821414711585,
+        "drove_alone_share": 0.0326094308100246,
+        "carpooled_share": 0.0360398800994783,
+        "public_transit_share": 0.0145713661846738,
+        "walked_share": 0.0139051642589322,
+        "work_from_home_share": 0.1065833121528676,
+        "foreign_born_share": 0.0393950859371156,
+        "naturalized_share_of_foreign_born": 0.0059753380747876,
+        "same_house_share": -0.0037527678966419,
+        "moved_within_county_share": 0.0171705069670862,
+        "moved_different_state_share": 0.0027244679717673,
+        "children_married_couple_share": 0.0871235450321168,
+        "children_female_householder_share": 0.0725345798726975,
+        "children_male_householder_share": 0.0067002293622504,
+        "household_earnings_share": 0.0464661010013653,
+        "household_ss_income_share": 0.0414596087996546,
+        "mortgaged_share": 0.033132554547984,
+        "computer_ownership_share": 0.0386516781870516
       }
     },
     "size_emacro_drop_F": {
       "withheld_pillars": "F",
       "reference_model": "size_emacro",
-      "n_targets": 5,
-      "mean_contribution": 0.04227971494306639,
-      "mean_contribution_ablated": 0.041305428535710245,
-      "n_positive_ablated": 5,
+      "n_targets": 41,
+      "mean_contribution": 0.04497982649784085,
+      "mean_contribution_ablated": 0.04367101326328873,
+      "n_positive_ablated": 37,
       "by_target": {
-        "broadband_rate": 0.03679207184601263,
-        "median_household_income": 0.014859093081724062,
-        "median_age": 0.10894624834440092,
-        "median_home_value": 0.023167057828809345,
-        "mean_commute_minutes": 0.022762671577604254
+        "broadband_rate": 0.0367920718460126,
+        "median_household_income": 0.014859093081724,
+        "median_age": 0.1089462483444009,
+        "median_home_value": 0.0231670578288093,
+        "mean_commute_minutes": 0.0227626715776042,
+        "per_capita_income": 0.0152782187135896,
+        "median_family_income": 0.0062303804274416,
+        "median_gross_rent": 0.0071731094425769,
+        "median_contract_rent": 0.0151832922726846,
+        "median_monthly_housing_cost": 0.0278409088859525,
+        "median_year_built": 0.1111236356872888,
+        "mean_household_size": 0.0415170966991298,
+        "owner_occupied_share": 0.1111598406779346,
+        "poverty_rate": 0.1291591228787991,
+        "family_household_share": 0.037521008700349,
+        "single_unit_share": 0.088337427641053,
+        "bachelors_share": 0.0188951964191745,
+        "masters_share": 0.0182957129750133,
+        "labor_force_participation": 0.1229661089503102,
+        "housing_vacancy_rate": 0.1088043624970158,
+        "electric_heating_share": 0.0270360270510002,
+        "gas_heating_share": 0.0361782578059357,
+        "bottled_gas_heating_share": -0.0026839730319488,
+        "fuel_oil_heating_share": 0.2020294913745191,
+        "drove_alone_share": 0.0165176298710666,
+        "carpooled_share": 0.0045070935998275,
+        "public_transit_share": -0.0010800687619632,
+        "walked_share": -0.0093664245154623,
+        "work_from_home_share": 0.0220577826283363,
+        "foreign_born_share": 0.0214789156625156,
+        "naturalized_share_of_foreign_born": 0.0095669127559639,
+        "same_house_share": 0.0812438686136224,
+        "moved_within_county_share": 0.0209294200588128,
+        "moved_different_state_share": 0.0291324175829648,
+        "children_married_couple_share": 0.0362141333783473,
+        "children_female_householder_share": 0.0469733887325,
+        "children_male_householder_share": -0.006388245105799,
+        "household_earnings_share": 0.043839470520369,
+        "household_ss_income_share": 0.0638657551779792,
+        "mortgaged_share": 0.0428555041919915,
+        "computer_ownership_share": 0.0395916206573951
       }
     },
     "size_emacro_drop_F_no_ametro": {
       "withheld_pillars": "F",
       "reference_model": "size_emacro_no_ametro",
-      "n_targets": 5,
-      "mean_contribution": 0.0415960648789921,
-      "mean_contribution_ablated": 0.040969213211295985,
-      "n_positive_ablated": 5,
+      "n_targets": 41,
+      "mean_contribution": 0.04579697034310929,
+      "mean_contribution_ablated": 0.0445543850121005,
+      "n_positive_ablated": 39,
       "by_target": {
         "broadband_rate": 0.037820531220354,
-        "median_household_income": 0.01623961046835931,
-        "median_age": 0.11029115117525612,
-        "median_home_value": 0.023462763299729184,
-        "mean_commute_minutes": 0.017032009892781308
+        "median_household_income": 0.0162396104683593,
+        "median_age": 0.1102911511752561,
+        "median_home_value": 0.0234627632997291,
+        "mean_commute_minutes": 0.0170320098927813,
+        "per_capita_income": 0.015090770125623,
+        "median_family_income": 0.0073706723740538,
+        "median_gross_rent": 0.0076828881612438,
+        "median_contract_rent": 0.0150785048182571,
+        "median_monthly_housing_cost": 0.0279115852229971,
+        "median_year_built": 0.1136151228081866,
+        "mean_household_size": 0.0416195736083612,
+        "owner_occupied_share": 0.110710752472965,
+        "poverty_rate": 0.1300467008184067,
+        "family_household_share": 0.038999638553832,
+        "single_unit_share": 0.0819822829440288,
+        "bachelors_share": 0.0191683402671327,
+        "masters_share": 0.018444186536216,
+        "labor_force_participation": 0.1233562295959485,
+        "housing_vacancy_rate": 0.1207474017906794,
+        "electric_heating_share": 0.034589003412084,
+        "gas_heating_share": 0.0277047125855188,
+        "bottled_gas_heating_share": 0.0006463964894758,
+        "fuel_oil_heating_share": 0.2095819806770047,
+        "drove_alone_share": 0.0172646656229923,
+        "carpooled_share": 0.0057338791335875,
+        "public_transit_share": 0.0001970542812838,
+        "walked_share": -0.0083042043703946,
+        "work_from_home_share": 0.0210133948049269,
+        "foreign_born_share": 0.023420670028705,
+        "naturalized_share_of_foreign_born": 0.0098986379479814,
+        "same_house_share": 0.0827420884671035,
+        "moved_within_county_share": 0.020042610488684,
+        "moved_different_state_share": 0.0293785647611055,
+        "children_married_couple_share": 0.0357192522875543,
+        "children_female_householder_share": 0.0468847642341272,
+        "children_male_householder_share": -0.0053798708033622,
+        "household_earnings_share": 0.0462134170361084,
+        "household_ss_income_share": 0.0643193577498256,
+        "mortgaged_share": 0.0457033633478961,
+        "computer_ownership_share": 0.0426893311595012
       }
     },
     "size_emacro_no_ametro": {
-      "withheld_pillars": "",
+      "withheld_pillars": NaN,
       "reference_model": "size_emacro",
-      "n_targets": 5,
-      "mean_contribution": 0.00031216556752140524,
-      "mean_contribution_ablated": 0.0002235924544309764,
-      "n_positive_ablated": 3,
+      "n_targets": 41,
+      "mean_contribution": 0.0007688325181015998,
+      "mean_contribution_ablated": 0.0007504626160440148,
+      "n_positive_ablated": 23,
       "by_target": {
-        "broadband_rate": 0.0001122392701742303,
-        "median_household_income": -0.00014352669519013261,
-        "median_age": 0.00045133416562848083,
-        "median_home_value": -0.0010298971451667693,
-        "mean_commute_minutes": 0.001727812676709073
+        "broadband_rate": 0.0001122392701742,
+        "median_household_income": -0.0001435266951901,
+        "median_age": 0.0004513341656284,
+        "median_home_value": -0.0010298971451667,
+        "mean_commute_minutes": 0.001727812676709,
+        "per_capita_income": -7.414235188785145e-05,
+        "median_family_income": 5.295335323562966e-06,
+        "median_gross_rent": -0.0003611775467403,
+        "median_contract_rent": -0.0003552617041431,
+        "median_monthly_housing_cost": 2.726864429047904e-05,
+        "median_year_built": -0.0016770859812839,
+        "mean_household_size": -0.0009641830767933,
+        "owner_occupied_share": -0.0012709518117425,
+        "poverty_rate": -0.0005639905494712,
+        "family_household_share": 0.0004132823737039,
+        "single_unit_share": 0.0038308177366694,
+        "bachelors_share": -0.0001038492457232,
+        "masters_share": -0.0005189875927154,
+        "labor_force_participation": -3.81862929250687e-05,
+        "housing_vacancy_rate": 0.00225800725411,
+        "electric_heating_share": 0.0036343274132017,
+        "gas_heating_share": 0.0074331818737223,
+        "bottled_gas_heating_share": -0.0008755875895527,
+        "fuel_oil_heating_share": 0.0051035334646254,
+        "drove_alone_share": 0.0050937598997284,
+        "carpooled_share": 0.0005571578918411,
+        "public_transit_share": 0.0024840773119981,
+        "walked_share": 0.0002831285567593,
+        "work_from_home_share": 0.0004711261148711,
+        "foreign_born_share": 0.0007386795552283,
+        "naturalized_share_of_foreign_born": -0.000175910534478,
+        "same_house_share": 0.0018262107987407,
+        "moved_within_county_share": 0.0001356501394756,
+        "moved_different_state_share": -1.6487845891921538e-05,
+        "children_married_couple_share": 0.0001831477490027,
+        "children_female_householder_share": 0.0002807618538658,
+        "children_male_householder_share": -0.0001983222408232,
+        "household_earnings_share": 0.0012411373538647,
+        "household_ss_income_share": -0.000342640019519,
+        "mortgaged_share": -0.000138515811368,
+        "computer_ownership_share": 0.0013257338596859
+      }
+    },
+    "size_geo_emacro_drop_A": {
+      "withheld_pillars": "A",
+      "reference_model": "size_geo_emacro",
+      "n_targets": 41,
+      "mean_contribution": 0.002388582506680618,
+      "mean_contribution_ablated": 0.0020067614973563225,
+      "n_positive_ablated": 20,
+      "by_target": {
+        "broadband_rate": -0.0009368937207036,
+        "median_household_income": -0.0033294107771359,
+        "median_age": 0.004911161892306,
+        "median_home_value": 0.002032013298961,
+        "mean_commute_minutes": -0.0060717019766413,
+        "per_capita_income": 0.0016004247855708,
+        "median_family_income": -0.0003223467206496,
+        "median_gross_rent": 0.0018585405148494,
+        "median_contract_rent": 0.0021169369165768,
+        "median_monthly_housing_cost": -0.0035106307637178,
+        "median_year_built": 0.0025108328679953,
+        "mean_household_size": 0.0027292723576564,
+        "owner_occupied_share": -0.0033300515084,
+        "poverty_rate": -0.0024169354726936,
+        "family_household_share": 0.0120649803008757,
+        "single_unit_share": 0.0158893806556599,
+        "bachelors_share": -0.0012948573130466,
+        "masters_share": -0.0027906021196504,
+        "labor_force_participation": -0.0019324891763788,
+        "housing_vacancy_rate": -0.0066015868190661,
+        "electric_heating_share": -0.0137595122941558,
+        "gas_heating_share": -0.0165132704168595,
+        "bottled_gas_heating_share": 0.0048751129843752,
+        "fuel_oil_heating_share": -0.0077144569438026,
+        "drove_alone_share": 0.0256955897554801,
+        "carpooled_share": -0.003847937500363,
+        "public_transit_share": 0.0630581487769688,
+        "walked_share": 0.0113170476478878,
+        "work_from_home_share": -0.0060959861192322,
+        "foreign_born_share": 0.0120744158145337,
+        "naturalized_share_of_foreign_born": -0.0008874018816543,
+        "same_house_share": 0.007627930789835,
+        "moved_within_county_share": 0.0044316606668816,
+        "moved_different_state_share": -0.010776560295735,
+        "children_married_couple_share": 0.0022953361699895,
+        "children_female_householder_share": 0.0053673252322092,
+        "children_male_householder_share": -0.0043124250925451,
+        "household_earnings_share": 0.0042545603472514,
+        "household_ss_income_share": -0.0031744143469262,
+        "mortgaged_share": -0.0051947129304978,
+        "computer_ownership_share": 0.0003807338056008
+      }
+    },
+    "size_geo_emacro_drop_B": {
+      "withheld_pillars": "B",
+      "reference_model": "size_geo_emacro",
+      "n_targets": 41,
+      "mean_contribution": 0.006860158810949271,
+      "mean_contribution_ablated": 0.0065687241849459585,
+      "n_positive_ablated": 22,
+      "by_target": {
+        "broadband_rate": 0.0092827611544705,
+        "median_household_income": 0.0178607789622387,
+        "median_age": -0.0006603864156712,
+        "median_home_value": -0.0048422391067375,
+        "mean_commute_minutes": 0.0111145209224612,
+        "per_capita_income": 0.0033285976313808,
+        "median_family_income": -0.0127827748868161,
+        "median_gross_rent": 0.0074361481208536,
+        "median_contract_rent": 0.0049920376048347,
+        "median_monthly_housing_cost": -0.0034825038326543,
+        "median_year_built": 0.0115186920790584,
+        "mean_household_size": -0.0115019497390995,
+        "owner_occupied_share": 0.0188507485761791,
+        "poverty_rate": -0.0125874478819867,
+        "family_household_share": -0.0119437383117985,
+        "single_unit_share": 0.006294091923319,
+        "bachelors_share": 0.0177142448814192,
+        "masters_share": 0.0322234815405715,
+        "labor_force_participation": -0.0041072122702922,
+        "housing_vacancy_rate": 0.0051562572929367,
+        "electric_heating_share": 0.0002426697900504,
+        "gas_heating_share": -0.0004427069858493,
+        "bottled_gas_heating_share": -0.005430855496064,
+        "fuel_oil_heating_share": -0.0366932320230586,
+        "drove_alone_share": 0.0407221603249582,
+        "carpooled_share": -0.0005790694440308,
+        "public_transit_share": 0.0177739259009001,
+        "walked_share": 0.1004625841950916,
+        "work_from_home_share": 0.0140072104131629,
+        "foreign_born_share": -0.0013274450457591,
+        "naturalized_share_of_foreign_born": -0.0079526314264881,
+        "same_house_share": 0.0326409793784495,
+        "moved_within_county_share": 0.0125225628040049,
+        "moved_different_state_share": 0.0722593500501517,
+        "children_married_couple_share": -0.0142637377054183,
+        "children_female_householder_share": -0.0187428793182232,
+        "children_male_householder_share": -0.0131010890564448,
+        "household_earnings_share": -0.0134654865045074,
+        "household_ss_income_share": 0.0005018431391853,
+        "mortgaged_share": 0.0099275022955748,
+        "computer_ownership_share": -0.0036080719475689
+      }
+    },
+    "size_geo_emacro_drop_C": {
+      "withheld_pillars": "C",
+      "reference_model": "size_geo_emacro",
+      "n_targets": 41,
+      "mean_contribution": 0.002950035407655207,
+      "mean_contribution_ablated": 0.0027685184151208537,
+      "n_positive_ablated": 25,
+      "by_target": {
+        "broadband_rate": 0.0046538448532712,
+        "median_household_income": 0.0032784495641191,
+        "median_age": 0.0167736618038518,
+        "median_home_value": -0.0077482999771321,
+        "mean_commute_minutes": 0.0088548688114956,
+        "per_capita_income": -0.0012513377965585,
+        "median_family_income": 0.0020486335184296,
+        "median_gross_rent": 0.0025619766517982,
+        "median_contract_rent": 0.0029102505051653,
+        "median_monthly_housing_cost": 0.0025335200448717,
+        "median_year_built": 0.0040168177924243,
+        "mean_household_size": 0.0103574623836467,
+        "owner_occupied_share": 0.0056198254756415,
+        "poverty_rate": 0.0019277558230654,
+        "family_household_share": 0.0019391832885076,
+        "single_unit_share": -0.0167374200297211,
+        "bachelors_share": 0.0053820101223911,
+        "masters_share": -0.0035557360445932,
+        "labor_force_participation": 0.042912687106934,
+        "housing_vacancy_rate": 0.0135040854443517,
+        "electric_heating_share": -0.0004909672870687,
+        "gas_heating_share": -0.0174549632064043,
+        "bottled_gas_heating_share": -0.0049214425325793,
+        "fuel_oil_heating_share": -0.0205799208259742,
+        "drove_alone_share": 0.0015007218812139,
+        "carpooled_share": -0.004615846428092,
+        "public_transit_share": -0.0085446720315879,
+        "walked_share": -0.0067708436800689,
+        "work_from_home_share": -0.0045913808396189,
+        "foreign_born_share": 0.0143269835059836,
+        "naturalized_share_of_foreign_born": 0.0097319965285049,
+        "same_house_share": 0.0027635406381206,
+        "moved_within_county_share": -0.0073074426232303,
+        "moved_different_state_share": 0.0030361886280092,
+        "children_married_couple_share": -0.00061386521843,
+        "children_female_householder_share": -0.0008131683723724,
+        "children_male_householder_share": -0.0019866076088042,
+        "household_earnings_share": 0.0228239372313965,
+        "household_ss_income_share": 0.0209348103608622,
+        "mortgaged_share": 0.0114545050146857,
+        "computer_ownership_share": 0.0056454525434496
+      }
+    },
+    "size_geo_emacro_drop_D": {
+      "withheld_pillars": "D",
+      "reference_model": "size_geo_emacro",
+      "n_targets": 41,
+      "mean_contribution": 0.011609605988924857,
+      "mean_contribution_ablated": 0.011319381909939188,
+      "n_positive_ablated": 30,
+      "by_target": {
+        "broadband_rate": 0.0127877616111369,
+        "median_household_income": 0.0147501064640442,
+        "median_age": 0.0076312087897145,
+        "median_home_value": 0.0070517028250736,
+        "mean_commute_minutes": 0.0064400394517035,
+        "per_capita_income": 0.0130443639847882,
+        "median_family_income": 0.0071459059392826,
+        "median_gross_rent": 0.0068045008255898,
+        "median_contract_rent": 0.0040357929651367,
+        "median_monthly_housing_cost": 0.0094732530182362,
+        "median_year_built": 0.019625900180261,
+        "mean_household_size": 0.0204218877226387,
+        "owner_occupied_share": -0.0092929259519984,
+        "poverty_rate": -0.0042285249212472,
+        "family_household_share": 0.0178647622802498,
+        "single_unit_share": -0.0067007755460507,
+        "bachelors_share": -0.0017439388135902,
+        "masters_share": 0.0118925527288238,
+        "labor_force_participation": 0.0142766573770747,
+        "housing_vacancy_rate": 0.0100460250293021,
+        "electric_heating_share": 0.0332346436723146,
+        "gas_heating_share": 0.0675785271656037,
+        "bottled_gas_heating_share": 0.0036132982744619,
+        "fuel_oil_heating_share": 0.1075207190080285,
+        "drove_alone_share": 0.0059699968536613,
+        "carpooled_share": -0.002484749233067,
+        "public_transit_share": -0.0082603402117101,
+        "walked_share": -0.0017570296349473,
+        "work_from_home_share": 0.0142022363960002,
+        "foreign_born_share": 0.0089543928961843,
+        "naturalized_share_of_foreign_born": 0.0010516784189739,
+        "same_house_share": -0.0044113030613297,
+        "moved_within_county_share": 0.024734188891892,
+        "moved_different_state_share": -0.0118125553803782,
+        "children_married_couple_share": 0.0167824352518476,
+        "children_female_householder_share": 0.0227086600064233,
+        "children_male_householder_share": -0.0015664986624848,
+        "household_earnings_share": 0.0106806295942643,
+        "household_ss_income_share": 0.0148486791870933,
+        "mortgaged_share": 0.0053676437241645,
+        "computer_ownership_share": -0.0041868508096594
+      }
+    },
+    "size_geo_emacro_drop_E": {
+      "withheld_pillars": "E",
+      "reference_model": "size_geo_emacro",
+      "n_targets": 41,
+      "mean_contribution": 0.04445112133634877,
+      "mean_contribution_ablated": 0.03858406415574759,
+      "n_positive_ablated": 36,
+      "by_target": {
+        "broadband_rate": 0.0358321993708117,
+        "median_household_income": 0.0624225262185724,
+        "median_age": 0.0488109803958828,
+        "median_home_value": 0.0938680833380907,
+        "mean_commute_minutes": 0.0354178457078095,
+        "per_capita_income": 0.0645983383486852,
+        "median_family_income": 0.0395506794809235,
+        "median_gross_rent": 0.0737237418138101,
+        "median_contract_rent": 0.062520321808876,
+        "median_monthly_housing_cost": 0.1073027650529705,
+        "median_year_built": 0.0102787061747586,
+        "mean_household_size": 0.0985980715540354,
+        "owner_occupied_share": 0.0006219252153173,
+        "poverty_rate": 0.0408564856062342,
+        "family_household_share": 0.0565405430672181,
+        "single_unit_share": 0.0137309388684169,
+        "bachelors_share": 0.0802867797454545,
+        "masters_share": 0.0673212138369987,
+        "labor_force_participation": 0.0079015734144465,
+        "housing_vacancy_rate": 0.0103487471311898,
+        "electric_heating_share": 0.0028670622813894,
+        "gas_heating_share": -0.007442003674104,
+        "bottled_gas_heating_share": 0.0268023662660393,
+        "fuel_oil_heating_share": -0.0064737770630229,
+        "drove_alone_share": -0.0111652180996937,
+        "carpooled_share": 0.033760082870883,
+        "public_transit_share": 0.0160519398469547,
+        "walked_share": -0.0103074342635359,
+        "work_from_home_share": 0.1075090072254304,
+        "foreign_born_share": 0.0398832057051176,
+        "naturalized_share_of_foreign_born": 0.000678937815927,
+        "same_house_share": -0.0031951183633015,
+        "moved_within_county_share": 0.017933307402808,
+        "moved_different_state_share": 0.0029705633014938,
+        "children_married_couple_share": 0.0952999393328628,
+        "children_female_householder_share": 0.0744518438603514,
+        "children_male_householder_share": 0.0122097690955057,
+        "household_earnings_share": 0.0563950387016163,
+        "household_ss_income_share": 0.0596997797374589,
+        "mortgaged_share": 0.0275639474527578,
+        "computer_ownership_share": 0.0359209248022108
+      }
+    },
+    "size_geo_emacro_drop_F": {
+      "withheld_pillars": "F",
+      "reference_model": "size_geo_emacro",
+      "n_targets": 41,
+      "mean_contribution": 0.04027054707898176,
+      "mean_contribution_ablated": 0.03939146156811532,
+      "n_positive_ablated": 37,
+      "by_target": {
+        "broadband_rate": 0.0409569826857212,
+        "median_household_income": 0.0134019077236221,
+        "median_age": 0.1016173074045927,
+        "median_home_value": 0.0199972200174189,
+        "mean_commute_minutes": 0.0080776721044133,
+        "per_capita_income": 0.0126943810230508,
+        "median_family_income": 0.0022968821563575,
+        "median_gross_rent": 0.0146720872160349,
+        "median_contract_rent": 0.0161873333855032,
+        "median_monthly_housing_cost": 0.0257963711970982,
+        "median_year_built": 0.107529876865291,
+        "mean_household_size": 0.0365593059259937,
+        "owner_occupied_share": 0.1005929571178071,
+        "poverty_rate": 0.1285125164335914,
+        "family_household_share": 0.0417225755676844,
+        "single_unit_share": 0.0796428643871496,
+        "bachelors_share": 0.0153524084634184,
+        "masters_share": 0.0258662279083436,
+        "labor_force_participation": 0.1104421539847317,
+        "housing_vacancy_rate": 0.1008837197975492,
+        "electric_heating_share": 0.0017030216578547,
+        "gas_heating_share": 0.0328856463295326,
+        "bottled_gas_heating_share": -0.0178544195711577,
+        "fuel_oil_heating_share": 0.1457605270371872,
+        "drove_alone_share": 0.0099859113802047,
+        "carpooled_share": -0.000172781807828,
+        "public_transit_share": -0.0011705044166633,
+        "walked_share": 0.0133407651263343,
+        "work_from_home_share": 0.0187953447368125,
+        "foreign_born_share": 0.0365304577638762,
+        "naturalized_share_of_foreign_born": 0.0084458875438669,
+        "same_house_share": 0.0620590754227784,
+        "moved_within_county_share": 0.019575573893519,
+        "moved_different_state_share": 0.0265694273749714,
+        "children_married_couple_share": 0.0395979548854943,
+        "children_female_householder_share": 0.0504816680669041,
+        "children_male_householder_share": -0.0072992980255779,
+        "household_earnings_share": 0.0378052492733019,
+        "household_ss_income_share": 0.056275071437955,
+        "mortgaged_share": 0.0418286756314443,
+        "computer_ownership_share": 0.0371039191865447
       }
     }
   },
-  "n_targets": 5,
+  "drop_one_noise_floor": {
+    "A": {
+      "n_targets": 41,
+      "mean_contribution_ablated": 0.003139327881299503,
+      "mean_placebo": -0.003660708800405463,
+      "max_placebo": 0.0168808917397432,
+      "n_targets_above_floor": 21
+    },
+    "B": {
+      "n_targets": 41,
+      "mean_contribution_ablated": 0.010911721676846592,
+      "mean_placebo": -0.007431821847150313,
+      "max_placebo": 0.0359766698973598,
+      "n_targets_above_floor": 28
+    },
+    "C": {
+      "n_targets": 41,
+      "mean_contribution_ablated": 0.003257838927132298,
+      "mean_placebo": -0.0006668418955275817,
+      "max_placebo": 0.0074059405178503,
+      "n_targets_above_floor": 28
+    },
+    "D": {
+      "n_targets": 41,
+      "mean_contribution_ablated": 0.01390961203923799,
+      "mean_placebo": -0.0010695312647964073,
+      "max_placebo": 0.0218823728663666,
+      "n_targets_above_floor": 30
+    },
+    "E": {
+      "n_targets": 41,
+      "mean_contribution_ablated": 0.041615689100579584,
+      "mean_placebo": -0.0015138361277943998,
+      "max_placebo": 0.0100389169974665,
+      "n_targets_above_floor": 37
+    },
+    "F": {
+      "n_targets": 41,
+      "mean_contribution_ablated": 0.04367101326328873,
+      "mean_placebo": -0.002414370338560303,
+      "max_placebo": 0.033366230628797,
+      "n_targets_above_floor": 37
+    }
+  },
+  "geo_control": {
+    "by_pillar": {
+      "A": {
+        "contribution": 0.003139327881299503,
+        "contribution_geo": 0.0020067614973563225,
+        "share_retained": 0.6392328464033,
+        "n_positive_geo": 20
+      },
+      "B": {
+        "contribution": 0.010911721676846592,
+        "contribution_geo": 0.0065687241849459585,
+        "share_retained": 0.6019878786758307,
+        "n_positive_geo": 22
+      },
+      "C": {
+        "contribution": 0.003257838927132298,
+        "contribution_geo": 0.0027685184151208537,
+        "share_retained": 0.8498021163857333,
+        "n_positive_geo": 25
+      },
+      "D": {
+        "contribution": 0.01390961203923799,
+        "contribution_geo": 0.011319381909939188,
+        "share_retained": 0.8137812814626351,
+        "n_positive_geo": 30
+      },
+      "E": {
+        "contribution": 0.041615689100579584,
+        "contribution_geo": 0.03858406415574759,
+        "share_retained": 0.9271518744407918,
+        "n_positive_geo": 36
+      },
+      "F": {
+        "contribution": 0.04367101326328873,
+        "contribution_geo": 0.03939146156811532,
+        "share_retained": 0.9020047538312801,
+        "n_positive_geo": 37
+      }
+    },
+    "geo_features": [
+      "lat",
+      "lon"
+    ],
+    "matrix_lift_over_size": 0.18335566468905837,
+    "matrix_lift_over_size_geo": 0.1618779849001234,
+    "latlong_lift_over_size": 0.03613549677503868
+  },
+  "bootstrap": {
+    "n_replicates": 10000,
+    "percentiles": [
+      2.5,
+      97.5
+    ],
+    "n_targets": 41,
+    "n_tables": 28,
+    "pillars": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "naive": {
+      "by_pillar": {
+        "A": {
+          "contribution": {
+            "point": 0.003139327881299502,
+            "low": -0.0003002228543750583,
+            "high": 0.007372052206326893,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": 0.002006761497356322,
+            "low": -0.001300147363127624,
+            "high": 0.00618792690700271,
+            "covers_zero": true
+          },
+          "geo_minus_plain": {
+            "point": -0.00113256638394318,
+            "low": -0.0021406353771430964,
+            "high": -0.00017643837152129553,
+            "covers_zero": false
+          }
+        },
+        "B": {
+          "contribution": {
+            "point": 0.010911721676846594,
+            "low": 0.0025625203193011493,
+            "high": 0.0216261296150948,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.0065687241849459585,
+            "low": -3.372292787243496e-05,
+            "high": 0.0144158961536214,
+            "covers_zero": true
+          },
+          "geo_minus_plain": {
+            "point": -0.004342997491900635,
+            "low": -0.008649106496361685,
+            "high": -0.0009682410307235723,
+            "covers_zero": false
+          }
+        },
+        "C": {
+          "contribution": {
+            "point": 0.003257838927132298,
+            "low": 0.0010466772353463004,
+            "high": 0.005485074922839742,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.0027685184151208537,
+            "low": -0.0005579996663001487,
+            "high": 0.006383362394030436,
+            "covers_zero": true
+          },
+          "geo_minus_plain": {
+            "point": -0.0004893205120114442,
+            "low": -0.0026489182340981568,
+            "high": 0.0016442705806223664,
+            "covers_zero": true
+          }
+        },
+        "D": {
+          "contribution": {
+            "point": 0.01390961203923799,
+            "low": 0.009153104276545742,
+            "high": 0.019350858882141494,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.011319381909939188,
+            "low": 0.0059469274924688585,
+            "high": 0.018175302097714847,
+            "covers_zero": false
+          },
+          "geo_minus_plain": {
+            "point": -0.0025902301292988015,
+            "low": -0.006585936885368014,
+            "high": 0.0030407726194086513,
+            "covers_zero": true
+          }
+        },
+        "E": {
+          "contribution": {
+            "point": 0.041615689100579584,
+            "low": 0.031909061881795986,
+            "high": 0.051661378186855185,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.03858406415574759,
+            "low": 0.028165936202757584,
+            "high": 0.049234263404535995,
+            "covers_zero": false
+          },
+          "geo_minus_plain": {
+            "point": -0.003031624944831994,
+            "low": -0.007241381948376073,
+            "high": 0.0007832497583937007,
+            "covers_zero": true
+          }
+        },
+        "F": {
+          "contribution": {
+            "point": 0.043671013263288726,
+            "low": 0.030567215044149436,
+            "high": 0.05790152696196074,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.03939146156811532,
+            "low": 0.027880709134011705,
+            "high": 0.05189714389216592,
+            "covers_zero": false
+          },
+          "geo_minus_plain": {
+            "point": -0.0042795516951734044,
+            "low": -0.008056341752003395,
+            "high": -0.0010058961901982968,
+            "covers_zero": false
+          }
+        }
+      },
+      "pairwise": {
+        "A_minus_B": {
+          "point": -0.007772393795547092,
+          "low": -0.018318471279886846,
+          "high": 0.0007378039131995806,
+          "covers_zero": true
+        },
+        "A_minus_C": {
+          "point": -0.00011851104583279586,
+          "low": -0.0041522356519539325,
+          "high": 0.00480529461522048,
+          "covers_zero": true
+        },
+        "A_minus_D": {
+          "point": -0.010770284157938487,
+          "low": -0.0178810719510278,
+          "high": -0.0037010689096183295,
+          "covers_zero": false
+        },
+        "A_minus_E": {
+          "point": -0.03847636121928008,
+          "low": -0.04961320713005582,
+          "high": -0.02768705377671668,
+          "covers_zero": false
+        },
+        "A_minus_F": {
+          "point": -0.04053168538198922,
+          "low": -0.05595396364876267,
+          "high": -0.026133461249209823,
+          "covers_zero": false
+        },
+        "B_minus_C": {
+          "point": 0.007653882749714296,
+          "low": -0.0013664675655434395,
+          "high": 0.018730989206743882,
+          "covers_zero": true
+        },
+        "B_minus_D": {
+          "point": -0.002997890362391396,
+          "low": -0.014499329638041082,
+          "high": 0.010338244864738035,
+          "covers_zero": true
+        },
+        "B_minus_E": {
+          "point": -0.030703967423732992,
+          "low": -0.04552969258803469,
+          "high": -0.014707627176006002,
+          "covers_zero": false
+        },
+        "B_minus_F": {
+          "point": -0.032759291586442134,
+          "low": -0.050636522001769754,
+          "high": -0.013870320835129837,
+          "covers_zero": false
+        },
+        "C_minus_D": {
+          "point": -0.010651773112105693,
+          "low": -0.016858280385393016,
+          "high": -0.005498364365567752,
+          "covers_zero": false
+        },
+        "C_minus_E": {
+          "point": -0.03835785017344728,
+          "low": -0.04844291495876341,
+          "high": -0.028604435535357468,
+          "covers_zero": false
+        },
+        "C_minus_F": {
+          "point": -0.040413174336156425,
+          "low": -0.05455020741575855,
+          "high": -0.027533155838347076,
+          "covers_zero": false
+        },
+        "D_minus_E": {
+          "point": -0.027706077061341594,
+          "low": -0.03814493763454003,
+          "high": -0.017273098860924967,
+          "covers_zero": false
+        },
+        "D_minus_F": {
+          "point": -0.029761401224050736,
+          "low": -0.04449924931295455,
+          "high": -0.01627180878303818,
+          "covers_zero": false
+        },
+        "E_minus_F": {
+          "point": -0.002055324162709142,
+          "low": -0.02260649820783776,
+          "high": 0.01690772617029524,
+          "covers_zero": true
+        }
+      }
+    },
+    "table_clustered": {
+      "by_pillar": {
+        "A": {
+          "contribution": {
+            "point": 0.003139327881299502,
+            "low": -0.0006288950759794042,
+            "high": 0.007798491343183573,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": 0.002006761497356322,
+            "low": -0.0019029131549396598,
+            "high": 0.006625749620603853,
+            "covers_zero": true
+          },
+          "geo_minus_plain": {
+            "point": -0.00113256638394318,
+            "low": -0.002031633715936389,
+            "high": -0.00025344022939831486,
+            "covers_zero": false
+          }
+        },
+        "B": {
+          "contribution": {
+            "point": 0.010911721676846594,
+            "low": -0.0007429835041781929,
+            "high": 0.02302111732270266,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": 0.0065687241849459585,
+            "low": -0.0029709538754833977,
+            "high": 0.016146429795049034,
+            "covers_zero": true
+          },
+          "geo_minus_plain": {
+            "point": -0.004342997491900635,
+            "low": -0.007762226035510439,
+            "high": -0.0005480803202879681,
+            "covers_zero": false
+          }
+        },
+        "C": {
+          "contribution": {
+            "point": 0.003257838927132298,
+            "low": 0.0009749676881304773,
+            "high": 0.006109394376342019,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.0027685184151208537,
+            "low": -0.0010695978349103243,
+            "high": 0.007710584490600314,
+            "covers_zero": true
+          },
+          "geo_minus_plain": {
+            "point": -0.0004893205120114442,
+            "low": -0.0026375690777145086,
+            "high": 0.0020914006147261122,
+            "covers_zero": true
+          }
+        },
+        "D": {
+          "contribution": {
+            "point": 0.01390961203923799,
+            "low": 0.008304884666478978,
+            "high": 0.020897693712197716,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.011319381909939188,
+            "low": 0.004899829743078482,
+            "high": 0.020773397121759497,
+            "covers_zero": false
+          },
+          "geo_minus_plain": {
+            "point": -0.0025902301292988015,
+            "low": -0.006298754849237846,
+            "high": 0.0010818111016400978,
+            "covers_zero": true
+          }
+        },
+        "E": {
+          "contribution": {
+            "point": 0.041615689100579584,
+            "low": 0.031399958273916735,
+            "high": 0.052931420628447946,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.03858406415574759,
+            "low": 0.027507253376909374,
+            "high": 0.05171414400395862,
+            "covers_zero": false
+          },
+          "geo_minus_plain": {
+            "point": -0.003031624944831994,
+            "low": -0.006907778856988597,
+            "high": 0.0015749659011640386,
+            "covers_zero": true
+          }
+        },
+        "F": {
+          "contribution": {
+            "point": 0.043671013263288726,
+            "low": 0.030509648027609682,
+            "high": 0.05947000332652079,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.03939146156811532,
+            "low": 0.028447029766006823,
+            "high": 0.05353584868703565,
+            "covers_zero": false
+          },
+          "geo_minus_plain": {
+            "point": -0.0042795516951734044,
+            "low": -0.009304031497579414,
+            "high": -0.00045712538564946555,
+            "covers_zero": false
+          }
+        }
+      },
+      "pairwise": {
+        "A_minus_B": {
+          "point": -0.007772393795547092,
+          "low": -0.016781836633862825,
+          "high": 0.0019303749012186285,
+          "covers_zero": true
+        },
+        "A_minus_C": {
+          "point": -0.00011851104583279586,
+          "low": -0.004939817061038069,
+          "high": 0.004870038913813496,
+          "covers_zero": true
+        },
+        "A_minus_D": {
+          "point": -0.010770284157938487,
+          "low": -0.020622092057239885,
+          "high": -0.0018668639470123558,
+          "covers_zero": false
+        },
+        "A_minus_E": {
+          "point": -0.03847636121928008,
+          "low": -0.05089831982459434,
+          "high": -0.028393032120410607,
+          "covers_zero": false
+        },
+        "A_minus_F": {
+          "point": -0.04053168538198922,
+          "low": -0.058536188682795955,
+          "high": -0.023925802943997175,
+          "covers_zero": false
+        },
+        "B_minus_C": {
+          "point": 0.007653882749714296,
+          "low": -0.005409488175236772,
+          "high": 0.02045828197799439,
+          "covers_zero": true
+        },
+        "B_minus_D": {
+          "point": -0.002997890362391396,
+          "low": -0.019438129972218908,
+          "high": 0.013439605014443608,
+          "covers_zero": true
+        },
+        "B_minus_E": {
+          "point": -0.030703967423732992,
+          "low": -0.04959157393349395,
+          "high": -0.014371592023705767,
+          "covers_zero": false
+        },
+        "B_minus_F": {
+          "point": -0.032759291586442134,
+          "low": -0.05588002773892205,
+          "high": -0.010432361136444612,
+          "covers_zero": false
+        },
+        "C_minus_D": {
+          "point": -0.010651773112105693,
+          "low": -0.01887031378637219,
+          "high": -0.004550762013617846,
+          "covers_zero": false
+        },
+        "C_minus_E": {
+          "point": -0.03835785017344728,
+          "low": -0.04882398266089294,
+          "high": -0.02839629885648143,
+          "covers_zero": false
+        },
+        "C_minus_F": {
+          "point": -0.040413174336156425,
+          "low": -0.055913702440128686,
+          "high": -0.027091418123779708,
+          "covers_zero": false
+        },
+        "D_minus_E": {
+          "point": -0.027706077061341594,
+          "low": -0.040487765806315495,
+          "high": -0.014336231975757403,
+          "covers_zero": false
+        },
+        "D_minus_F": {
+          "point": -0.029761401224050736,
+          "low": -0.04443773394967843,
+          "high": -0.018554514099101922,
+          "covers_zero": false
+        },
+        "E_minus_F": {
+          "point": -0.002055324162709142,
+          "low": -0.024072943800082708,
+          "high": 0.018349851592284448,
+          "covers_zero": true
+        }
+      }
+    }
+  },
+  "headline_basket": {
+    "n_targets": 5,
+    "targets": [
+      "broadband_rate",
+      "median_household_income",
+      "median_age",
+      "median_home_value",
+      "mean_commute_minutes"
+    ],
+    "mean_lift_over_size": 0.21189606053706803,
+    "mean_lift_over_size_ablated": 0.18974849060524585,
+    "targets_with_positive_lift": 5,
+    "drop_one": {
+      "size_emacro_drop_A": {
+        "withheld_pillars": "A",
+        "reference_model": "size_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.0019151754351284598,
+        "mean_contribution_ablated": -4.5734679399100095e-05,
+        "n_positive_ablated": 2,
+        "by_target": {
+          "broadband_rate": -0.002562952033323,
+          "median_household_income": -0.003156548411528,
+          "median_age": 0.0069603527656342,
+          "median_home_value": -0.0025107274757792,
+          "mean_commute_minutes": 0.0010412017580005
+        }
+      },
+      "size_emacro_drop_B": {
+        "withheld_pillars": "B",
+        "reference_model": "size_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.00431170499023968,
+        "mean_contribution_ablated": 0.006671778906858561,
+        "n_positive_ablated": 3,
+        "by_target": {
+          "broadband_rate": 0.0034501178380634,
+          "median_household_income": 0.0230556850148061,
+          "median_age": -0.0046381214996412,
+          "median_home_value": -0.0016178980019433,
+          "mean_commute_minutes": 0.0131091111830078
+        }
+      },
+      "size_emacro_drop_BE": {
+        "withheld_pillars": "B;E",
+        "reference_model": "size_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.08535838900894221,
+        "mean_contribution_ablated": 0.06324439966360974,
+        "n_positive_ablated": 5,
+        "by_target": {
+          "broadband_rate": 0.0273151662073157,
+          "median_household_income": 0.1063072586869924,
+          "median_age": 0.0242017231791257,
+          "median_home_value": 0.1113993598233209,
+          "mean_commute_minutes": 0.046998490421294
+        }
+      },
+      "size_emacro_drop_C": {
+        "withheld_pillars": "C",
+        "reference_model": "size_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.00505139242779244,
+        "mean_contribution_ablated": 0.00535201381365462,
+        "n_positive_ablated": 5,
+        "by_target": {
+          "broadband_rate": 0.0038848464235416,
+          "median_household_income": 0.0034840094904013,
+          "median_age": 0.0120414811937071,
+          "median_home_value": 0.0070792238266707,
+          "mean_commute_minutes": 0.0002705081339524
+        }
+      },
+      "size_emacro_drop_D": {
+        "withheld_pillars": "D",
+        "reference_model": "size_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.019570763408199,
+        "mean_contribution_ablated": 0.019084518442214517,
+        "n_positive_ablated": 5,
+        "by_target": {
+          "broadband_rate": 0.0140725299566807,
+          "median_household_income": 0.0166551763536073,
+          "median_age": 0.0244178813894676,
+          "median_home_value": 0.0278505990927553,
+          "mean_commute_minutes": 0.0124264054185617
+        }
+      },
+      "size_emacro_drop_E": {
+        "withheld_pillars": "E",
+        "reference_model": "size_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.0804021450946885,
+        "mean_contribution_ablated": 0.05821471793287523,
+        "n_positive_ablated": 5,
+        "by_target": {
+          "broadband_rate": 0.0403642510053751,
+          "median_household_income": 0.0801786730305309,
+          "median_age": 0.0304593309999512,
+          "median_home_value": 0.1055367686200002,
+          "mean_commute_minutes": 0.0345345660085187
+        }
+      },
+      "size_emacro_drop_F": {
+        "withheld_pillars": "F",
+        "reference_model": "size_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.04227971494306636,
+        "mean_contribution_ablated": 0.0413054285357102,
+        "n_positive_ablated": 5,
+        "by_target": {
+          "broadband_rate": 0.0367920718460126,
+          "median_household_income": 0.014859093081724,
+          "median_age": 0.1089462483444009,
+          "median_home_value": 0.0231670578288093,
+          "mean_commute_minutes": 0.0227626715776042
+        }
+      },
+      "size_emacro_drop_F_no_ametro": {
+        "withheld_pillars": "F",
+        "reference_model": "size_emacro_no_ametro",
+        "n_targets": 5,
+        "mean_contribution": 0.04159606487899206,
+        "mean_contribution_ablated": 0.040969213211295964,
+        "n_positive_ablated": 5,
+        "by_target": {
+          "broadband_rate": 0.037820531220354,
+          "median_household_income": 0.0162396104683593,
+          "median_age": 0.1102911511752561,
+          "median_home_value": 0.0234627632997291,
+          "mean_commute_minutes": 0.0170320098927813
+        }
+      },
+      "size_emacro_no_ametro": {
+        "withheld_pillars": NaN,
+        "reference_model": "size_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.00031216556752140004,
+        "mean_contribution_ablated": 0.00022359245443096003,
+        "n_positive_ablated": 3,
+        "by_target": {
+          "broadband_rate": 0.0001122392701742,
+          "median_household_income": -0.0001435266951901,
+          "median_age": 0.0004513341656284,
+          "median_home_value": -0.0010298971451667,
+          "mean_commute_minutes": 0.001727812676709
+        }
+      },
+      "size_geo_emacro_drop_A": {
+        "withheld_pillars": "A",
+        "reference_model": "size_geo_emacro",
+        "n_targets": 5,
+        "mean_contribution": -0.00043874182709557983,
+        "mean_contribution_ablated": -0.0006789662566427599,
+        "n_positive_ablated": 2,
+        "by_target": {
+          "broadband_rate": -0.0009368937207036,
+          "median_household_income": -0.0033294107771359,
+          "median_age": 0.004911161892306,
+          "median_home_value": 0.002032013298961,
+          "mean_commute_minutes": -0.0060717019766413
+        }
+      },
+      "size_geo_emacro_drop_B": {
+        "withheld_pillars": "B",
+        "reference_model": "size_geo_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.00282408617967412,
+        "mean_contribution_ablated": 0.00655108710335234,
+        "n_positive_ablated": 3,
+        "by_target": {
+          "broadband_rate": 0.0092827611544705,
+          "median_household_income": 0.0178607789622387,
+          "median_age": -0.0006603864156712,
+          "median_home_value": -0.0048422391067375,
+          "mean_commute_minutes": 0.0111145209224612
+        }
+      },
+      "size_geo_emacro_drop_C": {
+        "withheld_pillars": "C",
+        "reference_model": "size_geo_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.00520542046799038,
+        "mean_contribution_ablated": 0.00516250501112112,
+        "n_positive_ablated": 4,
+        "by_target": {
+          "broadband_rate": 0.0046538448532712,
+          "median_household_income": 0.0032784495641191,
+          "median_age": 0.0167736618038518,
+          "median_home_value": -0.0077482999771321,
+          "mean_commute_minutes": 0.0088548688114956
+        }
+      },
+      "size_geo_emacro_drop_D": {
+        "withheld_pillars": "D",
+        "reference_model": "size_geo_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.008647116029508581,
+        "mean_contribution_ablated": 0.00973216382833454,
+        "n_positive_ablated": 5,
+        "by_target": {
+          "broadband_rate": 0.0127877616111369,
+          "median_household_income": 0.0147501064640442,
+          "median_age": 0.0076312087897145,
+          "median_home_value": 0.0070517028250736,
+          "mean_commute_minutes": 0.0064400394517035
+        }
+      },
+      "size_geo_emacro_drop_E": {
+        "withheld_pillars": "E",
+        "reference_model": "size_geo_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.07647877028452747,
+        "mean_contribution_ablated": 0.055270327006233425,
+        "n_positive_ablated": 5,
+        "by_target": {
+          "broadband_rate": 0.0358321993708117,
+          "median_household_income": 0.0624225262185724,
+          "median_age": 0.0488109803958828,
+          "median_home_value": 0.0938680833380907,
+          "mean_commute_minutes": 0.0354178457078095
+        }
+      },
+      "size_geo_emacro_drop_F": {
+        "withheld_pillars": "F",
+        "reference_model": "size_geo_emacro",
+        "n_targets": 5,
+        "mean_contribution": 0.03583197747217264,
+        "mean_contribution_ablated": 0.03681021798715364,
+        "n_positive_ablated": 5,
+        "by_target": {
+          "broadband_rate": 0.0409569826857212,
+          "median_household_income": 0.0134019077236221,
+          "median_age": 0.1016173074045927,
+          "median_home_value": 0.0199972200174189,
+          "mean_commute_minutes": 0.0080776721044133
+        }
+      }
+    },
+    "noise_floor": {
+      "A": {
+        "n_targets": 5,
+        "mean_contribution_ablated": -4.5734679399100095e-05,
+        "mean_placebo": -0.00370992256799156,
+        "max_placebo": 0.0025395643797947,
+        "n_targets_above_floor": 2
+      },
+      "B": {
+        "n_targets": 5,
+        "mean_contribution_ablated": 0.006671778906858561,
+        "mean_placebo": -0.0072037920210617406,
+        "max_placebo": 0.0030915029800413,
+        "n_targets_above_floor": 4
+      },
+      "C": {
+        "n_targets": 5,
+        "mean_contribution_ablated": 0.00535201381365462,
+        "mean_placebo": -0.0006019767432151001,
+        "max_placebo": 0.0022631241909358,
+        "n_targets_above_floor": 4
+      },
+      "D": {
+        "n_targets": 5,
+        "mean_contribution_ablated": 0.019084518442214517,
+        "mean_placebo": -0.0016632818889151999,
+        "max_placebo": 0.0027473591262837,
+        "n_targets_above_floor": 5
+      },
+      "E": {
+        "n_targets": 5,
+        "mean_contribution_ablated": 0.05821471793287523,
+        "mean_placebo": -0.0017822522141685,
+        "max_placebo": 0.0023270393319859,
+        "n_targets_above_floor": 5
+      },
+      "F": {
+        "n_targets": 5,
+        "mean_contribution_ablated": 0.0413054285357102,
+        "mean_placebo": -0.00265823345766864,
+        "max_placebo": 0.0024886016107726,
+        "n_targets_above_floor": 5
+      }
+    },
+    "geo_control": {
+      "by_pillar": {
+        "A": {
+          "contribution": -4.5734679399100095e-05,
+          "contribution_geo": -0.0006789662566427599,
+          "share_retained": 14.84576399274201,
+          "n_positive_geo": 2
+        },
+        "B": {
+          "contribution": 0.006671778906858561,
+          "contribution_geo": 0.00655108710335234,
+          "share_retained": 0.9819101014600243,
+          "n_positive_geo": 3
+        },
+        "C": {
+          "contribution": 0.00535201381365462,
+          "contribution_geo": 0.00516250501112112,
+          "share_retained": 0.9645911223080169,
+          "n_positive_geo": 4
+        },
+        "D": {
+          "contribution": 0.019084518442214517,
+          "contribution_geo": 0.00973216382833454,
+          "share_retained": 0.5099507151727348,
+          "n_positive_geo": 5
+        },
+        "E": {
+          "contribution": 0.05821471793287523,
+          "contribution_geo": 0.055270327006233425,
+          "share_retained": 0.9494218810776195,
+          "n_positive_geo": 5
+        },
+        "F": {
+          "contribution": 0.0413054285357102,
+          "contribution_geo": 0.03681021798715364,
+          "share_retained": 0.8911714341694758,
+          "n_positive_geo": 5
+        }
+      },
+      "geo_features": [
+        "lat",
+        "lon"
+      ],
+      "matrix_lift_over_size": 0.18974849060524585,
+      "matrix_lift_over_size_geo": 0.15939829484045098,
+      "latlong_lift_over_size": 0.040300415922188984
+    },
+    "bootstrap": {
+      "n_replicates": 10000,
+      "percentiles": [
+        2.5,
+        97.5
+      ],
+      "n_targets": 5,
+      "n_tables": 5,
+      "pillars": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "naive": {
+        "by_pillar": {
+          "A": {
+            "contribution": {
+              "point": -4.5734679399100095e-05,
+              "low": -0.0027899456730962396,
+              "high": 0.0038718616043160194,
+              "covers_zero": true
+            },
+            "contribution_geo": {
+              "point": -0.0006789662566427599,
+              "low": -0.0039478238456516,
+              "high": 0.0026872176397486195,
+              "covers_zero": true
+            },
+            "geo_minus_plain": {
+              "point": -0.0006332315772436598,
+              "low": -0.00407467601785364,
+              "high": 0.0026410179527023604,
+              "covers_zero": true
+            }
+          },
+          "B": {
+            "contribution": {
+              "point": 0.006671778906858561,
+              "low": -0.00181238423302112,
+              "high": 0.01613165364509656,
+              "covers_zero": true
+            },
+            "contribution_geo": {
+              "point": 0.00655108710335234,
+              "low": -0.0008145165626844997,
+              "high": 0.01344667218477406,
+              "covers_zero": true
+            },
+            "geo_minus_plain": {
+              "point": -0.00012069180350622079,
+              "low": -0.0037666169150539592,
+              "high": 0.00365026478567942,
+              "covers_zero": true
+            }
+          },
+          "C": {
+            "contribution": {
+              "point": 0.00535201381365462,
+              "low": 0.00227495154378584,
+              "high": 0.009064126773485259,
+              "covers_zero": false
+            },
+            "contribution_geo": {
+              "point": 0.00516250501112112,
+              "low": -0.0022223163111563205,
+              "high": 0.011925735023619561,
+              "covers_zero": true
+            },
+            "geo_minus_plain": {
+              "point": -0.00018950880253350028,
+              "low": -0.00799119014550918,
+              "high": 0.005480416201021081,
+              "covers_zero": true
+            }
+          },
+          "D": {
+            "contribution": {
+              "point": 0.019084518442214517,
+              "low": 0.013930609420818422,
+              "high": 0.02440844172488284,
+              "covers_zero": false
+            },
+            "contribution_geo": {
+              "point": 0.00973216382833454,
+              "low": 0.00692293866865374,
+              "high": 0.01281795676566862,
+              "covers_zero": false
+            },
+            "geo_minus_plain": {
+              "point": -0.009352354613879977,
+              "low": -0.016231500740345562,
+              "high": -0.0024732084874144033,
+              "covers_zero": false
+            }
+          },
+          "E": {
+            "contribution": {
+              "point": 0.05821471793287523,
+              "low": 0.03407040900446298,
+              "high": 0.08626470897981002,
+              "covers_zero": false
+            },
+            "contribution_geo": {
+              "point": 0.055270327006233425,
+              "low": 0.03826221411062504,
+              "high": 0.0758889243881308,
+              "covers_zero": false
+            },
+            "geo_minus_plain": {
+              "point": -0.002944390926641803,
+              "low": -0.012810769203698821,
+              "high": 0.008853908521035209,
+              "covers_zero": true
+            }
+          },
+          "F": {
+            "contribution": {
+              "point": 0.0413054285357102,
+              "low": 0.01968211742949314,
+              "high": 0.07569798199218787,
+              "covers_zero": false
+            },
+            "contribution_geo": {
+              "point": 0.03681021798715364,
+              "low": 0.01259127593469794,
+              "high": 0.07077731540078251,
+              "covers_zero": false
+            },
+            "geo_minus_plain": {
+              "point": -0.004495210548556554,
+              "low": -0.010271364353161283,
+              "high": 0.0007417212442431265,
+              "covers_zero": true
+            }
+          }
+        },
+        "pairwise": {
+          "A_minus_B": {
+            "point": -0.006717513586257661,
+            "low": -0.01813256800435502,
+            "high": 0.004366936779396599,
+            "covers_zero": true
+          },
+          "A_minus_C": {
+            "point": -0.00539774849305372,
+            "low": -0.008098308047470379,
+            "high": -0.00215525509732992,
+            "covers_zero": false
+          },
+          "A_minus_D": {
+            "point": -0.01913025312161362,
+            "low": -0.025199807390654066,
+            "high": -0.01428497287413046,
+            "covers_zero": false
+          },
+          "A_minus_E": {
+            "point": -0.058260452612274326,
+            "low": -0.08819421479598306,
+            "high": -0.0313823776016737,
+            "covers_zero": false
+          },
+          "A_minus_F": {
+            "point": -0.041351163215109295,
+            "low": -0.07266567042177755,
+            "high": -0.021030401586059982,
+            "covers_zero": false
+          },
+          "B_minus_C": {
+            "point": 0.0013197650932039407,
+            "low": -0.01023763552588056,
+            "high": 0.01287716571228844,
+            "covers_zero": true
+          },
+          "B_minus_D": {
+            "point": -0.012412739535355957,
+            "low": -0.02553428241724642,
+            "high": 0.0006827057644460989,
+            "covers_zero": true
+          },
+          "B_minus_E": {
+            "point": -0.051542939026016664,
+            "low": -0.08000248854141324,
+            "high": -0.029991989563503667,
+            "covers_zero": false
+          },
+          "B_minus_F": {
+            "point": -0.03463364962885163,
+            "low": -0.07674972478693438,
+            "high": -0.004996027172451779,
+            "covers_zero": false
+          },
+          "C_minus_D": {
+            "point": -0.013732504628559896,
+            "low": -0.017416256556736433,
+            "high": -0.011222123531676759,
+            "covers_zero": false
+          },
+          "C_minus_E": {
+            "point": -0.05286270411922061,
+            "low": -0.08126627115893686,
+            "high": -0.02836864398869086,
+            "covers_zero": false
+          },
+          "C_minus_F": {
+            "point": -0.03595341472205558,
+            "low": -0.06713972566787701,
+            "high": -0.01548359972611488,
+            "covers_zero": false
+          },
+          "D_minus_E": {
+            "point": -0.03913019949066071,
+            "low": -0.06373803316972304,
+            "high": -0.016518188289915123,
+            "covers_zero": false
+          },
+          "D_minus_F": {
+            "point": -0.02222091009349568,
+            "low": -0.054851526636577,
+            "high": 0.0005245965825232228,
+            "covers_zero": true
+          },
+          "E_minus_F": {
+            "point": 0.01690928939716503,
+            "low": -0.03331379858503594,
+            "high": 0.06320017829634841,
+            "covers_zero": true
+          }
+        }
+      },
+      "table_clustered": {
+        "by_pillar": {
+          "A": {
+            "contribution": {
+              "point": -4.5734679399100095e-05,
+              "low": -0.0027899456730962396,
+              "high": 0.00375314232867502,
+              "covers_zero": true
+            },
+            "contribution_geo": {
+              "point": -0.0006789662566427599,
+              "low": -0.0039478238456516004,
+              "high": 0.00268721763974862,
+              "covers_zero": true
+            },
+            "geo_minus_plain": {
+              "point": -0.0006332315772436598,
+              "low": -0.004081231297082999,
+              "high": 0.00264101795270236,
+              "covers_zero": true
+            }
+          },
+          "B": {
+            "contribution": {
+              "point": 0.006671778906858561,
+              "low": -0.00181238423302112,
+              "high": 0.015527608945556982,
+              "covers_zero": true
+            },
+            "contribution_geo": {
+              "point": 0.00655108710335234,
+              "low": -0.0008145165626844997,
+              "high": 0.01344667218477406,
+              "covers_zero": true
+            },
+            "geo_minus_plain": {
+              "point": -0.00012069180350622079,
+              "low": -0.003766616915053961,
+              "high": 0.00365026478567942,
+              "covers_zero": true
+            }
+          },
+          "C": {
+            "contribution": {
+              "point": 0.00535201381365462,
+              "low": 0.00227495154378584,
+              "high": 0.009064126773485259,
+              "covers_zero": false
+            },
+            "contribution_geo": {
+              "point": 0.00516250501112112,
+              "low": -0.00222231631115632,
+              "high": 0.011925735023619561,
+              "covers_zero": true
+            },
+            "geo_minus_plain": {
+              "point": -0.00018950880253350028,
+              "low": -0.00799119014550918,
+              "high": 0.005480416201021081,
+              "covers_zero": true
+            }
+          },
+          "D": {
+            "contribution": {
+              "point": 0.019084518442214517,
+              "low": 0.013930609420818422,
+              "high": 0.02440844172488284,
+              "covers_zero": false
+            },
+            "contribution_geo": {
+              "point": 0.00973216382833454,
+              "low": 0.00692293866865374,
+              "high": 0.01281795676566862,
+              "covers_zero": false
+            },
+            "geo_minus_plain": {
+              "point": -0.009352354613879977,
+              "low": -0.016231500740345562,
+              "high": -0.0024732084874144033,
+              "covers_zero": false
+            }
+          },
+          "E": {
+            "contribution": {
+              "point": 0.05821471793287523,
+              "low": 0.034421299002120764,
+              "high": 0.08626470897981002,
+              "covers_zero": false
+            },
+            "contribution_geo": {
+              "point": 0.055270327006233425,
+              "low": 0.03826221411062504,
+              "high": 0.0758889243881308,
+              "covers_zero": false
+            },
+            "geo_minus_plain": {
+              "point": -0.002944390926641803,
+              "low": -0.012810769203698835,
+              "high": 0.007870627577947126,
+              "covers_zero": true
+            }
+          },
+          "F": {
+            "contribution": {
+              "point": 0.0413054285357102,
+              "low": 0.01968211742949314,
+              "high": 0.07569798199218787,
+              "covers_zero": false
+            },
+            "contribution_geo": {
+              "point": 0.03681021798715364,
+              "low": 0.01259127593469794,
+              "high": 0.07077731540078251,
+              "covers_zero": false
+            },
+            "geo_minus_plain": {
+              "point": -0.004495210548556554,
+              "low": -0.010083745547087962,
+              "high": 0.0004491226303646005,
+              "covers_zero": true
+            }
+          }
+        },
+        "pairwise": {
+          "A_minus_B": {
+            "point": -0.006717513586257661,
+            "low": -0.01772563902553802,
+            "high": 0.00410369202180862,
+            "covers_zero": true
+          },
+          "A_minus_C": {
+            "point": -0.00539774849305372,
+            "low": -0.008098308047470379,
+            "high": -0.00211670320831698,
+            "covers_zero": false
+          },
+          "A_minus_D": {
+            "point": -0.01913025312161362,
+            "low": -0.025199807390654066,
+            "high": -0.01428497287413046,
+            "covers_zero": false
+          },
+          "A_minus_E": {
+            "point": -0.058260452612274326,
+            "low": -0.08819421479598306,
+            "high": -0.0313823776016737,
+            "covers_zero": false
+          },
+          "A_minus_F": {
+            "point": -0.041351163215109295,
+            "low": -0.07266567042177755,
+            "high": -0.021030401586059982,
+            "covers_zero": false
+          },
+          "B_minus_C": {
+            "point": 0.0013197650932039407,
+            "low": -0.01023763552588056,
+            "high": 0.01287716571228844,
+            "covers_zero": true
+          },
+          "B_minus_D": {
+            "point": -0.012412739535355957,
+            "low": -0.02553428241724642,
+            "high": 0.0007088033465344982,
+            "covers_zero": true
+          },
+          "B_minus_E": {
+            "point": -0.051542939026016664,
+            "low": -0.08000248854141324,
+            "high": -0.029991989563503664,
+            "covers_zero": false
+          },
+          "B_minus_F": {
+            "point": -0.03463364962885163,
+            "low": -0.07503832515149507,
+            "high": -0.004996027172451782,
+            "covers_zero": false
+          },
+          "C_minus_D": {
+            "point": -0.013732504628559896,
+            "low": -0.017413385237954965,
+            "high": -0.011178022949446522,
+            "covers_zero": false
+          },
+          "C_minus_E": {
+            "point": -0.05286270411922061,
+            "low": -0.08126627115893686,
+            "high": -0.02836864398869086,
+            "covers_zero": false
+          },
+          "C_minus_F": {
+            "point": -0.03595341472205558,
+            "low": -0.06699932209317504,
+            "high": -0.01548359972611488,
+            "covers_zero": false
+          },
+          "D_minus_E": {
+            "point": -0.03913019949066071,
+            "low": -0.06373803316972304,
+            "high": -0.016518188289915123,
+            "covers_zero": false
+          },
+          "D_minus_F": {
+            "point": -0.02222091009349568,
+            "low": -0.054851526636577,
+            "high": 0.0005245965825232228,
+            "covers_zero": true
+          },
+          "E_minus_F": {
+            "point": 0.01690928939716503,
+            "low": -0.033313798585035935,
+            "high": 0.06320017829634841,
+            "covers_zero": true
+          }
+        }
+      }
+    }
+  },
+  "n_targets": 41,
+  "n_targets_scored": 42,
+  "excluded_targets": {
+    "no_fuel_used_share": "degenerate target: reduced R2 -1.0031, full R2 -0.9720 to -1.0381 depending on arm -- every model scored is worse than predicting the mean, so the reported positive contribution is the gap between two useless models, not a gain. Panel mean 0.0067, sd 0.0232, max 0.644, skew 23.0, kurtosis 573; PR is not in the panel (0/3144 rows), so this is not sentinel/PR contamination -- the target is genuinely too degenerate for this model class. Kept ingested and scored (see the per-target table) but excluded from every headline mean."
+  },
   "n_folds": 5,
   "fold_strategy": "GroupKFold on state_fips (spatially blocked)",
   "random_seed": 42,
-  "mean_r2_size_emacro": 0.5846006941218037,
-  "mean_lift_over_size": 0.21189606053706803,
-  "mean_lift_over_size_ablated": 0.18974849060524585,
-  "mean_r2_emacro_alone": 0.5690611502062962,
-  "targets_with_positive_lift": 5,
+  "mean_r2_size_emacro": 0.45148818001911917,
+  "mean_lift_over_size": 0.1905873543146417,
+  "mean_lift_over_size_ablated": 0.18335566468905837,
+  "mean_r2_emacro_alone": 0.445283314331341,
+  "targets_with_positive_lift": 41,
   "by_target": {
     "broadband_rate": {
       "r2_size": 0.4205835180446834,
       "r2_size_emacro": 0.5112664626687244,
-      "lift_over_size": 0.09068294462404103,
-      "lift_over_size_ablated": 0.09068294462404103,
-      "ablated_columns": ""
+      "lift_over_size": 0.090682944624041,
+      "lift_over_size_ablated": 0.090682944624041,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
     },
     "median_household_income": {
       "r2_size": 0.5789493347693475,
       "r2_size_emacro": 0.8259062491221306,
       "lift_over_size": 0.2469569143527831,
       "lift_over_size_ablated": 0.153653483602753,
-      "ablated_columns": "wage_per_return_thousands"
+      "ablated_columns": "wage_per_return_thousands",
+      "excluded_from_headline": false
     },
     "median_age": {
-      "r2_size": 0.22711872244316056,
-      "r2_size_emacro": 0.48334016018485204,
+      "r2_size": 0.2271187224431605,
+      "r2_size_emacro": 0.483340160184852,
       "lift_over_size": 0.2562214377416915,
-      "lift_over_size_ablated": 0.23878701883261078,
-      "ablated_columns": "retirement_destination"
+      "lift_over_size_ablated": 0.2387870188326107,
+      "ablated_columns": "retirement_destination",
+      "excluded_from_headline": false
     },
     "median_home_value": {
       "r2_size": 0.4875281293557764,
       "r2_size_emacro": 0.7210179245156819,
-      "lift_over_size": 0.23348979515990553,
-      "lift_over_size_ablated": 0.23348979515990553,
-      "ablated_columns": ""
+      "lift_over_size": 0.2334897951599055,
+      "lift_over_size_ablated": 0.2334897951599055,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
     },
     "mean_commute_minutes": {
-      "r2_size": 0.14934346331071036,
+      "r2_size": 0.1493434633107103,
       "r2_size_emacro": 0.3814726741176293,
-      "lift_over_size": 0.23212921080691895,
-      "lift_over_size_ablated": 0.23212921080691895,
-      "ablated_columns": ""
+      "lift_over_size": 0.2321292108069189,
+      "lift_over_size_ablated": 0.2321292108069189,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "per_capita_income": {
+      "r2_size": 0.6562495382806929,
+      "r2_size_emacro": 0.838160243802081,
+      "lift_over_size": 0.1819107055213881,
+      "lift_over_size_ablated": 0.1279137492392743,
+      "ablated_columns": "wage_per_return_thousands",
+      "excluded_from_headline": false
+    },
+    "median_family_income": {
+      "r2_size": 0.6697965577795053,
+      "r2_size_emacro": 0.8439129005569949,
+      "lift_over_size": 0.1741163427774895,
+      "lift_over_size_ablated": 0.099340815887742,
+      "ablated_columns": "wage_per_return_thousands",
+      "excluded_from_headline": false
+    },
+    "median_gross_rent": {
+      "r2_size": 0.5837429173031212,
+      "r2_size_emacro": 0.7573858910436561,
+      "lift_over_size": 0.1736429737405348,
+      "lift_over_size_ablated": 0.1736429737405348,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "median_contract_rent": {
+      "r2_size": 0.6355725491924951,
+      "r2_size_emacro": 0.8113424258845918,
+      "lift_over_size": 0.1757698766920967,
+      "lift_over_size_ablated": 0.1757698766920967,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "median_monthly_housing_cost": {
+      "r2_size": 0.6381814000724644,
+      "r2_size_emacro": 0.8334660053117076,
+      "lift_over_size": 0.1952846052392431,
+      "lift_over_size_ablated": 0.1954931535950038,
+      "ablated_columns": "housing_stress",
+      "excluded_from_headline": false
+    },
+    "median_year_built": {
+      "r2_size": 0.0734380482857349,
+      "r2_size_emacro": 0.4855601186568001,
+      "lift_over_size": 0.4121220703710652,
+      "lift_over_size_ablated": 0.4121220703710652,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "mean_household_size": {
+      "r2_size": 0.0283295662010635,
+      "r2_size_emacro": 0.2916707073054025,
+      "lift_over_size": 0.263341141104339,
+      "lift_over_size_ablated": 0.263341141104339,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "owner_occupied_share": {
+      "r2_size": 0.2737544454109347,
+      "r2_size_emacro": 0.4715548332218212,
+      "lift_over_size": 0.1978003878108865,
+      "lift_over_size_ablated": 0.1978003878108865,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "poverty_rate": {
+      "r2_size": 0.374640751835479,
+      "r2_size_emacro": 0.6364928991041199,
+      "lift_over_size": 0.2618521472686408,
+      "lift_over_size_ablated": 0.2589464164389143,
+      "ablated_columns": "persistent_poverty",
+      "excluded_from_headline": false
+    },
+    "family_household_share": {
+      "r2_size": -0.0184645112301429,
+      "r2_size_emacro": 0.251829082562728,
+      "lift_over_size": 0.270293593792871,
+      "lift_over_size_ablated": 0.270293593792871,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "single_unit_share": {
+      "r2_size": 0.224335019177478,
+      "r2_size_emacro": 0.404339151591534,
+      "lift_over_size": 0.180004132414056,
+      "lift_over_size_ablated": 0.180004132414056,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "bachelors_share": {
+      "r2_size": 0.508833526266045,
+      "r2_size_emacro": 0.7570263134891277,
+      "lift_over_size": 0.2481927872230827,
+      "lift_over_size_ablated": 0.2473178947537313,
+      "ablated_columns": "low_postsecondary_ed",
+      "excluded_from_headline": false
+    },
+    "masters_share": {
+      "r2_size": 0.4660667303702455,
+      "r2_size_emacro": 0.691039820334337,
+      "lift_over_size": 0.2249730899640915,
+      "lift_over_size_ablated": 0.218938468501069,
+      "ablated_columns": "low_postsecondary_ed",
+      "excluded_from_headline": false
+    },
+    "labor_force_participation": {
+      "r2_size": 0.3036165213082136,
+      "r2_size_emacro": 0.6343799686136871,
+      "lift_over_size": 0.3307634473054734,
+      "lift_over_size_ablated": 0.3080347801956027,
+      "ablated_columns": "low_employment",
+      "excluded_from_headline": false
+    },
+    "housing_vacancy_rate": {
+      "r2_size": 0.2680028495157779,
+      "r2_size_emacro": 0.5998908112933778,
+      "lift_over_size": 0.3318879617775999,
+      "lift_over_size_ablated": 0.3318879617775999,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "electric_heating_share": {
+      "r2_size": -0.007088044293152,
+      "r2_size_emacro": 0.2695183190467911,
+      "lift_over_size": 0.2766063633399431,
+      "lift_over_size_ablated": 0.2766063633399431,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "gas_heating_share": {
+      "r2_size": 0.1146241116735347,
+      "r2_size_emacro": 0.2684448748707893,
+      "lift_over_size": 0.1538207631972545,
+      "lift_over_size_ablated": 0.1538207631972545,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "bottled_gas_heating_share": {
+      "r2_size": 0.3177041171340046,
+      "r2_size_emacro": 0.4071121464418225,
+      "lift_over_size": 0.0894080293078178,
+      "lift_over_size_ablated": 0.0894080293078178,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "fuel_oil_heating_share": {
+      "r2_size": -0.2139745110687292,
+      "r2_size_emacro": -0.0262192375647518,
+      "lift_over_size": 0.1877552735039773,
+      "lift_over_size_ablated": 0.1877552735039773,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "no_fuel_used_share": {
+      "r2_size": -0.0445252798725979,
+      "r2_size_emacro": -1.042624549670646,
+      "lift_over_size": -0.998099269798048,
+      "lift_over_size_ablated": -0.998099269798048,
+      "ablated_columns": NaN,
+      "excluded_from_headline": true
+    },
+    "drove_alone_share": {
+      "r2_size": 0.0623560302945785,
+      "r2_size_emacro": 0.3247678271294825,
+      "lift_over_size": 0.2624117968349039,
+      "lift_over_size_ablated": 0.2624117968349039,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "carpooled_share": {
+      "r2_size": 0.0564849978174374,
+      "r2_size_emacro": 0.0926836748180177,
+      "lift_over_size": 0.0361986770005803,
+      "lift_over_size_ablated": 0.0361986770005803,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "public_transit_share": {
+      "r2_size": 0.0878492906667628,
+      "r2_size_emacro": 0.1977519439585474,
+      "lift_over_size": 0.1099026532917846,
+      "lift_over_size_ablated": 0.1099026532917846,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "walked_share": {
+      "r2_size": 0.023656727402382,
+      "r2_size_emacro": 0.0339114909454772,
+      "lift_over_size": 0.0102547635430952,
+      "lift_over_size_ablated": 0.0102547635430952,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "work_from_home_share": {
+      "r2_size": 0.2546411953150117,
+      "r2_size_emacro": 0.524807432930309,
+      "lift_over_size": 0.2701662376152972,
+      "lift_over_size_ablated": 0.2701662376152972,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "foreign_born_share": {
+      "r2_size": 0.2371070100058846,
+      "r2_size_emacro": 0.4229890236561875,
+      "lift_over_size": 0.1858820136503028,
+      "lift_over_size_ablated": 0.1858820136503028,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "naturalized_share_of_foreign_born": {
+      "r2_size": 0.0155228631517602,
+      "r2_size_emacro": 0.0641600138984985,
+      "lift_over_size": 0.0486371507467383,
+      "lift_over_size_ablated": 0.0486371507467383,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "same_house_share": {
+      "r2_size": 0.0796391236045271,
+      "r2_size_emacro": 0.2172464800174712,
+      "lift_over_size": 0.137607356412944,
+      "lift_over_size_ablated": 0.137607356412944,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "moved_within_county_share": {
+      "r2_size": 0.1702038784655174,
+      "r2_size_emacro": 0.2854699860561188,
+      "lift_over_size": 0.1152661075906014,
+      "lift_over_size_ablated": 0.1152661075906014,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "moved_different_state_share": {
+      "r2_size": 0.0062335600554855,
+      "r2_size_emacro": 0.1403151773852549,
+      "lift_over_size": 0.1340816173297693,
+      "lift_over_size_ablated": 0.1340816173297693,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "children_married_couple_share": {
+      "r2_size": 0.2283642097365371,
+      "r2_size_emacro": 0.4228349931629742,
+      "lift_over_size": 0.1944707834264371,
+      "lift_over_size_ablated": 0.1944707834264371,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "children_female_householder_share": {
+      "r2_size": 0.2197197021062003,
+      "r2_size_emacro": 0.4127397614917717,
+      "lift_over_size": 0.1930200593855714,
+      "lift_over_size_ablated": 0.1930200593855714,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "children_male_householder_share": {
+      "r2_size": 0.0131178924765856,
+      "r2_size_emacro": 0.013808782947819,
+      "lift_over_size": 0.0006908904712333,
+      "lift_over_size_ablated": 0.0006908904712333,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "household_earnings_share": {
+      "r2_size": 0.3193089562764101,
+      "r2_size_emacro": 0.5505207270284678,
+      "lift_over_size": 0.2312117707520576,
+      "lift_over_size_ablated": 0.2243274603401166,
+      "ablated_columns": "low_employment",
+      "excluded_from_headline": false
+    },
+    "household_ss_income_share": {
+      "r2_size": 0.2605988151138559,
+      "r2_size_emacro": 0.4875800075796006,
+      "lift_over_size": 0.2269811924657446,
+      "lift_over_size_ablated": 0.2092119245759524,
+      "ablated_columns": "retirement_destination",
+      "excluded_from_headline": false
+    },
+    "mortgaged_share": {
+      "r2_size": 0.5215618227762633,
+      "r2_size_emacro": 0.686307748390382,
+      "lift_over_size": 0.1647459256141187,
+      "lift_over_size_ablated": 0.1647459256141187,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
+    },
+    "computer_ownership_share": {
+      "r2_size": 0.3796830274799277,
+      "r2_size_emacro": 0.4832095632118671,
+      "lift_over_size": 0.1035265357319393,
+      "lift_over_size_ablated": 0.1035265357319393,
+      "ablated_columns": NaN,
+      "excluded_from_headline": false
     }
   },
-  "rmse_reduction_smallest_decile": 0.20237841034782772,
-  "rmse_reduction_largest_decile": 0.2676184120728925,
-  "noise_share_smallest_decile": 0.29701384012872883,
-  "noise_share_largest_decile": 0.006146179551935982,
-  "share_of_explainable_smallest_decile": 0.21269277938800157,
-  "share_of_explainable_largest_decile": 0.5198369044790869,
-  "r2_lift_smallest_decile": 0.6144312636192901,
-  "r2_lift_largest_decile": 0.38031735869959915,
-  "r2_size_smallest_decile": -0.47447126958935365,
+  "rmse_reduction_smallest_decile": 0.12234257012952571,
+  "rmse_reduction_largest_decile": 0.2040290774594325,
+  "noise_share_smallest_decile": 67146661259.043144,
+  "noise_share_largest_decile": 17377970160.404182,
+  "share_of_explainable_smallest_decile": -0.03394911656939143,
+  "share_of_explainable_largest_decile": 0.29687113193662334,
+  "r2_lift_smallest_decile": 0.36135606678419036,
+  "r2_lift_largest_decile": 0.28931054982788723,
+  "r2_size_smallest_decile": -0.314184815197382,
   "by_training_size": [
     {
       "target": "broadband_rate",
@@ -366,50 +2621,1301 @@
       "n_reps": 10,
       "mean_lift_over_size": 0.20997680798774332,
       "sd_lift_over_size": 0.036543177429528874
+    },
+    {
+      "target": "per_capita_income",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.028542001530150164,
+      "sd_lift_over_size": 0.06400042703528533
+    },
+    {
+      "target": "per_capita_income",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.16413694137857182,
+      "sd_lift_over_size": 0.26074462820092675
+    },
+    {
+      "target": "per_capita_income",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17013239613810086,
+      "sd_lift_over_size": 0.16287491172731888
+    },
+    {
+      "target": "per_capita_income",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.16401831113105064,
+      "sd_lift_over_size": 0.09433615276404533
+    },
+    {
+      "target": "per_capita_income",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17954630571749533,
+      "sd_lift_over_size": 0.01946954035502732
+    },
+    {
+      "target": "median_family_income",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08409492151277194,
+      "sd_lift_over_size": 0.26160017411484265
+    },
+    {
+      "target": "median_family_income",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13199288882290056,
+      "sd_lift_over_size": 0.1683962679710645
+    },
+    {
+      "target": "median_family_income",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12652265860095158,
+      "sd_lift_over_size": 0.07159639824788716
+    },
+    {
+      "target": "median_family_income",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.16245680151935468,
+      "sd_lift_over_size": 0.0329476319036725
+    },
+    {
+      "target": "median_family_income",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17556723404341237,
+      "sd_lift_over_size": 0.0079919283712064
+    },
+    {
+      "target": "median_gross_rent",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08569200461957063,
+      "sd_lift_over_size": 0.03448877786354338
+    },
+    {
+      "target": "median_gross_rent",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13472466597711377,
+      "sd_lift_over_size": 0.05124149987006641
+    },
+    {
+      "target": "median_gross_rent",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.16585424658599843,
+      "sd_lift_over_size": 0.04140822535380404
+    },
+    {
+      "target": "median_gross_rent",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1742382069664947,
+      "sd_lift_over_size": 0.03443322750954389
+    },
+    {
+      "target": "median_gross_rent",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17328627525965648,
+      "sd_lift_over_size": 0.01840149184499865
+    },
+    {
+      "target": "median_contract_rent",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.04328432200979822,
+      "sd_lift_over_size": 0.04576172604025077
+    },
+    {
+      "target": "median_contract_rent",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.09161884201770172,
+      "sd_lift_over_size": 0.04150987863350655
+    },
+    {
+      "target": "median_contract_rent",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.16012349548604102,
+      "sd_lift_over_size": 0.03677597177589942
+    },
+    {
+      "target": "median_contract_rent",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.15684095326595526,
+      "sd_lift_over_size": 0.03297758511717306
+    },
+    {
+      "target": "median_contract_rent",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1734921235332628,
+      "sd_lift_over_size": 0.011833114558533924
+    },
+    {
+      "target": "median_monthly_housing_cost",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12411097395139445,
+      "sd_lift_over_size": 0.18806084217731786
+    },
+    {
+      "target": "median_monthly_housing_cost",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.11854975772545547,
+      "sd_lift_over_size": 0.09688390451109882
+    },
+    {
+      "target": "median_monthly_housing_cost",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.15270727459091984,
+      "sd_lift_over_size": 0.04010624398823085
+    },
+    {
+      "target": "median_monthly_housing_cost",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.15759851153309978,
+      "sd_lift_over_size": 0.024065158744203966
+    },
+    {
+      "target": "median_monthly_housing_cost",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1875793885718005,
+      "sd_lift_over_size": 0.01205616761657589
+    },
+    {
+      "target": "median_year_built",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.31547885514058915,
+      "sd_lift_over_size": 0.20715183828608044
+    },
+    {
+      "target": "median_year_built",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.35509561113757776,
+      "sd_lift_over_size": 0.0631931837913624
+    },
+    {
+      "target": "median_year_built",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.3452598104834867,
+      "sd_lift_over_size": 0.0524108595872939
+    },
+    {
+      "target": "median_year_built",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.3865839544004296,
+      "sd_lift_over_size": 0.03366798616953242
+    },
+    {
+      "target": "median_year_built",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.42802277575626624,
+      "sd_lift_over_size": 0.040524736397625376
+    },
+    {
+      "target": "mean_household_size",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.11334825502574804,
+      "sd_lift_over_size": 0.17596193052984546
+    },
+    {
+      "target": "mean_household_size",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.10741393422322938,
+      "sd_lift_over_size": 0.12018399002589397
+    },
+    {
+      "target": "mean_household_size",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13180810439160198,
+      "sd_lift_over_size": 0.1052397344690646
+    },
+    {
+      "target": "mean_household_size",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.16063883009379906,
+      "sd_lift_over_size": 0.11999199704309192
+    },
+    {
+      "target": "mean_household_size",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.22102073966591398,
+      "sd_lift_over_size": 0.02683046702826142
+    },
+    {
+      "target": "owner_occupied_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.023317369127044206,
+      "sd_lift_over_size": 0.11331296787049636
+    },
+    {
+      "target": "owner_occupied_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.09124711253190657,
+      "sd_lift_over_size": 0.11726697838411997
+    },
+    {
+      "target": "owner_occupied_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.09128725906023674,
+      "sd_lift_over_size": 0.048614872354315726
+    },
+    {
+      "target": "owner_occupied_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.11847177682561834,
+      "sd_lift_over_size": 0.04182538824836455
+    },
+    {
+      "target": "owner_occupied_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.19553414435317032,
+      "sd_lift_over_size": 0.013784956910892768
+    },
+    {
+      "target": "poverty_rate",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.10878408194496485,
+      "sd_lift_over_size": 0.08105935209471274
+    },
+    {
+      "target": "poverty_rate",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2127366577534892,
+      "sd_lift_over_size": 0.18718781032600657
+    },
+    {
+      "target": "poverty_rate",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.24791721347449544,
+      "sd_lift_over_size": 0.15566269264318972
+    },
+    {
+      "target": "poverty_rate",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.25594405165332695,
+      "sd_lift_over_size": 0.09422876203286519
+    },
+    {
+      "target": "poverty_rate",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2698771737425241,
+      "sd_lift_over_size": 0.025743477007984402
+    },
+    {
+      "target": "family_household_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1374736406604758,
+      "sd_lift_over_size": 0.10431022818006733
+    },
+    {
+      "target": "family_household_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13502848016036126,
+      "sd_lift_over_size": 0.05330361353119695
+    },
+    {
+      "target": "family_household_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1573926231945478,
+      "sd_lift_over_size": 0.10072573404037734
+    },
+    {
+      "target": "family_household_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.22737531128444316,
+      "sd_lift_over_size": 0.05421974170526125
+    },
+    {
+      "target": "family_household_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2485190766987782,
+      "sd_lift_over_size": 0.038208898300078585
+    },
+    {
+      "target": "single_unit_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.05286666111311372,
+      "sd_lift_over_size": 0.12426262784575169
+    },
+    {
+      "target": "single_unit_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1402410703535793,
+      "sd_lift_over_size": 0.05534040871262537
+    },
+    {
+      "target": "single_unit_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.15800259858755603,
+      "sd_lift_over_size": 0.04372727898522715
+    },
+    {
+      "target": "single_unit_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1620249955921188,
+      "sd_lift_over_size": 0.026684600463473995
+    },
+    {
+      "target": "single_unit_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1803297124754321,
+      "sd_lift_over_size": 0.009854688729748182
+    },
+    {
+      "target": "bachelors_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.07918214880257725,
+      "sd_lift_over_size": 0.07754974584486708
+    },
+    {
+      "target": "bachelors_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1896391067142292,
+      "sd_lift_over_size": 0.18689218656963386
+    },
+    {
+      "target": "bachelors_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.21262995485428232,
+      "sd_lift_over_size": 0.12412057512851431
+    },
+    {
+      "target": "bachelors_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.26885761475827713,
+      "sd_lift_over_size": 0.07244956275542301
+    },
+    {
+      "target": "bachelors_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.25316480013326503,
+      "sd_lift_over_size": 0.01601240196293998
+    },
+    {
+      "target": "masters_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08738251262804073,
+      "sd_lift_over_size": 0.06151195687263603
+    },
+    {
+      "target": "masters_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.14273575324487559,
+      "sd_lift_over_size": 0.11672327031747089
+    },
+    {
+      "target": "masters_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.194953063899412,
+      "sd_lift_over_size": 0.04490724661698844
+    },
+    {
+      "target": "masters_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.22753918809588716,
+      "sd_lift_over_size": 0.039998367222969636
+    },
+    {
+      "target": "masters_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2330715076085262,
+      "sd_lift_over_size": 0.02189921121682989
+    },
+    {
+      "target": "labor_force_participation",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.25770328976151696,
+      "sd_lift_over_size": 0.10512079325286976
+    },
+    {
+      "target": "labor_force_participation",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.30188447371807625,
+      "sd_lift_over_size": 0.0732004843792672
+    },
+    {
+      "target": "labor_force_participation",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.29191457822380185,
+      "sd_lift_over_size": 0.028698801182616068
+    },
+    {
+      "target": "labor_force_participation",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.30978465965471036,
+      "sd_lift_over_size": 0.03568769705883135
+    },
+    {
+      "target": "labor_force_participation",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.31772714425038834,
+      "sd_lift_over_size": 0.030211867016943377
+    },
+    {
+      "target": "housing_vacancy_rate",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.23669378946049013,
+      "sd_lift_over_size": 0.08022729519323066
+    },
+    {
+      "target": "housing_vacancy_rate",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.29244602733324754,
+      "sd_lift_over_size": 0.09669098606980692
+    },
+    {
+      "target": "housing_vacancy_rate",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.31243315786198284,
+      "sd_lift_over_size": 0.04001145493546593
+    },
+    {
+      "target": "housing_vacancy_rate",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.3199397341384569,
+      "sd_lift_over_size": 0.02109800649689811
+    },
+    {
+      "target": "housing_vacancy_rate",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.37021769872094956,
+      "sd_lift_over_size": 0.03900202362212205
+    },
+    {
+      "target": "electric_heating_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17718570208723797,
+      "sd_lift_over_size": 0.09996589662697566
+    },
+    {
+      "target": "electric_heating_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.21378941570723686,
+      "sd_lift_over_size": 0.07180466534637081
+    },
+    {
+      "target": "electric_heating_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.23938367994480375,
+      "sd_lift_over_size": 0.06450126631576486
+    },
+    {
+      "target": "electric_heating_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.26924570757176225,
+      "sd_lift_over_size": 0.06631328441257409
+    },
+    {
+      "target": "electric_heating_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2873311538168382,
+      "sd_lift_over_size": 0.03372340938429902
+    },
+    {
+      "target": "gas_heating_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.049793703355993334,
+      "sd_lift_over_size": 0.06947718124992856
+    },
+    {
+      "target": "gas_heating_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08435158240683042,
+      "sd_lift_over_size": 0.050548528241548735
+    },
+    {
+      "target": "gas_heating_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1348270746765165,
+      "sd_lift_over_size": 0.07402028696024561
+    },
+    {
+      "target": "gas_heating_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1450182426061951,
+      "sd_lift_over_size": 0.03709912695719318
+    },
+    {
+      "target": "gas_heating_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17616064114839286,
+      "sd_lift_over_size": 0.01911865465264973
+    },
+    {
+      "target": "bottled_gas_heating_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.008307221792663532,
+      "sd_lift_over_size": 0.07857008325726338
+    },
+    {
+      "target": "bottled_gas_heating_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.024823478974091574,
+      "sd_lift_over_size": 0.030980533095491113
+    },
+    {
+      "target": "bottled_gas_heating_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.07457976884371295,
+      "sd_lift_over_size": 0.04524328241466692
+    },
+    {
+      "target": "bottled_gas_heating_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.07109923278255548,
+      "sd_lift_over_size": 0.028758017871572308
+    },
+    {
+      "target": "bottled_gas_heating_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.07998362455771824,
+      "sd_lift_over_size": 0.011627831960955183
+    },
+    {
+      "target": "fuel_oil_heating_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13533577167069477,
+      "sd_lift_over_size": 0.2833537833589298
+    },
+    {
+      "target": "fuel_oil_heating_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.01367883653789972,
+      "sd_lift_over_size": 0.1542520607298886
+    },
+    {
+      "target": "fuel_oil_heating_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12490551973440941,
+      "sd_lift_over_size": 0.13258635818549175
+    },
+    {
+      "target": "fuel_oil_heating_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12521981819142675,
+      "sd_lift_over_size": 0.09703232737239254
+    },
+    {
+      "target": "fuel_oil_heating_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13757195489427454,
+      "sd_lift_over_size": 0.07412495229887543
+    },
+    {
+      "target": "no_fuel_used_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.02506193563610898,
+      "sd_lift_over_size": 0.03748935208645788
+    },
+    {
+      "target": "no_fuel_used_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.03817143394874549,
+      "sd_lift_over_size": 0.08686630635114428
+    },
+    {
+      "target": "no_fuel_used_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.26725946430920827,
+      "sd_lift_over_size": 0.40227396214585676
+    },
+    {
+      "target": "no_fuel_used_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.5455614250676003,
+      "sd_lift_over_size": 1.905980000060143
+    },
+    {
+      "target": "no_fuel_used_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.08330779600738344,
+      "sd_lift_over_size": 1.3088198385529215
+    },
+    {
+      "target": "drove_alone_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1466893943033604,
+      "sd_lift_over_size": 0.14243690421425736
+    },
+    {
+      "target": "drove_alone_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1715722908789014,
+      "sd_lift_over_size": 0.04185252255959766
+    },
+    {
+      "target": "drove_alone_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2042701432975047,
+      "sd_lift_over_size": 0.06891766273738903
+    },
+    {
+      "target": "drove_alone_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2311135095316171,
+      "sd_lift_over_size": 0.018356812493833766
+    },
+    {
+      "target": "drove_alone_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2397655639524227,
+      "sd_lift_over_size": 0.02498523733016844
+    },
+    {
+      "target": "carpooled_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.03855918180033592,
+      "sd_lift_over_size": 0.06481722468803498
+    },
+    {
+      "target": "carpooled_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.040025857642084516,
+      "sd_lift_over_size": 0.0502561230231158
+    },
+    {
+      "target": "carpooled_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.03805143885302771,
+      "sd_lift_over_size": 0.034670452723017074
+    },
+    {
+      "target": "carpooled_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.023130231693371008,
+      "sd_lift_over_size": 0.029352267948991914
+    },
+    {
+      "target": "carpooled_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.03701014478262001,
+      "sd_lift_over_size": 0.020969685708423176
+    },
+    {
+      "target": "public_transit_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.037144002815122534,
+      "sd_lift_over_size": 0.23142035343077882
+    },
+    {
+      "target": "public_transit_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.03725104418067328,
+      "sd_lift_over_size": 0.1739365084137272
+    },
+    {
+      "target": "public_transit_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.018337706107629637,
+      "sd_lift_over_size": 0.07744363127625185
+    },
+    {
+      "target": "public_transit_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.052632594337049345,
+      "sd_lift_over_size": 0.07744699464473973
+    },
+    {
+      "target": "public_transit_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08532870723193717,
+      "sd_lift_over_size": 0.027519351289602593
+    },
+    {
+      "target": "walked_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.09354907619501202,
+      "sd_lift_over_size": 0.20045508222711042
+    },
+    {
+      "target": "walked_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.048635419717105347,
+      "sd_lift_over_size": 0.09517045126826239
+    },
+    {
+      "target": "walked_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.06391947593926009,
+      "sd_lift_over_size": 0.15088775721798806
+    },
+    {
+      "target": "walked_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.014477744471428966,
+      "sd_lift_over_size": 0.06028397122351865
+    },
+    {
+      "target": "walked_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.00596728032525029,
+      "sd_lift_over_size": 0.04846413753837938
+    },
+    {
+      "target": "work_from_home_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1094365619678624,
+      "sd_lift_over_size": 0.10018442596451765
+    },
+    {
+      "target": "work_from_home_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.21478205839762365,
+      "sd_lift_over_size": 0.08842146069896095
+    },
+    {
+      "target": "work_from_home_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2278323278887333,
+      "sd_lift_over_size": 0.049118946983643004
+    },
+    {
+      "target": "work_from_home_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.25152598744907695,
+      "sd_lift_over_size": 0.05425263274748806
+    },
+    {
+      "target": "work_from_home_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.26858924317799937,
+      "sd_lift_over_size": 0.014780345371156132
+    },
+    {
+      "target": "foreign_born_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.06523551447700353,
+      "sd_lift_over_size": 0.0704774730839338
+    },
+    {
+      "target": "foreign_born_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.05165138259557548,
+      "sd_lift_over_size": 0.06560995327818844
+    },
+    {
+      "target": "foreign_born_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.0886467274848893,
+      "sd_lift_over_size": 0.07936607848218481
+    },
+    {
+      "target": "foreign_born_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12181566041508762,
+      "sd_lift_over_size": 0.035645377048546346
+    },
+    {
+      "target": "foreign_born_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.19637925170120926,
+      "sd_lift_over_size": 0.027115745448613875
+    },
+    {
+      "target": "naturalized_share_of_foreign_born",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.015496051689322998,
+      "sd_lift_over_size": 0.06733909853221214
+    },
+    {
+      "target": "naturalized_share_of_foreign_born",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.0001730804336538383,
+      "sd_lift_over_size": 0.0336184121941807
+    },
+    {
+      "target": "naturalized_share_of_foreign_born",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.006966576582908579,
+      "sd_lift_over_size": 0.02873081899090131
+    },
+    {
+      "target": "naturalized_share_of_foreign_born",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.0277946759435449,
+      "sd_lift_over_size": 0.018607044001526397
+    },
+    {
+      "target": "naturalized_share_of_foreign_born",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.03231950154654376,
+      "sd_lift_over_size": 0.010532032090557693
+    },
+    {
+      "target": "same_house_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.01005447563761137,
+      "sd_lift_over_size": 0.05626046030538558
+    },
+    {
+      "target": "same_house_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.04010829621329017,
+      "sd_lift_over_size": 0.034650202032020516
+    },
+    {
+      "target": "same_house_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08697429577382033,
+      "sd_lift_over_size": 0.03042642962424425
+    },
+    {
+      "target": "same_house_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12461994220877526,
+      "sd_lift_over_size": 0.044904746651947706
+    },
+    {
+      "target": "same_house_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12385544559124703,
+      "sd_lift_over_size": 0.012961028819945038
+    },
+    {
+      "target": "moved_within_county_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.0068512619335239664,
+      "sd_lift_over_size": 0.11023909082358595
+    },
+    {
+      "target": "moved_within_county_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.04195761006855979,
+      "sd_lift_over_size": 0.07728173841059674
+    },
+    {
+      "target": "moved_within_county_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08894279586036638,
+      "sd_lift_over_size": 0.03739836957986226
+    },
+    {
+      "target": "moved_within_county_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.09602821713195572,
+      "sd_lift_over_size": 0.0392409109661684
+    },
+    {
+      "target": "moved_within_county_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.11186241762651869,
+      "sd_lift_over_size": 0.0162109812514768
+    },
+    {
+      "target": "moved_different_state_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08396297910503606,
+      "sd_lift_over_size": 0.06676155889712772
+    },
+    {
+      "target": "moved_different_state_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13145499001120636,
+      "sd_lift_over_size": 0.11564314850975634
+    },
+    {
+      "target": "moved_different_state_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.11609489239807314,
+      "sd_lift_over_size": 0.03237336689958182
+    },
+    {
+      "target": "moved_different_state_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13118037784021386,
+      "sd_lift_over_size": 0.03604316075741959
+    },
+    {
+      "target": "moved_different_state_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1439949948184425,
+      "sd_lift_over_size": 0.02029085090148688
+    },
+    {
+      "target": "children_married_couple_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.002956990811344229,
+      "sd_lift_over_size": 0.09178877868106258
+    },
+    {
+      "target": "children_married_couple_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.032267392956627214,
+      "sd_lift_over_size": 0.12241048186932325
+    },
+    {
+      "target": "children_married_couple_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.0872266809075897,
+      "sd_lift_over_size": 0.03089128920559063
+    },
+    {
+      "target": "children_married_couple_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.10152298381277543,
+      "sd_lift_over_size": 0.04663833906907106
+    },
+    {
+      "target": "children_married_couple_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17090218671827487,
+      "sd_lift_over_size": 0.00981998703893161
+    },
+    {
+      "target": "children_female_householder_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.07485840824959417,
+      "sd_lift_over_size": 0.10522520168313587
+    },
+    {
+      "target": "children_female_householder_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.07990096982755482,
+      "sd_lift_over_size": 0.1212240419909019
+    },
+    {
+      "target": "children_female_householder_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.11163797960795271,
+      "sd_lift_over_size": 0.03146193011849814
+    },
+    {
+      "target": "children_female_householder_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13103608379298975,
+      "sd_lift_over_size": 0.04945612524573173
+    },
+    {
+      "target": "children_female_householder_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.18082670153490032,
+      "sd_lift_over_size": 0.013437151395770253
+    },
+    {
+      "target": "children_male_householder_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.004650154632322201,
+      "sd_lift_over_size": 0.059984254366621345
+    },
+    {
+      "target": "children_male_householder_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.015563810899685893,
+      "sd_lift_over_size": 0.0430543472766379
+    },
+    {
+      "target": "children_male_householder_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.006855910341572779,
+      "sd_lift_over_size": 0.03524356088755569
+    },
+    {
+      "target": "children_male_householder_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.00402376013749467,
+      "sd_lift_over_size": 0.03019449153714882
+    },
+    {
+      "target": "children_male_householder_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.006235703477158605,
+      "sd_lift_over_size": 0.014165591509035482
+    },
+    {
+      "target": "household_earnings_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.16558684173743896,
+      "sd_lift_over_size": 0.091309201250767
+    },
+    {
+      "target": "household_earnings_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17777466556424787,
+      "sd_lift_over_size": 0.03581197072815804
+    },
+    {
+      "target": "household_earnings_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.17549025596083792,
+      "sd_lift_over_size": 0.029237904749076445
+    },
+    {
+      "target": "household_earnings_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.1981410111991916,
+      "sd_lift_over_size": 0.03604838453196973
+    },
+    {
+      "target": "household_earnings_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.22280122516789774,
+      "sd_lift_over_size": 0.025579433248012783
+    },
+    {
+      "target": "household_ss_income_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.22076992814555402,
+      "sd_lift_over_size": 0.07901992120010812
+    },
+    {
+      "target": "household_ss_income_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.20443764378511875,
+      "sd_lift_over_size": 0.022354259706846173
+    },
+    {
+      "target": "household_ss_income_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.2074754890376899,
+      "sd_lift_over_size": 0.0439221878885931
+    },
+    {
+      "target": "household_ss_income_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.22965583038550608,
+      "sd_lift_over_size": 0.03583879436832497
+    },
+    {
+      "target": "household_ss_income_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.23181135404668235,
+      "sd_lift_over_size": 0.022744503001152105
+    },
+    {
+      "target": "mortgaged_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.09236158094171763,
+      "sd_lift_over_size": 0.08543900015983664
+    },
+    {
+      "target": "mortgaged_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.14730650776393045,
+      "sd_lift_over_size": 0.07448143389564102
+    },
+    {
+      "target": "mortgaged_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.13332716885765045,
+      "sd_lift_over_size": 0.04964272928656163
+    },
+    {
+      "target": "mortgaged_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.12300515334029072,
+      "sd_lift_over_size": 0.03185380565101667
+    },
+    {
+      "target": "mortgaged_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.14042918754676365,
+      "sd_lift_over_size": 0.019293476079671506
+    },
+    {
+      "target": "computer_ownership_share",
+      "n_train_units": 210,
+      "n_reps": 10,
+      "mean_lift_over_size": -0.036284735698284054,
+      "sd_lift_over_size": 0.10348521016617875
+    },
+    {
+      "target": "computer_ownership_share",
+      "n_train_units": 400,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.040716210018125046,
+      "sd_lift_over_size": 0.03655798690159137
+    },
+    {
+      "target": "computer_ownership_share",
+      "n_train_units": 800,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.06333662172260061,
+      "sd_lift_over_size": 0.030890733483659383
+    },
+    {
+      "target": "computer_ownership_share",
+      "n_train_units": 1600,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.08796111757605656,
+      "sd_lift_over_size": 0.030279264676429832
+    },
+    {
+      "target": "computer_ownership_share",
+      "n_train_units": 3000,
+      "n_reps": 10,
+      "mean_lift_over_size": 0.10537230595955963,
+      "sd_lift_over_size": 0.008228865183937216
     }
-  ],
-  "drop_one_noise_floor": {
-    "A": {
-      "n_targets": 5,
-      "mean_contribution_ablated": -4.573467939910092e-05,
-      "mean_placebo": -0.003709922567991605,
-      "max_placebo": 0.0025395643797947454,
-      "n_targets_above_floor": 2
-    },
-    "B": {
-      "n_targets": 5,
-      "mean_contribution_ablated": 0.006671778906858572,
-      "mean_placebo": -0.007203792021061778,
-      "max_placebo": 0.0030915029800413496,
-      "n_targets_above_floor": 4
-    },
-    "C": {
-      "n_targets": 5,
-      "mean_contribution_ablated": 0.005352013813654688,
-      "mean_placebo": -0.0006019767432151523,
-      "max_placebo": 0.0022631241909358835,
-      "n_targets_above_floor": 4
-    },
-    "D": {
-      "n_targets": 5,
-      "mean_contribution_ablated": 0.019084518442214572,
-      "mean_placebo": -0.0016632818889152513,
-      "max_placebo": 0.002747359126283766,
-      "n_targets_above_floor": 5
-    },
-    "E": {
-      "n_targets": 5,
-      "mean_contribution_ablated": 0.05821471793287527,
-      "mean_placebo": -0.0017822522141685629,
-      "max_placebo": 0.0023270393319859695,
-      "n_targets_above_floor": 5
-    },
-    "F": {
-      "n_targets": 5,
-      "mean_contribution_ablated": 0.040969213211295985,
-      "mean_placebo": -0.0026582334576686862,
-      "max_placebo": 0.0024886016107726894,
-      "n_targets_above_floor": 5
-    }
-  }
+  ]
 }

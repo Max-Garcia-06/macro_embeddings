@@ -90,12 +90,26 @@ import requests
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 EXTERNAL_TARGETS_PATH: Path = REPO_ROOT / "data" / "external_targets.parquet"
 
+ACS_YEAR: int = 2023
 ACS_VINTAGE: str = "ACS 2023 5-year"
 ACS_AS_OF_DATE: str = "2023-12-31"
 ACS_BASE_URL: str = (
-    "https://www2.census.gov/programs-surveys/acs/summary_file/2023/"
-    "table-based-SF/data/5YRData/acsdt5y2023-{table}.dat"
+    "https://www2.census.gov/programs-surveys/acs/summary_file/{year}/"
+    "table-based-SF/data/5YRData/acsdt5y{year}-{table}.dat"
 )
+
+# Vintages the table-based summary file exists for. The Census switched to this
+# format in 2021; earlier years publish only the sequence-based files, which are
+# a different parse entirely and are not supported here. `analyze_temporal_
+# transfer.py` needs two vintages as far apart as this range allows, which is
+# why the constant is a set of what works rather than a single year.
+#
+# 5-year estimates are labelled by their final year and cover the five years
+# ending there, so ACS 2021 is 2017-2021 and ACS 2024 is 2020-2024. Any two
+# vintages closer together than five years share sample, and the overlap
+# attenuates the change between them -- a fact the temporal analysis has to
+# state rather than a reason not to run it.
+SUPPORTED_ACS_YEARS: tuple[int, ...] = (2021, 2022, 2023, 2024)
 REQUEST_TIMEOUT_SECONDS: int = 180
 
 # Summary-file rows are one per geography across every summary level. County
@@ -603,7 +617,7 @@ EXTERNAL_TARGETS: tuple[ExternalTarget, ...] = (
 logger = logging.getLogger(__name__)
 
 
-def _fetch_table_uncached(table: str) -> pd.DataFrame:
+def _fetch_table_uncached(table: str, year: int = ACS_YEAR) -> pd.DataFrame:
     """Fetch one ACS summary-file table and reduce it to county rows.
 
     Retains every column, so one download serves every target drawn from this
@@ -611,14 +625,23 @@ def _fetch_table_uncached(table: str) -> pd.DataFrame:
 
     Args:
         table: Lowercase table identifier as it appears in the file name.
+        year: ACS 5-year vintage, labelled by its final year.
 
     Returns:
         DataFrame indexed by `fips_code` carrying all numeric table columns.
 
     Raises:
         requests.HTTPError: If the Census download fails.
+        ValueError: If `year` predates the table-based summary file.
     """
-    response = requests.get(ACS_BASE_URL.format(table=table), timeout=REQUEST_TIMEOUT_SECONDS)
+    if year not in SUPPORTED_ACS_YEARS:
+        raise ValueError(
+            f"ACS {year} has no table-based summary file; "
+            f"supported vintages are {SUPPORTED_ACS_YEARS}"
+        )
+    response = requests.get(
+        ACS_BASE_URL.format(year=year, table=table), timeout=REQUEST_TIMEOUT_SECONDS
+    )
     response.raise_for_status()
 
     raw = pd.read_csv(
@@ -635,16 +658,19 @@ def _fetch_table_uncached(table: str) -> pd.DataFrame:
 
 
 @lru_cache(maxsize=None)
-def _download_table(table: str) -> pd.DataFrame:
+def _download_table(table: str, year: int = ACS_YEAR) -> pd.DataFrame:
     """Memoized `_fetch_table_uncached`, so one table downloads once per run.
 
     Args:
         table: Lowercase table identifier.
+        year: ACS 5-year vintage. Part of the cache key, so scoring two
+            vintages in one process does not serve the second from the first's
+            download.
 
     Returns:
         The cached county-row frame for that table.
     """
-    return _fetch_table_uncached(table)
+    return _fetch_table_uncached(table, year)
 
 
 def _moe_column(estimate_column: str) -> str:
@@ -662,11 +688,12 @@ def _moe_column(estimate_column: str) -> str:
     return f"{table}_M{line}"
 
 
-def _derive(target: ExternalTarget) -> pd.DataFrame:
+def _derive(target: ExternalTarget, year: int = ACS_YEAR) -> pd.DataFrame:
     """Compute one target's value and standard error for every county.
 
     Args:
         target: The target to derive.
+        year: ACS 5-year vintage to read the target from.
 
     Returns:
         DataFrame with `fips_code`, the target column, and its `_se` companion.
@@ -677,7 +704,7 @@ def _derive(target: ExternalTarget) -> pd.DataFrame:
     """
     logger.info("Downloading %s for %s...", target.table.upper(), target.column)
     numerator_columns = [target.numerator, _moe_column(target.numerator)]
-    frame = _download_table(target.table)
+    frame = _download_table(target.table, year)
     missing = [c for c in numerator_columns if c not in frame.columns]
     if missing:
         raise ValueError(
@@ -698,7 +725,7 @@ def _derive(target: ExternalTarget) -> pd.DataFrame:
         if denominator_table != target.table:
             logger.info("  and %s for its denominator...", denominator_table.upper())
             denominator_columns = [target.denominator, _moe_column(target.denominator)]
-            denominator_frame = _download_table(denominator_table)
+            denominator_frame = _download_table(denominator_table, year)
             denominator_missing = [c for c in denominator_columns if c not in denominator_frame.columns]
             if denominator_missing:
                 raise ValueError(
@@ -707,7 +734,7 @@ def _derive(target: ExternalTarget) -> pd.DataFrame:
                 )
         else:
             denominator_columns = [target.denominator, _moe_column(target.denominator)]
-            denominator_frame = _download_table(target.table)
+            denominator_frame = _download_table(target.table, year)
             denominator_missing = [c for c in denominator_columns if c not in denominator_frame.columns]
             if denominator_missing:
                 raise ValueError(
@@ -759,11 +786,33 @@ def _derive(target: ExternalTarget) -> pd.DataFrame:
     )
 
 
-def fetch_external_targets(cache_path: Path = EXTERNAL_TARGETS_PATH) -> pd.DataFrame:
+def vintage_cache_path(year: int) -> Path:
+    """Local cache path for one ACS vintage.
+
+    The default vintage keeps the original filename so nothing that already
+    reads `data/external_targets.parquet` has to change; every other vintage
+    gets its year in the name.
+
+    Args:
+        year: ACS 5-year vintage, labelled by its final year.
+
+    Returns:
+        Path under `data/`.
+    """
+    if year == ACS_YEAR:
+        return EXTERNAL_TARGETS_PATH
+    return EXTERNAL_TARGETS_PATH.with_name(f"external_targets_{year}.parquet")
+
+
+def fetch_external_targets(
+    cache_path: Path | None = None, year: int = ACS_YEAR
+) -> pd.DataFrame:
     """Load the external target table, downloading and caching on first use.
 
     Args:
-        cache_path: Local Parquet cache path.
+        cache_path: Local Parquet cache path. Defaults to the path
+            `vintage_cache_path` assigns to `year`.
+        year: ACS 5-year vintage to fetch.
 
     Returns:
         DataFrame with `fips_code`, one value and one `_se` column per entry in
@@ -772,15 +821,16 @@ def fetch_external_targets(cache_path: Path = EXTERNAL_TARGETS_PATH) -> pd.DataF
     Raises:
         requests.HTTPError: If any Census download fails.
     """
+    cache_path = vintage_cache_path(year) if cache_path is None else cache_path
     if cache_path.exists():
         logger.info("Loading cached external targets from %s", cache_path)
         return pd.read_parquet(cache_path)
 
-    merged = _derive(EXTERNAL_TARGETS[0])
+    merged = _derive(EXTERNAL_TARGETS[0], year)
     for target in EXTERNAL_TARGETS[1:]:
-        merged = merged.merge(_derive(target), on="fips_code", how="outer")
+        merged = merged.merge(_derive(target, year), on="fips_code", how="outer")
 
-    merged["as_of_date"] = ACS_AS_OF_DATE
+    merged["as_of_date"] = f"{year}-12-31"
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     merged.to_parquet(cache_path, engine="pyarrow", index=False)
     logger.info("Cached %d counties to %s", len(merged), cache_path)
