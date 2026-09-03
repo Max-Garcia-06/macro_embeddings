@@ -144,6 +144,92 @@ print(f"{stats['n_counties']:,} counties matched: Wikipedia article × IRS retur
 md("""
 ---
 
+## 0. What the raw data is
+
+Before any of the scoring: this is what one row of Source A looks like, for one
+county in each tier. The pillar starts as a Wikipedia article. Two text fields
+are stored per county — `raw_intro_text`, the lead section as written, and
+`embedding_text`, the same lead with the county name, the state name and the
+template boilerplate stripped out — plus the article's section titles. The
+extraction reads the raw field; the flags below are what it returns.
+
+Each exemplar is the county whose `content_length` sits closest to its tier's
+median, so these are typical rows, not chosen ones.
+""")
+
+code("""
+import textwrap
+
+raw = pd.read_parquet(REPO / "data" / "source_a_text_features.parquet")
+sections = pd.read_parquet(REPO / "data" / "source_a_sections.parquet")
+irs = pd.read_parquet(REPO / "data" / "source_e_irs_soi.parquet")[["fips_code", LEVEL]]
+
+edges = stats["tier_edges"]
+raw["tier"] = pd.cut(raw["content_length"],
+                     bins=[*edges, int(raw["content_length"].max()) + 1],
+                     right=False, labels=stats["tier_labels"], ordered=True)
+raw = raw.merge(irs, on="fips_code", how="left")
+
+FLAGS = [c for c in stats["source_a_columns"] if raw[c].dtype == bool]
+
+
+def exemplar(tier):
+    \"\"\"The county in `tier` whose article length is nearest the tier median.\"\"\"
+    block = raw[raw["tier"] == tier]
+    return block.loc[(block["content_length"] - block["content_length"].median()).abs().idxmin()]
+
+
+EXEMPLARS = {t: exemplar(t) for t in TIERS}
+
+for tier, row in EXEMPLARS.items():
+    titles = sections.loc[sections["fips_code"] == row["fips_code"], "section_title"].tolist()
+    on = [c for c in FLAGS if bool(row[c])]
+    print("=" * 94)
+    print(f"[{tier}]  {row['county_name']}  ·  FIPS {row['fips_code']}  ·  "
+          f"content_length {row['content_length']}  ·  "
+          f"wage per return ${row[LEVEL]:,.1f}k")
+    print("-" * 94)
+    print("raw_intro_text (what extraction reads, truncated):")
+    print(textwrap.fill(row["raw_intro_text"][:640], 90, initial_indent="   ",
+                        subsequent_indent="   "))
+    print("\\nembedding_text (same lead, boilerplate + place names stripped):")
+    print(textwrap.fill(row["embedding_text"][:320], 90, initial_indent="   ",
+                        subsequent_indent="   "))
+    print(f"\\nflags returning True: {', '.join(on) if on else '(none — every flag False)'}")
+    print(f"section titles ({len(titles)}): {', '.join(titles[:14])}"
+          + (" ..." if len(titles) > 14 else ""))
+    print()
+""")
+
+md("""
+Two things to notice, because they set up everything that follows.
+
+**Length is not economics.** The rich-tier article is the longest of the four
+and its extra length is a de Soto expedition dig and a record largemouth bass —
+history and trivia, nothing about what anyone there does for a living. The
+mid-tier article is shorter and says "heavy manufacturing in steel and iron".
+Corpus-wide only 19.7% of intros mention industry at all, which is why the
+lexicon returns False rather than a dense vector for a county with nothing
+economic to say: the sparsity is the signal.
+
+**The section list is templated.** All four counties carry History, Geography,
+Demographics, Politics in nearly the same order — that is a WikiProject
+convention, not a fact about the county. §3 is where that comes back.
+
+Below is the actual model input for the same four counties: all 29 columns, as
+handed to the ridge.
+""")
+
+code(r"""
+frame = pd.DataFrame({f"{t}: {EXEMPLARS[t]['county_name'].split(',')[0]}":
+                      EXEMPLARS[t][stats["source_a_columns"]] for t in TIERS})
+frame.index.name = f"{len(stats['source_a_columns'])} Source A columns"
+display(frame.fillna("—"))
+""")
+
+md("""
+---
+
 ## 1. The wage gradient is real, and it is mostly population
 
 Longer articles describe bigger places, and bigger places pay more. The left
