@@ -1,6 +1,7 @@
 """Fixtures shared across the Source A representation test suite."""
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -21,3 +22,15 @@ def sections_frame() -> pd.DataFrame:
 def tiered_embedding_results() -> pd.DataFrame:
     """Committed pooled results from the tiered embedding sweep."""
     return pd.read_csv(REPO_ROOT / "outputs" / "source_a_tiered_embedding.csv")
+
+
+@pytest.fixture(scope="session")
+def representation_stats() -> dict:
+    """The shipped representation-marginal stats artifact."""
+    path = (
+        REPO_ROOT
+        / "analysis-output"
+        / "source-a"
+        / "source_a_representation_marginal_stats.json"
+    )
+    return json.loads(path.read_text())

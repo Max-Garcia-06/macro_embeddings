@@ -112,6 +112,56 @@
         "household_ss_income_share": 0.0,
         "mortgaged_share": 0.0,
         "computer_ownership_share": 0.0
+      },
+      "bootstrap": {
+        "n_replicates": 10000,
+        "percentiles": [
+          2.5,
+          97.5
+        ],
+        "n_targets": 41,
+        "n_tables": 28,
+        "reference_arm": "latlong_only",
+        "naive": {
+          "contribution": {
+            "point": 0.0157903833700282,
+            "low": 0.005536962086672653,
+            "high": 0.02814910307800525,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "covers_zero": true
+          },
+          "minus_latlong_only": {
+            "point": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "covers_zero": true
+          }
+        },
+        "table_clustered": {
+          "contribution": {
+            "point": 0.0157903833700282,
+            "low": 0.00301992465777462,
+            "high": 0.028733253682267743,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "covers_zero": true
+          },
+          "minus_latlong_only": {
+            "point": 0.0,
+            "low": 0.0,
+            "high": 0.0,
+            "covers_zero": true
+          }
+        }
       }
     },
     "minilm_prose_plus_history_ccr_pca29": {
@@ -215,6 +265,56 @@
         "household_ss_income_share": -0.0037427869662440827,
         "mortgaged_share": -0.0025543939190383336,
         "computer_ownership_share": -0.0013646659284484164
+      },
+      "bootstrap": {
+        "n_replicates": 10000,
+        "percentiles": [
+          2.5,
+          97.5
+        ],
+        "n_targets": 41,
+        "n_tables": 28,
+        "reference_arm": "latlong_only",
+        "naive": {
+          "contribution": {
+            "point": 0.016397494260222707,
+            "low": 0.009305111063061111,
+            "high": 0.025071419266618284,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.0006071108901945411,
+            "low": -0.008075919473856337,
+            "high": 0.008845325828446483,
+            "covers_zero": true
+          },
+          "minus_latlong_only": {
+            "point": 0.0006071108901945059,
+            "low": -0.008075919473856353,
+            "high": 0.008845325828446444,
+            "covers_zero": true
+          }
+        },
+        "table_clustered": {
+          "contribution": {
+            "point": 0.016397494260222707,
+            "low": 0.007131544081431382,
+            "high": 0.029720833718216794,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": 0.0006071108901945411,
+            "low": -0.007012615296620048,
+            "high": 0.008169072541556861,
+            "covers_zero": true
+          },
+          "minus_latlong_only": {
+            "point": 0.0006071108901945059,
+            "low": -0.007012615296620094,
+            "high": 0.008169072541556814,
+            "covers_zero": true
+          }
+        }
       }
     },
     "minilm_uniform": {
@@ -318,6 +418,56 @@
         "household_ss_income_share": -0.03949489488456259,
         "mortgaged_share": -0.027290803692993304,
         "computer_ownership_share": -0.02574161242794948
+      },
+      "bootstrap": {
+        "n_replicates": 10000,
+        "percentiles": [
+          2.5,
+          97.5
+        ],
+        "n_targets": 41,
+        "n_tables": 28,
+        "reference_arm": "latlong_only",
+        "naive": {
+          "contribution": {
+            "point": -0.013695989851445938,
+            "low": -0.024004090850964006,
+            "high": -0.0027165838934700326,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": -0.02948637322147414,
+            "low": -0.039089857598565605,
+            "high": -0.019462367388103356,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.02948637322147414,
+            "low": -0.03908985759856562,
+            "high": -0.019462367388103384,
+            "covers_zero": false
+          }
+        },
+        "table_clustered": {
+          "contribution": {
+            "point": -0.013695989851445938,
+            "low": -0.0294414622348552,
+            "high": 0.001565352760876308,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": -0.02948637322147414,
+            "low": -0.03754932767507275,
+            "high": -0.022567930275186728,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.02948637322147414,
+            "low": -0.037549327675072706,
+            "high": -0.02256793027518673,
+            "covers_zero": false
+          }
+        }
       }
     },
     "minilm_uniform_ccr_pca29": {
@@ -421,6 +571,56 @@
         "household_ss_income_share": -0.0050397316432545525,
         "mortgaged_share": -0.015284334864456017,
         "computer_ownership_share": -0.0020610401069519613
+      },
+      "bootstrap": {
+        "n_replicates": 10000,
+        "percentiles": [
+          2.5,
+          97.5
+        ],
+        "n_targets": 41,
+        "n_tables": 28,
+        "reference_arm": "latlong_only",
+        "naive": {
+          "contribution": {
+            "point": 0.013474423691356652,
+            "low": 0.006715857421420845,
+            "high": 0.02165802763401391,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": -0.0023159596786715194,
+            "low": -0.01297867015951257,
+            "high": 0.007012904821383815,
+            "covers_zero": true
+          },
+          "minus_latlong_only": {
+            "point": -0.002315959678671549,
+            "low": -0.012978670159512576,
+            "high": 0.007012904821383789,
+            "covers_zero": true
+          }
+        },
+        "table_clustered": {
+          "contribution": {
+            "point": 0.013474423691356652,
+            "low": 0.005070830553824866,
+            "high": 0.026126455896253974,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": -0.0023159596786715194,
+            "low": -0.01110795676762843,
+            "high": 0.006334248514613405,
+            "covers_zero": true
+          },
+          "minus_latlong_only": {
+            "point": -0.002315959678671549,
+            "low": -0.011107956767628435,
+            "high": 0.006334248514613362,
+            "covers_zero": true
+          }
+        }
       }
     },
     "minilm_uniform_l2": {
@@ -524,6 +724,56 @@
         "household_ss_income_share": -0.032173820620805316,
         "mortgaged_share": -0.02433052435178784,
         "computer_ownership_share": -0.02156893010783134
+      },
+      "bootstrap": {
+        "n_replicates": 10000,
+        "percentiles": [
+          2.5,
+          97.5
+        ],
+        "n_targets": 41,
+        "n_tables": 28,
+        "reference_arm": "latlong_only",
+        "naive": {
+          "contribution": {
+            "point": -0.006474531602327281,
+            "low": -0.01733483465029057,
+            "high": 0.005161614349502439,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": -0.02226491497235547,
+            "low": -0.03261481460465071,
+            "high": -0.011407946358080274,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.02226491497235548,
+            "low": -0.03261481460465073,
+            "high": -0.011407946358080304,
+            "covers_zero": false
+          }
+        },
+        "table_clustered": {
+          "contribution": {
+            "point": -0.006474531602327281,
+            "low": -0.023003925593374414,
+            "high": 0.009468593866793705,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": -0.02226491497235547,
+            "low": -0.030701418301764517,
+            "high": -0.01512398750525813,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.02226491497235548,
+            "low": -0.030701418301764503,
+            "high": -0.015123987505258151,
+            "covers_zero": false
+          }
+        }
       }
     },
     "minilm_uniform_pca29": {
@@ -627,6 +877,56 @@
         "household_ss_income_share": -0.01113670873987005,
         "mortgaged_share": -0.011339743856740414,
         "computer_ownership_share": -0.0042799495596745896
+      },
+      "bootstrap": {
+        "n_replicates": 10000,
+        "percentiles": [
+          2.5,
+          97.5
+        ],
+        "n_targets": 41,
+        "n_tables": 28,
+        "reference_arm": "latlong_only",
+        "naive": {
+          "contribution": {
+            "point": 0.01098481762168167,
+            "low": 0.005330465410528491,
+            "high": 0.017748751597632784,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": -0.004805565748346513,
+            "low": -0.013212486964663952,
+            "high": 0.0032134653843779648,
+            "covers_zero": true
+          },
+          "minus_latlong_only": {
+            "point": -0.00480556574834653,
+            "low": -0.013212486964663978,
+            "high": 0.0032134653843779422,
+            "covers_zero": true
+          }
+        },
+        "table_clustered": {
+          "contribution": {
+            "point": 0.01098481762168167,
+            "low": 0.003407670969349933,
+            "high": 0.02079254057143977,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": -0.004805565748346513,
+            "low": -0.011334550484325058,
+            "high": 0.0029645587348165023,
+            "covers_zero": true
+          },
+          "minus_latlong_only": {
+            "point": -0.00480556574834653,
+            "low": -0.011334550484325068,
+            "high": 0.0029645587348164646,
+            "covers_zero": true
+          }
+        }
       }
     },
     "minilm_uniform_pca64": {
@@ -730,6 +1030,56 @@
         "household_ss_income_share": -0.00942436181908135,
         "mortgaged_share": -0.01698119756486427,
         "computer_ownership_share": -0.01182539467436372
+      },
+      "bootstrap": {
+        "n_replicates": 10000,
+        "percentiles": [
+          2.5,
+          97.5
+        ],
+        "n_targets": 41,
+        "n_tables": 28,
+        "reference_arm": "latlong_only",
+        "naive": {
+          "contribution": {
+            "point": 0.007893030316432393,
+            "low": 0.001103220309631094,
+            "high": 0.015889580786065713,
+            "covers_zero": false
+          },
+          "contribution_geo": {
+            "point": -0.00789735305359579,
+            "low": -0.014539625438749617,
+            "high": -0.0011316994797626466,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.007897353053595808,
+            "low": -0.014539625438749636,
+            "high": -0.0011316994797626616,
+            "covers_zero": false
+          }
+        },
+        "table_clustered": {
+          "contribution": {
+            "point": 0.007893030316432393,
+            "low": -0.0018589060826640213,
+            "high": 0.01905168488712732,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": -0.00789735305359579,
+            "low": -0.01278451439973384,
+            "high": -0.0017803565701227605,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.007897353053595808,
+            "low": -0.012784514399733852,
+            "high": -0.0017803565701227917,
+            "covers_zero": false
+          }
+        }
       }
     },
     "typed": {
@@ -833,6 +1183,56 @@
         "household_ss_income_share": -0.019009258774348003,
         "mortgaged_share": -0.010680664274625995,
         "computer_ownership_share": -0.00889436216747308
+      },
+      "bootstrap": {
+        "n_replicates": 10000,
+        "percentiles": [
+          2.5,
+          97.5
+        ],
+        "n_targets": 41,
+        "n_tables": 28,
+        "reference_arm": "latlong_only",
+        "naive": {
+          "contribution": {
+            "point": 0.003139327881297244,
+            "low": -0.00030022285441680077,
+            "high": 0.007372052206324102,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": -0.01265105548873095,
+            "low": -0.025644897740841235,
+            "high": -0.001726707189141223,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.012651055488730956,
+            "low": -0.02564489774084123,
+            "high": -0.0017267071891412548,
+            "covers_zero": false
+          }
+        },
+        "table_clustered": {
+          "contribution": {
+            "point": 0.003139327881297244,
+            "low": -0.0006288950759694974,
+            "high": 0.007798491343174626,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": -0.01265105548873095,
+            "low": -0.02648527821058941,
+            "high": -0.0010374896498480878,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.012651055488730956,
+            "low": -0.02648527821058941,
+            "high": -0.001037489649848105,
+            "covers_zero": false
+          }
+        }
       }
     },
     "typed_transformed": {
@@ -936,6 +1336,56 @@
         "household_ss_income_share": -0.01932774355959277,
         "mortgaged_share": -0.01174618820582074,
         "computer_ownership_share": -0.008635842309938857
+      },
+      "bootstrap": {
+        "n_replicates": 10000,
+        "percentiles": [
+          2.5,
+          97.5
+        ],
+        "n_targets": 41,
+        "n_tables": 28,
+        "reference_arm": "latlong_only",
+        "naive": {
+          "contribution": {
+            "point": 0.001653719900505432,
+            "low": -0.0010779443840691653,
+            "high": 0.004556134007220363,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": -0.01413666346952276,
+            "low": -0.026769755931890585,
+            "high": -0.00365658923765003,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.014136663469522769,
+            "low": -0.02676975593189061,
+            "high": -0.003656589237650045,
+            "covers_zero": false
+          }
+        },
+        "table_clustered": {
+          "contribution": {
+            "point": 0.001653719900505432,
+            "low": -0.001407466736316731,
+            "high": 0.005018280536502861,
+            "covers_zero": true
+          },
+          "contribution_geo": {
+            "point": -0.01413666346952276,
+            "low": -0.028031569122385493,
+            "high": -0.0016871537496084947,
+            "covers_zero": false
+          },
+          "minus_latlong_only": {
+            "point": -0.014136663469522769,
+            "low": -0.028031569122385497,
+            "high": -0.0016871537496084897,
+            "covers_zero": false
+          }
+        }
       }
     }
   }

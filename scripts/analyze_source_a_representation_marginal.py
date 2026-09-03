@@ -70,6 +70,7 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import GroupKFold
 
 from analyze_external_target import (
+    EXCLUDED_TARGETS as _EXCLUDED_TARGETS,
     EXTERNAL_TARGETS,
     N_FOLDS,
     TARGET_RESTATEMENTS,
@@ -116,18 +117,10 @@ CENTROIDS_PATH: Path = REPO_ROOT / "data" / "county_centroids.parquet"
 # panel (0 of 3,144 rows carry state_fips 72) -- the earlier "PR + unmasked
 # sentinels" explanation for this target's broken R2 does not hold up; see
 # analysis-output/source-a/source-a-findings.md #22.
-EXCLUDED_TARGETS: dict[str, str] = {
-    "no_fuel_used_share": (
-        "degenerate target: reduced R2 -1.0031, full R2 -0.9720 to -1.0381 "
-        "depending on arm -- every model scored is worse than predicting the "
-        "mean, so the reported positive contribution is the gap between two "
-        "useless models, not a gain. Panel mean 0.0067, sd 0.0232, max 0.644, "
-        "skew 23.0, kurtosis 573; PR is not in the panel (0/3144 rows), so this "
-        "is not sentinel/PR contamination -- the target is genuinely too "
-        "degenerate for this model class. Kept ingested and scored (see the "
-        "per-target table) but excluded from every headline mean."
-    ),
-}
+# Imported from `analyze_external_target` rather than defined here: the
+# drop-one sweep draws the same basket and has to apply the same exclusion,
+# and two copies of this list would drift.
+EXCLUDED_TARGETS: dict[str, str] = dict(_EXCLUDED_TARGETS)
 
 # The text variant underlying the SELECTED scope. `prose_plus_history` is the
 # scope Task 9 selected (mean lift 0.004530 on the 28-target selection basket,
@@ -168,6 +161,55 @@ EMBEDDING_ARMS: dict[str, int | None] = {
     "minilm_uniform_pca64": 64,
     "minilm_uniform_ccr_pca29": 29,
     "minilm_prose_plus_history_ccr_pca29": 29,
+}
+
+
+# --- Intervals on the headline means -----------------------------------------
+#
+# Every figure this script headlines is a mean over the decision basket, printed
+# to four decimal places with nothing attached saying how far it could move. The
+# basket is small (41 targets) and clustered -- five of its targets are
+# heating-fuel shares off a single ACS table -- so the gap between two arms'
+# means is not readable without an interval.
+#
+# The resampling unit is the TARGET, because the target is the unit the headline
+# mean is taken over. It is not the county: counties sit inside the folds and
+# the cross-validation already accounts for them.
+#
+# Two resamples are reported side by side, and the gap between them is the
+# concrete size of the clustering caveat this script's prose otherwise states in
+# words:
+#
+# - `naive` resamples individual targets, which assumes targets are independent.
+#   They are not, so this interval is the optimistic one.
+# - `table_clustered` resamples whole ACS tables, keeping every target drawn from
+#   a table together, which respects the strongest dependence we can name.
+#
+# Within a replicate every arm is scored on the SAME draw -- a paired bootstrap
+# -- so an interval on a *difference* between two arms is not inflated by
+# target-level variance both arms share.
+#
+# Nothing here re-fits a model. It resamples the per-target contributions
+# `score_representation` already computed.
+N_BOOTSTRAP: int = 10_000
+
+# Percentile bounds of the reported interval: a 95% interval.
+BOOTSTRAP_PERCENTILES: tuple[float, float] = (2.5, 97.5)
+
+# The arm every other arm's difference is reported against. Two coordinate
+# columns are the cheap competitor the geography control raised, so
+# `<arm> - latlong_only` is the difference the shipping decision turns on.
+BOOTSTRAP_REFERENCE_ARM: str = "latlong_only"
+
+# The arm Task 9's pre-registered scope selection fixed, named once so the
+# summary log and the notebook quote the same key.
+SELECTED_ARM: str = f"minilm_{VARIANT_KEY}_ccr_pca29"
+
+# Target -> ACS table, for the clustered resample. Read off the target
+# definitions rather than re-typed here, so a target added upstream lands in its
+# cluster without an edit in this file.
+TARGET_TABLES: dict[str, str] = {
+    target.column: target.table for target in EXTERNAL_TARGETS
 }
 
 
@@ -515,6 +557,159 @@ def score_representation(
     return pd.DataFrame(rows)
 
 
+def _draw_target_positions(
+    rng: np.random.Generator,
+    targets: list[str],
+    cluster_by_table: bool,
+) -> np.ndarray:
+    """Draw one bootstrap resample of target positions.
+
+    Args:
+        rng: Seeded generator. Called once per replicate.
+        targets: Basket targets in the column order of the score matrices.
+        cluster_by_table: Resample whole ACS tables when True, individual
+            targets when False.
+
+    Returns:
+        Positions into `targets`, drawn with replacement. The naive draw is
+        exactly `len(targets)` long; the clustered draw's length varies by
+        replicate, because ACS tables hold different numbers of targets and a
+        replicate that draws `b25040` twice carries ten heating-fuel rows.
+    """
+    if not cluster_by_table:
+        return rng.integers(0, len(targets), size=len(targets))
+
+    members: dict[str, list[int]] = {}
+    for position, target in enumerate(targets):
+        members.setdefault(TARGET_TABLES[target], []).append(position)
+    tables = sorted(members)
+    drawn = rng.integers(0, len(tables), size=len(tables))
+    return np.concatenate([members[tables[index]] for index in drawn])
+
+
+def _interval(draws: np.ndarray, point: float) -> dict[str, object]:
+    """Wrap one bootstrap distribution as a reportable interval.
+
+    Args:
+        draws: One resampled statistic per replicate.
+        point: The statistic on the observed basket, unresampled. Reported
+            alongside rather than recomputed from the draws, because the
+            percentile interval is not required to be centred on it.
+
+    Returns:
+        Point estimate, both bounds, and whether the interval covers zero --
+        the last because "indistinguishable from zero" is a different claim
+        from "small", and the prose quoting this needs to know which it has.
+    """
+    low, high = np.percentile(draws, BOOTSTRAP_PERCENTILES)
+    return {
+        "point": float(point),
+        "low": float(low),
+        "high": float(high),
+        "covers_zero": bool(low <= 0.0 <= high),
+    }
+
+
+def bootstrap_representations(scores: pd.DataFrame) -> dict[str, dict[str, object]]:
+    """Interval every arm's decision-basket means, paired across arms.
+
+    Runs the resample described at `N_BOOTSTRAP` twice, naive and clustered by
+    ACS table, and reports three statistics per arm per scheme: the arm's plain
+    marginal contribution, its contribution net of latitude and longitude, and
+    its difference from `BOOTSTRAP_REFERENCE_ARM`.
+
+    The difference is reported rather than a ratio. A ratio of two means whose
+    denominator is this small is unstable, and an interval on one is unreadable;
+    the "96% of the encoder" figure stays a point estimate in prose.
+
+    Two of the three statistics turn out to be the same one.
+    `latlong_only`'s full model IS every other arm's geo-reduced baseline
+    (`test_latlong_only_design_matches_the_geo_reduced_baseline`), so
+
+        contribution_geo(arm) = contribution(arm) - contribution(latlong_only)
+
+    holds identically, not approximately. Both are kept in the artifact: they
+    cost nothing, and `test_geo_net_interval_is_the_latlong_difference` uses
+    their agreement as a standing check that the identity has not been broken
+    by a change to either design.
+
+    Args:
+        scores: Output of `score_representation`. Excluded targets are dropped
+            here for the same reason `summarize` drops them from the headline
+            means -- an interval on a basket that includes them would be
+            interval-ing a number nothing quotes.
+
+    Returns:
+        Mapping of representation key to its `naive` and `table_clustered`
+        blocks plus the resample's own parameters.
+
+    Raises:
+        ValueError: If some arm did not score some basket target, which would
+            silently pair different arms against different baskets.
+    """
+    basket = scores[~scores["target"].isin(EXCLUDED_TARGETS)]
+    targets = sorted(basket["target"].unique())
+    arms = sorted(basket["representation"].unique())
+    position = {target: index for index, target in enumerate(targets)}
+
+    plain = np.full((len(arms), len(targets)), np.nan)
+    geo = np.full((len(arms), len(targets)), np.nan)
+    for arm_index, arm in enumerate(arms):
+        for row in basket[basket["representation"] == arm].itertuples():
+            plain[arm_index, position[row.target]] = row.contribution
+            geo[arm_index, position[row.target]] = row.contribution_geo
+    if np.isnan(plain).any() or np.isnan(geo).any():
+        raise ValueError(
+            "every representation must score every decision-basket target "
+            "before the arms can be paired"
+        )
+
+    reference = arms.index(BOOTSTRAP_REFERENCE_ARM)
+    observed_plain = plain.mean(axis=1)
+    observed_geo = geo.mean(axis=1)
+
+    out: dict[str, dict[str, object]] = {
+        arm: {
+            "n_replicates": N_BOOTSTRAP,
+            "percentiles": list(BOOTSTRAP_PERCENTILES),
+            "n_targets": len(targets),
+            "n_tables": len({TARGET_TABLES[target] for target in targets}),
+            "reference_arm": BOOTSTRAP_REFERENCE_ARM,
+        }
+        for arm in arms
+    }
+
+    for scheme, cluster_by_table in (("naive", False), ("table_clustered", True)):
+        # Re-seeded per scheme so each is reproducible on its own, and so
+        # adding a scheme never shifts an existing one's numbers.
+        rng = np.random.default_rng(RANDOM_SEED)
+        drawn_plain = np.empty((N_BOOTSTRAP, len(arms)))
+        drawn_geo = np.empty((N_BOOTSTRAP, len(arms)))
+        drawn_difference = np.empty((N_BOOTSTRAP, len(arms)))
+        for replicate in range(N_BOOTSTRAP):
+            # One draw, every arm -- this is what makes the comparison paired.
+            selection = _draw_target_positions(rng, targets, cluster_by_table)
+            replicate_plain = plain[:, selection].mean(axis=1)
+            drawn_plain[replicate] = replicate_plain
+            drawn_geo[replicate] = geo[:, selection].mean(axis=1)
+            drawn_difference[replicate] = replicate_plain - replicate_plain[reference]
+
+        for arm_index, arm in enumerate(arms):
+            out[arm][scheme] = {
+                "contribution": _interval(
+                    drawn_plain[:, arm_index], observed_plain[arm_index]
+                ),
+                "contribution_geo": _interval(
+                    drawn_geo[:, arm_index], observed_geo[arm_index]
+                ),
+                f"minus_{BOOTSTRAP_REFERENCE_ARM}": _interval(
+                    drawn_difference[:, arm_index],
+                    observed_plain[arm_index] - observed_plain[reference],
+                ),
+            }
+    return out
+
+
 def summarize(scores: pd.DataFrame) -> dict[str, object]:
     """Collapse per-target contributions to one figure per representation.
 
@@ -529,6 +724,11 @@ def summarize(scores: pd.DataFrame) -> dict[str, object]:
     worse-than-mean models and must be flagged rather than averaged in
     silently.
 
+    Each representation also carries a `bootstrap` block from
+    `bootstrap_representations` -- naive and table-clustered intervals on the
+    decision-basket means, so no figure this artifact publishes is a bare point
+    estimate.
+
     Args:
         scores: Output of `score_representation`.
 
@@ -542,6 +742,8 @@ def summarize(scores: pd.DataFrame) -> dict[str, object]:
         .set_index("target")["r2_reduced"]
         .to_dict()
     )
+
+    bootstrap = bootstrap_representations(scores)
 
     by_representation: dict[str, object] = {}
     for key, group in scores.groupby("representation"):
@@ -566,6 +768,7 @@ def summarize(scores: pd.DataFrame) -> dict[str, object]:
             "by_target_geo": {
                 str(row.target): float(row.contribution_geo) for row in group.itertuples()
             },
+            "bootstrap": bootstrap[str(key)],
         }
     return {
         "question": (
@@ -619,6 +822,31 @@ def main() -> None:
             summary["n_positive"],
             summary["n_targets"],
         )
+    selected = stats["by_representation"][SELECTED_ARM]["bootstrap"]
+    logger.info(
+        "--- %s: 95%% intervals over %d targets in %d ACS tables, %d replicates ---",
+        SELECTED_ARM,
+        selected["n_targets"],
+        selected["n_tables"],
+        selected["n_replicates"],
+    )
+    for scheme in ("naive", "table_clustered"):
+        for statistic in (
+            "contribution",
+            "contribution_geo",
+            f"minus_{BOOTSTRAP_REFERENCE_ARM}",
+        ):
+            interval = selected[scheme][statistic]
+            logger.info(
+                "%-16s %-24s %+.5f [%+.5f, %+.5f]%s",
+                scheme,
+                statistic,
+                interval["point"],
+                interval["low"],
+                interval["high"],
+                "  (covers zero)" if interval["covers_zero"] else "",
+            )
+
     logger.info("wrote %s and %s", OUTPUT_CSV_PATH, OUTPUT_STATS_PATH)
 
 
